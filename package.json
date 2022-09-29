@@ -1,0 +1,56 @@
+{
+	"name": "josera_dashboard",
+	"version": "0.1.0",
+	"private": true,
+	"main": "index.js",
+	"dependencies": {
+		"@coreui/coreui": "^2.1.12",
+		"@coreui/react": "^2.5.2",
+		"@react-google-maps/api": "^2.11.8",
+		"bootstrap": "^5.0.1",
+		"chart.js": "^2.8.0",
+		"coreui": "^0.4.2-alpha2",
+		"google-map-react": "^2.1.10",
+		"google-maps-react": "^2.0.6",
+		"js-cookie": "3.0.1",
+		"jspdf": "2.3.1",
+		"lodash.isempty": "^4.4.0",
+		"mdb-ui-kit": "^4.0.0",
+		"mdbreact": "^4.19.0",
+		"react": "^16.9.0",
+		"react-dom": "^16.9.0",
+		"react-scripts": "3.0.1",
+		"react-select": "^5.3.2",
+		"react-simple-captcha": "^9.0.1",
+		"react-tabs": "^5.1.0",
+		"reactstrap": "^8.10.1",
+		"styled-components": "^5.3.5",
+		"watchman": "^1.0.0"
+	},
+	"homepage": "http://josera.shoora.com",
+	"scripts": {
+		"start": "react-scripts start",
+		"build": "cp ./src/config.js ./src/config.bak.js && cp ./src/config-prod.js ./src/config.js && react-scripts build && mv ./src/config.bak.js ./src/config.js",
+		"deploy": "aws s3 cp --recursive ./build s3://adshakya.com",
+		"test": "react-scripts test",
+		"eject": "react-scripts eject"
+	},
+	"eslintConfig": {
+		"extends": "react-app"
+	},
+	"browserslist": {
+		"production": [
+			">0.2%",
+			"not dead",
+			"not op_mini all"
+		],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	},
+	"engines": {
+		"node": "14.15.3"
+	}
+}
