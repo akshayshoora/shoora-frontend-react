@@ -1,0 +1,23 @@
+body {
+  font-family: Satoshi;
+  margin: 0;
+  color: #261F5A;
+}
+
+@font-face {
+  font-family: "Satoshi";
+  src: local("Satoshi"), local("Satoshi-Regular"),
+    url(./assets/font/Satoshi-Regular.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Satoshi-Bold";
+  src: local("Satoshi-Bold"),
+    url(./assets/font/Satoshi-Bold.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Satoshi-Medium";
+  src: local("Satoshi-Medium"),
+    url(./assets/font/Satoshi-Medium.ttf) format("truetype");
+}
