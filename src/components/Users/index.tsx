@@ -210,7 +210,7 @@ export default function Users() {
                       <Span fontType="secondary">{user.contact_number}</Span>
                     </TableCell>
                     
-                    {/* Code will be useful in the future */}
+                   
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={user.id} />
                     </TableCell>
