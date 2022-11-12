@@ -21,7 +21,7 @@ import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import { isSuperAdmin} from "utils/roleUtils";
 
-class NewPropertyType {
+class NewUserType {
     "name": string = "";
     "contact_number": string | null = null;
     "contact_code": string | null = null;
@@ -33,7 +33,7 @@ class NewPropertyType {
 }
 
 export default function AddUser() {
-    const [users, setUser] = useState<NewPropertyType>(new NewPropertyType());
+    const [users, setUser] = useState<NewUserType>(new NewUserType());
     const { user } = useAppContext();
     const isAdmin = isSuperAdmin(user.roles);
 
@@ -48,7 +48,7 @@ export default function AddUser() {
         message: string;
     }>({ open: false, variant: "info", message: "" });
     
-    const addPropertyMutation = useMutation(addUser, {
+    const addUserMutation = useMutation(addUser, {
         onSuccess: () => {
             setSnackbar({
                 open: true,
@@ -69,7 +69,7 @@ export default function AddUser() {
         },
     });
 
-    const updatePropertyMutation = useMutation(updateUser, {
+    const updateUserMutation = useMutation(updateUser, {
         onSuccess: () =>{
             setSnackbar({
                 open: true,
@@ -90,7 +90,7 @@ export default function AddUser() {
     });
 
 
-    const { isLoading: loadingPropertyInfo } = useQuery(
+    const { isLoading: loadingUserInfo } = useQuery(
         ["users", userId],
         () => getUserDetails(String(userId)),
         {
@@ -109,29 +109,29 @@ export default function AddUser() {
         navigate(-1);
     }
 
-    function handleFormProperty(
-        key: keyof NewPropertyType,
+    function handleFormUser(
+        key: keyof NewUserType,
         value: string | boolean | number | []
     ) {
         setUser({ ...users, [key]: value });
     }
 
-    function addUser(user: NewPropertyType) {
+    function addUser(user: NewUserType) {
         return client.post("/users/", {
             ...user,
         });
     }
 
-    function updateUser(user: NewPropertyType) {
+    function updateUser(user: NewUserType) {
         return client.patch(`/users/${userId}/`, {
             ...user,
         });
     }
 
-    const { mutate: mutateAddUser, isLoading: isAddingProperty } =
-    addPropertyMutation;
-    const { mutate: mutateUpdateUser, isLoading: updatingProperty } =
-    updatePropertyMutation;
+    const { mutate: mutateAddUser, isLoading: isAddingUser } =
+    addUserMutation;
+    const { mutate: mutateUpdateUser, isLoading: updatingUser } =
+    updateUserMutation;
 
     function handleSubmit() {
         if (userId) {
@@ -143,7 +143,7 @@ export default function AddUser() {
         mutateAddUser(users);
     }
 
-    if (userId && (loadingPropertyInfo && !users.name)) {
+    if (userId && (loadingUserInfo && !users.name)) {
         return <LoadingScreen />;
     }
     
@@ -158,9 +158,9 @@ export default function AddUser() {
     const isSaveButtonDisabled = !name || !email ;
 
 
-    const loadingMessage = isAddingProperty
+    const loadingMessage = isAddingUser
     ? "Adding User..."
-    : updatingProperty
+    : updatingUser
     ? "Updating User..."
     : "";
 
@@ -182,19 +182,12 @@ export default function AddUser() {
             </Snackbar>
 
             <PageLoading
-                open={isAddingProperty || updatingProperty}
+                open={isAddingUser || updatingUser}
                 loadingMessage={loadingMessage}
             />
 
             <Box className={classes.headingWrapper}>
                 <Box className={classes.headingContent}>
-                    <IconButton
-                        className={classes.headingBackButton}
-                        size="small"
-                        onClick={backToProperties}
-                    >
-                        <ArrowBackIcon />
-                    </IconButton>
                     <Typography fontSize={24}>
                         {!userId ? "Add User" : "Edit User"}
                     </Typography>
@@ -210,7 +203,7 @@ export default function AddUser() {
                             style={{ marginBottom: 24 }}
                             value={users.name}
                             isRequired={true}
-                            onChange={(value) => handleFormProperty("name", value)}
+                            onChange={(value) => handleFormUser("name", value)}
                         />
                     </Grid>
                     {userId ?
@@ -236,7 +229,7 @@ export default function AddUser() {
                             style={{ marginBottom: 24 }}
                             value={users.email}
                             isRequired={true}
-                            onChange={(value) => handleFormProperty("email", value)}
+                            onChange={(value) => handleFormUser("email", value)}
                         />
                         
                     </Grid>
@@ -249,7 +242,7 @@ export default function AddUser() {
                             style={{ marginBottom: 24 }}
                             value={users.contact_number}
                             isRequired={false}
-                            onChange={(value) => handleFormProperty("contact_number", value)}
+                            onChange={(value) => handleFormUser("contact_number", value)}
                         />
                     </Grid>
                 </Grid>
@@ -262,7 +255,7 @@ export default function AddUser() {
                             style={{ marginBottom: 24 }}
                             value={users.password}
                             isRequired={false}
-                            onChange={(value) => handleFormProperty("password", value)}
+                            onChange={(value) => handleFormUser("password", value)}
                             
                         />
                     </Grid>
@@ -275,7 +268,7 @@ export default function AddUser() {
                             style={{ marginBottom: 24 }}
                             value={users.contact_code}
                             isRequired={false}
-                            onChange={(value) => handleFormProperty("contact_code", value)}
+                            onChange={(value) => handleFormUser("contact_code", value)}
                             
                         />
                     </Grid>
@@ -286,7 +279,7 @@ export default function AddUser() {
                             style={{ marginBottom: 24 }}
                             value={users.address}
                             isRequired={false}
-                            onChange={(value) => handleFormProperty("address", value)}
+                            onChange={(value) => handleFormUser("address", value)}
                         />
                     </Grid>
                 </Grid>
