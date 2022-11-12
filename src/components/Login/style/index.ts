@@ -8,7 +8,7 @@ export default makeStyles({
     height: '100vh',
     alignItems: 'center',
     flexDirection: 'column',
-    background: '#ebf1ff',
+    background:'linear-gradient(to right, #1723b1,#ec6a2b)',
   },
   loginBoxWrapper: {
     background: 'white',
@@ -19,6 +19,10 @@ export default makeStyles({
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
   },
   loginForm: { display: 'flex', flexDirection: 'column' },
+  shooraBtn: { 
+    background:'linear-gradient(to right, #1723b1,#ec6a2b)',
+    color:'white !important',
+  },
   marginTop_12: { marginTop: 12 },
   marginTop_36: { marginTop: 36 },
   marginTop_8: { marginTop: 8 },

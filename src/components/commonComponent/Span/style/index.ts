@@ -25,6 +25,6 @@ export default makeStyles({
     color: COLORS.PRIMARY_FONT,
   },
   secondaryFont: {
-    color: COLORS.SECONDARY_FONT,
+    color: COLORS.WHITE,
   },
 });

@@ -9,7 +9,7 @@ export default makeStyles({
     alignItems: 'center',
   },
   logo: {
-    margin: '32px 0 32px',
+    margin: '20px 0 32px',
   },
   menuItem: {
     padding: 8,
@@ -19,20 +19,21 @@ export default makeStyles({
     marginBottom: 16,
     cursor: 'pointer',
     textDecoration: 'none',
+    color:'white',
+    borderRadius:'0px 30px 0px 30px',
     transition: '0.3s',
-    '&:hover':{
-      background:
-      'linear-gradient(90deg, rgba(2, 51, 225, 0.1) 0%, rgba(2, 51, 225, 0.000520833) 98.65%, rgba(2, 51, 225, 0) 98.66%);',
-    },
+    marginLeft:'20px',
+    marginRight:'-20px',
   },
   menuLabel: {
     marginLeft: 12,
     textTransform: 'capitalize',
   },
   selectedMenuItem: {
-    background:
-      'linear-gradient(90deg, rgba(2, 51, 225, 0.1) 0%, rgba(2, 51, 225, 0.000520833) 98.65%, rgba(2, 51, 225, 0) 98.66%);',
-    borderLeft: `3px solid` + COLORS.PRIMARY_COLOR,
+    background:COLORS.BUTTON,
+    borderRadius:'0px 30px 0px 30px',
+    color:'white',
+    transition: '0.3s',
   },
   menu: {
     width: '100%',
@@ -48,6 +49,6 @@ export default makeStyles({
     position: 'fixed',
     bottom: 0,
     width: '20%',
-    minWidth: 240,
+    minWidth: 200,
   },
 });

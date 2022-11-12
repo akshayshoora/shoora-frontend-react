@@ -18,7 +18,7 @@ export default function Dashboard() {
 
 
   return (
-    <Box style={{ padding: "40px 24px" }}>
+    <Box style={{ padding: "20px 40px" }}>
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Dashboard</Heading>
       </Box>

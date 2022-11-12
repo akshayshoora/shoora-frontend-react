@@ -81,7 +81,7 @@ export default function Login() {
   return (
     <Box className={classes.root}>
       <Box component={"span"}>
-        <img src={BRAND.LOGO} alt="shoora" height={100} width={100}/>
+        <img src={BRAND.LOGO} alt="shoora" width={100}/>
         
       </Box>
       <Box className={classes.loginBoxWrapper}>
@@ -126,7 +126,7 @@ export default function Login() {
                 }
               }}
             />
-            <Button
+            <Button className={classes.shooraBtn}
               variant="contained"
               style={{ marginTop: 12 }}
               type="submit"
