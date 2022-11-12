@@ -33,19 +33,16 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths } from "../../constants/commonEnums";
 
 export default function Users() {
-  let [searchParams, setSearchParams] = useSearchParams();
-
-  const host_id = searchParams.get("host_id");
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data: userList, isLoading } = useQuery(
-    ["properties", page, rowsPerPage, searchText],
-    () => getProperties(page, rowsPerPage, searchText)
+    ["users", page, rowsPerPage, searchText],
+    () => getUsers(page, rowsPerPage, searchText)
   );
 
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("property");
+  const [orderBy, setOrderBy] = React.useState<string>("user");
 
   const navigate = useNavigate();
 
@@ -53,7 +50,7 @@ export default function Users() {
   const classes = useStyles();
   const isAdmin = isSuperAdmin(user.roles) || isClientAdmin(user.roles);
 
-  async function getProperties(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getUsers(pageNumber: number, pageSize: number, searchText?: string) {
     let getApiUrl = `/users/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
@@ -66,12 +63,12 @@ export default function Users() {
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    property: string
+    user: string
   ) => {
-    const isAsc = orderBy === property && order === "asc";
+    const isAsc = orderBy === user && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     //@ts-ignore
-    setOrderBy(property);
+    setOrderBy(user);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -91,7 +88,7 @@ export default function Users() {
     navigate(`/${AppPaths.USERS}/${id}`);
   }
 
-  function editPropertyDetails(
+  function editUserDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
@@ -105,7 +102,7 @@ export default function Users() {
       icon: <InfoOutlinedIcon />,
       onClick: openUserDetails,
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editPropertyDetails },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails },
     // {
     //   label: "Delete",
     //   icon: <DeleteOutlineOutlinedIcon />,
@@ -141,7 +138,7 @@ export default function Users() {
     },
   ];
 
-  function addProperty() {
+  function addUser() {
     navigate(`/${AppPaths.USERS}/${SubPaths.ADD}`);
   }
   const handleSearchInput = (e: any) => {
@@ -164,7 +161,7 @@ export default function Users() {
             <Button
               variant="contained"
               style={{ background: COLORS.PRIMARY_COLOR }}
-              onClick={addProperty}
+              onClick={addUser}
             >
               <AddIcon />
               add user
@@ -220,7 +217,7 @@ export default function Users() {
             ) : (
               <TableCell colSpan={8}>
                 <div className={classes.noDataView}>
-                  <Span fontType="secondary">No Data Available</Span>
+                  <Span fontType="secondary">No Data Found</Span>
                 </div>
               </TableCell>
             )}

@@ -33,9 +33,9 @@ function Header() {
         <Span fontType="secondary" size="large">{`Welcome ${
           user.name ? `, ${user.name}` : ""
         } `}</Span>
-        <Span fontType="secondary" size="extra-small">
+        {/* <Span fontType="secondary" size="extra-small">
           {dateTime}
-        </Span>
+        </Span> */}
       </Box>
       <Box className={classes.userBar}>
         {/* Notifications (will be included later) */}

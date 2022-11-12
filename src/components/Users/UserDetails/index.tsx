@@ -15,16 +15,13 @@ export function UserDetails() {
     const { id } = useParams();
 
     const { data: user, isLoading } = useQuery(["user", id], () =>
-        getPropertyDetails(String(id))
+        getUserDetails(String(id))
     );
 
-    async function getPropertyDetails(id: string) {
+    async function getUserDetails(id: string) {
         return (await client.get(`/users/${id}/`)).data;
     }
 
-    function backToProperties() {
-        navigate(-1);
-    }
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -34,13 +31,7 @@ export function UserDetails() {
         <Box>
             <Box className={classes.headingWrapper}>
                 <Box className={classes.headingContent}>
-                <IconButton
-                    className={classes.headingBackButton}
-                    size="small"
-                    onClick={backToProperties}
-                >
-                    <ArrowBackIcon />
-                </IconButton>
+               
                 <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{user.name}</Typography>
                 </Box>
                 <Box>
