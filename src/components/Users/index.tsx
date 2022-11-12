@@ -31,6 +31,7 @@ import ActionMenu, {
 import { useQuery } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths } from "../../constants/commonEnums";
+import { DeleteModal } from "components/commonComponent/DeleteModal";
 
 export default function Users() {
   const [searchText, setSearchText] = React.useState("");
@@ -43,7 +44,8 @@ export default function Users() {
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("user");
-
+  const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+  
   const navigate = useNavigate();
 
   const { user } = useAppContext();
@@ -60,6 +62,14 @@ export default function Users() {
 
     return response.data;
   }
+
+  const handleOpenDelete = () => {
+    setOpenDelete(true);
+  };
+  const handleClose = () => {
+    setOpenDelete(false);
+  };
+
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -103,11 +113,11 @@ export default function Users() {
       onClick: openUserDetails,
     },
     { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails },
-    // {
-    //   label: "Delete",
-    //   icon: <DeleteOutlineOutlinedIcon />,
-    //   onClick: handleClick,
-    // },
+    {
+      label: "Delete",
+      icon: <DeleteOutlineOutlinedIcon />,
+      onClick: handleOpenDelete,
+    },
   ];
 
   const headCells: readonly HeadCell[] = [
@@ -146,6 +156,7 @@ export default function Users() {
   };
   return (
     <Box style={{ padding: "40px 24px" }}>
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="user"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Users</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>

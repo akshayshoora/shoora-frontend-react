@@ -4,6 +4,7 @@ export const COLORS = {
   SECONDARY_FONT: '#746E97',
   PRIMARY_COLOR: '#1B47E4',
   WHITE: '#FFFFFF',
+  ERROR:'red'
 };
 
 export default COLORS;
