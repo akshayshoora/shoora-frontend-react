@@ -21,6 +21,7 @@ import useStyles from "./style";
 import { USER_ID } from "constants/commonConstants";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import LoginImg from '../../assets/truck3.jpg';
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -84,6 +85,10 @@ export default function Login() {
         <img src={BRAND.LOGO} alt="shoora" width={100}/>
         
       </Box>
+      <Box className={classes.loginBoxMain}>
+      <Box className={classes.loginLeft}>
+        <img src={LoginImg} alt="" style={{ maxWidth: '100%' }}></img>
+      </Box>
       <Box className={classes.loginBoxWrapper}>
         <Box
           style={{
@@ -114,7 +119,7 @@ export default function Login() {
               label="Password"
               variant="outlined"
               type={showPassword ? 'text' : 'password'}
-              style={{ marginTop: 12 }}
+              style={{ marginTop: 24 }}
               value={password}
               /**
                //@ts-ignore */
@@ -167,6 +172,7 @@ export default function Login() {
             </Alert>
           </Snackbar>
         </Stack>
+      </Box>
       </Box>
     </Box>
   );

@@ -16,7 +16,17 @@ export default makeStyles({
     padding: 24,
     marginTop:10,
     minWidth: 400,
+    maxWidth:'50%',
+    marginLeft:'-40px',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
+  },
+  loginLeft:{
+    maxWidth:'50%',
+  },
+  loginBoxMain:{
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
   },
   loginForm: { display: 'flex', flexDirection: 'column' },
   shooraBtn: { 
