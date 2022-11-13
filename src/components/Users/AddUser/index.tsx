@@ -20,6 +20,7 @@ import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import { isSuperAdmin} from "utils/roleUtils";
+import SelectField from "components/commonComponent/SelectField";
 
 class NewUserType {
     "name": string = "";
@@ -273,6 +274,18 @@ export default function AddUser() {
                         />
                     </Grid>
                     <Grid item xs={4}>
+                    <SelectField
+                    label="Roles"
+                    isLoading={false}
+                    menuItems={[]}
+                    style={{ marginBottom: 12 }}
+                    value={"Roles"}
+                    isRequired={true}
+                    onChange={(value) => handleFormUser("role_ids", value)}
+                  />
+                  </Grid>
+                  {userId &&
+                  <Grid item xs={4}>
                         <TextInput
                             label="Address"
                             placeholder="Enter address"
@@ -282,7 +295,23 @@ export default function AddUser() {
                             onChange={(value) => handleFormUser("address", value)}
                         />
                     </Grid>
-                </Grid>
+                  }
+                  </Grid>
+                  {!userId &&
+                  <Grid container spacing={4}>
+                    <Grid item xs={4}>
+                        <TextInput
+                            label="Address"
+                            placeholder="Enter address"
+                            style={{ marginBottom: 24 }}
+                            value={users.address}
+                            isRequired={false}
+                            onChange={(value) => handleFormUser("address", value)}
+                        />
+                    </Grid>
+                    </Grid>
+                 }
+                
             </Box>
 
             <Box className={classes.footerWrapper}>

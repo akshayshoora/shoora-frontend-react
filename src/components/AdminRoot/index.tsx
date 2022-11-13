@@ -49,7 +49,7 @@ function AdminRoot() {
     refetch();
   }
 
-  if (isLoading || (!Boolean(user.id) && getUserID())) {
+  if (isLoading || (!isError && (!Boolean(user.id) && getUserID()))) {
     return (
       <Box className={classes.loadingScreen}>
         <LoadingScreen />
