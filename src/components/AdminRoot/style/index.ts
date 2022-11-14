@@ -14,8 +14,8 @@ export default makeStyles({
   },
   sidePanel: {
     flex: '0.25',
-    borderRight: `1px solid ${COLORS.BORDER_GREY}`,
-    minWidth: 240,
+    minWidth: 200,
+    background:`${COLORS.GRADIENT}`,
   },
   panelBody: {
     flex: 1,
@@ -23,6 +23,7 @@ export default makeStyles({
   header: {
     borderBottom: `1px solid ${COLORS.BORDER_GREY}`,
     minHeight: 68,
+    background:`${COLORS.GRADIENT}`,
   },
   bodyContainer: {
     padding: '24px',
