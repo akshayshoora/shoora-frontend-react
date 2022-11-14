@@ -5,7 +5,6 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
-import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import { useAppContext } from "ContextAPIs/appContext";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -15,11 +14,10 @@ import Span from "components/commonComponent/Span";
 import { AppPaths } from "../../constants/commonEnums";
 import MenuIcons from "components/IconComponents/SideBarIcons";
 import client from "serverCommunication/client";
-import { getMenu, isHostAdmin, isSubHostAdmin } from "utils/roleUtils";
 import useStyle from "./style";
-import COLORS from "../../constants/colors";
 import { useState } from "react";
 import BRAND from "BrandingConstants";
+import { getFeatures } from "utils/FeatureCheck";
 
 export default function SidePanel() {
   const classes = useStyle();
@@ -33,11 +31,11 @@ export default function SidePanel() {
 
   function renderMenu() {
     //@ts-ignore
-    const menuList: AppPaths[] = getMenu(user.roles[0]);
+    const menuList: AppPaths[] = getFeatures();
+
 
     return menuList.map((menuItem) => {
-      const isActive = selectedView.includes(menuItem);
-
+      const isActive = selectedView.includes(menuItem) ;
       return (
         <Box
           className={classNames(classes.menuItem, {

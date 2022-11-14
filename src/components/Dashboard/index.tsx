@@ -7,14 +7,11 @@ import Chip from '@mui/material/Chip';
 
 import Summary from "../Summary";
 import { useAppContext } from "ContextAPIs/appContext";
-import { getPriorityRole } from "utils/roleUtils";
 
 export default function Dashboard() {
   const classes = useStyles();
   const { user } = useAppContext();
 
-  // const userRole = user.roles[0]; //Currently picking the first role
-  // const userRole = getPriorityRole(user.roles); //Currently picking the role with highest priority
 
 
   return (

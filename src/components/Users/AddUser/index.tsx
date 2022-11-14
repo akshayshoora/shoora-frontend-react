@@ -19,7 +19,6 @@ import { AppPaths } from "../../../constants/commonEnums";
 import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
-import { isSuperAdmin} from "utils/roleUtils";
 import SelectField from "components/commonComponent/SelectField";
 
 class NewUserType {
@@ -36,7 +35,6 @@ class NewUserType {
 export default function AddUser() {
     const [users, setUser] = useState<NewUserType>(new NewUserType());
     const { user } = useAppContext();
-    const isAdmin = isSuperAdmin(user.roles);
 
 
     const navigate = useNavigate();

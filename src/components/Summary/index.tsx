@@ -4,11 +4,8 @@ import { experimentalStyled as styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import { useQuery } from "react-query";
-import { getPriorityRole } from "utils/roleUtils";
 
 import {
-  // ROLE_BASED_SUMMARY,
-  FLEET_MANAGER,
   getRoleBasedFilteredSummary,
 } from "../.../../../constants/commonConstants";
 
@@ -43,9 +40,6 @@ export default function Summary() {
   //   return (await client.get(getApiUrl)).data;
   // }
 
-  // const userRole = user.roles[0]; //Currently picking the first role
-  const userRole = getPriorityRole(user.roles); //Currently picking the role with highest priority
-
   // if (isLoading) {
   //   return <div>Loading...</div>;
   // }
@@ -57,7 +51,6 @@ export default function Summary() {
       columns={{ xs: 4, sm: 8, md: 12 }}
     >
       {ROLE_BASED_FILTERED_SUMMARY.map((item) => {
-        // if (item.roles.includes(userRole)) {
           return (
             <Grid item xs={2} sm={3} md={3} key={item.dataIndex}>
               <Item elevation={0}>
@@ -65,7 +58,7 @@ export default function Summary() {
                   {item.label}
                 </Typography>
                 <Typography variant="h1" mt={1} component="div">
-                  {/* {summary[item.dataIndex]} */}
+                  
                   {item.value}
                   {item.unit ? (
                     <Typography
@@ -86,7 +79,7 @@ export default function Summary() {
               </Item>
             </Grid>
           );
-        // }
+        
       })}
     </Grid>
   );

@@ -14,7 +14,6 @@ import useStyles from "./style";
 import { setUserId, setUserToken, getUserToken } from "utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths } from "../../../constants/commonEnums";
-import { isHostAdmin } from "utils/roleUtils";
 import client from 'serverCommunication/client';
 
 export default function UserMenu() {

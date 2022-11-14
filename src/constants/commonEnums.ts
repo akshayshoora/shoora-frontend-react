@@ -3,9 +3,17 @@ export enum AppPaths {
   USERS = 'users',
   LOGIN = 'login',
   PROFILE = 'profile',
+  ORGANIZATIONS='organizations'
 }
 
 export enum SubPaths {
   ADD = 'add',
   EDIT = 'edit',
+}
+
+export enum Actions {
+ ADD="POST",
+ EDIT="PATCH",
+ DELETE="DELETE",
+ GET="GET",
 }
