@@ -21,7 +21,7 @@ import useStyles from "./style";
 import { USER_ID } from "constants/commonConstants";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import LoginImg from '../../assets/truck3.jpg';
+import LoginImg from '../../assets/macbook-pro.png';
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -119,7 +119,7 @@ export default function Login() {
               label="Password"
               variant="outlined"
               type={showPassword ? 'text' : 'password'}
-              style={{ marginTop: 24 }}
+              style={{ marginTop: 30 }}
               value={password}
               /**
                //@ts-ignore */
@@ -133,7 +133,7 @@ export default function Login() {
             />
             <Button className={classes.shooraBtn}
               variant="contained"
-              style={{ marginTop: 12 }}
+              style={{ marginTop: 20 }}
               type="submit"
               disabled={!email.length || !password.length}
             >

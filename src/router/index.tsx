@@ -8,6 +8,7 @@ import AddUser from "components/Users/AddUser";
 import ErrorBoundary from "components/commonComponent/ErrorBoundry";
 import { UserDetails } from "components/Users/UserDetails";
 import EditProfile from "components/UserProfile";
+import Partner from "components/Partner";
 
 
 export default function AppRouter() {
@@ -93,6 +94,22 @@ export default function AppRouter() {
           <ProtectedRoute
             route={AppPaths.PROFILE}
             component={<EditProfile />}
+          />
+        }
+      />
+
+      <Route
+        path={AppPaths.PARTNER}
+        element={
+          <ProtectedRoute
+            route={AppPaths.PARTNER}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Partner />
+                </ErrorBoundary>
+              </>
+            }
           />
         }
       />

@@ -2,6 +2,7 @@ import { AppPaths } from "../../../constants/commonEnums";
 import DashboardIcon from "./DashboardIcon";
 import { ISideBarIconProps } from "./interfaces";
 import UsersIcon from "./UsersIcon";
+import PartnerIcon from "./PartnerIcon";
 
 interface IMenuProps extends ISideBarIconProps {
   icon: AppPaths;
@@ -15,6 +16,8 @@ export default function MenuIcons(props: IMenuProps) {
       return <UsersIcon isActive={isActive} />;
     case AppPaths.USERS:
       return <DashboardIcon isActive={isActive} />;
+      case AppPaths.PARTNER:
+        return <PartnerIcon isActive={isActive} />;
     case AppPaths.DASHBOARD:
     default:
       return <DashboardIcon isActive={isActive} />;

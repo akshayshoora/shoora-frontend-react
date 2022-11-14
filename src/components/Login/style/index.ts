@@ -15,23 +15,29 @@ export default makeStyles({
     borderRadius: 8,
     padding: 24,
     marginTop:10,
-    minWidth: 400,
-    maxWidth:'50%',
+    minWidth: 340,
+    maxWidth:'40%',
     marginLeft:'-40px',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
   },
   loginLeft:{
-    maxWidth:'50%',
+    maxWidth:'60%',
   },
   loginBoxMain:{
     display:'flex',
     alignItems:'center',
     justifyContent:'center',
+    marginTop:'30px',
   },
   loginForm: { display: 'flex', flexDirection: 'column' },
   shooraBtn: { 
     background:'linear-gradient(to right, #1723b1,#ec6a2b)',
     color:'white !important',
+    height:'40px',
+    "&.Mui-disabled": {
+      background: 'white',
+      color:'grey !important',
+    }
   },
   marginTop_12: { marginTop: 12 },
   marginTop_36: { marginTop: 36 },

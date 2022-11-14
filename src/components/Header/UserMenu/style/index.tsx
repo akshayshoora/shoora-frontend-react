@@ -15,9 +15,9 @@ export default makeStyles({
         height: 32,
         fontSize: 14,
         margin: '0',
-        border: '2px solid white',
-        background: 'rgba(2, 51, 225, 0.1)',
-        color: COLORS.PRIMARY_COLOR,
+        border: '2px solid #ec6929',
+        background: 'white',
+        color: COLORS.SECONDARY_FONT,
         transition: '0.3s',
         },
         '&.MuiAvatar-root:hover': {

@@ -155,7 +155,7 @@ export default function Users() {
     setSearchText(e);
   };
   return (
-    <Box style={{ padding: "40px 24px" }}>
+    <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="user"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Users</Heading>
@@ -171,7 +171,7 @@ export default function Users() {
           {/* {isAdmin || isHostAdmin(user.roles) ? ( */}
             <Button
               variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR }}
+              style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
               onClick={addUser}
             >
               <AddIcon />

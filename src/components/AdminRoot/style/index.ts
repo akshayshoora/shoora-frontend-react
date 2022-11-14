@@ -23,7 +23,7 @@ export default makeStyles({
   header: {
     borderBottom: `1px solid ${COLORS.BORDER_GREY}`,
     minHeight: 68,
-    background:`${COLORS.HEADER}`,
+    background:`${COLORS.GRADIENT}`,
   },
   bodyContainer: {
     padding: '24px',

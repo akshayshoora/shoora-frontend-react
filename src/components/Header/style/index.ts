@@ -15,6 +15,9 @@ export default makeStyles({
   greetingView: {
     display: 'flex',
     flexDirection: 'column',
+    '& .MuiTypography-root':{
+      color:COLORS.WHITE,
+    }
   },
   notificationIcon: {
     color: COLORS.SECONDARY_FONT,

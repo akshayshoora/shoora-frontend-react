@@ -4,6 +4,7 @@ export const COLORS = {
   SECONDARY_FONT: '#746E97',
   PRIMARY_COLOR: '#1B47E4',
   WHITE: '#FFFFFF',
+  BLACK: '#000',
   ERROR:'red',
   GRADIENT: 'linear-gradient(to right, #1723b1,#ec6a2b)',
   HEADER:'linear-gradient(to right, #ec6a2b,#1723b1)',

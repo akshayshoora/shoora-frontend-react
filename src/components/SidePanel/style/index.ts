@@ -9,7 +9,10 @@ export default makeStyles({
     alignItems: 'center',
   },
   logo: {
-    margin: '20px 0 32px',
+    margin: '0px 0 24px',
+    width:'100%',
+    padding:'10px 0 0px 0px',
+    textAlign:'center',
   },
   menuItem: {
     padding: 8,
@@ -28,6 +31,9 @@ export default makeStyles({
   menuLabel: {
     marginLeft: 12,
     textTransform: 'capitalize',
+    '& .MuiTypography-root':{
+      color:'white',
+    }
   },
   selectedMenuItem: {
     background:COLORS.BUTTON,
