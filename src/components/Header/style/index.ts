@@ -5,7 +5,7 @@ export default makeStyles({
   root: {
     padding: '12px 24px',
     display: 'flex',
-    justifyContent: 'space-between',
+     justifyContent: 'flex-end',
     alignItems: 'center',
   },
   numberOfRows: {

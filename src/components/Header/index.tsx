@@ -33,7 +33,7 @@ function Header() {
 
   return (
     <Box className={classes.root}>
-       <Button onClick = {()=>navigate(`/${AppPaths.PARTNER}`)}> Partner </Button> 
+       {/* <Button onClick = {()=>{}}> Partner </Button>  */}
       <Box className={classes.userBar}>
         {/* Notifications (will be included later) */}
         {/* <NotificationsIcon className={classes.notificationIcon} />
