@@ -16,7 +16,6 @@ import useStyles from "./style";
 import { useNavigate, useParams } from "react-router-dom";
 import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
-import { Roles } from "constants/commonTypes";
 
 class UserType {
     id: string = '';
@@ -25,7 +24,6 @@ class UserType {
     mobile_number: number = 0;
     pincode: number = 0;
     address: string = '';
-    roles: Roles[] = [];
     host_ids: string[] = [];
     property_ids: string[] = [];
     gstin: string = '';

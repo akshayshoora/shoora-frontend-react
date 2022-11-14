@@ -1,4 +1,3 @@
-import { Roles } from "constants/commonTypes";
 
 export class Users {
   id: string = '';
@@ -7,12 +6,18 @@ export class Users {
   contact_number: number = 0;
   contact_code: number = 0;
   address: string = '';
-  roles: Roles[] = [];
+  roles: UserRoles[] = [];
   organization_id: string = "";
-  is_active:boolean=false
+  is_active:boolean=false;
+  allowed_features:Features[]=[]
 }
 
-// class UserRoles {
-//   id: string = '';
-//   name: string = '';
-// }
+export class UserRoles {
+  id: string = '';
+  name: string = '';
+}
+
+export class Features {
+  feature: string = '';
+  actions: [] = [];
+}

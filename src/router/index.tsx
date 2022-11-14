@@ -8,7 +8,8 @@ import AddUser from "components/Users/AddUser";
 import ErrorBoundary from "components/commonComponent/ErrorBoundry";
 import { UserDetails } from "components/Users/UserDetails";
 import EditProfile from "components/UserProfile";
-
+import Organization from 'components/Organization';
+import {OrganizationDetails} from "components/Organization/OrganizationDetails";
 
 export default function AppRouter() {
   return (
@@ -93,6 +94,35 @@ export default function AppRouter() {
           <ProtectedRoute
             route={AppPaths.PROFILE}
             component={<EditProfile />}
+          />
+        }
+      />
+       <Route
+        path={AppPaths.ORGANIZATIONS}
+        element={
+          <ProtectedRoute
+            route={AppPaths.ORGANIZATIONS}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Organization />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+    <Route
+        path={`${AppPaths.ORGANIZATIONS}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.ORGANIZATIONS}
+            component={
+              <ErrorBoundary>
+                <OrganizationDetails />
+              </ErrorBoundary>
+            }
           />
         }
       />

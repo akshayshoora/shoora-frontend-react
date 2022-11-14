@@ -2,7 +2,7 @@ import { AppPaths } from "../constants/commonEnums";
 import { useAppContext } from "ContextAPIs/appContext";
 import { Navigate } from "react-router-dom";
 import { getUserID, getUserToken } from "utils/localStorage";
-import { checkRouteAsPerRole } from "utils/roleUtils";
+import {getProtectedRoutes} from "utils/FeatureCheck"
 
 interface IProtectedTour {
   component: JSX.Element;
@@ -17,7 +17,7 @@ function ProtectedRoute(props: IProtectedTour) {
   const { component, route } = props;
 
   //@ts-ignore
-  const routeAccessible = checkRouteAsPerRole(user.roles[0], route);
+  const routeAccessible= getProtectedRoutes(route);
 
   const isAuthenticated = Boolean(token && userId);
 
