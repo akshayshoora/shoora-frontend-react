@@ -2,6 +2,11 @@ body {
   font-family: Satoshi;
   margin: 0;
   color: #261F5A;
+  background: #f8f8fb;
+}
+img{
+  max-width: 100%;
+  height: auto;
 }
 
 @font-face {

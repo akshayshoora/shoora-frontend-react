@@ -63,23 +63,23 @@ export default function SidePanel() {
       <Box className={classes.root}>
         <Box component={"span"} className={classes.logo}>
         
-        <img src={BRAND.LOGO} alt="shoora" height={100} width={100}/>
+        <img src={BRAND.LOGO} alt="shoora"  width={50}/>
         
            
         </Box>
         <Box className={classes.menu}>{renderMenu()}</Box>
       </Box>
-      <Box
+      {/* <Box
         className={classes.supportWrapper}
         onClick={() => handleShowSupport(true)}
       >
-        {/* <SupportAgentIcon style={{ color: COLORS.SECONDARY_FONT }} />
+        <SupportAgentIcon style={{ color: COLORS.SECONDARY_FONT }} />
         <Typography style={{ marginLeft: 8 }}>
           <Span fontType={"secondary"} size="small">
             Need Help?
           </Span>
-        </Typography> */}
-      </Box>
+        </Typography>
+      </Box> */}
     
     </Box>
   );

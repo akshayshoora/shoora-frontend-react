@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, Button } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { AppPaths } from "../../constants/commonEnums";
+import { useNavigate } from "react-router-dom";
 
 import Span from "components/commonComponent/Span";
 import {
@@ -27,16 +29,11 @@ function Header() {
     setDateTime(`${getCurrentTime()}, ${getCurrentWeekDay()}, ${getCurrentDate()}`);
   }
 
+  const navigate = useNavigate();
+
   return (
     <Box className={classes.root}>
-      <Box className={classes.greetingView}>
-        <Span fontType="secondary" size="large">{`Welcome ${
-          user.name ? `, ${user.name}` : ""
-        } `}</Span>
-        {/* <Span fontType="secondary" size="extra-small">
-          {dateTime}
-        </Span> */}
-      </Box>
+       {/* <Button onClick = {()=>{}}> Partner </Button>  */}
       <Box className={classes.userBar}>
         {/* Notifications (will be included later) */}
         {/* <NotificationsIcon className={classes.notificationIcon} />
@@ -45,6 +42,15 @@ function Header() {
           variant="fullWidth"
           className={classes.separator}
         /> */}
+         <Box className={classes.greetingView}>
+        <Span fontType="secondary" size="large">{`Welcome ${
+          user.name ? `, ${user.name}` : ""
+        } `}</Span>
+
+        {/* <Span fontType="secondary" size="extra-small">
+          {dateTime}
+        </Span> */}
+      </Box>
         <UserMenu />
       </Box>
     </Box>
