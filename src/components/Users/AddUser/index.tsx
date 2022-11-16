@@ -2,8 +2,11 @@ import {
     Alert,
     Box,
     Button,
+    CircularProgress,
     Grid,
     IconButton,
+    MenuItem,
+    Select,
     Snackbar,
     Typography,
 } from "@mui/material";
@@ -20,6 +23,7 @@ import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
+import { SelectChangeEvent } from '@mui/material';
 
 class NewUserType {
     "name": string = "";
@@ -28,15 +32,18 @@ class NewUserType {
     "address": string | null = null;
     "email": string | null = null;
     "password": string | null = null;
-    "role_ids": string[] | null = [];
+    "role_ids": string[] = [];
+    "roles": string[] = [];
     "organization_id": string | null = null;
 }
 
 export default function AddUser() {
     const [users, setUser] = useState<NewUserType>(new NewUserType());
     const { user } = useAppContext();
-
-
+    const { data: roleList, isLoading: loadingRoleInfo } = useQuery(
+        ["roles"],
+        async () => await getRoles()
+      );
     const navigate = useNavigate();
     const classes = useStyles();
     const { id: userId } = useParams();
@@ -103,14 +110,14 @@ export default function AddUser() {
             },
         }
     );
-
+console.log('users.roleids--', users.roles)
     function backToProperties() {
         navigate(-1);
     }
 
     function handleFormUser(
         key: keyof NewUserType,
-        value: string | boolean | number | []
+        value: string | boolean | number | string[] | SelectChangeEvent<string[]>
     ) {
         setUser({ ...users, [key]: value });
     }
@@ -127,6 +134,13 @@ export default function AddUser() {
         });
     }
 
+    function getRoleNamesByID(roleId: string[]){
+        let roleIdArr: string[] = [];
+        roleId.map((itm:any) => {
+            roleIdArr.push(itm.id)
+        })
+        return roleIdArr;
+    }
     const { mutate: mutateAddUser, isLoading: isAddingUser } =
     addUserMutation;
     const { mutate: mutateUpdateUser, isLoading: updatingUser } =
@@ -137,7 +151,6 @@ export default function AddUser() {
              mutateUpdateUser(users);
             return;
         }
-       users.role_ids=["e8612a48-602c-4674-9cc7-d3d6992220e2"];
        users.organization_id=user.organization_id
         mutateAddUser(users);
     }
@@ -148,6 +161,11 @@ export default function AddUser() {
     
     async function getUserDetails(id: string) {
         return (await client.get(`/users/${id}/`)).data;
+    }
+
+    async function getRoles() {
+        console.log('--role api--', (await client.get(`/roles/`)).data)
+        return (await client.get(`/roles/`)).data;
     }
 
    
@@ -272,15 +290,44 @@ export default function AddUser() {
                         />
                     </Grid>
                     <Grid item xs={4}>
-                    <SelectField
+                    {/* <SelectField
                     label="Roles"
                     isLoading={false}
-                    menuItems={[]}
+                    menuItems={roleList?.results}
                     style={{ marginBottom: 12 }}
                     value={"Roles"}
                     isRequired={true}
                     onChange={(value) => handleFormUser("role_ids", value)}
-                  />
+                  /> */}
+                  <Typography fontSize={16} style={{ fontWeight: 200, marginRight: 2, paddingBottom: 8}}>
+                    Roles
+                    </Typography>
+                  <Select
+                        fullWidth
+                        id="demo-simple-select"
+                        value={getRoleNamesByID(users.roles)}
+                        onChange={(e) => handleFormUser("role_ids", typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value,)}
+                        size="small"
+                        displayEmpty
+                        multiple
+                    >
+                        <MenuItem value="" disabled>
+                        Select Role
+                        </MenuItem>
+                        {loadingRoleInfo ? (
+                        <MenuItem>
+                            <CircularProgress />
+                        </MenuItem>
+                        ) : roleList?.results.length ? (
+                        roleList.results.map((item:any, index:any) => (
+                            <MenuItem style={{ fontSize: 14 }} value={item.id}>
+                            {item.display_name}
+                            </MenuItem>
+                        ))
+                        ) : (
+                        <MenuItem>Nothing to Select</MenuItem>
+                        )}
+                 </Select>
                   </Grid>
                   {userId &&
                   <Grid item xs={4}>
