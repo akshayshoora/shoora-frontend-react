@@ -10,6 +10,7 @@ export type MenuType = {
   label: string;
   icon?: JSX.Element;
   onClick: (event: React.MouseEvent<HTMLElement>, id: string) => void;
+  access:boolean
 };
 
 interface IActionMenuProps {
@@ -59,6 +60,7 @@ export default function ActionMenu(props: IActionMenuProps) {
         onClose={handleClose}
       >
         {menu.map((menuItem) => (
+          menuItem.access==true &&
           <MenuItem
             onClick={(event) => {
               menuItem.onClick(event, props.id);

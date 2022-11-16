@@ -115,12 +115,14 @@ export default function Users() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openUserDetails,
+      access:true
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails,access:isEdit },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: handleOpenDelete,
+      access:isDelete
     },
   ];
 
@@ -164,15 +166,14 @@ export default function Users() {
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Users</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: 12
-            // isAdmin || isHostAdmin(user.roles) ? 12 : 0
+          <Box style={{ marginRight: isAdd ? 12 : 0
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search User by Name or Id"
             />
           </Box>
-          {/* {isAdmin || isHostAdmin(user.roles) ? ( */}
+          {isAdd ? (
             <Button
               variant="contained"
               style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
@@ -181,7 +182,7 @@ export default function Users() {
               <AddIcon />
               add user
             </Button>
-          {/* ) : null} */}
+          ) : null} 
         </Box>
       </Box>
       <Box className={classes.root}>
