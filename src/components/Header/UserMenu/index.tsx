@@ -112,7 +112,7 @@ export default function UserMenu() {
             >
                 <div className={classes.userWrapper}>
                     <p className={classes.userName}>{user.name}</p>
-                    <p>{user.email}</p>
+                    <p>Login ID: {user.email}</p>
                     <p style={{textTransform: 'capitalize'}}>
                         {/* {user.roles[0].split('_').map(role => `${role.toLocaleLowerCase()} `)} */}
                     </p>

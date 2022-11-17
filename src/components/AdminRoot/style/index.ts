@@ -22,8 +22,7 @@ export default makeStyles({
   },
   header: {
     borderBottom: `1px solid ${COLORS.BORDER_GREY}`,
-    minHeight: 68,
-    background:`${COLORS.GRADIENT}`,
+    background:`${COLORS.WHITE}`,
   },
   bodyContainer: {
     padding: '24px',

@@ -59,13 +59,14 @@ export default makeStyles({
         },
     },
     userWrapper: {
-        margin: '15px 40px 8px 20px',
+        margin: '15px 20px 8px 20px',
     },
     userName: {
-        fontSize: '14px !important',
+        fontSize: '18px !important',
         fontFamily: 'Satoshi !important',
         fontWeight: '700 !important',
-        lineHeight: '18.9px !important',
+        lineHeight: '24px !important',
         color: COLORS.PRIMARY_FONT + '!important',
+        textTransform:'capitalize',
     },
 });

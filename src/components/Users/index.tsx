@@ -175,7 +175,7 @@ export default function Users() {
           {/* {isAdmin || isHostAdmin(user.roles) ? ( */}
             <Button
               variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
+              style={{ background: COLORS.GRADIENT, color:COLORS.WHITE }}
               onClick={addUser}
             >
               <AddIcon />
