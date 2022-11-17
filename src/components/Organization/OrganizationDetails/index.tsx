@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
+import { auth } from "constants/RouteMiddlePath";
 
 export function OrganizationDetails() {
     const classes = useStyles();
@@ -16,7 +17,7 @@ export function OrganizationDetails() {
     );
 
     async function getOrgDetails(id: string) {
-        return (await client.get(`/organizations/${id}/`)).data;
+        return (await client.get(`${auth}/organizations/${id}/`)).data;
     }
 
 

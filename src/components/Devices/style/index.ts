@@ -13,9 +13,6 @@ export default makeStyles({
   table: {
     '&.MuiTable-root': {
       borderCollapse: 'unset',
-      '& .MuiTableHead-root':{
-        background:COLORS.BORDER_GREY,
-      }
     },
     border: '1px solid #e0e0e0',
     borderRadius: 4,
@@ -136,5 +133,5 @@ export default makeStyles({
   noDataView: {
     display: 'flex',
     justifyContent: 'center',
-  }, 
+  },
 });

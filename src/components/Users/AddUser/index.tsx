@@ -7,6 +7,7 @@ import {
     IconButton,
     MenuItem,
     Select,
+    SelectChangeEvent,
     Snackbar,
     Typography,
 } from "@mui/material";
@@ -23,7 +24,7 @@ import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
-import { SelectChangeEvent } from '@mui/material';
+import {auth} from "constants/RouteMiddlePath"
 
 class NewUserType {
     "name": string = "";
@@ -123,13 +124,13 @@ console.log('users.roleids--', users.roles)
     }
 
     function addUser(user: NewUserType) {
-        return client.post("/users/", {
+        return client.post(`${auth}/users/`, {
             ...user,
         });
     }
 
     function updateUser(user: NewUserType) {
-        return client.patch(`/users/${userId}/`, {
+        return client.patch(`${auth}/users/${userId}/`, {
             ...user,
         });
     }
@@ -152,6 +153,7 @@ console.log('users.roleids--', users.roles)
             return;
         }
        users.organization_id=user.organization_id
+       
         mutateAddUser(users);
     }
 
@@ -160,7 +162,7 @@ console.log('users.roleids--', users.roles)
     }
     
     async function getUserDetails(id: string) {
-        return (await client.get(`/users/${id}/`)).data;
+        return (await client.get(`${auth}/users/${id}/`)).data;
     }
 
     async function getRoles() {
@@ -289,8 +291,8 @@ console.log('users.roleids--', users.roles)
                             
                         />
                     </Grid>
-                    <Grid item xs={4}>
-                    {/* <SelectField
+                    {/* <Grid item xs={4}>
+                    <SelectField
                     label="Roles"
                     isLoading={false}
                     menuItems={roleList?.results}
@@ -298,38 +300,9 @@ console.log('users.roleids--', users.roles)
                     value={"Roles"}
                     isRequired={true}
                     onChange={(value) => handleFormUser("role_ids", value)}
-                  /> */}
-                  <Typography fontSize={16} style={{ fontWeight: 200, marginRight: 2, paddingBottom: 8}}>
-                    Roles
-                    </Typography>
-                  <Select
-                        fullWidth
-                        id="demo-simple-select"
-                        value={getRoleNamesByID(users.roles)}
-                        onChange={(e) => handleFormUser("role_ids", typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value,)}
-                        size="small"
-                        displayEmpty
-                        multiple
-                    >
-                        <MenuItem value="" disabled>
-                        Select Role
-                        </MenuItem>
-                        {loadingRoleInfo ? (
-                        <MenuItem>
-                            <CircularProgress />
-                        </MenuItem>
-                        ) : roleList?.results.length ? (
-                        roleList.results.map((item:any, index:any) => (
-                            <MenuItem style={{ fontSize: 14 }} value={item.id}>
-                            {item.display_name}
-                            </MenuItem>
-                        ))
-                        ) : (
-                        <MenuItem>Nothing to Select</MenuItem>
-                        )}
-                 </Select>
-                  </Grid>
-                  {userId &&
+                  />
+                  </Grid> */}
+                  {/* {userId && */}
                   <Grid item xs={4}>
                         <TextInput
                             label="Address"
@@ -340,9 +313,9 @@ console.log('users.roleids--', users.roles)
                             onChange={(value) => handleFormUser("address", value)}
                         />
                     </Grid>
-                  }
+                  {/* } */}
                   </Grid>
-                  {!userId &&
+                  {/* {!userId &&
                   <Grid container spacing={4}>
                     <Grid item xs={4}>
                         <TextInput
@@ -355,7 +328,7 @@ console.log('users.roleids--', users.roles)
                         />
                     </Grid>
                     </Grid>
-                 }
+                 } */}
                 
             </Box>
 

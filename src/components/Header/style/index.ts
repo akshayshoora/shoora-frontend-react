@@ -16,7 +16,7 @@ export default makeStyles({
     display: 'flex',
     flexDirection: 'column',
     '& .MuiTypography-root':{
-      color:COLORS.WHITE,
+      color:COLORS.PRIMARY_COLOR,
     }
   },
   notificationIcon: {

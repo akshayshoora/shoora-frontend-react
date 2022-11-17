@@ -5,14 +5,18 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import TableRow from "@mui/material/TableRow";
 import { SelectChangeEvent, Button } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import Span from "components/commonComponent/Span";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import SearchBox from "components/commonComponent/SearchField";
+import COLORS from "../../constants/colors";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
+import { stringCheckForTableCell } from "utils/StringCheck";
 import { useAppContext } from "ContextAPIs/appContext";
 import {
   HeadCell,
@@ -26,34 +30,35 @@ import ActionMenu, {
 import { useQuery } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
+import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
-import { auth } from "constants/RouteMiddlePath";
+import { transport } from "constants/RouteMiddlePath";
 
-
-export default function Organization() {
+export default function Devices() {
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: orgList, isLoading } = useQuery(
-    ["orgs", page, rowsPerPage, searchText],
-    () => getOrgs(page, rowsPerPage, searchText)
+  const { data: deviceList, isLoading } = useQuery(
+    ["devices", page, rowsPerPage, searchText],
+    () => getDevices(page, rowsPerPage, searchText)
   );
 
-  const isAdd=actionAccess(AppPaths.ORGANIZATIONS,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.ORGANIZATIONS,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.ORGANIZATIONS,Actions.DELETE)
-
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("user");
+  const [orderBy, setOrderBy] = React.useState<string>("devices");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+  const { user } = useAppContext();
+
+  const isAdd=actionAccess(AppPaths.USERS,Actions.ADD)
+  const isEdit=actionAccess(AppPaths.USERS,Actions.EDIT)
+  const isDelete=actionAccess(AppPaths.USERS,Actions.DELETE)
+  
   
   const navigate = useNavigate();
 
-  const { user } = useAppContext();
+  
   const classes = useStyles();
-
-  async function getOrgs(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `${auth}/organizations/?page=${
+  async function getDevices(pageNumber: number, pageSize: number, searchText?: string) {
+    let getApiUrl = `${transport}/devices/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -73,12 +78,12 @@ export default function Organization() {
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    user: string
+    devices: string
   ) => {
-    const isAsc = orderBy === user && order === "asc";
+    const isAsc = orderBy === devices && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     //@ts-ignore
-    setOrderBy(user);
+    setOrderBy(devices);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -90,80 +95,94 @@ export default function Organization() {
     setPage(0);
   };
 
-  function openOrganizationDetails(
+  function openDeviceDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
     event.stopPropagation();
-    navigate(`/${AppPaths.ORGANIZATIONS}/${id}`);
+    navigate(`/${AppPaths.DEVICES}/${id}`);
+  }
+
+  function editDeviceDetails(
+    event: React.MouseEvent<HTMLElement>,
+    id: string
+  ) {
+    event.stopPropagation();
+    navigate(`/${AppPaths.DEVICES}/${SubPaths.EDIT}/${id}`);
   }
 
   const actionMenuItems: MenuType[] = [
     {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
-      onClick: openOrganizationDetails,
-      access:true,
+      onClick: openDeviceDetails,
+      access:true
     },
-      { label: "Edit", icon: <InfoOutlinedIcon />, onClick: openOrganizationDetails,access:isEdit },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editDeviceDetails,access:isEdit },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: handleOpenDelete,
       access:isDelete
     },
-    
   ];
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "name",
+      id: "device_type",
       numeric: false,
       disablePadding: true,
-      label: "Name",
+      label: "Device Type",
     },
     {
-      id: "email",
-      label: "Email",
+      id: "organization",
+      label: "Organization",
       numeric: false,
       disablePadding: false,
     },
-    { id: "address", label: "Address", numeric: false, disablePadding: false },
-    {
-      id: "contact_code",
-      label: "Contact Code",
-      numeric: false,
-      disablePadding: false,
+    { 
+    id: "is_assigned_to_vehicle", 
+    label: "Assigned to Vehicle", 
+    numeric: false,
+     disablePadding: false 
     },
     {
-      id: "contact",
-      label: "Contact No",
-      numeric: false,
-      disablePadding: false,
-    },
-    {
-      id: "reg",
-      label: "Registraion Number",
+      id: "activation_date",
+      label: "Activation Date",
       numeric: false,
       disablePadding: false,
     },
   ];
 
+  function addDevice() {
+    navigate(`/${AppPaths.DEVICES}/${SubPaths.ADD}`);
+  }
   const handleSearchInput = (e: any) => {
     setSearchText(e);
   };
   return (
-    <Box style={{ padding: "40px 24px" }}>
+    <Box style={{ padding: "20px 20px 20px 40px" }}>
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="device"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Organizations</Heading>
+        <Heading>Devices</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: 12
+          <Box style={{ marginRight: isAdd ? 12 : 0
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
-              placeholder="Search Organization by Name or Id"
+              placeholder="Search Device by Name or Id"
             />
           </Box>
+          {isAdd ? (
+            <Button
+              variant="contained"
+              style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
+              onClick={addDevice}
+            >
+              <AddIcon />
+              add device
+            </Button>
+          ) : null} 
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -180,36 +199,30 @@ export default function Organization() {
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : orgList?.results.length ? (
-              orgList?.results.map((orgs: any, index: number) => {
+            ) : deviceList?.results.length ? (
+                deviceList?.results.map((device: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
                       <Box className={classes.columnView}>
-                        <Span>{orgs.name}</Span>
+                        <Span>{device.device_type}</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {orgs.email}
+                        {device.organization}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{orgs.address}</Span>
+                      <Span fontType="secondary">{device.is_assigned_to_vehicle}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{orgs.contact_code}</Span>
+                      <Span fontType="secondary">{device.activation_date}</Span>
                     </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{orgs.contact_number}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{orgs.registration_number}</Span>
-                    </TableCell>
-                    
+                   
                    
                     <TableCell align="left">
-                      <ActionMenu menu={actionMenuItems} id={orgs.id} />
+                      <ActionMenu menu={actionMenuItems} id={device.id} />
                     </TableCell>
                   </TableRow>
                 );
@@ -224,7 +237,7 @@ export default function Organization() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(orgList?.count / rowsPerPage)}
+          totalPages={Math.ceil(deviceList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

@@ -32,10 +32,12 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
+import { auth } from "constants/RouteMiddlePath";
 
 export default function Users() {
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
+  const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data: userList, isLoading } = useQuery(
     ["users", page, rowsPerPage, searchText],
@@ -57,7 +59,7 @@ export default function Users() {
   
   const classes = useStyles();
   async function getUsers(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `/users/?page=${
+    let getApiUrl = `${auth}/users/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -67,11 +69,15 @@ export default function Users() {
     return response.data;
   }
 
-  const handleOpenDelete = () => {
+  const handleOpenDelete = ( 
+    event: React.MouseEvent<HTMLElement>,
+    id: string) => {
+      setDeleteId(id)
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
+    getUsers(page, rowsPerPage, searchText)
   };
 
 
@@ -115,12 +121,14 @@ export default function Users() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openUserDetails,
+      access:true
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails,access:isEdit },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: handleOpenDelete,
+      access:isDelete
     },
   ];
 
@@ -158,30 +166,40 @@ export default function Users() {
   const handleSearchInput = (e: any) => {
     setSearchText(e);
   };
+
+    async function handleDelete() {
+     
+      const response = await client.delete(`${auth}/users/${deleteId}`);
+       handleClose()
+       
+    }
+   
+
+
+
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="user"/>}
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="user"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Users</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: 12
-            // isAdmin || isHostAdmin(user.roles) ? 12 : 0
+          <Box style={{ marginRight: isAdd ? 12 : 0
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search User by Name or Id"
             />
           </Box>
-          {/* {isAdmin || isHostAdmin(user.roles) ? ( */}
+          {isAdd ? (
             <Button
               variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
+              style={{ background: COLORS.GRADIENT, color:COLORS.WHITE }}
               onClick={addUser}
             >
               <AddIcon />
               add user
             </Button>
-          {/* ) : null} */}
+          ) : null} 
         </Box>
       </Box>
       <Box className={classes.root}>

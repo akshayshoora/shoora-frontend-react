@@ -44,7 +44,7 @@ testem.log
 .env.local
 
 # System Files
-.DS_Store
+/src/components/.DS_Store
 Thumbs.db
 
 ## env
