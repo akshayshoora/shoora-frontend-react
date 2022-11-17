@@ -27,6 +27,7 @@ import { useQuery } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { actionAccess} from "utils/FeatureCheck";
+import { auth } from "constants/RouteMiddlePath";
 
 
 export default function Organization() {
@@ -52,7 +53,7 @@ export default function Organization() {
   const classes = useStyles();
 
   async function getOrgs(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `/organizations/?page=${
+    let getApiUrl = `${auth}/organizations/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 

@@ -20,27 +20,24 @@ import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
-import {auth} from "constants/RouteMiddlePath"
+import {transport} from 'constants/RouteMiddlePath'
 
-class NewUserType {
-    "name": string = "";
-    "contact_number": string | null = null;
-    "contact_code": string | null = null;
-    "address": string | null = null;
-    "email": string | null = null;
-    "password": string | null = null;
-    "role_ids": string[] | null = [];
-    "organization_id": string | null = null;
+class NewDeviceType {
+    "device_type": string = "";
+    "imei_number": string | null = null;
+    "sim_number": string | null = null;
+    "organization": string | null = null;
+    "is_assigned_to_vehicle": string | null = null;
 }
 
-export default function AddUser() {
-    const [users, setUser] = useState<NewUserType>(new NewUserType());
+export default function AddDevice() {
+    const [devices, setDevice] = useState<NewDeviceType>(new NewDeviceType());
     const { user } = useAppContext();
 
 
     const navigate = useNavigate();
     const classes = useStyles();
-    const { id: userId } = useParams();
+    const { id: deviceId } = useParams();
 
     const [snackbar, setSnackbar] = useState<{
         open: boolean;
@@ -48,7 +45,7 @@ export default function AddUser() {
         message: string;
     }>({ open: false, variant: "info", message: "" });
     
-    const addUserMutation = useMutation(addUser, {
+    const addDeviceMutation = useMutation(addDevice, {
         onSuccess: () => {
             setSnackbar({
                 open: true,
@@ -69,7 +66,7 @@ export default function AddUser() {
         },
     });
 
-    const updateUserMutation = useMutation(updateUser, {
+    const updateDeviceMutation = useMutation(updateDevice, {
         onSuccess: () =>{
             setSnackbar({
                 open: true,
@@ -91,15 +88,15 @@ export default function AddUser() {
 
 
     const { isLoading: loadingUserInfo } = useQuery(
-        ["users", userId],
-        () => getUserDetails(String(userId)),
+        ["device_details", deviceId],
+        () => getDeviceDetails(String(deviceId)),
         {
-            enabled: Boolean(userId),
+            enabled: Boolean(deviceId),
             refetchOnWindowFocus: false,
-            onSuccess: (userDetails) => {
-                setUser({
-                ...users,
-                ...userDetails
+            onSuccess: (deviceDetails) => {
+                setDevice({
+                ...devices,
+                ...deviceDetails
                 });
             },
         }
@@ -109,60 +106,58 @@ export default function AddUser() {
         navigate(-1);
     }
 
-    function handleFormUser(
-        key: keyof NewUserType,
+    function handleFormDevice(
+        key: keyof NewDeviceType,
         value: string | boolean | number | []
     ) {
-        setUser({ ...users, [key]: value });
+        setDevice({ ...devices, [key]: value });
     }
 
-    function addUser(user: NewUserType) {
-        return client.post(`${auth}/users/`, {
+    function addDevice(user: NewDeviceType) {
+        return client.post(`${transport}/devices/`, {
             ...user,
         });
     }
 
-    function updateUser(user: NewUserType) {
-        return client.patch(`${auth}/users/${userId}/`, {
+    function updateDevice(user: NewDeviceType) {
+        return client.patch(`/users/${deviceId}/`, {
             ...user,
         });
     }
 
-    const { mutate: mutateAddUser, isLoading: isAddingUser } =
-    addUserMutation;
-    const { mutate: mutateUpdateUser, isLoading: updatingUser } =
-    updateUserMutation;
+    const { mutate: mutateAddDevice, isLoading: isAddingDevice } =
+    addDeviceMutation;
+    const { mutate: mutateUpdateDevice, isLoading: updatingDevice } =
+    updateDeviceMutation;
 
     function handleSubmit() {
-        if (userId) {
-             mutateUpdateUser(users);
+        if (deviceId) {
+             mutateUpdateDevice(devices);
             return;
         }
-       users.role_ids=["e8612a48-602c-4674-9cc7-d3d6992220e2"];
-       users.organization_id=user.organization_id
-       
-        mutateAddUser(users);
+
+        mutateAddDevice(devices);
     }
 
-    if (userId && (loadingUserInfo && !users.name)) {
+    if (deviceId && (loadingUserInfo && !devices.device_type)) {
         return <LoadingScreen />;
     }
     
-    async function getUserDetails(id: string) {
-        return (await client.get(`${auth}/users/${id}/`)).data;
+    async function getDeviceDetails(id: string) {
+        return (await client.get(`/devices/${id}/`)).data;
     }
 
    
 
 
-    const { name,email} = users;
-    const isSaveButtonDisabled = !name || !email ;
+    const { device_type} = devices;
+    const isSaveButtonDisabled = !device_type ;
 
 
-    const loadingMessage = isAddingUser
-    ? "Adding User..."
-    : updatingUser
-    ? "Updating User..."
+    const loadingMessage = isAddingDevice
+    ? "Adding Device..."
+    : updatingDevice
+    ? "Updating Device..."
     : "";
 
     return (
@@ -183,14 +178,14 @@ export default function AddUser() {
             </Snackbar>
 
             <PageLoading
-                open={isAddingUser || updatingUser}
+                open={isAddingDevice || updatingDevice}
                 loadingMessage={loadingMessage}
             />
 
             <Box className={classes.headingWrapper}>
                 <Box className={classes.headingContent}>
                     <Typography fontSize={24}>
-                        {!userId ? "Add User" : "Edit User"}
+                        {!deviceId ? "Add Device" : "Edit Device"}
                     </Typography>
                 </Box>
             </Box>
@@ -199,118 +194,63 @@ export default function AddUser() {
                 <Grid container spacing={4}>
                     <Grid item xs={4}>
                         <TextInput
-                            label="User Name"
+                            label="Device Type"
                             placeholder="Enter User name"
                             style={{ marginBottom: 24 }}
-                            value={users.name}
+                            value={devices.device_type}
                             isRequired={true}
-                            onChange={(value) => handleFormUser("name", value)}
+                            onChange={(value) => handleFormDevice("device_type", value)}
                         />
                     </Grid>
-                    {userId ?
                     <Grid item xs={4}>
                         
                         <TextInput
-                            label="Email"
-                            placeholder="Enter Email"
+                            label="Organization"
+                            placeholder="Enter Organization"
                             style={{ marginBottom: 24 }}
-                            value={users.email}
-                            isRequired={false}
-                            disabled
-                            onChange={(value) => {}}
-                        />
-                        
-                    </Grid>
-                    :
-                    <Grid item xs={4}>
-                        
-                        <TextInput
-                            label="Email"
-                            placeholder="Enter Email"
-                            style={{ marginBottom: 24 }}
-                            value={users.email}
+                            value={devices.organization}
                             isRequired={true}
-                            onChange={(value) => handleFormUser("email", value)}
+                            onChange={(value) => handleFormDevice("organization", value)}
                         />
                         
                     </Grid>
-                    }
+                    
                     <Grid item xs={4}>
                         <TextInput
-                            label="Contact"
-                            placeholder="Enter contact number"
-                            regex={/[^0-9]/g}
+                            label="Sim Number"
+                            placeholder="Enter Sim number"
                             style={{ marginBottom: 24 }}
-                            value={users.contact_number}
+                            value={devices.sim_number}
                             isRequired={false}
-                            onChange={(value) => handleFormUser("contact_number", value)}
+                            onChange={(value) => handleFormDevice("sim_number", value)}
                         />
                     </Grid>
                 </Grid>
                 <Grid container spacing={4}>
-                    {!userId &&
-                <Grid item xs={4}>
-                        <TextInput
-                            label="Password"
-                            placeholder="Enter Password"
-                            style={{ marginBottom: 24 }}
-                            value={users.password}
-                            isRequired={false}
-                            onChange={(value) => handleFormUser("password", value)}
-                            
-                        />
-                    </Grid>
-                     }
                     <Grid item xs={4}>
                         <TextInput
-                            label="Contact Code"
-                            placeholder="Enter Contact Code"
-                            regex={/[^0-9]/g}
+                            label="IMEI Number"
+                            placeholder="Enter IMEI Number"
                             style={{ marginBottom: 24 }}
-                            value={users.contact_code}
+                            value={devices.imei_number}
                             isRequired={false}
-                            onChange={(value) => handleFormUser("contact_code", value)}
+                            onChange={(value) => handleFormDevice("imei_number", value)}
                             
                         />
                     </Grid>
-                    {/* <Grid item xs={4}>
-                    <SelectField
-                    label="Roles"
-                    isLoading={false}
-                    menuItems={[]}
-                    style={{ marginBottom: 12 }}
-                    value={"Roles"}
-                    isRequired={true}
-                    onChange={(value) => handleFormUser("role_ids", value)}
-                  />
-                  </Grid> */}
-                  {/* {userId && */}
-                  <Grid item xs={4}>
+                    <Grid item xs={4}>
                         <TextInput
-                            label="Address"
-                            placeholder="Enter address"
+                            label="Assigned to Vehicle"
+                            placeholder="Enter Vehicle"
                             style={{ marginBottom: 24 }}
-                            value={users.address}
+                            value={devices.is_assigned_to_vehicle}
                             isRequired={false}
-                            onChange={(value) => handleFormUser("address", value)}
+                            onChange={(value) => handleFormDevice("is_assigned_to_vehicle", value)}
+                            
                         />
                     </Grid>
-                  {/* } */}
+                    
                   </Grid>
-                  {/* {!userId &&
-                  <Grid container spacing={4}>
-                    <Grid item xs={4}>
-                        <TextInput
-                            label="Address"
-                            placeholder="Enter address"
-                            style={{ marginBottom: 24 }}
-                            value={users.address}
-                            isRequired={false}
-                            onChange={(value) => handleFormUser("address", value)}
-                        />
-                    </Grid>
-                    </Grid>
-                 } */}
                 
             </Box>
 

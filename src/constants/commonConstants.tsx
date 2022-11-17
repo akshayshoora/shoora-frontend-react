@@ -14,6 +14,7 @@ export const ALL_MENU = [
   AppPaths.DASHBOARD,
   AppPaths.USERS,
   AppPaths.ORGANIZATIONS,
+  AppPaths.DEVICES,
  
 ];
 
@@ -22,6 +23,7 @@ export const ALL_ROUTES = [
   AppPaths.DASHBOARD,
   AppPaths.USERS,
   AppPaths.ORGANIZATIONS,
+  AppPaths.DEVICES,
 ];
 
 

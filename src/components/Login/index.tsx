@@ -22,6 +22,7 @@ import { USER_ID } from "constants/commonConstants";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import LoginImg from '../../assets/macbook-pro.png';
+import { auth } from "constants/RouteMiddlePath";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -56,7 +57,7 @@ export default function Login() {
       password: password,
     };
     client
-      .post("/token/", data)
+      .post(`${auth}/token/`, data)
       .then((response) => {
         const {data} = response;
         setUserToken(data.access);

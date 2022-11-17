@@ -7,20 +7,20 @@ import { AppPaths, SubPaths } from "../../../constants/commonEnums";
 import { useQuery } from "react-query";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
-import { auth } from "constants/RouteMiddlePath";
+import { transport } from "constants/RouteMiddlePath";
 
-export function UserDetails() {
+export function DeviceDetails() {
     const classes = useStyles();
     const navigate = useNavigate();
 
     const { id } = useParams();
 
-    const { data: user, isLoading } = useQuery(["user", id], () =>
-        getUserDetails(String(id))
+    const { data: device, isLoading } = useQuery(["devices", id], () =>
+        getDeviceDetails(String(id))
     );
 
-    async function getUserDetails(id: string) {
-        return (await client.get(`${auth}/users/${id}/`)).data;
+    async function getDeviceDetails(id: string) {
+        return (await client.get(`${transport}/devices/${id}/`)).data;
     }
 
 
@@ -33,54 +33,54 @@ export function UserDetails() {
             <Box className={classes.headingWrapper}>
                 <Box className={classes.headingContent}>
                
-                <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{user.name}</Typography>
+                <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{device.device_type}</Typography>
                 </Box>
                 <Box>
                 <Button
                     variant="outlined"
                     onClick={() =>
-                    navigate(`/${AppPaths.USERS}/${SubPaths.EDIT}/${id}`)
+                    navigate(`/${AppPaths.DEVICES}/${SubPaths.EDIT}/${id}`)
                     }
                 >
-                    Edit User
+                    Edit Device
                 </Button>
                 </Box>
             </Box>
             <Box className={classes.bodyContent}>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>User Name:</Box>
-                <Box className={classes.bodyInfo} style={{ textTransform: "capitalize" }}>{user.name}</Box>
+                <Box className={classes.bodyInfoTitle}>Device Type:</Box>
+                <Box className={classes.bodyInfo} style={{ textTransform: "capitalize" }}>{device.device_type}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>User ID:</Box>
-                <Box className={classes.bodyInfo}>{user.id}</Box>
+                <Box className={classes.bodyInfoTitle}>Device ID:</Box>
+                <Box className={classes.bodyInfo}>{device.id}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Organisation ID:</Box>
-                <Box className={classes.bodyInfo}>{user.organization_id}</Box>
+                <Box className={classes.bodyInfoTitle}>Organisation:</Box>
+                <Box className={classes.bodyInfo}>{device.organization}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Email:</Box>
+                <Box className={classes.bodyInfoTitle}>Assigned to Vehicle:</Box>
                 <Box className={classes.bodyInfo}>
-                    {user.email ? user.email : "-"}
+                    {device.is_assigned_to_vehicle ? device.is_assigned_to_vehicle : "-"}
                 </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Contact Code:</Box>
+                <Box className={classes.bodyInfoTitle}>Activation Date:</Box>
                 <Box className={classes.bodyInfo}>
-                    {user.contact_code ? user.contact_code : "-"}
+                    {device.activation_date ? device.activation_date : "-"}
                 </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Contact:</Box>
+                <Box className={classes.bodyInfoTitle}>Sim Number:</Box>
                 <Box className={classes.bodyInfo} >
-                    {user.contact_number ? user.contact_number : "-"}
+                    {device.sim_number ? device.sim_number : "-"}
                 </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}> Address:</Box>
+                <Box className={classes.bodyInfoTitle}> IMEI Number:</Box>
                 <Box className={classes.bodyInfo}>
-                    {user.address ? user.address : "-"}
+                    {device.imei_number ? device.imei_number : "-"}
                 </Box>
                 </Box>
             </Box>
