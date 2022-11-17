@@ -193,7 +193,7 @@ export default function Users() {
           {isAdd ? (
             <Button
               variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
+              style={{ background: COLORS.GRADIENT, color:COLORS.WHITE }}
               onClick={addUser}
             >
               <AddIcon />

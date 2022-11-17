@@ -1,3 +1,4 @@
+import { Block } from '@mui/icons-material';
 import { makeStyles } from '@mui/styles';
 import COLORS from '../../../constants/colors';
 
@@ -67,4 +68,12 @@ export default makeStyles({
       cursor: 'auto',
     }
   },
+  usrTable:{
+   '& .MuiBox-root':{
+    padding:'30px 0 0 0 !important',
+    '& .MuiBox-root':{
+      padding:'0px !important',
+     }
+   }
+  }
 });
