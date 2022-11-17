@@ -1,9 +1,9 @@
 import { HeadCell } from "components/commonComponent/Table";
 import { AppPaths } from "../constants/commonEnums";
-import VehicleIcon from "../assets/vehicles.png"
-import UserIcon from "../assets/speedometer.png";
-import OrganizationIcon from "../assets/destination.png";
-import FeatureIcon from "../assets/time.png";
+import DistanceIcon from "../assets/distance.png"
+import Trips from "../assets/trips.png";
+import DurationIcon from "../assets/time.png";
+import kilometresIcon from "../assets/speedometer.png";
 
 import React from "react";
 
@@ -43,21 +43,21 @@ export const getRoleBasedFilteredSummary = () => {
     {
       dataIndex: "total_trips",
       label: "Trips",
-      icon: OrganizationIcon ,
+      icon: Trips ,
       value:"10",
 
     },
     {
       dataIndex: "total_distance",
       label: "Distance (km)",
-      icon: VehicleIcon,
+      icon: DistanceIcon,
       value:"50",
 
     },
     {
       dataIndex: "total_duration",
       label: "Duration (hours)",
-      icon: FeatureIcon,
+      icon: DurationIcon,
       value:"15",
       
     },
@@ -65,7 +65,7 @@ export const getRoleBasedFilteredSummary = () => {
     {
       dataIndex: "total_kilometres",
       label: "Incidents / 100 kilometres",
-      icon: UserIcon,
+      icon: kilometresIcon,
       value:"70",
      
     },
