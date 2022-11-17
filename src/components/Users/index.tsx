@@ -27,7 +27,7 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import { useQuery } from "react-query";
+import { useQuery,useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
@@ -43,6 +43,11 @@ export default function Users() {
     ["users", page, rowsPerPage, searchText],
     () => getUsers(page, rowsPerPage, searchText)
   );
+  const [snackbar, setSnackbar] = React.useState<{
+    open: boolean;
+    variant: "success" | "error" | "info";
+    message: string;
+}>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("user");
@@ -167,10 +172,36 @@ export default function Users() {
     setSearchText(e);
   };
 
-    async function handleDelete() {
-     
-      const response = await client.delete(`${auth}/users/${deleteId}`);
+  const deleteUserMutation = useMutation(deleteUser, {
+    onSuccess: () =>{
        handleClose()
+        setSnackbar({
+            open: true,
+            variant: "success",
+            message: "User deleted.",
+        })
+        setTimeout(() => {
+            navigate(`/${AppPaths.USERS}`);
+        }, 1000);
+    },
+        
+    onError: () =>
+        setSnackbar({
+            open: true,
+            variant: "error",
+            message: "Something went wrong.",
+        }),
+});
+
+const { mutate: mutateDeleteUser } =deleteUserMutation;
+
+function deleteUser() {
+  return client.delete(`${auth}/users/${deleteId}`)
+}
+
+
+     function handleDelete() {
+      mutateDeleteUser()
        
     }
    
