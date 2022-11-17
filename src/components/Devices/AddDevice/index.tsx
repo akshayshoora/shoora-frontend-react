@@ -20,14 +20,16 @@ import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
-import {transport} from 'constants/RouteMiddlePath'
+import {transport} from 'constants/RouteMiddlePath';
+import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
+
 
 class NewDeviceType {
     "device_type": string = "";
     "imei_number": string | null = null;
     "sim_number": string | null = null;
     "organization": string | null = null;
-    "is_assigned_to_vehicle": string | null = null;
+    "is_assigned_to_vehicle": string | "" = "false";
 }
 
 export default function AddDevice() {
@@ -193,14 +195,23 @@ export default function AddDevice() {
             <Box className={classes.padding_24}>
                 <Grid container spacing={4}>
                     <Grid item xs={4}>
-                        <TextInput
+                        {/* <TextInput
                             label="Device Type"
-                            placeholder="Enter User name"
+                            placeholder="Enter Device name"
                             style={{ marginBottom: 24 }}
                             value={devices.device_type}
                             isRequired={true}
                             onChange={(value) => handleFormDevice("device_type", value)}
-                        />
+                        /> */}
+                         <SelectField
+                    label="Device Type"
+                    isLoading={false}
+                    menuItems={[{"label":"device1","value":"device1"}]}
+                    style={{ marginBottom: 12 }}
+                    value={"device1"}
+                    isRequired={true}
+                    onChange={(value) => handleFormDevice("device_type", value)}
+                  />
                     </Grid>
                     <Grid item xs={4}>
                         
@@ -239,7 +250,7 @@ export default function AddDevice() {
                         />
                     </Grid>
                     <Grid item xs={4}>
-                        <TextInput
+                        {/* <TextInput
                             label="Assigned to Vehicle"
                             placeholder="Enter Vehicle"
                             style={{ marginBottom: 24 }}
@@ -247,7 +258,19 @@ export default function AddDevice() {
                             isRequired={false}
                             onChange={(value) => handleFormDevice("is_assigned_to_vehicle", value)}
                             
-                        />
+                        /> */}
+                             <Typography style={{ fontWeight: 200, marginBottom: 8 }}>
+                             Assigned to Vehicle
+                                </Typography>
+                        <CustomRadioGroup
+                        selected={devices.is_assigned_to_vehicle}
+                             options={[
+                            { label: "Yes", value: "true" },
+                            { label: "No", value: "false" },
+                        ]}
+              onChange={(value) =>handleFormDevice("is_assigned_to_vehicle", value)
+              }
+            />
                     </Grid>
                     
                   </Grid>
