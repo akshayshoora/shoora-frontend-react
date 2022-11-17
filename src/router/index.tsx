@@ -10,6 +10,9 @@ import { UserDetails } from "components/Users/UserDetails";
 import EditProfile from "components/UserProfile";
 import Organization from 'components/Organization';
 import {OrganizationDetails} from "components/Organization/OrganizationDetails";
+import AddDevice from "components/Devices/AddDevice";
+import Devices from "components/Devices";
+import { DeviceDetails } from "components/Devices/DeviceDetails";
 
 export default function AppRouter() {
   return (
@@ -123,6 +126,53 @@ export default function AppRouter() {
                 <OrganizationDetails />
               </ErrorBoundary>
             }
+          />
+        }
+      />
+
+       <Route
+        path={AppPaths.DEVICES}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DEVICES}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Devices />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.DEVICES}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DEVICES}
+            component={
+              <ErrorBoundary>
+                <DeviceDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.DEVICES}/${SubPaths.ADD}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DEVICES}
+            component={<AddDevice />}
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.DEVICES}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DEVICES}
+            component={<AddDevice />}
           />
         }
       />

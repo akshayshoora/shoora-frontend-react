@@ -32,20 +32,19 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
-import { auth } from "constants/RouteMiddlePath";
+import { transport } from "constants/RouteMiddlePath";
 
-export default function Users() {
+export default function Devices() {
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
-  const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: userList, isLoading } = useQuery(
-    ["users", page, rowsPerPage, searchText],
-    () => getUsers(page, rowsPerPage, searchText)
+  const { data: deviceList, isLoading } = useQuery(
+    ["devices", page, rowsPerPage, searchText],
+    () => getDevices(page, rowsPerPage, searchText)
   );
 
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("user");
+  const [orderBy, setOrderBy] = React.useState<string>("devices");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
@@ -58,8 +57,8 @@ export default function Users() {
 
   
   const classes = useStyles();
-  async function getUsers(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `${auth}/users/?page=${
+  async function getDevices(pageNumber: number, pageSize: number, searchText?: string) {
+    let getApiUrl = `${transport}/devices/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -69,26 +68,22 @@ export default function Users() {
     return response.data;
   }
 
-  const handleOpenDelete = ( 
-    event: React.MouseEvent<HTMLElement>,
-    id: string) => {
-      setDeleteId(id)
+  const handleOpenDelete = () => {
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
-    getUsers(page, rowsPerPage, searchText)
   };
 
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    user: string
+    devices: string
   ) => {
-    const isAsc = orderBy === user && order === "asc";
+    const isAsc = orderBy === devices && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     //@ts-ignore
-    setOrderBy(user);
+    setOrderBy(devices);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -100,30 +95,30 @@ export default function Users() {
     setPage(0);
   };
 
-  function openUserDetails(
+  function openDeviceDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
     event.stopPropagation();
-    navigate(`/${AppPaths.USERS}/${id}`);
+    navigate(`/${AppPaths.DEVICES}/${id}`);
   }
 
-  function editUserDetails(
+  function editDeviceDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
     event.stopPropagation();
-    navigate(`/${AppPaths.USERS}/${SubPaths.EDIT}/${id}`);
+    navigate(`/${AppPaths.DEVICES}/${SubPaths.EDIT}/${id}`);
   }
 
   const actionMenuItems: MenuType[] = [
     {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
-      onClick: openUserDetails,
+      onClick: openDeviceDetails,
       access:true
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails,access:isEdit },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editDeviceDetails,access:isEdit },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
@@ -134,70 +129,58 @@ export default function Users() {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "name",
+      id: "device_type",
       numeric: false,
       disablePadding: true,
-      label: "Name",
+      label: "Device Type",
     },
     {
-      id: "email",
-      label: "Email",
+      id: "organization",
+      label: "Organization",
       numeric: false,
       disablePadding: false,
     },
-    { id: "address", label: "Address", numeric: false, disablePadding: false },
-    {
-      id: "contact_code",
-      label: "Contact Code",
-      numeric: false,
-      disablePadding: false,
+    { 
+    id: "is_assigned_to_vehicle", 
+    label: "Assigned to Vehicle", 
+    numeric: false,
+     disablePadding: false 
     },
     {
-      id: "contact",
-      label: "contact_number",
+      id: "activation_date",
+      label: "Activation Date",
       numeric: false,
       disablePadding: false,
     },
   ];
 
-  function addUser() {
-    navigate(`/${AppPaths.USERS}/${SubPaths.ADD}`);
+  function addDevice() {
+    navigate(`/${AppPaths.DEVICES}/${SubPaths.ADD}`);
   }
   const handleSearchInput = (e: any) => {
     setSearchText(e);
   };
-
-    async function handleDelete() {
-     
-      const response = await client.delete(`${auth}/users/${deleteId}`);
-       handleClose()
-       
-    }
-   
-
-
-
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="user"/>}
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="device"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Users</Heading>
+        <Heading>Devices</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
           <Box style={{ marginRight: isAdd ? 12 : 0
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
-              placeholder="Search User by Name or Id"
+              placeholder="Search Device by Name or Id"
             />
           </Box>
           {isAdd ? (
             <Button
               variant="contained"
               style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
-              onClick={addUser}
+              onClick={addDevice}
             >
               <AddIcon />
-              add user
+              add device
             </Button>
           ) : null} 
         </Box>
@@ -216,33 +199,30 @@ export default function Users() {
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : userList?.results.length ? (
-              userList?.results.map((user: any, index: number) => {
+            ) : deviceList?.results.length ? (
+                deviceList?.results.map((device: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
                       <Box className={classes.columnView}>
-                        <Span>{user.name}</Span>
+                        <Span>{device.device_type}</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {user.email}
+                        {device.organization}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{user.address}</Span>
+                      <Span fontType="secondary">{device.is_assigned_to_vehicle}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{user.contact_code}</Span>
+                      <Span fontType="secondary">{device.activation_date}</Span>
                     </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{user.contact_number}</Span>
-                    </TableCell>
-                    
+                   
                    
                     <TableCell align="left">
-                      <ActionMenu menu={actionMenuItems} id={user.id} />
+                      <ActionMenu menu={actionMenuItems} id={device.id} />
                     </TableCell>
                   </TableRow>
                 );
@@ -257,7 +237,7 @@ export default function Users() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(userList?.count / rowsPerPage)}
+          totalPages={Math.ceil(deviceList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
