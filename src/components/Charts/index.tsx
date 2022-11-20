@@ -22,7 +22,8 @@ export const options = {
   vAxis: { title: "No. of Incidents / 100 Kilometers" },
   hAxis: { title: "Time" },
   seriesType: "bars",
-  series: { 5: { type: "line" } },
+  series: { 8: { type: "line" } },
+  legend: { position: "bottom" }
 };
 
 function Charts() {
