@@ -2,17 +2,22 @@ import {
     Alert,
     Box,
     Button,
+    Checkbox,
     CircularProgress,
+    FormControl,
     Grid,
     IconButton,
+    InputLabel,
+    ListItemText,
     MenuItem,
+    OutlinedInput,
     Select,
     SelectChangeEvent,
     Snackbar,
     Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import axios from "axios";
 import TextInput from "components/commonComponent/TextInput";
@@ -32,7 +37,7 @@ class NewUserType {
     "contact_code": string | null = null;
     "address": string | null = null;
     "email": string | null = null;
-    "password": string | null = null;
+    "password"?: string | null = null;
     "role_ids": string[] = [];
     "roles": string[] = [];
     "organization_id": string | null = null;
@@ -111,7 +116,6 @@ export default function AddUser() {
             },
         }
     );
-console.log('users.roleids--', users.roles)
     function backToProperties() {
         navigate(-1);
     }
@@ -130,6 +134,7 @@ console.log('users.roleids--', users.roles)
     }
 
     function updateUser(user: NewUserType) {
+        delete user.password
         return client.patch(`${auth}/users/${userId}/`, {
             ...user,
         });
@@ -148,7 +153,9 @@ console.log('users.roleids--', users.roles)
     updateUserMutation;
 
     function handleSubmit() {
+        users.roles=users.role_ids
         if (userId) {
+            
              mutateUpdateUser(users);
             return;
         }
@@ -166,8 +173,7 @@ console.log('users.roleids--', users.roles)
     }
 
     async function getRoles() {
-        console.log('--role api--', (await client.get(`/roles/`)).data)
-        return (await client.get(`/roles/`)).data;
+        return (await client.get(`${auth}/roles/`)).data;
     }
 
    
@@ -182,6 +188,9 @@ console.log('users.roleids--', users.roles)
     : updatingUser
     ? "Updating User..."
     : "";
+
+
+    console.log(users.role_ids,"rolesss")
 
     return (
         <Box className={classes.positionRelative}>
@@ -291,18 +300,38 @@ console.log('users.roleids--', users.roles)
                             
                         />
                     </Grid>
-                    {/* <Grid item xs={4}>
-                    <SelectField
-                    label="Roles"
-                    isLoading={false}
-                    menuItems={roleList?.results}
-                    style={{ marginBottom: 12 }}
-                    value={"Roles"}
-                    isRequired={true}
-                    onChange={(value) => handleFormUser("role_ids", value)}
-                  />
-                  </Grid> */}
-                  {/* {userId && */}
+                    <Grid item xs={4}>
+                                <Typography fontSize={16} style={{ fontWeight: 200,marginBottom:10, marginRight: 2 }}>
+                    Select Roles
+                    </Typography>
+                    <Select
+                                multiple
+                    fullWidth
+                    id="demo-simple-select"
+                    value={users.role_ids}
+                    onChange={(e:any) => handleFormUser("role_ids", typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+                    size="small"
+                    >
+                    <MenuItem selected value="" disabled>
+                        Select Roles
+                    </MenuItem>
+                    {loadingRoleInfo ? (
+                        <MenuItem>
+                        <CircularProgress />
+                        </MenuItem>
+                    ) : roleList?.results.length ? (
+                        roleList?.results.map((item:any) => (
+                        <MenuItem style={{ fontSize: 14 }} value={item.id}>
+                            {item.name}
+                        </MenuItem>
+                        ))
+                    ) : (
+                        <MenuItem>Nothing to Select</MenuItem>
+                    )}
+                    </Select>
+                  </Grid>
+                   
+                  {userId &&
                   <Grid item xs={4}>
                         <TextInput
                             label="Address"
@@ -313,9 +342,9 @@ console.log('users.roleids--', users.roles)
                             onChange={(value) => handleFormUser("address", value)}
                         />
                     </Grid>
-                  {/* } */}
+                 } 
                   </Grid>
-                  {/* {!userId &&
+                 {!userId &&
                   <Grid container spacing={4}>
                     <Grid item xs={4}>
                         <TextInput
@@ -328,7 +357,7 @@ console.log('users.roleids--', users.roles)
                         />
                     </Grid>
                     </Grid>
-                 } */}
+                 } 
                 
             </Box>
 
