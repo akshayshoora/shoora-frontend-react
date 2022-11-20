@@ -173,7 +173,7 @@ export default function Devices() {
               placeholder="Search Device by Name or Id"
             />
           </Box>
-          {isAdd ? (
+          {/* {isAdd ? (
             <Button
               variant="contained"
               style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
@@ -182,7 +182,7 @@ export default function Devices() {
               <AddIcon />
               add device
             </Button>
-          ) : null} 
+          ) : null}  */}
         </Box>
       </Box>
       <Box className={classes.root}>
