@@ -142,7 +142,6 @@ export default function AddDriver() {
             return;
         }
         drivers.organization=user.organization_id
-        console.log('drivers--',drivers)
         mutateAddDevice(drivers);
     }
 
@@ -151,7 +150,7 @@ export default function AddDriver() {
     }
     
     async function getDeviceDetails(id: string) {
-        return (await client.get(`/devices/${id}/`)).data;
+        return (await client.get(`${transport}/drivers/${id}/`)).data;
     }
 
    
