@@ -6,7 +6,7 @@ export const COLORS = {
   WHITE: '#FFFFFF',
   BLACK: '#000',
   ERROR:'red',
-  GRADIENT: 'linear-gradient(to right, #1723b1,#ec6a2b)',
+  GRADIENT: 'linear-gradient(to right, #b9633a,#724608)',
   HEADER:'linear-gradient(to right, #ec6a2b,#1723b1)',
   BUTTON:'linear-gradient(to right, #eca241,#eb692d)',
 };
