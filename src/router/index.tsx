@@ -13,6 +13,8 @@ import {OrganizationDetails} from "components/Organization/OrganizationDetails";
 import AddDevice from "components/Devices/AddDevice";
 import Devices from "components/Devices";
 import { DeviceDetails } from "components/Devices/DeviceDetails";
+import Driver from '../components/Driver/index';
+import AddDriver from "components/Driver/AddDriver";
 
 export default function AppRouter() {
   return (
@@ -176,7 +178,42 @@ export default function AppRouter() {
           />
         }
       />
+
+    <Route
+        path={AppPaths.DRIVERS}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DRIVERS}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Driver />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.DRIVERS}/${SubPaths.ADD}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DRIVERS}
+            component={<AddDriver />}
+          />
+        }
+      />
      
+     <Route
+        path={`${AppPaths.DRIVERS}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DRIVERS}
+            component={<AddDriver />}
+          />
+        }
+      />
+
       <Route
         path={"*"}
         element={
