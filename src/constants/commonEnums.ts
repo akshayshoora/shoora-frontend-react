@@ -4,7 +4,8 @@ export enum AppPaths {
   LOGIN = 'login',
   PROFILE = 'profile',
   ORGANIZATIONS='organizations',
-  DEVICES='devices'
+  DEVICES='devices',
+  DRIVERS='drivers'
 }
 
 export enum SubPaths {
