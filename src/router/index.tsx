@@ -13,8 +13,11 @@ import {OrganizationDetails} from "components/Organization/OrganizationDetails";
 import AddDevice from "components/Devices/AddDevice";
 import Devices from "components/Devices";
 import { DeviceDetails } from "components/Devices/DeviceDetails";
-import Driver from '../components/Driver/index';
-import AddDriver from "components/Driver/AddDriver";
+import Driver from '../components/Drivers/index';
+import AddDriver from "components/Drivers/AddDriver";
+import Vehicles from "components/Vehicles";
+import AddVehicle from "components/Vehicles/AddVehicle";
+import {VehicleDetails} from "components/Vehicles/VehicleDetails"
 
 export default function AppRouter() {
   return (
@@ -213,6 +216,54 @@ export default function AppRouter() {
           />
         }
       />
+
+<Route
+        path={AppPaths.VEHICLES}
+        element={
+          <ProtectedRoute
+            route={AppPaths.VEHICLES}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Vehicles />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.VEHICLES}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.VEHICLES}
+            component={
+              <ErrorBoundary>
+                <VehicleDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.VEHICLES}/${SubPaths.ADD}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.VEHICLES}
+            component={<AddVehicle />}
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.VEHICLES}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.VEHICLES}
+            component={<AddVehicle />}
+          />
+        }
+      />
+
 
       <Route
         path={"*"}

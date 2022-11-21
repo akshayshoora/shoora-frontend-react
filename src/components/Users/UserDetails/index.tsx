@@ -35,16 +35,7 @@ export function UserDetails() {
                
                 <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{user.name}</Typography>
                 </Box>
-                <Box>
-                <Button
-                    variant="outlined"
-                    onClick={() =>
-                    navigate(`/${AppPaths.USERS}/${SubPaths.EDIT}/${id}`)
-                    }
-                >
-                    Edit User
-                </Button>
-                </Box>
+               
             </Box>
             <Box className={classes.bodyContent}>
                 <Box className={classes.infoBodyWrapper}>

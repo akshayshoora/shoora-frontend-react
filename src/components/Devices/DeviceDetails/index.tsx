@@ -35,16 +35,6 @@ export function DeviceDetails() {
                
                 <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{device.device_type}</Typography>
                 </Box>
-                <Box>
-                <Button
-                    variant="outlined"
-                    onClick={() =>
-                    navigate(`/${AppPaths.DEVICES}/${SubPaths.EDIT}/${id}`)
-                    }
-                >
-                    Edit Device
-                </Button>
-                </Box>
             </Box>
             <Box className={classes.bodyContent}>
                 <Box className={classes.infoBodyWrapper}>
