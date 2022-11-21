@@ -19,7 +19,7 @@ return result
   export function CheckFeatureAccess(item:any) {
     const { user } = useAppContext();
         for(let j=0;j<user.allowed_features.length;j++){
-            if(item.toLowerCase()=="dashboard" || item.toLowerCase()=="devices"){
+            if(item.toLowerCase()=="dashboard"){
                 return true
             }
            
@@ -41,7 +41,7 @@ return result
       export function CheckRoutesAccess(item:any) {
         const { user } = useAppContext();
             for(let j=0;j<user.allowed_features.length;j++){
-                 if(item.toLowerCase()=="dashboard" || item.toLowerCase()=="devices"){
+                 if(item.toLowerCase()=="dashboard"){
                      return true
                  }
                

@@ -27,38 +27,44 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import { useQuery } from "react-query";
+import { useQuery,useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
-import { transport } from "constants/RouteMiddlePath";
+import { auth,transport } from "constants/RouteMiddlePath";
 
-export default function Devices() {
+export default function Vehicles() {
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
+  const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: deviceList, isLoading } = useQuery(
-    ["devices", page, rowsPerPage, searchText],
-    () => getDevices(page, rowsPerPage, searchText)
+  const { data: vehicleList, isLoading } = useQuery(
+    ["vehicles", page, rowsPerPage, searchText],
+    () => getVehicles(page, rowsPerPage, searchText)
   );
+  const [snackbar, setSnackbar] = React.useState<{
+    open: boolean;
+    variant: "success" | "error" | "info";
+    message: string;
+}>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("devices");
+  const [orderBy, setOrderBy] = React.useState<string>("vehicle");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.DEVICES,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.DEVICES,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.DEVICES,Actions.DELETE)
+  const isAdd=actionAccess(AppPaths.VEHICLES,Actions.ADD)
+  const isEdit=actionAccess(AppPaths.VEHICLES,Actions.EDIT)
+  const isDelete=actionAccess(AppPaths.VEHICLES,Actions.DELETE)
   
   
   const navigate = useNavigate();
 
   
   const classes = useStyles();
-  async function getDevices(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `${transport}/devices/?page=${
+  async function getVehicles(pageNumber: number, pageSize: number, searchText?: string) {
+    let getApiUrl = `${transport}/vehicles/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -68,22 +74,26 @@ export default function Devices() {
     return response.data;
   }
 
-  const handleOpenDelete = () => {
+  const handleOpenDelete = ( 
+    event: React.MouseEvent<HTMLElement>,
+    id: string) => {
+      setDeleteId(id)
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
+    getVehicles(page, rowsPerPage, searchText)
   };
 
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    devices: string
+    user: string
   ) => {
-    const isAsc = orderBy === devices && order === "asc";
+    const isAsc = orderBy === user && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     //@ts-ignore
-    setOrderBy(devices);
+    setOrderBy(user);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -95,94 +105,126 @@ export default function Devices() {
     setPage(0);
   };
 
-  function openDeviceDetails(
+  function openVehicleDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
     event.stopPropagation();
-    navigate(`/${AppPaths.DEVICES}/${id}`);
+    navigate(`/${AppPaths.VEHICLES}/${id}`);
   }
 
-  function editDeviceDetails(
+  function editVehicleDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
     event.stopPropagation();
-    navigate(`/${AppPaths.DEVICES}/${SubPaths.EDIT}/${id}`);
+    navigate(`/${AppPaths.VEHICLES}/${SubPaths.EDIT}/${id}`);
   }
 
   const actionMenuItems: MenuType[] = [
     {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
-      onClick: openDeviceDetails,
+      onClick: openVehicleDetails,
       access:true
-    }
-    // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editDeviceDetails,access:isEdit },
-    // {
-    //   label: "Delete",
-    //   icon: <DeleteOutlineOutlinedIcon />,
-    //   onClick: handleOpenDelete,
-    //   access:isDelete
-    // },
+    },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editVehicleDetails,access:isEdit },
+    {
+      label: "Delete",
+      icon: <DeleteOutlineOutlinedIcon />,
+      onClick: handleOpenDelete,
+      access:isDelete
+    },
   ];
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "device_type",
+      id: "vehicle_type",
       numeric: false,
       disablePadding: true,
-      label: "Device Type",
+      label: "Vehicle Type",
     },
     {
-      id: "organization",
-      label: "Organization",
+      id: "make",
+      label: "Made By",
       numeric: false,
       disablePadding: false,
     },
-    { 
-    id: "is_assigned_to_vehicle", 
-    label: "Assigned to Vehicle", 
-    numeric: false,
-     disablePadding: false 
-    },
+    { id: "model", label: "Model", numeric: false, disablePadding: false },
     {
-      id: "activation_date",
-      label: "Activation Date",
+      id: "vin",
+      label: "VIN Code",
       numeric: false,
       disablePadding: false,
     },
   ];
 
-  function addDevice() {
-    navigate(`/${AppPaths.DEVICES}/${SubPaths.ADD}`);
+  function addVehicle() {
+    navigate(`/${AppPaths.VEHICLES}/${SubPaths.ADD}`);
   }
   const handleSearchInput = (e: any) => {
     setSearchText(e);
   };
+
+  const deleteUserMutation = useMutation(deleteUser, {
+    onSuccess: () =>{
+       handleClose()
+        setSnackbar({
+            open: true,
+            variant: "success",
+            message: "User deleted.",
+        })
+        setTimeout(() => {
+            navigate(`/${AppPaths.USERS}`);
+        }, 1000);
+    },
+        
+    onError: () =>
+        setSnackbar({
+            open: true,
+            variant: "error",
+            message: "Something went wrong.",
+        }),
+});
+
+const { mutate: mutateDeleteUser } =deleteUserMutation;
+
+function deleteUser() {
+  return client.delete(`${auth}/users/${deleteId}`)
+}
+
+
+     function handleDelete() {
+      mutateDeleteUser()
+       
+    }
+   
+
+
+
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="device"/>}
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="user"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Devices</Heading>
+        <Heading>Vehicles</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: 12 
+          <Box style={{ marginRight: isAdd ? 12 : 0
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
-              placeholder="Search Device by Name or Id"
+              placeholder="Search User by Name or Id"
             />
           </Box>
-          {/* {isAdd ? (
+          {isAdd ? (
             <Button
               variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
-              onClick={addDevice}
+              style={{ background: COLORS.GRADIENT, color:COLORS.WHITE }}
+              onClick={addVehicle}
             >
               <AddIcon />
-              add device
+              add vehicle
             </Button>
-          ) : null}  */}
+          ) : null} 
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -199,30 +241,30 @@ export default function Devices() {
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : deviceList?.results.length ? (
-                deviceList?.results.map((device: any, index: number) => {
+            ) : vehicleList?.results.length ? (
+              vehicleList?.results.map((vehicle: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
                       <Box className={classes.columnView}>
-                        <Span>{device.device_type}</Span>
+                        <Span>{vehicle.vehicle_type}</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {device.organization}
+                        {vehicle.make}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{device.is_assigned_to_vehicle.toString()}</Span>
+                      <Span fontType="secondary">{vehicle.model}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{device.activation_date}</Span>
+                      <Span fontType="secondary">{vehicle.vin}</Span>
                     </TableCell>
-                   
+                    
                    
                     <TableCell align="left">
-                      <ActionMenu menu={actionMenuItems} id={device.id} />
+                      <ActionMenu menu={actionMenuItems} id={vehicle.id} />
                     </TableCell>
                   </TableRow>
                 );
@@ -237,7 +279,7 @@ export default function Devices() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(deviceList?.count / rowsPerPage)}
+          totalPages={Math.ceil(vehicleList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

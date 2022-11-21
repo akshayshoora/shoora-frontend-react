@@ -4,6 +4,8 @@ import { ISideBarIconProps } from "./interfaces";
 import UserIcon from "./UserIcon";
 import OrgIcon from "./OrgIcon";
 import DeviceIcon from "./DeviceIcon";
+import VehicleIcon from './VehicleIcon';
+import DriverIcon from './DriverIcon'
 
 interface IMenuProps extends ISideBarIconProps {
   icon: AppPaths;
@@ -21,6 +23,10 @@ export default function MenuIcons(props: IMenuProps) {
       return <OrgIcon isActive={isActive} />;
       case AppPaths.DEVICES:
       return <DeviceIcon isActive={isActive} />;
+      case AppPaths.VEHICLES:
+        return <VehicleIcon isActive={isActive} />;
+        case AppPaths.DRIVERS:
+        return <DriverIcon isActive={isActive} />;
     default:
       return <DashboardIcon isActive={isActive} />;
   }
