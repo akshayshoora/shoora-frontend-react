@@ -101,7 +101,8 @@ function AdminRoot() {
                       className={classNames(
                         classes.displayFlex,
                         classes.flexColumn,
-                        classes.panelBody
+                        classes.panelBody,
+                        classes.mainContent
                       )}
                     >
                       <Box className={classes.header}>
