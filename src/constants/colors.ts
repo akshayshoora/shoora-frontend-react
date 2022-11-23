@@ -8,7 +8,7 @@ export const COLORS = {
   ERROR:'red',
   GRADIENT: 'linear-gradient(to right, #a36040,#7a4700)',
   HEADER:'linear-gradient(to right, #ec6a2b,#1723b1)',
-  BUTTON:'linear-gradient(to right, #eda43f,#ec6929)',
+  BUTTON:'#8e5323',
 };
 
 export default COLORS;
