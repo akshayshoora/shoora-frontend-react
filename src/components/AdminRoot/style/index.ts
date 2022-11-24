@@ -19,12 +19,13 @@ export default makeStyles({
     transition:'0.3s',
     width:'100px',
     position: 'fixed',
+    borderRadius:'0px 16px 16px 0px',
     left:'0',
     top:'0',
     zIndex:'9',
     bottom:'0',
     "&:hover": {
-      width:'200px',
+      width:'300px',
       "& .makeStyles-menuLabel-15":{
         opacity:'1',
        },
