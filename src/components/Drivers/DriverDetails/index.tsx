@@ -9,18 +9,18 @@ import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { transport } from "constants/RouteMiddlePath";
 
-export function DeviceDetails() {
+export function DriverDetails() {
     const classes = useStyles();
     const navigate = useNavigate();
 
     const { id } = useParams();
 
-    const { data: device, isLoading } = useQuery(["devices", id], () =>
-        getDeviceDetails(String(id))
+    const { data: driverDetails, isLoading } = useQuery(["driverDetail", id], () =>
+        getDriverDetails(String(id))
     );
 
-    async function getDeviceDetails(id: string) {
-        return (await client.get(`${transport}/devices/${id}/`)).data;
+    async function getDriverDetails(id: string) {
+        return (await client.get(`${transport}/drivers/${id}/`)).data;
     }
 
 
@@ -33,55 +33,62 @@ export function DeviceDetails() {
             <Box className={classes.headingWrapper}>
                 <Box className={classes.headingContent}>
                
-                <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{device.device_type}</Typography>
+                <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{driverDetails.name}</Typography>
                 </Box>
                 <Box>
                 <Button
                     variant="outlined"
                     onClick={() =>
-                    navigate(`/${AppPaths.DEVICES}/${SubPaths.EDIT}/${id}`)
+                    navigate(`/${AppPaths.DRIVERS}/${SubPaths.EDIT}/${id}`)
                     }
                 >
-                    Edit Device
+                    Edit Driver Details
                 </Button>
                 </Box>
             </Box>
             <Box className={classes.bodyContent}>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Device Type:</Box>
-                <Box className={classes.bodyInfo} style={{ textTransform: "capitalize" }}>{device.device_type}</Box>
+                <Box className={classes.bodyInfoTitle}>Name:</Box>
+                <Box className={classes.bodyInfo} style={{ textTransform: "capitalize" }}>{driverDetails.name}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Device ID:</Box>
-                <Box className={classes.bodyInfo}>{device.id}</Box>
+                <Box className={classes.bodyInfoTitle}>Phone Number:</Box>
+                <Box className={classes.bodyInfo}>{driverDetails.phone_number}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Organisation:</Box>
-                <Box className={classes.bodyInfo}>{device.organization}</Box>
+                <Box className={classes.bodyInfoTitle}>Passport Number:</Box>
+                <Box className={classes.bodyInfo}>{driverDetails.passport_number}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Assigned to Vehicle:</Box>
+                <Box className={classes.bodyInfoTitle}>Passport Validity:</Box>
                 <Box className={classes.bodyInfo}>
-                    {device.is_assigned_to_vehicle ? device.is_assigned_to_vehicle : "-"}
+                    {driverDetails.passport_validity }
                 </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Activation Date:</Box>
+                <Box className={classes.bodyInfoTitle}>Driving License Number:</Box>
                 <Box className={classes.bodyInfo}>
-                    {device.activation_date ? device.activation_date : "-"}
+                    {driverDetails.driving_license_number}
                 </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Sim Number:</Box>
+                <Box className={classes.bodyInfoTitle}>Driving License Validity:</Box>
                 <Box className={classes.bodyInfo} >
-                    {device.sim_number ? device.sim_number : "-"}
+                    {driverDetails.driving_license_validity}
                 </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}> IMEI Number:</Box>
+                <Box className={classes.bodyInfoTitle}> Driver Score:</Box>
                 <Box className={classes.bodyInfo}>
-                    {device.imei_number ? device.imei_number : "-"}
+                    {driverDetails.driver_score}
                 </Box>
+                </Box>
+
+                <Box className={classes.infoBodyWrapper}>
+                    <Box className={classes.bodyInfoTitle}> Vehicle:</Box>
+                    <Box className={classes.bodyInfo}>
+                        {driverDetails.vehicle?driverDetails.vehicle:'-'}
+                    </Box>
                 </Box>
             </Box>
         </Box>

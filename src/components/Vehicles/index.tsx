@@ -40,7 +40,7 @@ export default function Vehicles() {
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data: vehicleList, isLoading } = useQuery(
-    ["vehicles", page, rowsPerPage, searchText],
+    ["vehicle", page, rowsPerPage, searchText],
     () => getVehicles(page, rowsPerPage, searchText)
   );
   const [snackbar, setSnackbar] = React.useState<{
@@ -54,9 +54,9 @@ export default function Vehicles() {
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.VEHICLES,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.VEHICLES,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.VEHICLES,Actions.DELETE)
+  const isAdd=actionAccess(AppPaths.USERS,Actions.ADD)
+  const isEdit=actionAccess(AppPaths.USERS,Actions.EDIT)
+  const isDelete=actionAccess(AppPaths.USERS,Actions.DELETE)
   
   
   const navigate = useNavigate();
@@ -88,12 +88,12 @@ export default function Vehicles() {
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    user: string
+    vehicle: string
   ) => {
-    const isAsc = orderBy === user && order === "asc";
+    const isAsc = orderBy === vehicle && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     //@ts-ignore
-    setOrderBy(user);
+    setOrderBy(vehicle);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -166,16 +166,16 @@ export default function Vehicles() {
     setSearchText(e);
   };
 
-  const deleteUserMutation = useMutation(deleteUser, {
+  const deleteVehicleMutation = useMutation(deleteVehicle, {
     onSuccess: () =>{
        handleClose()
         setSnackbar({
             open: true,
             variant: "success",
-            message: "User deleted.",
+            message: "vehicle deleted.",
         })
         setTimeout(() => {
-            navigate(`/${AppPaths.USERS}`);
+            navigate(`/${AppPaths.VEHICLES}`);
         }, 1000);
     },
         
@@ -187,15 +187,15 @@ export default function Vehicles() {
         }),
 });
 
-const { mutate: mutateDeleteUser } =deleteUserMutation;
+const { mutate: mutateDeleteVehicle } =deleteVehicleMutation;
 
-function deleteUser() {
+function deleteVehicle() {
   return client.delete(`${auth}/users/${deleteId}`)
 }
 
 
      function handleDelete() {
-      mutateDeleteUser()
+      mutateDeleteVehicle()
        
     }
    
@@ -204,7 +204,7 @@ function deleteUser() {
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="user"/>}
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="vehicle"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Vehicles</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
@@ -212,7 +212,7 @@ function deleteUser() {
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
-              placeholder="Search User by Name or Id"
+              placeholder="Search Vehicle Name"
             />
           </Box>
           {isAdd ? (

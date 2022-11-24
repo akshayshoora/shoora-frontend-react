@@ -18,6 +18,8 @@ import AddDriver from "components/Drivers/AddDriver";
 import Vehicles from "components/Vehicles";
 import AddVehicle from "components/Vehicles/AddVehicle";
 import {VehicleDetails} from "components/Vehicles/VehicleDetails"
+import {DriverDetails} from "../components/Drivers/DriverDetails";
+import LiveView from "components/LiveView";
 
 export default function AppRouter() {
   return (
@@ -216,6 +218,19 @@ export default function AppRouter() {
           />
         }
       />
+        <Route
+            path={`${AppPaths.DRIVERS}/:id`}
+            element={
+                <ProtectedRoute
+                    route={AppPaths.DRIVERS}
+                    component={
+                        <ErrorBoundary>
+                            <DriverDetails />
+                        </ErrorBoundary>
+                    }
+                />
+            }
+        />
 
 <Route
         path={AppPaths.VEHICLES}
@@ -274,6 +289,21 @@ export default function AppRouter() {
               <ErrorBoundary>
                 <Dashboard />
               </ErrorBoundary>
+            }
+          />
+        }
+      />
+      <Route
+        path={AppPaths.LIVE}
+        element={
+          <ProtectedRoute
+            route={AppPaths.LIVE}
+            component={
+              <>
+                <ErrorBoundary>
+                  <LiveView />
+                </ErrorBoundary>
+              </>
             }
           />
         }

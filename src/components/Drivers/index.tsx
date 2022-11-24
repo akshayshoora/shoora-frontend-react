@@ -27,14 +27,15 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import { useQuery } from "react-query";
+import {useMutation, useQuery} from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
-import { transport } from "constants/RouteMiddlePath";
+import {auth, transport} from "constants/RouteMiddlePath";
 
 export default function Driver() {
+  const [deleteId, setDeleteId] = React.useState<string>("");
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -42,7 +43,11 @@ export default function Driver() {
     ["drivers", page, rowsPerPage, searchText],
     () => getDevices(page, rowsPerPage, searchText)
   );
-
+  const [snackbar, setSnackbar] = React.useState<{
+    open: boolean;
+    variant: "success" | "error" | "info";
+    message: string;
+  }>({ open: false, variant: "info", message: "" });
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("drivers");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
@@ -68,7 +73,10 @@ export default function Driver() {
     return response.data;
   }
 
-  const handleOpenDelete = () => {
+  const handleOpenDelete = (
+      event: React.MouseEvent<HTMLElement>,
+      id: string) => {
+    setDeleteId(id)
     setOpenDelete(true);
   };
   const handleClose = () => {
@@ -166,11 +174,44 @@ export default function Driver() {
   const handleSearchInput = (e: any) => {
     setSearchText(e);
   };
+
+  const deleteUserMutation = useMutation(deleteUser, {
+    onSuccess: () =>{
+      handleClose()
+      setSnackbar({
+        open: true,
+        variant: "success",
+        message: "Driver deleted.",
+      })
+      setTimeout(() => {
+        navigate(`/${AppPaths.DRIVERS}`);
+      }, 1000);
+    },
+
+    onError: () =>
+        setSnackbar({
+          open: true,
+          variant: "error",
+          message: "Something went wrong.",
+        }),
+  });
+
+  const { mutate: mutateDeleteUser } =deleteUserMutation;
+
+  function deleteUser() {
+    return client.delete(`${transport}/drivers/${deleteId}`)
+  }
+
+
+  function handleDelete() {
+    mutateDeleteUser()
+
+  }
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="device"/>}
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="driver" handleDelete={handleDelete}/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Devices</Heading>
+        <Heading>Drivers</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
           <Box style={{ marginRight: isAdd ? 12 : 0
              }}>

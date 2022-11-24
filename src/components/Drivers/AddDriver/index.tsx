@@ -2,9 +2,12 @@ import {
     Alert,
     Box,
     Button,
+    CircularProgress,
     Grid,
     IconButton,
-    Snackbar,
+    MenuItem,
+    Select,
+    Snackbar, TextField,
     Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -24,6 +27,7 @@ import {transport} from 'constants/RouteMiddlePath';
 import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
 
 
+
 class NewDriver {
     "name": string = "";
     "phone_number": string | null = null;
@@ -33,10 +37,23 @@ class NewDriver {
     "driving_license_validity": string | null = null;
     "driver_score": string | null = null;
     "organization": string | null = null;
-    "vehicle": string | null = null
+    "vehicle": string | null = null;
 }
 
 export default function AddDriver() {
+    const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
+        ["vehicles"],
+        () => getVehicle()
+      );
+    
+      async function getVehicle() {
+        let getApiUrl = `${transport}/vehicles/`;
+    
+       
+        const response = await client.get(getApiUrl);
+    
+        return response.data;
+      }
     const [drivers, setDriver] = useState<NewDriver>(new NewDriver());
     const { user } = useAppContext();
 
@@ -51,7 +68,7 @@ export default function AddDriver() {
         message: string;
     }>({ open: false, variant: "info", message: "" });
     
-    const addDeviceMutation = useMutation(addDevice, {
+    const addDeviceMutation = useMutation(addDriver, {
         onSuccess: () => {
             setSnackbar({
                 open: true,
@@ -72,7 +89,7 @@ export default function AddDriver() {
         },
     });
 
-    const updateDeviceMutation = useMutation(updateDevice, {
+    const updateDeviceMutation = useMutation(updateDriver, {
         onSuccess: () =>{
             setSnackbar({
                 open: true,
@@ -95,7 +112,7 @@ export default function AddDriver() {
 
     const { isLoading: loadingUserInfo } = useQuery(
         ["driver_details", driverId],
-        () => getDeviceDetails(String(driverId)),
+        () => getDriverDetails(String(driverId)),
         {
             enabled: Boolean(driverId),
             refetchOnWindowFocus: false,
@@ -112,44 +129,44 @@ export default function AddDriver() {
         navigate(-1);
     }
 
-    function handleFormDevice(
+    function handleFormDriver(
         key: keyof NewDriver,
         value: string | boolean | number | []
     ) {
         setDriver({ ...drivers, [key]: value });
     }
 
-    function addDevice(user: NewDriver) {
+    function addDriver(user: NewDriver) {
         return client.post(`${transport}/drivers/`, {
             ...user,
         });
     }
 
-    function updateDevice(user: NewDriver) {
-        return client.patch(`/users/${driverId}/`, {
+    function updateDriver(user: NewDriver) {
+        return client.patch(`/${transport}/drivers/${driverId}/`, {
             ...user,
         });
     }
 
-    const { mutate: mutateAddDevice, isLoading: isAddingDevice } =
+    const { mutate: mutateAddDriver, isLoading: isAddingDriver } =
     addDeviceMutation;
-    const { mutate: mutateUpdateDevice, isLoading: updatingDevice } =
+    const { mutate: mutateUpdateDriver, isLoading: updatingDriver } =
     updateDeviceMutation;
 
     function handleSubmit() {
         if (driverId) {
-             mutateUpdateDevice(drivers);
+            mutateUpdateDriver(drivers);
             return;
         }
         drivers.organization=user.organization_id
-        mutateAddDevice(drivers);
+        mutateAddDriver(drivers);
     }
 
     if (driverId && (loadingUserInfo && !drivers)) {
         return <LoadingScreen />;
     }
     
-    async function getDeviceDetails(id: string) {
+    async function getDriverDetails(id: string) {
         return (await client.get(`${transport}/drivers/${id}/`)).data;
     }
 
@@ -160,10 +177,10 @@ export default function AddDriver() {
     const isSaveButtonDisabled = !name ;
 
 
-    const loadingMessage = isAddingDevice
-    ? "Adding Device..."
-    : updatingDevice
-    ? "Updating Device..."
+    const loadingMessage = isAddingDriver
+    ? "Adding Driver..."
+    : updatingDriver
+    ? "Updating Driver..."
     : "";
 
     return (
@@ -184,7 +201,7 @@ export default function AddDriver() {
             </Snackbar>
 
             <PageLoading
-                open={isAddingDevice || updatingDevice}
+                open={isAddingDriver || updatingDriver}
                 loadingMessage={loadingMessage}
             />
 
@@ -205,7 +222,7 @@ export default function AddDriver() {
                             style={{ marginBottom: 24 }}
                             value={drivers.name}
                             isRequired={true}
-                            onChange={(value) => handleFormDevice("name", value)}
+                            onChange={(value) => handleFormDriver("name", value)}
                         />
                         
                     </Grid>
@@ -217,19 +234,38 @@ export default function AddDriver() {
                             style={{ marginBottom: 24 }}
                             value={drivers.phone_number}
                             isRequired={false}
-                            onChange={(value) => handleFormDevice("phone_number", value)}
+                            onChange={(value) => handleFormDriver("phone_number", value)}
                         />
                     </Grid>
                     <Grid item xs={4}>
-                        <TextInput
-                            label="Vehicle"
-                            placeholder="Vehicle"
-                            style={{ marginBottom: 24 }}
+                         <Typography fontSize={16} style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}>
+                            Vehicles
+                        </Typography>
+                        <Select
+                            fullWidth
+                            id="demo-simple-select"
                             value={drivers.vehicle}
-                            isRequired={false}
-                            onChange={(value) => handleFormDevice("vehicle", value)}
-                            
-                        />
+                            onChange={(e: any) => handleFormDriver("vehicle", e.target.value)}
+                            size="small"
+                            displayEmpty
+                            >
+                            <MenuItem value="" disabled>
+                            Vehicles
+                            </MenuItem>
+                            {isVehicleLoading ? (
+                            <MenuItem>
+                            <CircularProgress />
+                            </MenuItem>
+                            ) : vehicleList?.results?.length ? (
+                            vehicleList?.results?.map((item: any, index: any) => (
+                            <MenuItem style={{ fontSize: 14 }} value={item.id}>
+                                {item.vehicle_type}
+                            </MenuItem>
+                            ))
+                            ) : (
+                            <MenuItem>Nothing to Select</MenuItem>
+                            )}
+                            </Select>
                             
                     </Grid>
                 </Grid>
@@ -241,19 +277,25 @@ export default function AddDriver() {
                             style={{ marginBottom: 24 }}
                             value={drivers.passport_number}
                             isRequired={false}
-                            onChange={(value) => handleFormDevice("passport_number", value)}
+                            onChange={(value) => handleFormDriver("passport_number", value)}
                             
                         />
                     </Grid>
                     <Grid item xs={4}>
-                        <TextInput
-                            label="Passport Validity"
-                            placeholder="Enter Passport Validity"
-                            style={{ marginBottom: 24 }}
+                        <Typography fontSize={16} style={{ fontWeight: 200, marginBottom: 8 }}>
+                            Passport Validity
+                        </Typography>
+                        <TextField
+                            id="date"
+                            type="date"
+                            sx={{ width: "100%"}}
+                            size="small"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                             value={drivers.passport_validity}
-                            isRequired={false}
-                            onChange={(value) => handleFormDevice("passport_validity", value)}
-                            
+                            onChange={(e: any) => handleFormDriver("passport_validity", e.target.value)}
+
                         />
                             
                     </Grid>
@@ -265,21 +307,27 @@ export default function AddDriver() {
                             style={{ marginBottom: 24 }}
                             value={drivers.driving_license_number}
                             isRequired={false}
-                            onChange={(value) => handleFormDevice("driving_license_number", value)}
+                            onChange={(value) => handleFormDriver("driving_license_number", value)}
                             
                         />
                     </Grid>
                     </Grid>
                     <Grid container spacing={4}>
                     <Grid item xs={4}>
-                        <TextInput
-                            label="Driving Lincense Validity"
-                            placeholder="Driving Lincense Validity"
-                            style={{ marginBottom: 24 }}
+                        <Typography fontSize={16} style={{ fontWeight: 200, marginBottom: 8 }}>
+                            Driving License Validity
+                        </Typography>
+                        <TextField
+                            id="date"
+                            type="date"
+                            sx={{ width: "100%"}}
+                            size="small"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                             value={drivers.driving_license_validity}
-                            isRequired={false}
-                            onChange={(value) => handleFormDevice("driving_license_validity", value)}
-                            
+                            onChange={(e: any) => handleFormDriver("driving_license_validity", e.target.value)}
+
                         />
                             
                     </Grid>
@@ -290,7 +338,7 @@ export default function AddDriver() {
                             style={{ marginBottom: 24 }}
                             value={drivers.driver_score}
                             isRequired={false}
-                            onChange={(value) => handleFormDevice("driver_score", value)}
+                            onChange={(value) => handleFormDriver("driver_score", value)}
                             
                         />
                             

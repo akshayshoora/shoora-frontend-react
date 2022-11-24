@@ -15,7 +15,7 @@ export default makeStyles({
     textAlign:'center',
   },
   menuItem: {
-    padding: 8,
+    padding: '10px 8px',
     display: 'flex',
     alignItems: 'center',
     paddingLeft: 18,
@@ -23,21 +23,23 @@ export default makeStyles({
     cursor: 'pointer',
     textDecoration: 'none',
     color:'white',
-    borderRadius:'0px 30px 0px 30px',
+    borderRadius:'11px',
     transition: '0.3s',
-    marginLeft:'20px',
-    marginRight:'-20px',
+    marginLeft:'15px',
+    marginRight:'15px',
   },
   menuLabel: {
     marginLeft: 12,
     textTransform: 'capitalize',
+    opacity:0,
+    transition:'0.3s',
+    overflow:'hidden',
     '& .MuiTypography-root':{
       color:'white',
     }
   },
   selectedMenuItem: {
     background:COLORS.BUTTON,
-    borderRadius:'0px 30px 0px 30px',
     color:'white',
     transition: '0.3s',
   },
