@@ -282,22 +282,14 @@ export default function AddDriver() {
                         />
                     </Grid>
                     <Grid item xs={4}>
-                        {/*<TextInput*/}
-                        {/*    label="Passport Validity"*/}
-                        {/*    placeholder="Enter Passport Validity"*/}
-                        {/*    style={{ marginBottom: 24 }}*/}
-                        {/*    value={drivers.passport_validity}*/}
-                        {/*    isRequired={false}*/}
-                        {/*    onChange={(value) => handleFormDriver("passport_validity", value)}*/}
-                        {/*    */}
-                        {/*/>*/}
-                        <Typography fontSize={16} style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}>
+                        <Typography fontSize={16} style={{ fontWeight: 200, marginBottom: 8 }}>
                             Passport Validity
                         </Typography>
                         <TextField
                             id="date"
                             type="date"
-                            sx={{ width: 220 }}
+                            sx={{ width: "100%"}}
+                            size="small"
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -322,22 +314,14 @@ export default function AddDriver() {
                     </Grid>
                     <Grid container spacing={4}>
                     <Grid item xs={4}>
-                        {/*<TextInput*/}
-                        {/*    label="Driving Lincense Validity"*/}
-                        {/*    placeholder="Driving Lincense Validity"*/}
-                        {/*    style={{ marginBottom: 24 }}*/}
-                        {/*    value={drivers.driving_license_validity}*/}
-                        {/*    isRequired={false}*/}
-                        {/*    onChange={(value) => handleFormDriver("driving_license_validity", value)}*/}
-                        {/*    */}
-                        {/*/>*/}
-                        <Typography fontSize={16} style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}>
+                        <Typography fontSize={16} style={{ fontWeight: 200, marginBottom: 8 }}>
                             Driving License Validity
                         </Typography>
                         <TextField
                             id="date"
                             type="date"
-                            sx={{ width: 220 }}
+                            sx={{ width: "100%"}}
+                            size="small"
                             InputLabelProps={{
                                 shrink: true,
                             }}

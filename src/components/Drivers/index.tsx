@@ -211,7 +211,7 @@ export default function Driver() {
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="driver" handleDelete={handleDelete}/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Devices</Heading>
+        <Heading>Drivers</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
           <Box style={{ marginRight: isAdd ? 12 : 0
              }}>
