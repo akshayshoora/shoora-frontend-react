@@ -54,9 +54,9 @@ export default function Vehicles() {
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.USERS,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.USERS,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.USERS,Actions.DELETE)
+  const isAdd=actionAccess(AppPaths.VEHICLES,Actions.ADD)
+  const isEdit=actionAccess(AppPaths.VEHICLES,Actions.EDIT)
+  const isDelete=actionAccess(AppPaths.VEHICLES,Actions.DELETE)
   
   
   const navigate = useNavigate();
