@@ -29,30 +29,69 @@ import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
-import {auth} from "constants/RouteMiddlePath"
+import {auth, transport} from "constants/RouteMiddlePath"
 
-class NewUserType {
-    "name": string = "";
-    "contact_number": string | null = null;
-    "contact_code": string | null = null;
-    "address": string | null = null;
-    "email": string | null = null;
-    "password"?: string | null = null;
-    "role_ids": string[] = [];
-    "roles": string[] = [];
+class NewVehicleType {
+    "vehicle_type": string = "";
+    "make": string | null = null;
+    "model": string | null = null;
+    "vin": string | null = null;
     "organization_id": string | null = null;
 }
 
+const vehicleType = [
+    {
+      value: "type1",
+      label: "type1",
+    },
+    {
+        value: "type2",
+        label: "type2",
+      },
+      {
+        value: "type3",
+        label: "type3",
+      },
+      {
+        value: "type4",
+        label: "type4",
+      },
+      {
+        value: "type5",
+        label: "type5",
+      },
+  ];
+
+  const madeBy = [
+    {
+      value: "company1",
+      label: "company1",
+    },
+    {
+        value: "company2",
+        label: "company2",
+      },
+      {
+        value: "company3",
+        label: "company3",
+      },
+      {
+        value: "company4",
+        label: "company4",
+      },
+      {
+        value: "company5",
+        label: "company5",
+      },
+  ];
+
+
 export default function AddVehicle() {
-    const [users, setUser] = useState<NewUserType>(new NewUserType());
+    const [vehicles, setVehicle] = useState<NewVehicleType>(new NewVehicleType());
     const { user } = useAppContext();
-    const { data: roleList, isLoading: loadingRoleInfo } = useQuery(
-        ["roles"],
-        async () => await getRoles()
-      );
     const navigate = useNavigate();
     const classes = useStyles();
-    const { id: userId } = useParams();
+    const { id: vehicleId } = useParams();
 
     const [snackbar, setSnackbar] = useState<{
         open: boolean;
@@ -60,16 +99,16 @@ export default function AddVehicle() {
         message: string;
     }>({ open: false, variant: "info", message: "" });
     
-    const addUserMutation = useMutation(addUser, {
+    const addVehicleMutation = useMutation(addVehicle, {
         onSuccess: () => {
             setSnackbar({
                 open: true,
                 variant: "success",
-                message: "User added successfully.",
+                message: "Vehicle added successfully.",
             });
     
             setTimeout(() => {
-                navigate(`/${AppPaths.USERS}`);
+                navigate(`/${AppPaths.VEHICLES}`);
             }, 2000);
         },
         onError: (error) => {
@@ -81,15 +120,15 @@ export default function AddVehicle() {
         },
     });
 
-    const updateUserMutation = useMutation(updateUser, {
+    const updateVehicleMutation = useMutation(updateVehicle, {
         onSuccess: () =>{
             setSnackbar({
                 open: true,
                 variant: "success",
-                message: "User Updated.",
+                message: "Vehicle Updated.",
             })
             setTimeout(() => {
-                navigate(`/${AppPaths.USERS}`);
+                navigate(`/${AppPaths.VEHICLES}`);
             }, 2000);
         },
             
@@ -102,16 +141,16 @@ export default function AddVehicle() {
     });
 
 
-    const { isLoading: loadingUserInfo } = useQuery(
-        ["users", userId],
-        () => getUserDetails(String(userId)),
+    const { isLoading: loadingVehicleInfo } = useQuery(
+        ["vehicles", vehicleId],
+        () => getVehicleDetails(String(vehicleId)),
         {
-            enabled: Boolean(userId),
+            enabled: Boolean(vehicleId),
             refetchOnWindowFocus: false,
-            onSuccess: (userDetails) => {
-                setUser({
-                ...users,
-                ...userDetails
+            onSuccess: (vehicleDetails) => {
+                setVehicle({
+                ...vehicles,
+                ...vehicleDetails
                 });
             },
         }
@@ -120,77 +159,62 @@ export default function AddVehicle() {
         navigate(-1);
     }
 
-    function handleFormUser(
-        key: keyof NewUserType,
+    function handleFormVehicle(
+        key: keyof NewVehicleType,
         value: string | boolean | number | string[] | SelectChangeEvent<string[]>
     ) {
-        setUser({ ...users, [key]: value });
+        setVehicle({ ...vehicles, [key]: value });
     }
 
-    function addUser(user: NewUserType) {
-        return client.post(`${auth}/users/`, {
-            ...user,
+    function addVehicle(vehicles: NewVehicleType) {
+        return client.post(`${transport}/vehicles/`, {
+            ...vehicles,
         });
     }
 
-    function updateUser(user: NewUserType) {
-        delete user.password
-        return client.patch(`${auth}/users/${userId}/`, {
-            ...user,
+    function updateVehicle(vehicles: NewVehicleType) {
+        return client.patch(`${transport}/vehicles/${vehicleId}/`, {
+            ...vehicles,
         });
     }
 
-    function getRoleNamesByID(roleId: string[]){
-        let roleIdArr: string[] = [];
-        roleId.map((itm:any) => {
-            roleIdArr.push(itm.id)
-        })
-        return roleIdArr;
-    }
-    const { mutate: mutateAddUser, isLoading: isAddingUser } =
-    addUserMutation;
-    const { mutate: mutateUpdateUser, isLoading: updatingUser } =
-    updateUserMutation;
+    
+    const { mutate: mutateAddVehicle, isLoading: isAddingVehicle } =
+    addVehicleMutation;
+    const { mutate: mutateUpdateVehicle, isLoading: updatingVehicle } =
+    updateVehicleMutation;
 
     function handleSubmit() {
-        users.roles=users.role_ids
-        if (userId) {
+       
+        if (vehicleId) {
             
-             mutateUpdateUser(users);
+             mutateUpdateVehicle(vehicles);
             return;
         }
-       users.organization_id=user.organization_id
+        vehicles.organization_id=user.organization_id
        
-        mutateAddUser(users);
+        mutateAddVehicle(vehicles);
     }
 
-    if (userId && (loadingUserInfo && !users.name)) {
+    if (vehicleId && (loadingVehicleInfo && !vehicles.vehicle_type)) {
         return <LoadingScreen />;
     }
     
-    async function getUserDetails(id: string) {
-        return (await client.get(`${auth}/users/${id}/`)).data;
+    async function getVehicleDetails(id: string) {
+        return (await client.get(`${transport}/vehicles/${id}/`)).data;
     }
 
-    async function getRoles() {
-        return (await client.get(`${auth}/roles/`)).data;
-    }
 
-   
+    const { vehicle_type} = vehicles;
+    const isSaveButtonDisabled = !vehicle_type ;
 
 
-    const { name,email} = users;
-    const isSaveButtonDisabled = !name || !email ;
-
-
-    const loadingMessage = isAddingUser
-    ? "Adding User..."
-    : updatingUser
-    ? "Updating User..."
+    const loadingMessage = isAddingVehicle
+    ? "Adding Vehicle..."
+    : updatingVehicle
+    ? "Updating Vehicle..."
     : "";
 
-
-    console.log(users.role_ids,"rolesss")
 
     return (
         <Box className={classes.positionRelative}>
@@ -210,119 +234,42 @@ export default function AddVehicle() {
             </Snackbar>
 
             <PageLoading
-                open={isAddingUser || updatingUser}
+                open={isAddingVehicle || updatingVehicle}
                 loadingMessage={loadingMessage}
             />
 
             <Box className={classes.headingWrapper}>
                 <Box className={classes.headingContent}>
                     <Typography fontSize={24}>
-                        {!userId ? "Add User" : "Edit User"}
+                        {!vehicleId ? "Add Vehicle" : "Edit Vehicle"}
                     </Typography>
                 </Box>
             </Box>
 
             <Box className={classes.padding_24}>
                 <Grid container spacing={4}>
-                    <Grid item xs={4}>
-                        <TextInput
-                            label="User Name"
-                            placeholder="Enter User name"
-                            style={{ marginBottom: 24 }}
-                            value={users.name}
-                            isRequired={true}
-                            onChange={(value) => handleFormUser("name", value)}
-                        />
-                    </Grid>
-                    {userId ?
-                    <Grid item xs={4}>
-                        
-                        <TextInput
-                            label="Email"
-                            placeholder="Enter Email"
-                            style={{ marginBottom: 24 }}
-                            value={users.email}
-                            isRequired={false}
-                            disabled
-                            onChange={(value) => {}}
-                        />
-                        
-                    </Grid>
-                    :
-                    <Grid item xs={4}>
-                        
-                        <TextInput
-                            label="Email"
-                            placeholder="Enter Email"
-                            style={{ marginBottom: 24 }}
-                            value={users.email}
-                            isRequired={true}
-                            onChange={(value) => handleFormUser("email", value)}
-                        />
-                        
-                    </Grid>
-                    }
-                    <Grid item xs={4}>
-                        <TextInput
-                            label="Contact"
-                            placeholder="Enter contact number"
-                            regex={/[^0-9]/g}
-                            style={{ marginBottom: 24 }}
-                            value={users.contact_number}
-                            isRequired={false}
-                            onChange={(value) => handleFormUser("contact_number", value)}
-                        />
-                    </Grid>
-                </Grid>
-                <Grid container spacing={4}>
-                    {!userId &&
                 <Grid item xs={4}>
-                        <TextInput
-                            label="Password"
-                            placeholder="Enter Password"
-                            style={{ marginBottom: 24 }}
-                            value={users.password}
-                            isRequired={false}
-                            onChange={(value) => handleFormUser("password", value)}
-                            
-                        />
-                    </Grid>
-                     }
-                    <Grid item xs={4}>
-                        <TextInput
-                            label="Contact Code"
-                            placeholder="Enter Contact Code"
-                            regex={/[^0-9]/g}
-                            style={{ marginBottom: 24 }}
-                            value={users.contact_code}
-                            isRequired={false}
-                            onChange={(value) => handleFormUser("contact_code", value)}
-                            
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
                                 <Typography fontSize={16} style={{ fontWeight: 200,marginBottom:10, marginRight: 2 }}>
-                    Select Roles
+                    Select Vehicle Type
                     </Typography>
                     <Select
-                                multiple
                     fullWidth
                     id="demo-simple-select"
-                    value={users.role_ids}
-                    onChange={(e:any) => handleFormUser("role_ids", typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+                    value={vehicles.vehicle_type}
+                    onChange={(e:any) => handleFormVehicle("vehicle_type", e.target.value)}
                     size="small"
                     >
                     <MenuItem selected value="" disabled>
-                        Select Roles
+                        Select Vehicle Type
                     </MenuItem>
-                    {loadingRoleInfo ? (
+                    {loadingVehicleInfo ? (
                         <MenuItem>
                         <CircularProgress />
                         </MenuItem>
-                    ) : roleList?.results.length ? (
-                        roleList?.results.map((item:any) => (
-                        <MenuItem style={{ fontSize: 14 }} value={item.id}>
-                            {item.name}
+                    ) : vehicleType.length ? (
+                        vehicleType.map((item:any) => (
+                        <MenuItem style={{ fontSize: 14 }} value={item.value}>
+                            {item.label}
                         </MenuItem>
                         ))
                     ) : (
@@ -331,33 +278,69 @@ export default function AddVehicle() {
                     </Select>
                   </Grid>
                    
-                  {userId &&
-                  <Grid item xs={4}>
+                   
+                    <Grid item xs={4}>
+                        
                         <TextInput
-                            label="Address"
-                            placeholder="Enter address"
+                            label="VIN"
+                            placeholder="Enter VIN"
                             style={{ marginBottom: 24 }}
-                            value={users.address}
+                            value={vehicles.vin}
                             isRequired={false}
-                            onChange={(value) => handleFormUser("address", value)}
+                            onChange={(value) => handleFormVehicle("vin", value)}
                         />
+                        
                     </Grid>
-                 } 
-                  </Grid>
-                 {!userId &&
-                  <Grid container spacing={4}>
                     <Grid item xs={4}>
                         <TextInput
-                            label="Address"
-                            placeholder="Enter address"
+                            label="Model"
+                            placeholder="Enter Model"
                             style={{ marginBottom: 24 }}
-                            value={users.address}
+                            value={vehicles.model}
                             isRequired={false}
-                            onChange={(value) => handleFormUser("address", value)}
+                            onChange={(value) => handleFormVehicle("model", value)}
                         />
                     </Grid>
-                    </Grid>
-                 } 
+                
+                    
+                </Grid>
+                <Grid container spacing={4}>
+               
+                    <Grid item xs={4}>
+                                <Typography fontSize={16} style={{ fontWeight: 200,marginBottom:10, marginRight: 2 }}>
+                    Select Maker
+                    </Typography>
+                    <Select
+                    fullWidth
+                    id="demo-simple-select"
+                    value={vehicles.make}
+                    onChange={(e:any) => handleFormVehicle("make", e.target.value)}
+                    size="small"
+                    >
+                    <MenuItem selected value="" disabled>
+                    Select Maker
+                    </MenuItem>
+                    {loadingVehicleInfo ? (
+                        <MenuItem>
+                        <CircularProgress />
+                        </MenuItem>
+                    ) : madeBy.length ? (
+                        madeBy.map((item:any) => (
+                        <MenuItem style={{ fontSize: 14 }} value={item.value}>
+                            {item.label}
+                        </MenuItem>
+                        ))
+                    ) : (
+                        <MenuItem>Nothing to Select</MenuItem>
+                    )}
+                    </Select>
+                  </Grid>
+                   
+                   
+                    
+                 
+                  </Grid>
+                
                 
             </Box>
 
