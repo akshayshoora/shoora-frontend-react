@@ -16,7 +16,8 @@ export const ALL_MENU = [
   AppPaths.ORGANIZATIONS,
   AppPaths.DEVICES,
   AppPaths.DRIVERS,
-  AppPaths.VEHICLES
+  AppPaths.VEHICLES,
+  AppPaths.LIVE
 ];
 
 
@@ -26,7 +27,8 @@ export const ALL_ROUTES = [
   AppPaths.ORGANIZATIONS,
   AppPaths.DEVICES,
   AppPaths.DRIVERS,
-  AppPaths.VEHICLES
+  AppPaths.VEHICLES,
+  AppPaths.LIVE
 ];
 
 

@@ -1,5 +1,5 @@
 import { ISideBarIconProps } from "./interfaces";
-import VehicleIcons from '../../../assets/speedometer.png';
+import VehicleIcons from '../../../assets/vehicle.png';
 import useStyles from "./style";
 
 
