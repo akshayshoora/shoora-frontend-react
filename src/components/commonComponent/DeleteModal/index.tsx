@@ -44,7 +44,7 @@ interface IDeleteModalProps {
           <Typography variant='h2' >Delete</Typography>
           <Box className={classes.deleteText} >
           <Typography variant='body1'  align='center' >
-          Are you sure want to delete this user?
+          Are you sure want to delete this {props.label}?
           </Typography>
           </Box>
           <Box className={classes.buttonContainer}>
