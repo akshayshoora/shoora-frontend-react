@@ -22,7 +22,7 @@ export default function LiveView() {
   const classes = useStyles();
 
   return (
-    <Box style={{ padding: "20px 0 0 40px" }}>
+    <Box style={{ padding: "20px 0 0 25px" }}>
       <Box>
         <Heading>Live View</Heading>
         <Box className={classes.live}>
