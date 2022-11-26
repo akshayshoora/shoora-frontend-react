@@ -1,5 +1,5 @@
 import { ISideBarIconProps } from "./interfaces";
-import DriverIcons from '../../../assets/speedometer.png';
+import DriverIcons from '../../../assets/sidebar-speedometer.png';
 import useStyles from "./style";
 
 

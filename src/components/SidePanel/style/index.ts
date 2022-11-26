@@ -35,11 +35,11 @@ export default makeStyles({
     transition:'0.3s',
     overflow:'hidden',
     '& .MuiTypography-root':{
-      color:'white',
+      color:'black',
     }
   },
   selectedMenuItem: {
-    background:COLORS.BUTTON,
+    background:'#f8dad1',
     color:'white',
     transition: '0.3s',
   },

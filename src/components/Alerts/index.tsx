@@ -32,16 +32,16 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
-import { auth } from "constants/RouteMiddlePath";
+import { auth, transport } from "constants/RouteMiddlePath";
 
-export default function Users() {
+export default function Alerts() {
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: userList, isLoading } = useQuery(
-    ["users", page, rowsPerPage, searchText],
-    () => getUsers(page, rowsPerPage, searchText)
+  const { data: alertList, isLoading } = useQuery(
+    ["alerts", page, rowsPerPage, searchText],
+    () => getAlerts(page, rowsPerPage, searchText)
   );
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
@@ -54,17 +54,17 @@ export default function Users() {
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.USERS,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.USERS,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.USERS,Actions.DELETE)
+  const isAdd=actionAccess(AppPaths.ALERTS,Actions.ADD)
+  const isEdit=actionAccess(AppPaths.ALERTS,Actions.EDIT)
+  const isDelete=actionAccess(AppPaths.ALERTS,Actions.DELETE)
   
   
   const navigate = useNavigate();
 
   
   const classes = useStyles();
-  async function getUsers(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `${auth}/users/?page=${
+  async function getAlerts(pageNumber: number, pageSize: number, searchText?: string) {
+    let getApiUrl = `${transport}/alerts/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -82,7 +82,7 @@ export default function Users() {
   };
   const handleClose = () => {
     setOpenDelete(false);
-    getUsers(page, rowsPerPage, searchText)
+    getAlerts(page, rowsPerPage, searchText)
   };
 
 
@@ -105,30 +105,30 @@ export default function Users() {
     setPage(0);
   };
 
-  function openUserDetails(
+  function openAlertDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
     event.stopPropagation();
-    navigate(`/${AppPaths.USERS}/${id}`);
+    navigate(`/${AppPaths.ALERTS}/${id}`);
   }
 
-  function editUserDetails(
+  function editAlertDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
     event.stopPropagation();
-    navigate(`/${AppPaths.USERS}/${SubPaths.EDIT}/${id}`);
+    navigate(`/${AppPaths.ALERTS}/${SubPaths.EDIT}/${id}`);
   }
 
   const actionMenuItems: MenuType[] = [
     {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
-      onClick: openUserDetails,
+      onClick: openAlertDetails,
       access:true
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails,access:isEdit },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editAlertDetails,access:isEdit },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
@@ -165,23 +165,23 @@ export default function Users() {
     },
   ];
 
-  function addUser() {
-    navigate(`/${AppPaths.USERS}/${SubPaths.ADD}`);
+  function addAlerts() {
+    navigate(`/${AppPaths.ALERTS}/${SubPaths.ADD}`);
   }
   const handleSearchInput = (e: any) => {
     setSearchText(e);
   };
 
-  const deleteUserMutation = useMutation(deleteUser, {
+  const deleteAlertMutation = useMutation(deleteAlert, {
     onSuccess: () =>{
        handleClose()
         setSnackbar({
             open: true,
             variant: "success",
-            message: "User deleted.",
+            message: "Alert deleted.",
         })
         setTimeout(() => {
-            navigate(`/${AppPaths.USERS}`);
+            navigate(`/${AppPaths.ALERTS}`);
         }, 1000);
     },
         
@@ -193,42 +193,41 @@ export default function Users() {
         }),
 });
 
-const { mutate: mutateDeleteUser } =deleteUserMutation;
+const { mutate: mutateDeleteAlert } =deleteAlertMutation;
 
-function deleteUser() {
-  return client.delete(`${auth}/users/${deleteId}`)
+function deleteAlert() {
+  return client.delete(`${transport}/alerts/${deleteId}`)
 }
 
-
-     function handleDelete() {
-      mutateDeleteUser()
-       
-    }
+  function handleDelete() {
+    mutateDeleteAlert()
+      
+  }
    
 
 
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="user"/>}
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="alert"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Users</Heading>
+        <Heading>Alerts</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
           <Box style={{ marginRight: isAdd ? 12 : 0
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
-              placeholder="Search User by Name or Id"
+              placeholder="Search Alerts by Name or Id"
             />
           </Box>
           {isAdd ? (
             <Button
               variant="contained"
-              style={{ color:COLORS.WHITE }}
-              onClick={addUser}
+              style={{ background: COLORS.GRADIENT, color:COLORS.WHITE }}
+              onClick={addAlerts}
             >
               <AddIcon />
-              add user
+              add alert
             </Button>
           ) : null} 
         </Box>
@@ -247,8 +246,8 @@ function deleteUser() {
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : userList?.results.length ? (
-              userList?.results.map((user: any, index: number) => {
+            ) : alertList?.results.length ? (
+              alertList?.results.map((user: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
@@ -288,7 +287,7 @@ function deleteUser() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(userList?.count / rowsPerPage)}
+          totalPages={Math.ceil(alertList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

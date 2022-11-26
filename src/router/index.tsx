@@ -20,6 +20,9 @@ import AddVehicle from "components/Vehicles/AddVehicle";
 import {VehicleDetails} from "components/Vehicles/VehicleDetails"
 import {DriverDetails} from "../components/Drivers/DriverDetails";
 import LiveView from "components/LiveView";
+import Alerts from "components/Alerts";
+import { AlertDetails } from "components/Alerts/AlertDetails";
+import AddAlert from "components/Alerts/AddAlert";
 
 export default function AppRouter() {
   return (
@@ -279,21 +282,7 @@ export default function AppRouter() {
         }
       />
 
-
-      <Route
-        path={"*"}
-        element={
-          <ProtectedRoute
-            route={AppPaths.DASHBOARD}
-            component={
-              <ErrorBoundary>
-                <Dashboard />
-              </ErrorBoundary>
-            }
-          />
-        }
-      />
-      <Route
+<Route
         path={AppPaths.LIVE}
         element={
           <ProtectedRoute
@@ -308,6 +297,61 @@ export default function AppRouter() {
           />
         }
       />
+
+    <Route
+        path={AppPaths.ALERTS}
+        element={
+          <ProtectedRoute
+            route={AppPaths.ALERTS}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Alerts />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+    <Route
+        path={`${AppPaths.ALERTS}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.ALERTS}
+            component={
+              <ErrorBoundary>
+                <AlertDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+
+    <Route
+        path={`${AppPaths.ALERTS}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.ALERTS}
+            component={<AddAlert />}
+          />
+        }
+      />
+      
+      <Route
+        path={"*"}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DASHBOARD}
+            component={
+              <ErrorBoundary>
+                <Dashboard />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+      
     </Routes>
   );
 }

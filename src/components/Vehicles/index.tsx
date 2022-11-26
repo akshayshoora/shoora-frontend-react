@@ -218,7 +218,7 @@ function deleteVehicle() {
           {isAdd ? (
             <Button
               variant="contained"
-              style={{ background: COLORS.GRADIENT, color:COLORS.WHITE }}
+              style={{ color:COLORS.WHITE }}
               onClick={addVehicle}
             >
               <AddIcon />
