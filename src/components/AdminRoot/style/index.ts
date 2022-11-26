@@ -15,16 +15,17 @@ export default makeStyles({
   },
   sidePanel: {
     flex: '0.25',
-    background:`${COLORS.GRADIENT}`,
+    background:'#feebe5',
     transition:'0.3s',
     width:'100px',
     position: 'fixed',
+    borderRadius:'0px 16px 16px 0px',
     left:'0',
     top:'0',
     zIndex:'9',
     bottom:'0',
     "&:hover": {
-      width:'200px',
+      width:'300px',
       "& .makeStyles-menuLabel-15":{
         opacity:'1',
        },
@@ -34,7 +35,7 @@ export default makeStyles({
     flex: 1,
   },
   mainContent:{
-   marginLeft:'90px',
+   marginLeft:'100px',
   },
   header: {
     borderBottom: `1px solid ${COLORS.BORDER_GREY}`,
