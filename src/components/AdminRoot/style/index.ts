@@ -15,7 +15,7 @@ export default makeStyles({
   },
   sidePanel: {
     flex: '0.25',
-    background:`${COLORS.GRADIENT}`,
+    background:'#feebe5',
     transition:'0.3s',
     width:'100px',
     position: 'fixed',
@@ -35,7 +35,7 @@ export default makeStyles({
     flex: 1,
   },
   mainContent:{
-   marginLeft:'90px',
+   marginLeft:'100px',
   },
   header: {
     borderBottom: `1px solid ${COLORS.BORDER_GREY}`,
