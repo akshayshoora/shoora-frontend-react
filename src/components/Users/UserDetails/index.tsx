@@ -7,6 +7,7 @@ import { AppPaths, SubPaths } from "../../../constants/commonEnums";
 import { useQuery } from "react-query";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
+import { auth } from "constants/RouteMiddlePath";
 
 export function UserDetails() {
     const classes = useStyles();
@@ -19,7 +20,7 @@ export function UserDetails() {
     );
 
     async function getUserDetails(id: string) {
-        return (await client.get(`/users/${id}/`)).data;
+        return (await client.get(`${auth}/users/${id}/`)).data;
     }
 
 
@@ -34,16 +35,7 @@ export function UserDetails() {
                
                 <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{user.name}</Typography>
                 </Box>
-                <Box>
-                <Button
-                    variant="outlined"
-                    onClick={() =>
-                    navigate(`/${AppPaths.USERS}/${SubPaths.EDIT}/${id}`)
-                    }
-                >
-                    Edit User
-                </Button>
-                </Box>
+               
             </Box>
             <Box className={classes.bodyContent}>
                 <Box className={classes.infoBodyWrapper}>

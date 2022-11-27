@@ -11,13 +11,15 @@ import {
 
 import client from "serverCommunication/client";
 import { useAppContext } from "ContextAPIs/appContext";
+import COLORS from "constants/colors";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: "#F8F8FB",
+  backgroundColor: "#fff",
   ...theme.typography.body2,
-  padding: theme.spacing(2),
+  padding: theme.spacing(4,2, 2),
   color: theme.palette.text.secondary,
   position: "relative",
+  boxShadow:'0 0.75rem 1.5rem rgb(18 38 63 / 3%)',
 }));
 
 const StatsIcon = styled("div")(({ theme }) => ({
@@ -25,6 +27,15 @@ const StatsIcon = styled("div")(({ theme }) => ({
   position: "absolute",
   top: 16,
   right: 16,
+  borderRadius:50,
+  width:45,
+  height:45,
+  boxSizing:'border-box',
+  padding:10,
+  background:COLORS.GRADIENT,
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center'
 }));
 
 
@@ -54,7 +65,7 @@ export default function Summary() {
           return (
             <Grid item xs={2} sm={3} md={3} key={item.dataIndex}>
               <Item elevation={0}>
-                <Typography variant="subtitle1" fontSize={12} component="div">
+                <Typography variant="subtitle1" fontSize={14} component="div">
                   {item.label}
                 </Typography>
                 <Typography variant="h1" mt={1} component="div">

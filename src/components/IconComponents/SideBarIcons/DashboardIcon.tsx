@@ -5,9 +5,9 @@ const DashboardIcon = (props: ISideBarIconProps) => {
   const classes = useStyles();
   const { isActive } = props;
   return isActive ? (
-    <img src={DashboardIcons} height={32} width={32} alt="" />
+    <img src={DashboardIcons} width={28} alt="" />
     ) : (
-  <img src={DashboardIcons} height={32} width={32} className={classes.disabledImage} alt="" />
+  <img src={DashboardIcons} width={28} className={classes.disabledImage} alt="" />
     );
 };
 export default DashboardIcon;

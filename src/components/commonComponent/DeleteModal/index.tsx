@@ -22,6 +22,7 @@ const style = {
 
 interface IDeleteModalProps {
     handleClose: () => void;
+    handleDelete?: () => void;
     label: string;
     open: boolean; 
   }
@@ -43,7 +44,7 @@ interface IDeleteModalProps {
           <Typography variant='h2' >Delete</Typography>
           <Box className={classes.deleteText} >
           <Typography variant='body1'  align='center' >
-          Are you sure want to delete this user?
+          Are you sure want to delete this {props.label}?
           </Typography>
           </Box>
           <Box className={classes.buttonContainer}>
@@ -52,7 +53,7 @@ interface IDeleteModalProps {
             <Button onClick={props.handleClose}>Cancel</Button>
             </Box>
             <Box >
-            <Button style={{ color:COLORS.ERROR }} onClick={props.handleClose}>Delete</Button>
+            <Button style={{ color:COLORS.ERROR }} onClick={props.handleDelete}>Delete</Button>
             </Box>
           </Box>
          

@@ -2,13 +2,22 @@ import {
     Alert,
     Box,
     Button,
+    Checkbox,
+    CircularProgress,
+    FormControl,
     Grid,
     IconButton,
+    InputLabel,
+    ListItemText,
+    MenuItem,
+    OutlinedInput,
+    Select,
+    SelectChangeEvent,
     Snackbar,
     Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import axios from "axios";
 import TextInput from "components/commonComponent/TextInput";
@@ -20,6 +29,7 @@ import PageLoading from "components/commonComponent/PageLoading";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
+import {auth} from "constants/RouteMiddlePath"
 
 class NewUserType {
     "name": string = "";
@@ -27,16 +37,19 @@ class NewUserType {
     "contact_code": string | null = null;
     "address": string | null = null;
     "email": string | null = null;
-    "password": string | null = null;
-    "role_ids": string[] | null = [];
+    "password"?: string | null = null;
+    "role_ids": string[] = [];
+    "roles": string[] = [];
     "organization_id": string | null = null;
 }
 
 export default function AddUser() {
     const [users, setUser] = useState<NewUserType>(new NewUserType());
     const { user } = useAppContext();
-
-
+    const { data: roleList, isLoading: loadingRoleInfo } = useQuery(
+        ["roles"],
+        async () => await getRoles()
+      );
     const navigate = useNavigate();
     const classes = useStyles();
     const { id: userId } = useParams();
@@ -103,42 +116,51 @@ export default function AddUser() {
             },
         }
     );
-
     function backToProperties() {
         navigate(-1);
     }
 
     function handleFormUser(
         key: keyof NewUserType,
-        value: string | boolean | number | []
+        value: string | boolean | number | string[] | SelectChangeEvent<string[]>
     ) {
         setUser({ ...users, [key]: value });
     }
 
     function addUser(user: NewUserType) {
-        return client.post("/users/", {
+        return client.post(`${auth}/users/`, {
             ...user,
         });
     }
 
     function updateUser(user: NewUserType) {
-        return client.patch(`/users/${userId}/`, {
+        delete user.password
+        return client.patch(`${auth}/users/${userId}/`, {
             ...user,
         });
     }
 
+    function getRoleNamesByID(roleId: string[]){
+        let roleIdArr: string[] = [];
+        roleId.map((itm:any) => {
+            roleIdArr.push(itm.id)
+        })
+        return roleIdArr;
+    }
     const { mutate: mutateAddUser, isLoading: isAddingUser } =
     addUserMutation;
     const { mutate: mutateUpdateUser, isLoading: updatingUser } =
     updateUserMutation;
 
     function handleSubmit() {
+        users.roles=users.role_ids
         if (userId) {
+            
              mutateUpdateUser(users);
             return;
         }
-       users.role_ids=["e8612a48-602c-4674-9cc7-d3d6992220e2"];
        users.organization_id=user.organization_id
+       
         mutateAddUser(users);
     }
 
@@ -147,7 +169,11 @@ export default function AddUser() {
     }
     
     async function getUserDetails(id: string) {
-        return (await client.get(`/users/${id}/`)).data;
+        return (await client.get(`${auth}/users/${id}/`)).data;
+    }
+
+    async function getRoles() {
+        return (await client.get(`${auth}/roles/`)).data;
     }
 
    
@@ -162,6 +188,9 @@ export default function AddUser() {
     : updatingUser
     ? "Updating User..."
     : "";
+
+
+    console.log(users.role_ids,"rolesss")
 
     return (
         <Box className={classes.positionRelative}>
@@ -272,16 +301,36 @@ export default function AddUser() {
                         />
                     </Grid>
                     <Grid item xs={4}>
-                    <SelectField
-                    label="Roles"
-                    isLoading={false}
-                    menuItems={[]}
-                    style={{ marginBottom: 12 }}
-                    value={"Roles"}
-                    isRequired={true}
-                    onChange={(value) => handleFormUser("role_ids", value)}
-                  />
+                                <Typography fontSize={16} style={{ fontWeight: 200,marginBottom:10, marginRight: 2 }}>
+                    Select Roles
+                    </Typography>
+                    <Select
+                                multiple
+                    fullWidth
+                    id="demo-simple-select"
+                    value={users.role_ids}
+                    onChange={(e:any) => handleFormUser("role_ids", typeof e.target.value === 'string' ? e.target.value.split(',') : e.target.value)}
+                    size="small"
+                    >
+                    <MenuItem selected value="" disabled>
+                        Select Roles
+                    </MenuItem>
+                    {loadingRoleInfo ? (
+                        <MenuItem>
+                        <CircularProgress />
+                        </MenuItem>
+                    ) : roleList?.results.length ? (
+                        roleList?.results.map((item:any) => (
+                        <MenuItem style={{ fontSize: 14 }} value={item.id}>
+                            {item.name}
+                        </MenuItem>
+                        ))
+                    ) : (
+                        <MenuItem>Nothing to Select</MenuItem>
+                    )}
+                    </Select>
                   </Grid>
+                   
                   {userId &&
                   <Grid item xs={4}>
                         <TextInput
@@ -293,9 +342,9 @@ export default function AddUser() {
                             onChange={(value) => handleFormUser("address", value)}
                         />
                     </Grid>
-                  }
+                 } 
                   </Grid>
-                  {!userId &&
+                 {!userId &&
                   <Grid container spacing={4}>
                     <Grid item xs={4}>
                         <TextInput
@@ -308,7 +357,7 @@ export default function AddUser() {
                         />
                     </Grid>
                     </Grid>
-                 }
+                 } 
                 
             </Box>
 

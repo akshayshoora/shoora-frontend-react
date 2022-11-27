@@ -15,6 +15,7 @@ import client from "serverCommunication/client";
 import { getUserID } from "utils/localStorage";
 import ThemeProviderWrapper from "ThemeProviderWrapper";
 import useStyles from "./style";
+import {auth} from 'constants/RouteMiddlePath'
 
 function AdminRoot() {
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(
@@ -36,7 +37,7 @@ function AdminRoot() {
   async function getUser() {
     const userID = getUserID();
     if (userID) {
-      return (await client.get(`/users/${userID}/`)).data;
+      return (await client.get(`${auth}/users/${userID}/`)).data;
     }
     return new Users();
   }
@@ -100,7 +101,8 @@ function AdminRoot() {
                       className={classNames(
                         classes.displayFlex,
                         classes.flexColumn,
-                        classes.panelBody
+                        classes.panelBody,
+                        classes.mainContent
                       )}
                     >
                       <Box className={classes.header}>

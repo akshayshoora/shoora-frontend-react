@@ -1,9 +1,9 @@
 import { HeadCell } from "components/commonComponent/Table";
 import { AppPaths } from "../constants/commonEnums";
-import VehicleIcon from "../assets/vehicles.png"
-import UserIcon from "../assets/users.png";
-import OrganizationIcon from "../assets/organization.png";
-import FeatureIcon from "../assets/features.webp";
+import DistanceIcon from "../assets/distance.png"
+import Trips from "../assets/trips.png";
+import DurationIcon from "../assets/time.png";
+import kilometresIcon from "../assets/speedometer.png";
 
 import React from "react";
 
@@ -14,7 +14,11 @@ export const ALL_MENU = [
   AppPaths.DASHBOARD,
   AppPaths.USERS,
   AppPaths.ORGANIZATIONS,
- 
+  AppPaths.DEVICES,
+  AppPaths.DRIVERS,
+  AppPaths.VEHICLES,
+  AppPaths.LIVE,
+  AppPaths.ALERTS
 ];
 
 
@@ -22,6 +26,11 @@ export const ALL_ROUTES = [
   AppPaths.DASHBOARD,
   AppPaths.USERS,
   AppPaths.ORGANIZATIONS,
+  AppPaths.DEVICES,
+  AppPaths.DRIVERS,
+  AppPaths.VEHICLES,
+  AppPaths.LIVE,
+  AppPaths.ALERTS
 ];
 
 
@@ -39,31 +48,31 @@ export const getRoleBasedFilteredSummary = () => {
 
   const data : ROLE_BASED_FILTERED_SUMMARY[] = [
     {
-      dataIndex: "total_organizations",
-      label: "Total Organization",
-      icon: OrganizationIcon ,
+      dataIndex: "total_trips",
+      label: "Trips",
+      icon: Trips ,
       value:"10",
 
     },
     {
-      dataIndex: "total_vehicles",
-      label: "Total Vehicles",
-      icon: VehicleIcon,
+      dataIndex: "total_distance",
+      label: "Distance (km)",
+      icon: DistanceIcon,
       value:"50",
 
     },
     {
-      dataIndex: "total_features",
-      label: "Total Features",
-      icon: FeatureIcon,
+      dataIndex: "total_duration",
+      label: "Duration (hours)",
+      icon: DurationIcon,
       value:"15",
       
     },
 
     {
-      dataIndex: "total_users",
-      label: "Total Users",
-      icon: UserIcon,
+      dataIndex: "total_kilometres",
+      label: "Incidents / 100 kilometres",
+      icon: kilometresIcon,
       value:"70",
      
     },

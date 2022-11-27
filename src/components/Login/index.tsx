@@ -21,6 +21,8 @@ import useStyles from "./style";
 import { USER_ID } from "constants/commonConstants";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import LoginImg from '../../assets/macbook-pro.png';
+import { auth } from "constants/RouteMiddlePath";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -55,7 +57,7 @@ export default function Login() {
       password: password,
     };
     client
-      .post("/token/", data)
+      .post(`${auth}/token/`, data)
       .then((response) => {
         const {data} = response;
         setUserToken(data.access);
@@ -81,8 +83,12 @@ export default function Login() {
   return (
     <Box className={classes.root}>
       <Box component={"span"}>
-        <img src={BRAND.LOGO} alt="shoora" height={100} width={100}/>
+        <img src={BRAND.LOGO} alt="shoora" width={100}/>
         
+      </Box>
+      <Box className={classes.loginBoxMain}>
+      <Box className={classes.loginLeft}>
+        <img src={LoginImg} alt="" style={{ maxWidth: '100%' }}></img>
       </Box>
       <Box className={classes.loginBoxWrapper}>
         <Box
@@ -114,7 +120,7 @@ export default function Login() {
               label="Password"
               variant="outlined"
               type={showPassword ? 'text' : 'password'}
-              style={{ marginTop: 12 }}
+              style={{ marginTop: 30 }}
               value={password}
               /**
                //@ts-ignore */
@@ -126,9 +132,9 @@ export default function Login() {
                 }
               }}
             />
-            <Button
+            <Button className={classes.shooraBtn}
               variant="contained"
-              style={{ marginTop: 12 }}
+              style={{ marginTop: 20 }}
               type="submit"
               disabled={!email.length || !password.length}
             >
@@ -167,6 +173,7 @@ export default function Login() {
             </Alert>
           </Snackbar>
         </Stack>
+      </Box>
       </Box>
     </Box>
   );

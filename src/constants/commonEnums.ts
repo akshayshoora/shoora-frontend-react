@@ -3,7 +3,12 @@ export enum AppPaths {
   USERS = 'users',
   LOGIN = 'login',
   PROFILE = 'profile',
-  ORGANIZATIONS='organizations'
+  ORGANIZATIONS='organizations',
+  DEVICES='devices',
+  DRIVERS='drivers',
+  VEHICLES='vehicles',
+  LIVE='live',
+  ALERTS='alerts'
 }
 
 export enum SubPaths {

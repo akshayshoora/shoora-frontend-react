@@ -9,30 +9,39 @@ export default makeStyles({
     alignItems: 'center',
   },
   logo: {
-    margin: '32px 0 32px',
+    margin: '0px 0 24px',
+    width:'100%',
+    padding:'10px 0 0px 0px',
+    textAlign:'center',
   },
   menuItem: {
-    padding: 8,
+    padding: '10px 8px',
     display: 'flex',
     alignItems: 'center',
     paddingLeft: 18,
     marginBottom: 16,
     cursor: 'pointer',
     textDecoration: 'none',
+    color:'white',
+    borderRadius:'11px',
     transition: '0.3s',
-    '&:hover':{
-      background:
-      'linear-gradient(90deg, rgba(2, 51, 225, 0.1) 0%, rgba(2, 51, 225, 0.000520833) 98.65%, rgba(2, 51, 225, 0) 98.66%);',
-    },
+    marginLeft:'15px',
+    marginRight:'15px',
   },
   menuLabel: {
     marginLeft: 12,
     textTransform: 'capitalize',
+    opacity:0,
+    transition:'0.3s',
+    overflow:'hidden',
+    '& .MuiTypography-root':{
+      color:'black',
+    }
   },
   selectedMenuItem: {
-    background:
-      'linear-gradient(90deg, rgba(2, 51, 225, 0.1) 0%, rgba(2, 51, 225, 0.000520833) 98.65%, rgba(2, 51, 225, 0) 98.66%);',
-    borderLeft: `3px solid` + COLORS.PRIMARY_COLOR,
+    background:'#f8dad1',
+    color:'white',
+    transition: '0.3s',
   },
   menu: {
     width: '100%',
@@ -48,6 +57,6 @@ export default makeStyles({
     position: 'fixed',
     bottom: 0,
     width: '20%',
-    minWidth: 240,
+    minWidth: 200,
   },
 });

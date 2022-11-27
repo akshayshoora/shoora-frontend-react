@@ -27,20 +27,27 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import { useQuery } from "react-query";
+import { useQuery,useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
+import { auth } from "constants/RouteMiddlePath";
 
 export default function Users() {
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
+  const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data: userList, isLoading } = useQuery(
     ["users", page, rowsPerPage, searchText],
     () => getUsers(page, rowsPerPage, searchText)
   );
+  const [snackbar, setSnackbar] = React.useState<{
+    open: boolean;
+    variant: "success" | "error" | "info";
+    message: string;
+}>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("user");
@@ -57,7 +64,7 @@ export default function Users() {
   
   const classes = useStyles();
   async function getUsers(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `/users/?page=${
+    let getApiUrl = `${auth}/users/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -67,11 +74,15 @@ export default function Users() {
     return response.data;
   }
 
-  const handleOpenDelete = () => {
+  const handleOpenDelete = ( 
+    event: React.MouseEvent<HTMLElement>,
+    id: string) => {
+      setDeleteId(id)
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
+    getUsers(page, rowsPerPage, searchText)
   };
 
 
@@ -115,12 +126,14 @@ export default function Users() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openUserDetails,
+      access:true
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails,access:isEdit },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: handleOpenDelete,
+      access:isDelete
     },
   ];
 
@@ -158,30 +171,66 @@ export default function Users() {
   const handleSearchInput = (e: any) => {
     setSearchText(e);
   };
+
+  const deleteUserMutation = useMutation(deleteUser, {
+    onSuccess: () =>{
+       handleClose()
+        setSnackbar({
+            open: true,
+            variant: "success",
+            message: "User deleted.",
+        })
+        setTimeout(() => {
+            navigate(`/${AppPaths.USERS}`);
+        }, 1000);
+    },
+        
+    onError: () =>
+        setSnackbar({
+            open: true,
+            variant: "error",
+            message: "Something went wrong.",
+        }),
+});
+
+const { mutate: mutateDeleteUser } =deleteUserMutation;
+
+function deleteUser() {
+  return client.delete(`${auth}/users/${deleteId}`)
+}
+
+
+     function handleDelete() {
+      mutateDeleteUser()
+       
+    }
+   
+
+
+
   return (
-    <Box style={{ padding: "40px 24px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="user"/>}
+    <Box style={{ padding: "20px 20px 20px 40px" }}>
+      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="user"/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Users</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: 12
-            // isAdmin || isHostAdmin(user.roles) ? 12 : 0
+          <Box style={{ marginRight: isAdd ? 12 : 0
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search User by Name or Id"
             />
           </Box>
-          {/* {isAdmin || isHostAdmin(user.roles) ? ( */}
+          {isAdd ? (
             <Button
               variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR }}
+              style={{ color:COLORS.WHITE }}
               onClick={addUser}
             >
               <AddIcon />
               add user
             </Button>
-          {/* ) : null} */}
+          ) : null} 
         </Box>
       </Box>
       <Box className={classes.root}>

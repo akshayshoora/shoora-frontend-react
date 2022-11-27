@@ -10,6 +10,19 @@ import { UserDetails } from "components/Users/UserDetails";
 import EditProfile from "components/UserProfile";
 import Organization from 'components/Organization';
 import {OrganizationDetails} from "components/Organization/OrganizationDetails";
+import AddDevice from "components/Devices/AddDevice";
+import Devices from "components/Devices";
+import { DeviceDetails } from "components/Devices/DeviceDetails";
+import Driver from '../components/Drivers/index';
+import AddDriver from "components/Drivers/AddDriver";
+import Vehicles from "components/Vehicles";
+import AddVehicle from "components/Vehicles/AddVehicle";
+import {VehicleDetails} from "components/Vehicles/VehicleDetails"
+import {DriverDetails} from "../components/Drivers/DriverDetails";
+import LiveView from "components/LiveView";
+import Alerts from "components/Alerts";
+import { AlertDetails } from "components/Alerts/AlertDetails";
+import AddAlert from "components/Alerts/AddAlert";
 
 export default function AppRouter() {
   return (
@@ -126,7 +139,205 @@ export default function AppRouter() {
           />
         }
       />
+
+       <Route
+        path={AppPaths.DEVICES}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DEVICES}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Devices />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.DEVICES}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DEVICES}
+            component={
+              <ErrorBoundary>
+                <DeviceDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.DEVICES}/${SubPaths.ADD}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DEVICES}
+            component={<AddDevice />}
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.DEVICES}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DEVICES}
+            component={<AddDevice />}
+          />
+        }
+      />
+
+    <Route
+        path={AppPaths.DRIVERS}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DRIVERS}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Driver />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.DRIVERS}/${SubPaths.ADD}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DRIVERS}
+            component={<AddDriver />}
+          />
+        }
+      />
      
+     <Route
+        path={`${AppPaths.DRIVERS}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.DRIVERS}
+            component={<AddDriver />}
+          />
+        }
+      />
+        <Route
+            path={`${AppPaths.DRIVERS}/:id`}
+            element={
+                <ProtectedRoute
+                    route={AppPaths.DRIVERS}
+                    component={
+                        <ErrorBoundary>
+                            <DriverDetails />
+                        </ErrorBoundary>
+                    }
+                />
+            }
+        />
+
+<Route
+        path={AppPaths.VEHICLES}
+        element={
+          <ProtectedRoute
+            route={AppPaths.VEHICLES}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Vehicles />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.VEHICLES}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.VEHICLES}
+            component={
+              <ErrorBoundary>
+                <VehicleDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.VEHICLES}/${SubPaths.ADD}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.VEHICLES}
+            component={<AddVehicle />}
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.VEHICLES}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.VEHICLES}
+            component={<AddVehicle />}
+          />
+        }
+      />
+
+<Route
+        path={AppPaths.LIVE}
+        element={
+          <ProtectedRoute
+            route={AppPaths.LIVE}
+            component={
+              <>
+                <ErrorBoundary>
+                  <LiveView />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+    <Route
+        path={AppPaths.ALERTS}
+        element={
+          <ProtectedRoute
+            route={AppPaths.ALERTS}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Alerts />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+    <Route
+        path={`${AppPaths.ALERTS}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.ALERTS}
+            component={
+              <ErrorBoundary>
+                <AlertDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+
+    <Route
+        path={`${AppPaths.ALERTS}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.ALERTS}
+            component={<AddAlert />}
+          />
+        }
+      />
+      
       <Route
         path={"*"}
         element={
@@ -140,6 +351,7 @@ export default function AppRouter() {
           />
         }
       />
+      
     </Routes>
   );
 }

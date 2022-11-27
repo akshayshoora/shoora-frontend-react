@@ -25,7 +25,9 @@ import ActionMenu, {
 } from "components/commonComponent/Table/ActionMenu";
 import { useQuery } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { AppPaths, SubPaths } from "../../constants/commonEnums";
+import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
+import { actionAccess} from "utils/FeatureCheck";
+import { auth } from "constants/RouteMiddlePath";
 
 
 export default function Organization() {
@@ -37,6 +39,10 @@ export default function Organization() {
     () => getOrgs(page, rowsPerPage, searchText)
   );
 
+  const isAdd=actionAccess(AppPaths.ORGANIZATIONS,Actions.ADD)
+  const isEdit=actionAccess(AppPaths.ORGANIZATIONS,Actions.EDIT)
+  const isDelete=actionAccess(AppPaths.ORGANIZATIONS,Actions.DELETE)
+
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("user");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
@@ -47,7 +53,7 @@ export default function Organization() {
   const classes = useStyles();
 
   async function getOrgs(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `/organizations/?page=${
+    let getApiUrl = `${auth}/organizations/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -97,12 +103,16 @@ export default function Organization() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openOrganizationDetails,
+      access:true,
     },
-    // {
-    //   label: "Delete",
-    //   icon: <DeleteOutlineOutlinedIcon />,
-    //   onClick: handleOpenDelete,
-    // },
+      { label: "Edit", icon: <InfoOutlinedIcon />, onClick: openOrganizationDetails,access:isEdit },
+    {
+      label: "Delete",
+      icon: <DeleteOutlineOutlinedIcon />,
+      onClick: handleOpenDelete,
+      access:isDelete
+    },
+    
   ];
 
   const headCells: readonly HeadCell[] = [
@@ -148,16 +158,12 @@ export default function Organization() {
         <Heading>Organizations</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
           <Box style={{ marginRight: 12
-            // isAdmin || isHostAdmin(user.roles) ? 12 : 0
              }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search Organization by Name or Id"
             />
           </Box>
-          {/* {isAdmin || isHostAdmin(user.roles) ? ( */}
-            
-          {/* ) : null} */}
         </Box>
       </Box>
       <Box className={classes.root}>
