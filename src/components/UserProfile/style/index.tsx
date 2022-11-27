@@ -36,8 +36,8 @@ export default makeStyles({
         background: "#F8F8FB",
         display: 'flex',
         justifyContent: 'flex-end',
-        width: '77%',
         position: 'fixed',
         bottom: '0',
+        right:'0',
     },
 });
