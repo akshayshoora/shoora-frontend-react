@@ -128,13 +128,13 @@ export default function Vehicles() {
       onClick: openVehicleDetails,
       access:true
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editVehicleDetails,access:isEdit },
-    {
-      label: "Delete",
-      icon: <DeleteOutlineOutlinedIcon />,
-      onClick: handleOpenDelete,
-      access:isDelete
-    },
+    // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editVehicleDetails,access:isEdit },
+    // {
+    //   label: "Delete",
+    //   icon: <DeleteOutlineOutlinedIcon />,
+    //   onClick: handleOpenDelete,
+    //   access:isDelete
+    // },
   ];
 
   const headCells: readonly HeadCell[] = [
@@ -215,7 +215,7 @@ function deleteVehicle() {
               placeholder="Search Vehicle Name"
             />
           </Box>
-          {isAdd ? (
+          {/* {isAdd ? (
             <Button
               variant="contained"
               style={{ color:COLORS.WHITE }}
@@ -224,7 +224,7 @@ function deleteVehicle() {
               <AddIcon />
               add vehicle
             </Button>
-          ) : null} 
+          ) : null}  */}
         </Box>
       </Box>
       <Box className={classes.root}>
