@@ -52,7 +52,7 @@ export default function LiveMap() {
             </i>
             <span>Default</span>
           </li>
-          <li className={mapOption == 1 ? "selected" :''} onClick={()=>{setMapOption(1)}}>
+          <li className={mapOption == 1 ? "selected" :''} onClick={()=>{ setMapOption(1); window.location.href="http://35.154.254.3:3002/videofeed/?device_id=784087664023&email=its@its.com&password=123456"}}>
           <i> 
             <img src={mapIcon} height={32} width={32} alt="" />
             </i>
