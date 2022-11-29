@@ -31,6 +31,7 @@ export default makeStyles({
        fontWeight:'700',
        display:'block',
        marginTop:'5px',
+       cursor:"pointer"
       }
     }
   },
@@ -53,7 +54,8 @@ export default makeStyles({
     cursor:'pointer',
     padding:'0 15px',
     fontWeight:'700',
-  }
+  },
+  
 
   
   
