@@ -23,6 +23,9 @@ export default makeStyles({
       margin:'0 5px',
       borderRadius:'5px',
       width:'90px',
+      "&.selected":{
+       background:'#f2e8e8',
+      },
       "& span":{
        fontSize:'15px',
        fontWeight:'700',

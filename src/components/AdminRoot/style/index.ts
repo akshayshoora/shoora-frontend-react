@@ -15,7 +15,7 @@ export default makeStyles({
   },
   sidePanel: {
     flex: '0.25',
-    background:'#feebe5',
+    background:'#5a5d64',
     transition:'0.3s',
     width:'100px',
     position: 'fixed',

@@ -36,7 +36,7 @@ export default function LiveMap() {
       <div className="mapstyle">
         <h3>Map Style</h3>
       <ul className="maplist">
-        <li>
+        <li className="selected">
           <i> 
             <img src={mapIcon} height={32} width={32} alt="" />
             </i>
