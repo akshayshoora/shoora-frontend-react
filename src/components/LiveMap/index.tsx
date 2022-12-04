@@ -31,13 +31,25 @@ export default function LiveMap() {
     setShowMapOption(!showMapOption)
   }
 
+  const renderMarkers = (map :any, maps:any) => {
+    let marker = new maps.Marker({
+     position: { lat: 25.28, lng: 81.54 },
+     map,
+     title: 'Hello World!'
+     });
+     return marker;
+   };
+
   return (
     <Box className="livemap">
       <GoogleMapReact 
+      // bootstrapURLKeys={{ key: 'YOUR KEY' }}
       style={{ height: `600px` }}
       defaultZoom={10}
       resetBoundsOnResize={true}
-      defaultCenter={{ lat: 47.36667, lng: 8.55 }}
+      defaultCenter={{ lat: 25.28, lng: 81.54 }}
+      onGoogleApiLoaded={({ map, maps }) => renderMarkers(map, maps)}
+
     />
 
     <Box className={classes.mapdropdown}>
