@@ -23,11 +23,15 @@ export default makeStyles({
       margin:'0 5px',
       borderRadius:'5px',
       width:'90px',
+      "&.selected":{
+       background:'#f2e8e8',
+      },
       "& span":{
        fontSize:'15px',
        fontWeight:'700',
        display:'block',
        marginTop:'5px',
+       cursor:"pointer"
       }
     }
   },
@@ -50,7 +54,8 @@ export default makeStyles({
     cursor:'pointer',
     padding:'0 15px',
     fontWeight:'700',
-  }
+  },
+  
 
   
   

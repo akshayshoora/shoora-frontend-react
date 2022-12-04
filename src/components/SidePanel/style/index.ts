@@ -35,13 +35,18 @@ export default makeStyles({
     transition:'0.3s',
     overflow:'hidden',
     '& .MuiTypography-root':{
-      color:'black',
+      color:'white',
     }
   },
   selectedMenuItem: {
-    background:'#f8dad1',
+    background:'#fff',
     color:'white',
     transition: '0.3s',
+    '& span':{
+      '& span':{
+        color:'#000 !important'
+      }
+    }
   },
   menu: {
     width: '100%',
