@@ -69,9 +69,7 @@ export default function () {
   }
 
   async function getGpsList(pageNumber: number, pageSize: number,deviceid:string,searchText?: string) {
-    let getApiUrl = `${monitor}/current-location/?id=${deviceid}&page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${monitor}/current-location/${deviceid}`;
 
    
     const response = await client.get(getApiUrl);

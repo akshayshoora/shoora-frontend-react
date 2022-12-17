@@ -24,6 +24,8 @@ import Alerts from "components/Alerts";
 import { AlertDetails } from "components/Alerts/AlertDetails";
 import AddAlert from "components/Alerts/AddAlert";
 import MapView from "components/MapView";
+import Trip from "components/Trip";
+import Report from "components/Report";
 
 export default function AppRouter() {
   return (
@@ -348,6 +350,38 @@ export default function AppRouter() {
               <>
                 <ErrorBoundary>
                   <MapView />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+      <Route
+        path={AppPaths.REPORT}
+        element={
+          <ProtectedRoute
+            route={AppPaths.REPORT}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Report />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+      <Route
+        path={AppPaths.TRIP}
+        element={
+          <ProtectedRoute
+            route={AppPaths.TRIP}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Trip />
                 </ErrorBoundary>
               </>
             }

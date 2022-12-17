@@ -259,7 +259,6 @@ function deleteAlert() {
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Alerts</Heading>
        
-        <Button onClick={handleOpenModal}>Active Safety Query</Button>
         <Modal
           open={open}
           onClose={handleCloseModal}
@@ -268,7 +267,7 @@ function deleteAlert() {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" className={classes.alertHead} variant="h6" component="h2">
-               Active Safety Query <i onClick={handleCloseModal}>
+               Address <i onClick={handleCloseModal}>
               <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g opacity="0.9" filter="url(#filter0_d_2762_100820)">
               <path d="M18 6L6 18M6 6L18 18" stroke="#fff" stroke-linecap="square"/>
@@ -400,6 +399,7 @@ function deleteAlert() {
                     <Button
                     variant="contained"
                     style={{ color:COLORS.WHITE }}
+                    onClick={handleOpenModal}
                     >
                       Get Address
                     </Button>

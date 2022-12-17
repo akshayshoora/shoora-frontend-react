@@ -19,7 +19,9 @@ export const ALL_MENU = [
   AppPaths.VEHICLES,
   AppPaths.LIVE,
   AppPaths.ALERTS,
-  AppPaths.MAP
+  AppPaths.MAP,
+  AppPaths.TRIP,
+  AppPaths.REPORT
 ];
 
 
@@ -32,7 +34,9 @@ export const ALL_ROUTES = [
   AppPaths.VEHICLES,
   AppPaths.LIVE,
   AppPaths.ALERTS,
-  AppPaths.MAP
+  AppPaths.MAP,
+  AppPaths.TRIP,
+  AppPaths.REPORT
 ];
 
 
