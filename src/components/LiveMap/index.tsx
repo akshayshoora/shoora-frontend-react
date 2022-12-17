@@ -9,6 +9,7 @@ import mapIcon from '../../assets/location.png';
 import Paper from "@mui/material/Paper";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import GoogleMapReact from 'google-map-react';
+import GoogleMap from "components/Map/GoogleMap";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -31,25 +32,10 @@ export default function LiveMap() {
     setShowMapOption(!showMapOption)
   }
 
-  const renderMarkers = (map :any, maps:any) => {
-    let marker = new maps.Marker({
-     position: { lat: 25.28, lng: 81.54 },
-     map,
-     title: 'Hello World!'
-     });
-     return marker;
-   };
 
   return (
     <Box className="livemap">
-      <GoogleMapReact 
-      // bootstrapURLKeys={{ key: 'YOUR KEY' }}
-      style={{ height: `600px` }}
-      defaultZoom={10}
-      resetBoundsOnResize={true}
-      defaultCenter={{ lat: 25.28, lng: 81.54 }}
-      onGoogleApiLoaded={({ map, maps }) => renderMarkers(map, maps)}
-
+      <GoogleMap
     />
 
     <Box className={classes.mapdropdown}>

@@ -39,7 +39,8 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
-import { auth, transport } from "constants/RouteMiddlePath";
+import { auth, monitor, transport } from "constants/RouteMiddlePath";
+import { getDateTime } from "utils/calenderUtils";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -81,7 +82,7 @@ export default function Alerts() {
 }>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("user");
+  const [orderBy, setOrderBy] = React.useState<string>("alert");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
@@ -95,7 +96,7 @@ export default function Alerts() {
   
   const classes = useStyles();
   async function getAlerts(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `${transport}/alerts/?page=${
+    let getApiUrl = `${monitor}/alerts/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -119,12 +120,12 @@ export default function Alerts() {
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    user: string
+    alert: string
   ) => {
-    const isAsc = orderBy === user && order === "asc";
+    const isAsc = orderBy === alert && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     //@ts-ignore
-    setOrderBy(user);
+    setOrderBy(alert);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -170,27 +171,32 @@ export default function Alerts() {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "name",
+      id: "alert_name",
       numeric: false,
       disablePadding: true,
       label: "Name",
     },
     {
-      id: "email",
-      label: "Email",
-      numeric: false,
-      disablePadding: false,
-    },
-    { id: "address", label: "Address", numeric: false, disablePadding: false },
-    {
-      id: "contact_code",
-      label: "Contact Code",
+      id: "device_imei",
+      label: "Device",
       numeric: false,
       disablePadding: false,
     },
     {
-      id: "contact",
-      label: "contact_number",
+      id: "vehicle",
+      label: "vehicle",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "created_at",
+      label: "Created at",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "address",
+      label: "Address",
       numeric: false,
       disablePadding: false,
     },
@@ -227,7 +233,7 @@ export default function Alerts() {
 const { mutate: mutateDeleteAlert } =deleteAlertMutation;
 
 function deleteAlert() {
-  return client.delete(`${transport}/alerts/${deleteId}`)
+  return client.delete(`${monitor}/alerts/${deleteId}`)
 }
 
   function handleDelete() {
@@ -253,7 +259,6 @@ function deleteAlert() {
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Alerts</Heading>
        
-        <Button onClick={handleOpenModal}>Active Safety Query</Button>
         <Modal
           open={open}
           onClose={handleCloseModal}
@@ -262,7 +267,7 @@ function deleteAlert() {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" className={classes.alertHead} variant="h6" component="h2">
-               Active Safety Query <i onClick={handleCloseModal}>
+               Address <i onClick={handleCloseModal}>
               <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g opacity="0.9" filter="url(#filter0_d_2762_100820)">
               <path d="M18 6L6 18M6 6L18 18" stroke="#fff" stroke-linecap="square"/>
@@ -371,32 +376,38 @@ function deleteAlert() {
                 <LoadingScreen />
               </TableCell>
             ) : alertList?.results.length ? (
-              alertList?.results.map((user: any, index: number) => {
+              alertList?.results.map((alert: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
                       <Box className={classes.columnView}>
-                        <Span>{user.name}</Span>
+                        <Span>{alert.alert_name}</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {user.email}
+                        {alert.device_imei}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{user.address}</Span>
+                      <Span fontType="secondary">{alert.vehicle}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{user.contact_code}</Span>
+                      <Span fontType="secondary">{getDateTime(alert.created_at)}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{user.contact_number}</Span>
+                    <Button
+                    variant="contained"
+                    style={{ color:COLORS.WHITE }}
+                    onClick={handleOpenModal}
+                    >
+                      Get Address
+                    </Button>
                     </TableCell>
                     
                    
                     <TableCell align="left">
-                      <ActionMenu menu={actionMenuItems} id={user.id} />
+                      <ActionMenu menu={actionMenuItems} id={alert.id} />
                     </TableCell>
                   </TableRow>
                 );

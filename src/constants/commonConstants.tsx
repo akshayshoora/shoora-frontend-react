@@ -18,7 +18,10 @@ export const ALL_MENU = [
   AppPaths.DRIVERS,
   AppPaths.VEHICLES,
   AppPaths.LIVE,
-  AppPaths.ALERTS
+  AppPaths.ALERTS,
+  AppPaths.MAP,
+  AppPaths.TRIP,
+  AppPaths.REPORT
 ];
 
 
@@ -30,7 +33,10 @@ export const ALL_ROUTES = [
   AppPaths.DRIVERS,
   AppPaths.VEHICLES,
   AppPaths.LIVE,
-  AppPaths.ALERTS
+  AppPaths.ALERTS,
+  AppPaths.MAP,
+  AppPaths.TRIP,
+  AppPaths.REPORT
 ];
 
 
