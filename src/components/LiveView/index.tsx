@@ -34,6 +34,7 @@ export default function () {
   const [rowsPerPage, setRowsPerPage] = useState(1000);
   const [deviceId, setDeviceId] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
+  const [selectedDevice, setSelectedDevice] = useState <string[]>([])
 
 
   const { data: vehicleList, isLoading:isVehicleLoading } = useQuery(
@@ -52,42 +53,49 @@ export default function () {
 
     return response.data;
   }
-
-
-  function LiveuserMenu() {
-
-    const [selectedDevice, setSelectedDevice] = useState <string[]>([])
-
-   const handleVehicleView =(id:string)=>{
-    let arr = [...selectedDevice];
-    if(arr.includes(id)) {
-      arr.splice(selectedDevice.indexOf(id), 1);
-    } else {
-      
-      arr = [...selectedDevice, id];
-    }
-    setSelectedDevice(arr);
-     getLiveUrl(arr)
-    console.log(arr,"arrr");
    
-   }
-
-   const getLiveUrl=(arr:string[])=>{
-    let url="?device="
-    for(let i=0;i<arr.length;i++){
-      if(i== arr.length-1){
-        url= url.concat(`${arr[i]}`)
-      }
-      else{
-        url= url.concat(`${arr[i]}&device=`)
-      }
-     }
-    setVideoUrl(url)
-   }
-
   
-    return (
-      <Box className="contentMain">
+  const handleVehicleView =(id:string)=>{
+   let arr = [...selectedDevice];
+  
+   if(arr.includes(id)) {
+     arr.splice(selectedDevice.indexOf(id), 1);
+   } else {
+     
+     arr = [...selectedDevice, id];
+   }
+   setSelectedDevice(arr);
+    getLiveUrl(arr)
+  
+  }
+
+  const getLiveUrl=(arr:string[])=>{
+   let url="?device="
+   for(let i=0;i<arr.length;i++){
+     if(i== arr.length-1){
+       url= url.concat(`${arr[i]}`)
+     }
+     else{
+       url= url.concat(`${arr[i]}&device=`)
+     }
+    }
+   setVideoUrl(url)
+  }
+
+
+  return (
+    <Box style={{ padding: "20px 0 0 25px" }}>
+      <Box>
+        <Heading>Live View</Heading>
+        <Box className={classes.live}>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 6, sm: 8, md: 12 }} style={{ marginTop: 24 }}
+        >
+          <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+            <Item elevation={1}>
+            <Box className="contentMain">
         <Box className="searchbar" style={{ padding: "20px 15px" }}>
           <input
             className="searchField"
@@ -121,26 +129,11 @@ export default function () {
             </div>
           </Box>
       </Box>
-    );
-  }
-  
-
-
-
-
-  function IframeView() {
-
-    const [showMapOption, setShowMapOption] =useState<boolean>(false); 
-    const [mapOption, setMapOption] =useState<number>(0); 
-    
-  
-    const handleMapOption=()=>{
-      setShowMapOption(!showMapOption)
-    }
-  console.log(`http://livefeed.shoora.com/videofeed/${videoUrl}&email=its@its.com&password=123456`,"jdsfjkdsnjsd")
-  
-    return (
-      <Box style={{
+            </Item>
+          </Grid>
+          <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
+            <Item elevation={0}>
+            <Box style={{
 				display: "flex",
 				justifyContent: "center",
 				alignItems: "center",
@@ -157,29 +150,6 @@ export default function () {
 				height="100%"
 			/>
       </Box>
-    );
-  }
-  
-
-
-  return (
-    <Box style={{ padding: "20px 0 0 25px" }}>
-      <Box>
-        <Heading>Live View</Heading>
-        <Box className={classes.live}>
-        <Grid
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 6, sm: 8, md: 12 }} style={{ marginTop: 24 }}
-        >
-          <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-            <Item elevation={1}>
-            <LiveuserMenu />
-            </Item>
-          </Grid>
-          <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
-            <Item elevation={0}>
-            <IframeView />
             </Item>
           </Grid>
         </Grid>

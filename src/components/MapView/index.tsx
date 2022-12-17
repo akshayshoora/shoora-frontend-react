@@ -36,6 +36,16 @@ export default function () {
   const [deviceId, setDeviceId] = useState("");
   const [locationList, setLocationList] = useState<any []>([]);
 
+  const [showMapOption, setShowMapOption] =useState<boolean>(false); 
+  const [mapOption, setMapOption] =useState<number>(0);
+  const [selectedDevice, setSelectedDevice] = useState <string[]>([])
+ 
+  
+
+  const handleMapOption=()=>{
+    setShowMapOption(!showMapOption)
+  }
+
 
   const { data: vehicleList, isLoading:isVehicleLoading } = useQuery(
     ["vehiclelist", page, rowsPerPage, searchText,deviceId],
@@ -70,10 +80,6 @@ export default function () {
     return response.data;
   }
 
-  useEffect(() => {
-    
-  }, []);
-
 
   const getLocation=(list:string [])=>{
    const markersData = 
@@ -95,13 +101,32 @@ export default function () {
 
   }
 
+  const handleVehicleView =(id:string)=>{
+    let arr = [...selectedDevice];
+    if(arr.includes(id)) {
+      arr.splice(selectedDevice.indexOf(id), 1);
+    } else {
+      
+      arr = [...selectedDevice, id];
+    }
+    setSelectedDevice(arr);
+ 
+   }
 
 
-
-  const LiveuserMenu = React.memo(()=>{
-  
-    return (
-      <Box className="contentMain">
+  return (
+    <Box style={{ padding: "20px 0 0 25px" }}>
+      <Box>
+        <Heading>Map View</Heading>
+        <Box className={classes.live}>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 6, sm: 8, md: 12 }} style={{ marginTop: 24 }}
+        >
+          <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+            <Item elevation={1}>
+            <Box className="contentMain">
         <Box className="searchbar" style={{ padding: "20px 15px" }}>
           <input
             className="searchField"
@@ -121,9 +146,9 @@ export default function () {
           <Box className="notfound">
             <div className="contendata">
                 {!isVehicleLoading && vehicleList?.results.map((item:any) =>(
-            <div className="loaddata"> 
+            <div className="loaddata" style={selectedDevice.includes(item.device) ? {background:'#fef8f0'} : {}}> 
           
-              <i className="circle"></i><span className="trackid">{(item.id).slice(0,8)}</span><span className="arrowright" onClick={()=>{setDeviceId(item.id)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+              <i className="circle"></i><span className="trackid">{(item.id).slice(0,8)}</span><span className="arrowright"onClick={()=>{setDeviceId(item.id); handleVehicleView(item.device)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
              
                </div>
                
@@ -135,26 +160,11 @@ export default function () {
             </div>
           </Box>
       </Box>
-    );
-  })
-  
-
-
-
-
-  function LiveMap() {
-
-    const [showMapOption, setShowMapOption] =useState<boolean>(false); 
-    const [mapOption, setMapOption] =useState<number>(0); 
-    
-  
-    const handleMapOption=()=>{
-      setShowMapOption(!showMapOption)
-    }
-  
-  
-    return (
-      <Box className="livemap">
+            </Item>
+          </Grid>
+          <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
+            <Item elevation={0}>
+            <Box className="livemap">
         <GoogleMap
         list={locationList}
       />
@@ -171,7 +181,7 @@ export default function () {
               </i>
               <span>Default</span>
             </li>
-            <li className={mapOption == 1 ? "selected" :''} onClick={()=>{ setMapOption(1); window.location.href="http://35.154.254.3:3002/videofeed/?device_id=784087664023&email=its@its.com&password=123456"}}>
+            <li className={mapOption == 1 ? "selected" :''} onClick={()=>{ setMapOption(1)}}>
             <i> 
               <img src={mapIcon} height={32} width={32} alt="" />
               </i>
@@ -188,29 +198,6 @@ export default function () {
        }
       </Box>
       </Box>
-    );
-  }
-  
-
-
-  return (
-    <Box style={{ padding: "20px 0 0 25px" }}>
-      <Box>
-        <Heading>Map View</Heading>
-        <Box className={classes.live}>
-        <Grid
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 6, sm: 8, md: 12 }} style={{ marginTop: 24 }}
-        >
-          <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-            <Item elevation={1}>
-            <LiveuserMenu />
-            </Item>
-          </Grid>
-          <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
-            <Item elevation={0}>
-            <LiveMap />
             </Item>
           </Grid>
         </Grid>
