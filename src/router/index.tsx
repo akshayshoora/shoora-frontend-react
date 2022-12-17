@@ -23,6 +23,7 @@ import LiveView from "components/LiveView";
 import Alerts from "components/Alerts";
 import { AlertDetails } from "components/Alerts/AlertDetails";
 import AddAlert from "components/Alerts/AddAlert";
+import MapView from "components/MapView";
 
 export default function AppRouter() {
   return (
@@ -338,6 +339,22 @@ export default function AppRouter() {
         }
       />
       
+      <Route
+        path={AppPaths.MAP}
+        element={
+          <ProtectedRoute
+            route={AppPaths.MAP}
+            component={
+              <>
+                <ErrorBoundary>
+                  <MapView />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
       <Route
         path={"*"}
         element={

@@ -8,6 +8,7 @@ import VehicleIcon from './VehicleIcon';
 import DriverIcon from './DriverIcon'
 import LiveIcon from './LiveIcon'
 import AlertsIcon from "./AlertsIcon";
+import MapIcon from "./MapIcon"
 
 interface IMenuProps extends ISideBarIconProps {
   icon: AppPaths;
@@ -33,6 +34,8 @@ export default function MenuIcons(props: IMenuProps) {
           return <LiveIcon isActive={isActive} />;
     case AppPaths.ALERTS:
           return <AlertsIcon isActive={isActive} />;
+    case AppPaths.MAP:
+      return <MapIcon isActive={isActive} />;      
     default:
       return <DashboardIcon isActive={isActive} />;
   }

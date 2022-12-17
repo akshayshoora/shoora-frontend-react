@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React from "react";
+import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -14,7 +15,7 @@ import client from "serverCommunication/client";
 import { Button, List, ListItemText } from "@mui/material";
 import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
-import Iframe from "react-iframe";
+
 
 
 
@@ -28,12 +29,12 @@ export default function () {
     boxShadow:'0 0.75rem 1.5rem rgb(18 38 63 / 3%)',
   }));
   const classes = useStyles();
-  
+
   const [searchText, setSearchText] =useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(1000);
   const [deviceId, setDeviceId] = useState("");
-  const [videoUrl, setVideoUrl] = useState("");
+  const [locationList, setLocationList] = useState<any []>([]);
 
 
   const { data: vehicleList, isLoading:isVehicleLoading } = useQuery(
@@ -41,6 +42,10 @@ export default function () {
     () => getVehicles(page, rowsPerPage, searchText)
   );
 
+  const { data: gpsList, isLoading:isGpsLoading } = useQuery(
+    ["gpslist", page, rowsPerPage,deviceId, searchText],
+    () => getGpsList(page, rowsPerPage,deviceId, searchText)
+  );
 
  async function getVehicles(pageNumber: number, pageSize: number, searchText?: string) {
     let getApiUrl = `${transport}/vehicles/?page=${
@@ -53,38 +58,47 @@ export default function () {
     return response.data;
   }
 
+  async function getGpsList(pageNumber: number, pageSize: number,deviceid:string,searchText?: string) {
+    let getApiUrl = `${monitor}/current-location/?id=${deviceid}&page=${
+      pageNumber + 1
+    }&page_size=${pageSize}&search=${searchText}`;
 
-  function LiveuserMenu() {
-
-    const [selectedDevice, setSelectedDevice] = useState <string[]>([])
-
-   const handleVehicleView =(id:string)=>{
-    let arr = [...selectedDevice];
-    if(arr.includes(id)) {
-      arr.splice(selectedDevice.indexOf(id), 1);
-    } else {
-      
-      arr = [...selectedDevice, id];
-    }
-    setSelectedDevice(arr);
-     getLiveUrl(arr)
-    console.log(arr,"arrr");
    
-   }
+    const response = await client.get(getApiUrl);
+    setLocationList(getLocation(response.data?.results))
 
-   const getLiveUrl=(arr:string[])=>{
-    let url="?device="
-    for(let i=0;i<arr.length;i++){
-      if(i== arr.length-1){
-        url= url.concat(`${arr[i]}`)
-      }
-      else{
-        url= url.concat(`${arr[i]}&device=`)
-      }
-     }
-    setVideoUrl(url)
-   }
+    return response.data;
+  }
 
+  useEffect(() => {
+    
+  }, []);
+
+
+  const getLocation=(list:string [])=>{
+   const markersData = 
+  list.map((item:any, index) => ({
+    id: index,
+    lat:
+      0.01 *
+        index *
+        item.latitude
+        ,
+    lng:
+      0.01 *
+        index *
+        item.longitude
+        ,
+  }));
+  return markersData
+
+
+  }
+
+
+
+
+  const LiveuserMenu = React.memo(()=>{
   
     return (
       <Box className="contentMain">
@@ -106,10 +120,10 @@ export default function () {
         </List>
           <Box className="notfound">
             <div className="contendata">
-                {!isVehicleLoading && vehicleList?.results.map((item:any,index:number) =>(
-            <div className="loaddata" style={selectedDevice.includes(item.device) ? {background:'#fef8f0'} : {}}> 
+                {!isVehicleLoading && vehicleList?.results.map((item:any) =>(
+            <div className="loaddata"> 
           
-              <i className="circle"></i><span className="trackid">{(item.id).slice(0,8)}</span><span className="arrowright" onClick={()=>{handleVehicleView(item.device)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+              <i className="circle"></i><span className="trackid">{(item.id).slice(0,8)}</span><span className="arrowright" onClick={()=>{setDeviceId(item.id)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
              
                </div>
                
@@ -122,13 +136,13 @@ export default function () {
           </Box>
       </Box>
     );
-  }
+  })
   
 
 
 
 
-  function IframeView() {
+  function LiveMap() {
 
     const [showMapOption, setShowMapOption] =useState<boolean>(false); 
     const [mapOption, setMapOption] =useState<number>(0); 
@@ -137,25 +151,42 @@ export default function () {
     const handleMapOption=()=>{
       setShowMapOption(!showMapOption)
     }
-  console.log(`http://livefeed.shoora.com/videofeed/${videoUrl}&email=its@its.com&password=123456`,"jdsfjkdsnjsd")
+  
   
     return (
-      <Box style={{
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				height: "100vh",
-        width:"100%"
-			}}
-      >
-        <Iframe
-				url={`http://livefeed.shoora.com/videofeed/${videoUrl == "" ? "?device=" : videoUrl}&email=its@its.com&password=123456`}
-				position="relative"
-				width="100%"
-				id="myId"
-				className="myClassname"
-				height="100%"
-			/>
+      <Box className="livemap">
+        <GoogleMap
+        list={locationList}
+      />
+  
+      <Box className={classes.mapdropdown}>
+        <button className="mapoptions" onClick={handleMapOption}>Map Options</button>
+        {showMapOption &&
+        <div className="mapstyle">
+          <h3>Map Style</h3>
+        <ul className="maplist">
+          <li className={mapOption == 0 ? "selected" :''} onClick={()=>{setMapOption(0)}}>
+            <i> 
+              <img src={mapIcon} height={32} width={32} alt="" />
+              </i>
+              <span>Default</span>
+            </li>
+            <li className={mapOption == 1 ? "selected" :''} onClick={()=>{ setMapOption(1); window.location.href="http://35.154.254.3:3002/videofeed/?device_id=784087664023&email=its@its.com&password=123456"}}>
+            <i> 
+              <img src={mapIcon} height={32} width={32} alt="" />
+              </i>
+              <span>2X2</span>
+            </li>
+            <li className={mapOption == 2 ? "selected" :''} onClick={()=>{setMapOption(2)}}>
+            <i> 
+              <img src={mapIcon} height={32} width={32} alt="" />
+              </i>
+              <span>4X4</span>
+            </li>
+        </ul>
+        </div>
+       }
+      </Box>
       </Box>
     );
   }
@@ -165,7 +196,7 @@ export default function () {
   return (
     <Box style={{ padding: "20px 0 0 25px" }}>
       <Box>
-        <Heading>Live View</Heading>
+        <Heading>Map View</Heading>
         <Box className={classes.live}>
         <Grid
           container
@@ -179,7 +210,7 @@ export default function () {
           </Grid>
           <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
             <Item elevation={0}>
-            <IframeView />
+            <LiveMap />
             </Item>
           </Grid>
         </Grid>

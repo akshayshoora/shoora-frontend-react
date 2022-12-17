@@ -7,7 +7,8 @@ import { AppPaths, SubPaths } from "../../../constants/commonEnums";
 import { useQuery } from "react-query";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
-import { auth } from "constants/RouteMiddlePath";
+import { auth, monitor, transport } from "constants/RouteMiddlePath";
+import { getDateTime } from "utils/calenderUtils";
 
 export function AlertDetails() {
     const classes = useStyles();
@@ -15,12 +16,12 @@ export function AlertDetails() {
 
     const { id } = useParams();
 
-    const { data: user, isLoading } = useQuery(["user", id], () =>
-        getUserDetails(String(id))
+    const { data: alert, isLoading } = useQuery(["alert_details", id], () =>
+        getAlertDetails(String(id))
     );
 
-    async function getUserDetails(id: string) {
-        return (await client.get(`${auth}/users/${id}/`)).data;
+    async function getAlertDetails(id: string) {
+        return (await client.get(`${monitor}/alerts/${id}/`)).data;
     }
 
 
@@ -33,36 +34,36 @@ export function AlertDetails() {
             <Box className={classes.headingWrapper}>
                 <Box className={classes.headingContent}>
                
-                <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{user.name}</Typography>
+                <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{alert.alert_name}</Typography>
                 </Box>
                
             </Box>
             <Box className={classes.bodyContent}>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>User Name:</Box>
-                <Box className={classes.bodyInfo} style={{ textTransform: "capitalize" }}>{user.name}</Box>
+                <Box className={classes.bodyInfoTitle}>Alert Name:</Box>
+                <Box className={classes.bodyInfo} style={{ textTransform: "capitalize" }}>{alert.alert_name}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>User ID:</Box>
-                <Box className={classes.bodyInfo}>{user.id}</Box>
+                <Box className={classes.bodyInfoTitle}>Alert ID:</Box>
+                <Box className={classes.bodyInfo}>{alert.id}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Organisation ID:</Box>
-                <Box className={classes.bodyInfo}>{user.organization_id}</Box>
+                <Box className={classes.bodyInfoTitle}>Device IMEI:</Box>
+                <Box className={classes.bodyInfo}>{alert.device_imei}</Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Email:</Box>
+                <Box className={classes.bodyInfoTitle}>Vehicle:</Box>
                 <Box className={classes.bodyInfo}>
-                    {user.email ? user.email : "-"}
+                    {alert.vehicle ? alert.vehicle : "-"}
                 </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Contact Code:</Box>
+                <Box className={classes.bodyInfoTitle}>Created at:</Box>
                 <Box className={classes.bodyInfo}>
-                    {user.contact_code ? user.contact_code : "-"}
+                    {alert.created_at ? getDateTime(alert.created_at) : "-"}
                 </Box>
                 </Box>
-                <Box className={classes.infoBodyWrapper}>
+                {/* <Box className={classes.infoBodyWrapper}>
                 <Box className={classes.bodyInfoTitle}>Contact:</Box>
                 <Box className={classes.bodyInfo} >
                     {user.contact_number ? user.contact_number : "-"}
@@ -73,7 +74,7 @@ export function AlertDetails() {
                 <Box className={classes.bodyInfo}>
                     {user.address ? user.address : "-"}
                 </Box>
-                </Box>
+                </Box> */}
             </Box>
         </Box>
     );
