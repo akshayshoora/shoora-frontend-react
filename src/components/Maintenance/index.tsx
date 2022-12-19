@@ -10,14 +10,14 @@ import Paper from "@mui/material/Paper";
 import { useAppContext } from "ContextAPIs/appContext";
 import { CircularProgress } from "@mui/material";
 
-export default function Trip() {
+export default function Maintenance() {
   const classes = useStyles();
   const { user } = useAppContext();
 
   return (
     <Box style={{ padding: "20px 40px" }}>
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Trip (Under Development)</Heading>
+        <Heading>Maintenance (Under Development)</Heading>
        
         </Box>
         <Box style={{ display: "flex", justifyContent: "center", alignItems:"center",height:"80vh" }}>

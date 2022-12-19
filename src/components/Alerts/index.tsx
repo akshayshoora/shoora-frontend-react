@@ -41,6 +41,7 @@ import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
 import { auth, monitor, transport } from "constants/RouteMiddlePath";
 import { getDateTime } from "utils/calenderUtils";
+import { AlertModal } from "./AlertModal";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -84,6 +85,8 @@ export default function Alerts() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("alert");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+  const [openAlert, setOpenAlert] = React.useState<boolean>(false);
+  const [alertId, setAlertId] = React.useState<string>("false");
   const { user } = useAppContext();
 
   const isAdd=actionAccess(AppPaths.ALERTS,Actions.ADD)
@@ -184,7 +187,7 @@ export default function Alerts() {
     },
     {
       id: "vehicle",
-      label: "vehicle",
+      label: "Vehicle Numer",
       numeric: false,
       disablePadding: false,
     },
@@ -195,8 +198,8 @@ export default function Alerts() {
       disablePadding: false,
     },
     {
-      id: "address",
-      label: "Address",
+      id: "action",
+      label: "Action",
       numeric: false,
       disablePadding: false,
     },
@@ -243,6 +246,11 @@ function deleteAlert() {
   const [open, setOpen] = React.useState(false);
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false); 
+  const handleCloseAlert = () => setOpenAlert(false); 
+  const handleOpenAlert = (id:string) =>{
+   setAlertId(id)
+    setOpenAlert(true); 
+  } 
 
   const renderMarkers = (map :any, maps:any) => {
     let marker = new maps.Marker({
@@ -256,89 +264,12 @@ function deleteAlert() {
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="alert"/>}
+
+      {openAlert && <AlertModal open={openAlert} handleClose={handleCloseAlert} id={alertId}/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Alerts</Heading>
        
-        <Modal
-          open={open}
-          onClose={handleCloseModal}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <Typography id="modal-modal-title" className={classes.alertHead} variant="h6" component="h2">
-               Address <i onClick={handleCloseModal}>
-              <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g opacity="0.9" filter="url(#filter0_d_2762_100820)">
-              <path d="M18 6L6 18M6 6L18 18" stroke="#fff" stroke-linecap="square"/>
-              </g>
-              <defs>
-              <filter id="filter0_d_2762_100820" x="-4" y="-2" width="32" height="32" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-              <feFlood flood-opacity="0" result="BackgroundImageFix"/>
-              <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-              <feOffset dy="2"/>
-              <feGaussianBlur stdDeviation="2"/>
-              <feComposite in2="hardAlpha" operator="out"/>
-              <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-              <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2762_100820"/>
-              <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2762_100820" result="shape"/>
-              </filter>
-              </defs>
-              </svg></i>
-            </Typography>
-            <Grid
-          container
-          spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 6, sm: 8, md: 12 }} style={{ marginTop: 24 }}
-        >
-          <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
-            <Item elevation={1}>
-              <ul className={classes.alertList}>
-                <li><span>HR74B0776</span></li>
-                <li><span>Physiological Fatigue alarmLevel Two</span></li>
-                <li><span>69(KM/H)</span></li>
-                <li><span>2022-12-14 22:17:02</span></li>
-                <li><span>KDGPL</span></li>
-                <li><span>24.415401, 73.632181</span></li>
-                <li><span>24.415401, 73.632181</span></li>
-              </ul>
-              <Box className={classes.videoAlert}>
-              <Player
-                  autoPlay
-                  poster="/assets/poster.png"
-                  src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
-                />
-              </Box>
-            </Item>
-          </Grid>
-          <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
-            <Item elevation={0}>
-              <Box className={classes.avtarDriveInfo}>
-              <IonAvatar className={classes.avtarIcon}>
-               <img alt="avtar icon" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
-            </IonAvatar>
-            <ul className={classes.alertListInfo}>
-                <li><span>Driver Name:</span></li>
-                <li><span>Contact Details: </span></li>
-                <li><span>Licence No:</span></li>
-              </ul>
-              </Box>
-            <Box className="livemap">
-              <GoogleMapReact 
-              // bootstrapURLKeys={{ key: 'YOUR KEY' }}
-              style={{ height: `300px` }}
-              defaultZoom={10}
-              resetBoundsOnResize={true}
-              defaultCenter={{ lat: 25.28, lng: 81.54 }}
-              onGoogleApiLoaded={({ map, maps }) => renderMarkers(map, maps)}
-
-            />
-            </Box>
-            </Item>
-          </Grid>
-        </Grid>
-          </Box>
-        </Modal>
+       
 
 
         <Box style={{ display: "flex", alignItems: "center" }}>
@@ -368,7 +299,7 @@ function deleteAlert() {
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
-            shouldShowActionMenu={true}
+            shouldShowActionMenu={false}
           />
           <TableBody>
             {isLoading ? (
@@ -399,16 +330,16 @@ function deleteAlert() {
                     <Button
                     variant="contained"
                     style={{ color:COLORS.WHITE }}
-                    onClick={handleOpenModal}
+                    onClick={()=>{handleOpenAlert(alert.id)}}
                     >
-                      Get Address
+                      Details
                     </Button>
                     </TableCell>
                     
-                   
+{/*                    
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={alert.id} />
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 );
               })

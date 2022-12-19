@@ -18,6 +18,7 @@ import useStyle from "./style";
 import { useState } from "react";
 import BRAND from "BrandingConstants";
 import { getFeatures } from "utils/FeatureCheck";
+import { sideMenuLabel } from "constants/commonConstants";
 
 export default function SidePanel() {
   const classes = useStyle();
@@ -46,7 +47,7 @@ export default function SidePanel() {
           <MenuIcons icon={menuItem} isActive={isActive} />
           <Box component={"span"} className={classes.menuLabel}>
             <Span fontType={isActive ? "primary" : "secondary"} size="small">
-              {menuItem}
+            {sideMenuLabel[menuItem]}
             </Span>
           </Box>
         </Box>

@@ -151,7 +151,7 @@ export default function () {
                 {!isVehicleLoading && vehicleList?.results.map((item:any) =>(
             <div className="loaddata" style={deviceId == item.device ? {background:'#fef8f0'} : {}}> 
           
-              <i className="circle"></i><span className="trackid">{(item.id).slice(0,8)}</span><span className="arrowright"onClick={()=>{setDeviceId(item.device)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+              <i className="circle"></i><span className="trackid">{item.vin}</span><span className="arrowright"onClick={()=>{setDeviceId(item.device)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
              
                </div>
                

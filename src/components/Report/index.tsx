@@ -8,6 +8,7 @@ import Chip from "@mui/material/Chip";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { useAppContext } from "ContextAPIs/appContext";
+import { CircularProgress } from "@mui/material";
 
 export default function Report() {
   const classes = useStyles();
@@ -16,7 +17,10 @@ export default function Report() {
   return (
     <Box style={{ padding: "20px 40px" }}>
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Report (Under Deelopment)</Heading>
+        <Heading>Report (Under Development)</Heading>
+        </Box>
+        <Box style={{ display: "flex", justifyContent: "center", alignItems:"center",height:"80vh" }}>
+        <CircularProgress />
         </Box>
     </Box>
   );

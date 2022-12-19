@@ -19,7 +19,10 @@ return result
   export function CheckFeatureAccess(item:any) {
     const { user } = useAppContext();
         for(let j=0;j<user.allowed_features.length;j++){
-            if(item.toLowerCase()=="dashboard" || item.toLowerCase()=="live" || item.toLowerCase()=="map" || item.toLowerCase()=="trip" || item.toLowerCase()=="report"){
+            if(item.toLowerCase()=="dashboard" || item.toLowerCase()=="live-view" || item.toLowerCase()=="map-view" ||
+             item.toLowerCase()=="trip" || item.toLowerCase()=="report" ||  item.toLowerCase()=="finance" || item.toLowerCase()=="fuel" 
+             || item.toLowerCase()=="coaching" || item.toLowerCase()=="job-card" || item.toLowerCase()=="tyre" || item.toLowerCase()=="maintenance"
+             ){
                 return true
             }
            
@@ -41,7 +44,9 @@ return result
       export function CheckRoutesAccess(item:any) {
         const { user } = useAppContext();
             for(let j=0;j<user.allowed_features.length;j++){
-                 if(item.toLowerCase()=="dashboard" || item.toLowerCase()=="live" || item.toLowerCase()=="map" || item.toLowerCase()=="trip" || item.toLowerCase()=="report"){
+                 if(item.toLowerCase()=="dashboard" || item.toLowerCase()=="live-view" || item.toLowerCase()=="map-view" || item.toLowerCase()=="trip" 
+                 || item.toLowerCase()=="report" ||  item.toLowerCase()=="finance" || item.toLowerCase()=="fuel" 
+                 || item.toLowerCase()=="coaching" || item.toLowerCase()=="job-card" || item.toLowerCase()=="tyre" || item.toLowerCase()=="maintenance"){
                      return true
                  }
                
