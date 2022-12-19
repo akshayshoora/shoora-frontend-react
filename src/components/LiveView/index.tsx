@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+import {Snackbar, Alert } from "@mui/material";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Paper from "@mui/material/Paper";
@@ -28,6 +28,11 @@ export default function () {
     boxShadow:'0 0.75rem 1.5rem rgb(18 38 63 / 3%)',
   }));
   const classes = useStyles();
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    variant: "success" | "error" | "info";
+    message: string;
+}>({ open: false, variant: "info", message: "" });
   
   const [searchText, setSearchText] =useState("");
   const [page, setPage] = useState(0);
@@ -61,12 +66,21 @@ export default function () {
    if(arr.includes(id)) {
      arr.splice(selectedDevice.indexOf(id), 1);
    } else {
-     
+    if(arr.length<8){
+
      arr = [...selectedDevice, id];
+    }
+    else{
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "You can not select more than 8 device",
+    });
+  }
    }
    setSelectedDevice(arr);
     getLiveUrl(arr)
-  
+ 
   }
 
   const getLiveUrl=(arr:string[])=>{
@@ -85,6 +99,20 @@ export default function () {
 
   return (
     <Box style={{ padding: "20px 0 0 25px" }}>
+      <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                severity={snackbar.variant}
+                sx={{ width: "100%" }}
+                >
+                {snackbar.message}
+                </Alert>
+            </Snackbar>
       <Box>
         <Heading>Live View</Heading>
         <Box className={classes.live}>
@@ -107,17 +135,20 @@ export default function () {
           </Button>
         </Box>
         <List component="nav" aria-label="search user">
+          
           <ListItemText primary="All" />
           <ListItemText primary="Active assets" />
           <ListItemText primary="Unreachable Assets" />
           <ListItemText primary="Inactive assets" />
         </List>
           <Box className="notfound">
+            
             <div className="contendata">
+              
                 {!isVehicleLoading && vehicleList?.results.map((item:any,index:number) =>(
             <div className="loaddata" style={selectedDevice.includes(item.device) ? {background:'#fef8f0'} : {}}> 
           
-              <i className="circle"></i><span className="trackid">{(item.id).slice(0,8)}</span><span className="arrowright" onClick={()=>{handleVehicleView(item.device)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+              <i className="circle"></i><span className="trackid">{item.vin}</span><span className="arrowright" onClick={()=>{handleVehicleView(item.device)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
              
                </div>
                

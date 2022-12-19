@@ -153,7 +153,7 @@ export default function Vehicles() {
     { id: "model", label: "Model", numeric: false, disablePadding: false },
     {
       id: "vin",
-      label: "VIN Code",
+      label: "Vehicle Number",
       numeric: false,
       disablePadding: false,
     },

@@ -282,8 +282,8 @@ export default function AddVehicle() {
                     <Grid item xs={4}>
                         
                         <TextInput
-                            label="VIN"
-                            placeholder="Enter VIN"
+                            label="Vehicle Number"
+                            placeholder="Enter Vehicle Number"
                             style={{ marginBottom: 24 }}
                             value={vehicles.vin}
                             isRequired={false}

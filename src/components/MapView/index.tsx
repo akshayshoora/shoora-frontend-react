@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+import Snackbar from "@mui/material";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Paper from "@mui/material/Paper";
@@ -29,6 +29,11 @@ export default function () {
     boxShadow:'0 0.75rem 1.5rem rgb(18 38 63 / 3%)',
   }));
   const classes = useStyles();
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    variant: "success" | "error" | "info";
+    message: string;
+}>({ open: false, variant: "info", message: "" });
 
   const [searchText, setSearchText] =useState("");
   const [page, setPage] = useState(0);
@@ -38,8 +43,6 @@ export default function () {
 
   const [showMapOption, setShowMapOption] =useState<boolean>(false); 
   const [mapOption, setMapOption] =useState<number>(0);
-  const [selectedDevice, setSelectedDevice] = useState <string[]>([])
- 
   
 
   const handleMapOption=()=>{
@@ -69,13 +72,26 @@ export default function () {
   }
 
   async function getGpsList(pageNumber: number, pageSize: number,deviceid:string,searchText?: string) {
-    let getApiUrl = `${monitor}/current-location/${deviceid}`;
+    let getApiUrl = `${monitor}/current-location/?id=${deviceid}&page=${
+      pageNumber + 1
+    }&page_size=${pageSize}&search=${searchText}`;
 
    
-    const response = await client.get(getApiUrl);
-    setLocationList(getLocation(response.data?.results))
+    const response : any = await client.get(getApiUrl);
+    // if(deviceid == ""){
+      setLocationList(getLocation(response.data?.results))
+      return response.data;
+  //   }
+  //   else{
+  //   for(let i=0;i<response.data?.results.length;i++){
+  
+  //   if(response.data?.results[i].imei == deviceid){
+  //     setLocationList(getLocation(response.data?.results[i]))
 
-    return response.data;
+  //     return response.data;
+  //   }
+  //   }
+  // }
   }
 
 
@@ -99,18 +115,7 @@ export default function () {
 
   }
 
-  const handleVehicleView =(id:string)=>{
-    let arr = [...selectedDevice];
-    if(arr.includes(id)) {
-      arr.splice(selectedDevice.indexOf(id), 1);
-    } else {
-      
-      arr = [...selectedDevice, id];
-    }
-    setSelectedDevice(arr);
  
-   }
-
 
   return (
     <Box style={{ padding: "20px 0 0 25px" }}>
@@ -144,9 +149,9 @@ export default function () {
           <Box className="notfound">
             <div className="contendata">
                 {!isVehicleLoading && vehicleList?.results.map((item:any) =>(
-            <div className="loaddata" style={selectedDevice.includes(item.device) ? {background:'#fef8f0'} : {}}> 
+            <div className="loaddata" style={deviceId == item.device ? {background:'#fef8f0'} : {}}> 
           
-              <i className="circle"></i><span className="trackid">{(item.id).slice(0,8)}</span><span className="arrowright"onClick={()=>{setDeviceId(item.id); handleVehicleView(item.device)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+              <i className="circle"></i><span className="trackid">{item.vin}</span><span className="arrowright"onClick={()=>{setDeviceId(item.device)}}><svg width="17" height="15" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75" stroke="#3BB3C3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
              
                </div>
                

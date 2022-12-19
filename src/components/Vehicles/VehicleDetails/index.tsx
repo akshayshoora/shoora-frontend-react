@@ -56,7 +56,7 @@ export function VehicleDetails() {
                 </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>VIN:</Box>
+                <Box className={classes.bodyInfoTitle}>Vehicle Number:</Box>
                 <Box className={classes.bodyInfo}>
                     {vehicle.vin ? vehicle.vin : "-"}
                 </Box>
