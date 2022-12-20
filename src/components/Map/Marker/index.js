@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import MarkerStyled from './MarkerStyled';
 import MarkerInGroupStyled from './MarkerInGroupStyled';
 import Spy from '../Spy';
-import VehicleIcons from 'assets/vehicle.png';
+import VehicleIcons from 'assets/delivery-truck.png';
 
 class Marker extends React.PureComponent {
   // eslint-disable-line react/prefer-stateless-function
@@ -17,10 +17,10 @@ class Marker extends React.PureComponent {
       <div > 
         {this.props.inGroup
           ? <MarkerInGroupStyled>
-             <img src={VehicleIcons} height={32} width={32} alt="" />
+             <img src={VehicleIcons} width={60} alt="" />
             </MarkerInGroupStyled>
           : <MarkerStyled>
-              <img src={VehicleIcons} height={32} width={32} alt="" />
+              <img src={VehicleIcons} width={60} alt="" />
             </MarkerStyled>}
       </div>
     );

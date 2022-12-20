@@ -162,7 +162,7 @@ export default function () {
       </Box>
             </Item>
           </Grid>
-          <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
+          <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24,paddingRight: 24 }}>
             <Item elevation={0}>
             <Box style={{
 				display: "flex",

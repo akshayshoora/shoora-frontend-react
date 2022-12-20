@@ -1,5 +1,5 @@
 import { ISideBarIconProps } from "./interfaces";
-import TyreIcons from '../../../assets/sidebar-speedometer.png';
+import TyreIcons from '../../../assets/wheel.png';
 import useStyles from "./style";
 
 
