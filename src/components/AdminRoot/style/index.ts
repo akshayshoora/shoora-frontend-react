@@ -29,6 +29,9 @@ export default makeStyles({
       "& .makeStyles-menuLabel-15":{
         opacity:'1',
        },
+       "& .makeStyles-menuLabel-33":{
+        opacity:'1',
+       },
     },
   },
   panelBody: {
