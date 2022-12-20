@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  frontend-shoora:
+    image: node:14-alpine
+    volumes:
+      - .:/app
+    command: sh -c "node --version && npm --version && cd /app && npm i && npm start"
+    ports:
+      - "3001:3000"
