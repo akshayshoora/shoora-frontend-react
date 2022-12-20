@@ -10,6 +10,29 @@ import React from "react";
 export const TOKEN = "token";
 export const USER_ID = "user_id";
 
+// Add label here for menu render
+export const sideMenuLabel: {
+  [key: string]: string;
+  } = {
+    [AppPaths.DASHBOARD]:"Dashboard",
+    [AppPaths.USERS]:"Users",
+    [AppPaths.ORGANIZATIONS]:"Organizations",
+    [AppPaths.DEVICES]:"Devices",
+    [AppPaths.DRIVERS]:"Drivers",
+    [AppPaths.VEHICLES]:"Vehicles",
+    [AppPaths.ALERTS]:"Alerts",
+    [AppPaths.LIVE]:"Live View",
+    [AppPaths.MAP]:"Map View",
+    [AppPaths.TRIP]:"Trip",
+    [AppPaths.REPORT]:"Report",
+    [AppPaths.FINANCE]:"finance",
+    [AppPaths.FUEL]:"Fuel",
+    [AppPaths.TYRE]:"Tyre",
+    [AppPaths.COACHING]:"Coaching",
+    [AppPaths.MAINTENANCE]:"Maintenance",
+    [AppPaths.JOBCARD]:"Job Card"
+}
+
 export const ALL_MENU = [
   AppPaths.DASHBOARD,
   AppPaths.USERS,
@@ -17,8 +40,17 @@ export const ALL_MENU = [
   AppPaths.DEVICES,
   AppPaths.DRIVERS,
   AppPaths.VEHICLES,
+  AppPaths.ALERTS,
   AppPaths.LIVE,
-  AppPaths.ALERTS
+  AppPaths.MAP,
+  AppPaths.TRIP,
+  AppPaths.REPORT,
+  AppPaths.FINANCE,
+  AppPaths.FUEL,
+  AppPaths.TYRE,
+  AppPaths.COACHING,
+  AppPaths.MAINTENANCE,
+  AppPaths.JOBCARD
 ];
 
 
@@ -29,8 +61,17 @@ export const ALL_ROUTES = [
   AppPaths.DEVICES,
   AppPaths.DRIVERS,
   AppPaths.VEHICLES,
+  AppPaths.ALERTS,
   AppPaths.LIVE,
-  AppPaths.ALERTS
+  AppPaths.MAP,
+  AppPaths.TRIP,
+  AppPaths.REPORT,
+  AppPaths.FINANCE,
+  AppPaths.FUEL,
+  AppPaths.TYRE,
+  AppPaths.COACHING,
+  AppPaths.MAINTENANCE,
+  AppPaths.JOBCARD
 ];
 
 

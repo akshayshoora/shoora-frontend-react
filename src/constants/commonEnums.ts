@@ -7,8 +7,18 @@ export enum AppPaths {
   DEVICES='devices',
   DRIVERS='drivers',
   VEHICLES='vehicles',
-  LIVE='live',
-  ALERTS='alerts'
+  LIVE='live-view',
+  ALERTS='alerts',
+  MAP='map-view',
+  REPORT="report",
+  TRIP="trip",
+  TYRE="tyre",
+  FINANCE="finance",
+  MAINTENANCE="maintenance",
+  COACHING="coaching",
+  JOBCARD="job-card",
+  FUEL="fuel"
+
 }
 
 export enum SubPaths {

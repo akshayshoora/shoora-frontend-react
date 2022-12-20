@@ -23,6 +23,15 @@ import LiveView from "components/LiveView";
 import Alerts from "components/Alerts";
 import { AlertDetails } from "components/Alerts/AlertDetails";
 import AddAlert from "components/Alerts/AddAlert";
+import MapView from "components/MapView";
+import Trip from "components/Trip";
+import Report from "components/Report";
+import Finance from "components/Finance";
+import Fuel from "components/Fuel";
+import Tyre from "components/Tyre";
+import Maintenance from "components/Maintenance";
+import Coaching from "components/Coaching";
+import JobCard from "components/JobCard";
 
 export default function AppRouter() {
   return (
@@ -338,6 +347,150 @@ export default function AppRouter() {
         }
       />
       
+      <Route
+        path={AppPaths.MAP}
+        element={
+          <ProtectedRoute
+            route={AppPaths.MAP}
+            component={
+              <>
+                <ErrorBoundary>
+                  <MapView />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+      <Route
+        path={AppPaths.REPORT}
+        element={
+          <ProtectedRoute
+            route={AppPaths.REPORT}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Report />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+      <Route
+        path={AppPaths.TRIP}
+        element={
+          <ProtectedRoute
+            route={AppPaths.TRIP}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Trip />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+     <Route
+        path={AppPaths.FINANCE}
+        element={
+          <ProtectedRoute
+            route={AppPaths.FINANCE}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Finance />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+    <Route
+        path={AppPaths.FUEL}
+        element={
+          <ProtectedRoute
+            route={AppPaths.FUEL}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Fuel />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+    <Route
+        path={AppPaths.COACHING}
+        element={
+          <ProtectedRoute
+            route={AppPaths.COACHING}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Coaching />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+   <Route
+        path={AppPaths.MAINTENANCE}
+        element={
+          <ProtectedRoute
+            route={AppPaths.MAINTENANCE}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Maintenance />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+   <Route
+        path={AppPaths.TYRE}
+        element={
+          <ProtectedRoute
+            route={AppPaths.TYRE}
+            component={
+              <>
+                <ErrorBoundary>
+                  <Tyre />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+   <Route
+        path={AppPaths.JOBCARD}
+        element={
+          <ProtectedRoute
+            route={AppPaths.JOBCARD}
+            component={
+              <>
+                <ErrorBoundary>
+                  <JobCard />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />   
+
       <Route
         path={"*"}
         element={
