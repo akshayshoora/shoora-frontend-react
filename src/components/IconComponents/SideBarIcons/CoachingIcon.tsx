@@ -1,5 +1,5 @@
 import { ISideBarIconProps } from "./interfaces";
-import CoachingIcons from '../../../assets/sidebar-speedometer.png';
+import CoachingIcons from '../../../assets/coaching.png';
 import useStyles from "./style";
 
 
