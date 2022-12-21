@@ -1,20 +1,19 @@
-import React from 'react';
-import GoogleMapReact from 'google-map-react';
-import supercluster from 'points-cluster';
+import React from "react";
+import GoogleMapReact from "google-map-react";
+import supercluster from "points-cluster";
 
-import Marker from '../Marker';
-import ClusterMarker from '../ClusterMarker';
+import Marker from "../Marker";
+import ClusterMarker from "../ClusterMarker";
 
-import mapStyles from './mapStyles.json';
-import { markersData, susolvkaCoords } from '../fakeData';
+import mapStyles from "./mapStyles.json";
+import { markersData, susolvkaCoords } from "../fakeData";
 
-import MapWrapper from './MapWrapper';
-
-
+import MapWrapper from "./MapWrapper";
 
 export class GoogleMap extends React.PureComponent {
   // eslint-disable-line react/prefer-stateless-function
-   MAP = {
+
+  MAP = {
     defaultZoom: 8,
     defaultCenter: this.props.list[0],
     options: {
@@ -31,9 +30,8 @@ export class GoogleMap extends React.PureComponent {
     clusters: [],
   };
 
- 
-
   getClusters = () => {
+    console.log(this.props.list, "listtt");
     const clusters = supercluster(this.props.list, {
       minZoom: 0,
       maxZoom: 16,
@@ -43,7 +41,7 @@ export class GoogleMap extends React.PureComponent {
     return clusters(this.state.mapOptions);
   };
 
-  createClusters = props => {
+  createClusters = (props) => {
     this.setState({
       clusters: this.state.mapOptions.bounds
         ? this.getClusters(props).map(({ wx, wy, numPoints, points }) => ({
@@ -74,17 +72,17 @@ export class GoogleMap extends React.PureComponent {
 
   render() {
     return (
-      <MapWrapper> 
+      <MapWrapper>
         <GoogleMapReact
-        style={{ height: `600px` }}
+          style={{ height: `600px` }}
           defaultZoom={this.MAP.defaultZoom}
           defaultCenter={this.MAP.defaultCenter}
           options={this.MAP.options}
           onChange={this.handleMapChange}
           yesIWantToUseGoogleMapApiInternals
-          bootstrapURLKeys={{ key: 'AIzaSyAS3ix4rVY4A-T4yPzWlEi766ycl2mY818' }}
+          bootstrapURLKeys={{ key: "AIzaSyAS3ix4rVY4A-T4yPzWlEi766ycl2mY818" }}
         >
-          {this.state.clusters.map(item => {
+          {this.state.clusters.map((item) => {
             if (item.numPoints === 1) {
               return (
                 <Marker
