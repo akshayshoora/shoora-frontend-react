@@ -11,6 +11,13 @@ import AlertsIcon from "./AlertsIcon";
 import MapIcon from "./MapIcon";
 import TripIcon from "./TripIcon";
 import ReportIcon from "./ReportIcon"
+import FinanceIcon from "./FinanceIcon"
+import FuelIcon from "./FuelIcon";
+import TyreIcon from "./TyreIcon";
+import CoachingIcon from "./CoachingIcon";
+import MaintenanceIcon from "./MaintenanceIcon";
+import JobCardIcon from "./JobCardIcon";
+
 
 interface IMenuProps extends ISideBarIconProps {
   icon: AppPaths;
@@ -41,7 +48,19 @@ export default function MenuIcons(props: IMenuProps) {
     case AppPaths.TRIP:
         return <TripIcon isActive={isActive} />;
     case AppPaths.REPORT:
-         return <ReportIcon isActive={isActive} />;      
+       return <ReportIcon isActive={isActive} />;  
+    case AppPaths.FINANCE:
+       return <FinanceIcon isActive={isActive} />; 
+    case AppPaths.FUEL:
+        return <FuelIcon isActive={isActive} />;   
+    case AppPaths.TYRE:
+        return <TyreIcon isActive={isActive} />; 
+    case AppPaths.COACHING:
+        return <CoachingIcon isActive={isActive} />; 
+   case AppPaths.MAINTENANCE:
+        return <MaintenanceIcon isActive={isActive} />; 
+   case AppPaths.JOBCARD:
+        return <JobCardIcon isActive={isActive} />;  
     default:
       return <DashboardIcon isActive={isActive} />;
   }
