@@ -10,6 +10,9 @@ export default makeStyles({
     "& .MuiPaper-elevation":{
       padding:'0px !important'
     },
+    "& #cmsv6flash":{
+     width:'100% !important'
+    },
     "& .searchbar":{
         display:'flex',
         alignItem:'center',

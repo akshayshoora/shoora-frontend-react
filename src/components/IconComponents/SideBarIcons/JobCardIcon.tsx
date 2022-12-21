@@ -1,5 +1,5 @@
 import { ISideBarIconProps } from "./interfaces";
-import JobCardIcons from '../../../assets/sidebar-speedometer.png';
+import JobCardIcons from '../../../assets/jobcard.png';
 import useStyles from "./style";
 
 
