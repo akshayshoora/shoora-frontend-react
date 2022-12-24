@@ -13,6 +13,7 @@ import SearchBox from "components/commonComponent/SearchField";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
+import COLORS from "../../constants/colors";
 import {
   HeadCell,
   Order,
@@ -28,8 +29,12 @@ import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
 import { auth,transport } from "constants/RouteMiddlePath";
+import { AlertModal } from "components/Alerts/AlertModal";
+import { TripModal } from "./TripModal";
 
 export default function Trip() {
+  const [openTrip, setOpenTrip] = React.useState<boolean>(false);
+const [triptId, setTripId] = React.useState<string>("false");
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
@@ -62,6 +67,11 @@ export default function Trip() {
 
     return response.data;
   }
+
+  const handleOpenTrip = (id:string) =>{
+    setTripId(id)
+     setOpenTrip(true); 
+   } 
 
   const handleOpenDelete = ( 
     event: React.MouseEvent<HTMLElement>,
@@ -193,15 +203,16 @@ function handleDelete() {
   mutateDeleteTrip()
 }
    
+const handleCloseTrip = () => setOpenTrip(false); 
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="trip"/>}
+      {openTrip && <TripModal open={openTrip} handleClose={handleCloseTrip} id={'123'}/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Trips</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: 12
-             }}>
+          <Box style={{ marginRight: 12 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search Trips"
@@ -220,45 +231,62 @@ function handleDelete() {
             shouldShowActionMenu={true}
           />
           <TableBody>
-            {isLoading ? (
+            {/* {isLoading ? (
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
             ) : tripList?.results.length ? (
               tripList?.results.map((trip: any, index: number) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={0} key={index}>
+                return ( */}
+                  <TableRow hover role="checkbox" tabIndex={0} key={1}>
                     <TableCell className={classes.tableBodyCell} align="left">
                       <Box className={classes.columnView}>
-                        <Span>{trip.vehicle_type}</Span>
+                        <Span>start date</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {trip.make}
+                        start location
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.model}</Span>
+                      <Span fontType="secondary">end location</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.vin}</Span>
+                      <Span fontType="secondary">driver</Span>
                     </TableCell>
-                    
+                    <TableCell align="left">
+                      <Span fontType="secondary">incident</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">distance</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">duration</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">asset id</Span>
+                    </TableCell>
                    
                     <TableCell align="left">
-                      <ActionMenu menu={actionMenuItems} id={trip.id} />
+                    <Button
+                    variant="contained"
+                    style={{ color:COLORS.WHITE }}
+                    onClick={()=>{handleOpenTrip('123')}}
+                    >
+                      Details
+                    </Button>
                     </TableCell>
                   </TableRow>
-                );
-              })
-            ) : (
-              <TableCell colSpan={8}>
+                 {/* ); */}
+              {/* }) */}
+            {/* ) : ( */}
+              {/* <TableCell colSpan={8}>
                 <div className={classes.noDataView}>
                   <Span fontType="secondary">No Data Found</Span>
                 </div>
               </TableCell>
-            )}
+            )} */}
           </TableBody>
         </Table>
         <TableFooter
