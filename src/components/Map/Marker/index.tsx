@@ -4,7 +4,13 @@ import useStyles from "./style";
 import VehicleIcons from "assets/cargo-truck.png";
 
 // class Marker extends React.PureComponent {
-function Marker() {
+type Iprops ={
+  lat:number,
+  lng:number
+}
+
+function Marker(props : Iprops
+  ) {
   // eslint-disable-line react/prefer-stateless-function
   // static defaultProps = {
   //   inGroup: false,
@@ -51,6 +57,14 @@ function Marker() {
               <li>
                 <span>Speed: </span>
                 <strong>0 KM </strong>
+              </li>
+              <li>
+                <span>Lng: </span>
+                <strong>{props.lng} </strong>
+              </li>
+              <li>
+                <span>Lat: </span>
+                <strong>{props.lat} </strong>
               </li>
             </ul>
           </div>
