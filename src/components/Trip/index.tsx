@@ -28,7 +28,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess} from "utils/FeatureCheck";
-import { auth,transport } from "constants/RouteMiddlePath";
+import { auth,monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
 
@@ -58,7 +58,7 @@ const [triptId, setTripId] = React.useState<string>("false");
   
   const classes = useStyles();
   async function getTrips(pageNumber: number, pageSize: number, searchText?: string) {
-    let getApiUrl = `${transport}/trips/?page=${
+    let getApiUrl = `${monitor}/trips/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -123,18 +123,19 @@ const [triptId, setTripId] = React.useState<string>("false");
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "start_date_time",
-      numeric: false,
-      disablePadding: true,
-      label: "Start Date/Time",
-    },
-    {
-      id: "start_location",
-      label: "Start Location",
+      id: "start_latitude",
+      label: "Start Lattitude",
       numeric: false,
       disablePadding: false,
     },
-    { id: "end_location", label: "End Location", numeric: false, disablePadding: false },
+    { id: "end_latitude", label: "End Lattitude", numeric: false, disablePadding: false },
+    {
+      id: "start_longitude",
+      label: "Start longitude",
+      numeric: false,
+      disablePadding: false,
+    },
+    { id: "end_longitude", label: "End longitude", numeric: false, disablePadding: false },
     {
       id: "driver",
       label: "Driver",
@@ -159,12 +160,6 @@ const [triptId, setTripId] = React.useState<string>("false");
       numeric: false,
       disablePadding: false,
     },
-    {
-      id: "asset_id",
-      label: "Asset ID",
-      numeric: false,
-      disablePadding: false,
-    }
   ];
 
   const handleSearchInput = (e: any) => {
@@ -208,7 +203,7 @@ const handleCloseTrip = () => setOpenTrip(false);
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="trip"/>}
-      {openTrip && <TripModal open={openTrip} handleClose={handleCloseTrip} id={'123'}/>}
+      {openTrip && <TripModal open={openTrip} handleClose={handleCloseTrip} id={triptId}/>}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Trips</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
@@ -231,62 +226,60 @@ const handleCloseTrip = () => setOpenTrip(false);
             shouldShowActionMenu={true}
           />
           <TableBody>
-            {/* {isLoading ? (
+            {isLoading ? (
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
             ) : tripList?.results.length ? (
               tripList?.results.map((trip: any, index: number) => {
-                return ( */}
-                  <TableRow hover role="checkbox" tabIndex={0} key={1}>
-                    <TableCell className={classes.tableBodyCell} align="left">
-                      <Box className={classes.columnView}>
-                        <Span>start date</Span>
-                      </Box>
-                    </TableCell>
+                return (
+                  <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        start location
+                        {trip.start_latitude}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">end location</Span>
+                      <Span fontType="secondary">{trip.end_latitude}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">driver</Span>
+                      <Span fontType="secondary">{trip.start_longitude}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">incident</Span>
+                      <Span fontType="secondary">{trip.start_latitude}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">distance</Span>
+                      <Span fontType="secondary">{trip.driver?trip.driver:'-'}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">duration</Span>
+                      <Span fontType="secondary">{trip.total_incidents}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">asset id</Span>
+                      <Span fontType="secondary">{trip.distance}</Span>
                     </TableCell>
-                   
+                    <TableCell align="left">
+                      <Span fontType="secondary">{trip.duration}</Span>
+                    </TableCell>
+                    
                     <TableCell align="left">
                     <Button
                     variant="contained"
                     style={{ color:COLORS.WHITE }}
-                    onClick={()=>{handleOpenTrip('123')}}
+                    onClick={()=>{handleOpenTrip(trip.id)}}
                     >
                       Details
                     </Button>
                     </TableCell>
                   </TableRow>
-                 {/* ); */}
-              {/* }) */}
-            {/* ) : ( */}
-              {/* <TableCell colSpan={8}>
+                  ); 
+               }) 
+             ) : ( 
+               <TableCell colSpan={8}>
                 <div className={classes.noDataView}>
                   <Span fontType="secondary">No Data Found</Span>
                 </div>
               </TableCell>
-            )} */}
+            )} 
           </TableBody>
         </Table>
         <TableFooter

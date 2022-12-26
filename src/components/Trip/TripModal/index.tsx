@@ -11,7 +11,7 @@ import { getDateTime } from "utils/calenderUtils";
 import { Player } from "video-react";
 import { IonAvatar } from "@ionic/react";
 import GoogleMapReact from "google-map-react";
-
+import { latLongToPlace } from "utils/helpers";
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -36,7 +36,7 @@ const style = {
     },
   }));
 
-  interface IAlertModalProps {
+  interface ITripModalProps {
    open:boolean;
    handleClose: () => void;
    id:string
@@ -44,22 +44,23 @@ const style = {
   
   
 
-export function TripModal(props:IAlertModalProps) {
+export function TripModal(props:ITripModalProps) {
     const {open ,handleClose,id}=props
     const classes = useStyles();
     const navigate = useNavigate();
-   
-    const { data: alert, isLoading } = useQuery(["trip_modal_details", id], () =>
+
+    const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () =>
         getTripDetails(String(id))
+
     );
 
     async function getTripDetails(id: string) {
-        return (await client.get(`${monitor}/trip/${id}/`)).data;
+        return (await client.get(`${monitor}/trips/${id}/`)).data;
     }
 
     const renderMarkers = (map :any, maps:any) => {
         let marker = new maps.Marker({
-         position: { lat: Number(alert.latitude), lng: Number(alert.longitude) },
+         position: { lat: Number(trip.start_latitude), lng: Number(trip.start_longitude) },
          map,
          title: 'Hello World!'
          });
@@ -67,6 +68,10 @@ export function TripModal(props:IAlertModalProps) {
        };
     
 
+       const { data: location } = useQuery(["latLong_to_location", trip], () =>
+      //  latLongToPlace(trip.start_latitude, trip.end_latitude)
+      latLongToPlace(trip.start_latitude, trip.end_latitude)
+    );
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -82,7 +87,7 @@ export function TripModal(props:IAlertModalProps) {
         >
           <Box sx={style}>
             <Typography id="modal-modal-title" className={classes.alertHead} variant="h6" component="h2">
-               Alert Details <i onClick={handleClose}>
+               Trip Details <i onClick={handleClose}>
               <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g opacity="0.9" filter="url(#filter0_d_2762_100820)">
               <path d="M18 6L6 18M6 6L18 18" stroke="#fff" stroke-linecap="square"/>
@@ -114,15 +119,15 @@ export function TripModal(props:IAlertModalProps) {
                 <li><span>69(KM/H)</span></li>
                 <li><span>2022-12-14 22:17:02</span></li>
                 <li><span>KDGPL</span></li>
-                <li><span>24.415401, 73.632181</span></li>
+                <li><span>{location}</span></li>
                 <li><span>24.415401, 73.632181</span></li>
               </ul>
               <Box className={classes.videoAlert}>
-              <Player
+              {/* <Player
                   autoPlay
                   poster="/assets/poster.png"
                   src={alert.video_url}
-                />
+                /> */}
               </Box>
             </Item>
           </Grid>
@@ -144,7 +149,7 @@ export function TripModal(props:IAlertModalProps) {
               style={{ height: `300px` }}
               defaultZoom={10}
               resetBoundsOnResize={true}
-              defaultCenter={{ lat: Number(alert.latitude), lng: Number(alert.longitude) }}
+              defaultCenter={{ lat: Number(trip.start_latitude), lng: Number(trip.start_longitude) }}
               onGoogleApiLoaded={({ map, maps }) => renderMarkers(map, maps)}
 
             />
