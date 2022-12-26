@@ -16,7 +16,7 @@ import { useQuery } from "react-query";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { auth, monitor, transport } from "constants/RouteMiddlePath";
-import { getDateTime } from "utils/calenderUtils";
+import { getDateDisplayFormat, getDateTime } from "utils/calenderUtils";
 import { Player } from "video-react";
 import { IonAvatar } from "@ionic/react";
 import GoogleMapReact from "google-map-react";
@@ -158,25 +158,20 @@ export function AlertModal(props: IAlertModalProps) {
               <Item elevation={1}>
                 <ul className={classes.alertList}>
                   <li>
-                    <span>HR74B0776</span>
+                    <span>{alert.vehicle}</span>
                   </li>
                   <li>
-                    <span>Physiological Fatigue alarmLevel Two</span>
+                    <span>{alert.alert_name}</span>
                   </li>
+
                   <li>
-                    <span>69(KM/H)</span>
+                    <span>{getDateDisplayFormat(alert.created_at)}</span>
                   </li>
+
                   <li>
-                    <span>2022-12-14 22:17:02</span>
-                  </li>
-                  <li>
-                    <span>KDGPL</span>
-                  </li>
-                  <li>
-                    <span>24.415401, 73.632181</span>
-                  </li>
-                  <li>
-                    <span>24.415401, 73.632181</span>
+                    <span>
+                      {alert.latitude}, {alert.longitude}
+                    </span>
                   </li>
                 </ul>
                 <Box className={classes.videoAlert}>
