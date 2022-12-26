@@ -101,6 +101,7 @@ export default function () {
       id: index,
       lat: 1 * item.latitude,
       lng: 1 * item.longitude,
+      vehicleInfo: item,
     }));
     return markersData;
   };
