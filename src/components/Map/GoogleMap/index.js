@@ -31,7 +31,6 @@ export class GoogleMap extends React.PureComponent {
   };
 
   getClusters = () => {
-    console.log(this.props.list, "listtt");
     const clusters = supercluster(this.props.list, {
       minZoom: 0,
       maxZoom: 16,
@@ -89,6 +88,7 @@ export class GoogleMap extends React.PureComponent {
                   key={item.id}
                   lat={item.points[0].lat}
                   lng={item.points[0].lng}
+                  vehicleInfo={item.points[0].vehicleInfo}
                 />
               );
             }
