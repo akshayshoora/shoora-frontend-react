@@ -23,18 +23,21 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import { useQuery,useMutation } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
+import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
-import { actionAccess} from "utils/FeatureCheck";
-import { auth,monitor } from "constants/RouteMiddlePath";
+import { actionAccess } from "utils/FeatureCheck";
+import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
+import { getDateDisplayFormat, getDuration } from "utils/calenderUtils";
+import { latLongToPlace } from "utils/helpers";
+import { endianness } from "os";
 
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
-const [triptId, setTripId] = React.useState<string>("false");
+  const [triptId, setTripId] = React.useState<string>("false");
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
@@ -47,43 +50,45 @@ const [triptId, setTripId] = React.useState<string>("false");
     open: boolean;
     variant: "success" | "error" | "info";
     message: string;
-}>({ open: false, variant: "info", message: "" });
+  }>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("trip");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
-  const { user } = useAppContext();  
+  const { user } = useAppContext();
   const navigate = useNavigate();
 
-  
   const classes = useStyles();
-  async function getTrips(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getTrips(
+    pageNumber: number,
+    pageSize: number,
+    searchText?: string
+  ) {
     let getApiUrl = `${monitor}/trips/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
-   
     const response = await client.get(getApiUrl);
 
     return response.data;
   }
 
-  const handleOpenTrip = (id:string) =>{
-    setTripId(id)
-     setOpenTrip(true); 
-   } 
+  const handleOpenTrip = (id: string) => {
+    setTripId(id);
+    setOpenTrip(true);
+  };
 
-  const handleOpenDelete = ( 
+  const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
-    id: string) => {
-      setDeleteId(id)
+    id: string
+  ) => {
+    setDeleteId(id);
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
-    getTrips(page, rowsPerPage, searchText)
+    getTrips(page, rowsPerPage, searchText);
   };
-
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -104,10 +109,7 @@ const [triptId, setTripId] = React.useState<string>("false");
     setPage(0);
   };
 
-  function openTripDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function openTripDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.TRIP}/${id}`);
   }
@@ -117,25 +119,30 @@ const [triptId, setTripId] = React.useState<string>("false");
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openTripDetails,
-      access:true
+      access: true,
     },
   ];
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "start_latitude",
-      label: "Start Lattitude",
+      id: "crerated_at",
+      label: "Start Date/Time",
       numeric: false,
       disablePadding: false,
     },
-    { id: "end_latitude", label: "End Lattitude", numeric: false, disablePadding: false },
     {
-      id: "start_longitude",
-      label: "Start longitude",
+      id: "start_latitude",
+      label: "Start Location",
       numeric: false,
       disablePadding: false,
     },
-    { id: "end_longitude", label: "End longitude", numeric: false, disablePadding: false },
+    {
+      id: "end_longitude",
+      label: "End location",
+      numeric: false,
+      disablePadding: false,
+    },
+
     {
       id: "driver",
       label: "Driver",
@@ -150,7 +157,7 @@ const [triptId, setTripId] = React.useState<string>("false");
     },
     {
       id: "distance",
-      label: "Distance (km)",
+      label: "Distance",
       numeric: false,
       disablePadding: false,
     },
@@ -167,43 +174,57 @@ const [triptId, setTripId] = React.useState<string>("false");
   };
 
   const deleteTripMutation = useMutation(deleteTrip, {
-    onSuccess: () =>{
-       handleClose()
-        setSnackbar({
-            open: true,
-            variant: "success",
-            message: "Trip deleted.",
-        })
-        setTimeout(() => {
-            navigate(`/${AppPaths.TRIP}`);
-        }, 1000);
+    onSuccess: () => {
+      handleClose();
+      setSnackbar({
+        open: true,
+        variant: "success",
+        message: "Trip deleted.",
+      });
+      setTimeout(() => {
+        navigate(`/${AppPaths.TRIP}`);
+      }, 1000);
     },
-        
+
     onError: () =>
-        setSnackbar({
-            open: true,
-            variant: "error",
-            message: "Something went wrong.",
-        }),
-});
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      }),
+  });
 
-const { mutate: mutateDeleteTrip } =deleteTripMutation;
+  const { mutate: mutateDeleteTrip } = deleteTripMutation;
 
-function deleteTrip() {
-  return client.delete(`${auth}/users/${deleteId}`)
-}
+  function deleteTrip() {
+    return client.delete(`${auth}/users/${deleteId}`);
+  }
 
+  function handleDelete() {
+    mutateDeleteTrip();
+  }
 
-function handleDelete() {
-  mutateDeleteTrip()
-}
-   
-const handleCloseTrip = () => setOpenTrip(false); 
+  const handleCloseTrip = () => setOpenTrip(false);
+
+  async function getLocations(lat: number, long: number) {
+    const result = await latLongToPlace(lat, long);
+    // console.log(result, "resulttt");
+    return result;
+  }
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="trip"/>}
-      {openTrip && <TripModal open={openTrip} handleClose={handleCloseTrip} id={triptId}/>}
+      {openDelete && (
+        <DeleteModal
+          open={openDelete}
+          handleClose={handleClose}
+          handleDelete={handleDelete}
+          label="trip"
+        />
+      )}
+      {openTrip && (
+        <TripModal open={openTrip} handleClose={handleCloseTrip} id={triptId} />
+      )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Trips</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
@@ -213,7 +234,6 @@ const handleCloseTrip = () => setOpenTrip(false);
               placeholder="Search Trips"
             />
           </Box>
-          
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -236,50 +256,62 @@ const handleCloseTrip = () => setOpenTrip(false);
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell align="left">
                       <Span fontType="secondary">
+                        {getDateDisplayFormat(trip.created_at)}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {/* {latLongToPlace(
+                          trip.start_latitude,
+                          trip.start_longitude
+                        )} */}
                         {trip.start_latitude}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.end_latitude}</Span>
+                      <Span fontType="secondary">
+                        {/* {latLongToPlace(trip.end_latitude, trip.end_longitude)} */}
+                        {trip.end_latitude}
+                      </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.start_longitude}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{trip.start_latitude}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{trip.driver?trip.driver:'-'}</Span>
+                      <Span fontType="secondary">
+                        {trip.driver ? trip.driver.name : "-"}
+                      </Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{trip.total_incidents}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.distance}</Span>
+                      <Span fontType="secondary">{trip.distance} km</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.duration}</Span>
+                      <Span fontType="secondary">
+                        {getDuration(trip.duration)}
+                      </Span>
                     </TableCell>
-                    
+
                     <TableCell align="left">
-                    <Button
-                    variant="contained"
-                    style={{ color:COLORS.WHITE }}
-                    onClick={()=>{handleOpenTrip(trip.id)}}
-                    >
-                      Details
-                    </Button>
+                      <Button
+                        variant="contained"
+                        style={{ color: COLORS.WHITE }}
+                        onClick={() => {
+                          handleOpenTrip(trip.id);
+                        }}
+                      >
+                        Details
+                      </Button>
                     </TableCell>
                   </TableRow>
-                  ); 
-               }) 
-             ) : ( 
-               <TableCell colSpan={8}>
+                );
+              })
+            ) : (
+              <TableCell colSpan={8}>
                 <div className={classes.noDataView}>
                   <Span fontType="secondary">No Data Found</Span>
                 </div>
               </TableCell>
-            )} 
+            )}
           </TableBody>
         </Table>
         <TableFooter

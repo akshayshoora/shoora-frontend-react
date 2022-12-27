@@ -8,7 +8,7 @@ import { getDateDisplayFormat } from "utils/calenderUtils";
 interface IMarkerprops {
   lat: number;
   lng: number;
-  vehicleInfo: any;
+  vehicleInfo?: any;
 }
 
 function Marker(props: IMarkerprops) {

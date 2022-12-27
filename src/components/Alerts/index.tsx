@@ -7,7 +7,13 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import TableRow from "@mui/material/TableRow";
-import { SelectChangeEvent, Button, Modal, Typography, Grid } from "@mui/material";
+import {
+  SelectChangeEvent,
+  Button,
+  Modal,
+  Typography,
+  Grid,
+} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Span from "components/commonComponent/Span";
 import useStyles from "./style";
@@ -20,10 +26,9 @@ import { experimentalStyled as styled } from "@mui/material/styles";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { stringCheckForTableCell } from "utils/StringCheck";
 import { useAppContext } from "ContextAPIs/appContext";
-import GoogleMapReact from 'google-map-react';
-import { IonAvatar } from '@ionic/react';
-import { Player } from 'video-react';
-
+import GoogleMapReact from "google-map-react";
+import { IonAvatar } from "@ionic/react";
+import { Player } from "video-react";
 
 import {
   HeadCell,
@@ -34,36 +39,36 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import { useQuery,useMutation } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
+import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
-import { actionAccess} from "utils/FeatureCheck";
+import { actionAccess } from "utils/FeatureCheck";
 import { auth, monitor, transport } from "constants/RouteMiddlePath";
 import { getDateTime } from "utils/calenderUtils";
 import { AlertModal } from "./AlertModal";
 
 const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute" as "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 900,
-  bgcolor: 'background.paper',
-  border: '2px solid #261F5A',
+  bgcolor: "background.paper",
+  border: "2px solid #261F5A",
   boxShadow: 24,
 };
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
   ...theme.typography.body2,
-  padding: theme.spacing(4,2, 2),
+  padding: theme.spacing(4, 2, 2),
   color: theme.palette.text.secondary,
   position: "relative",
-  boxShadow:'0 0.75rem 1.5rem rgb(18 38 63 / 3%)',
-  alertHead:{
-    display: 'flex',
-    justifyContent: 'center',
+  boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
+  alertHead: {
+    display: "flex",
+    justifyContent: "center",
   },
 }));
 
@@ -80,7 +85,7 @@ export default function Alerts() {
     open: boolean;
     variant: "success" | "error" | "info";
     message: string;
-}>({ open: false, variant: "info", message: "" });
+  }>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("alert");
@@ -89,37 +94,38 @@ export default function Alerts() {
   const [alertId, setAlertId] = React.useState<string>("false");
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.ALERTS,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.ALERTS,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.ALERTS,Actions.DELETE)
-  
-  
+  const isAdd = actionAccess(AppPaths.ALERTS, Actions.ADD);
+  const isEdit = actionAccess(AppPaths.ALERTS, Actions.EDIT);
+  const isDelete = actionAccess(AppPaths.ALERTS, Actions.DELETE);
+
   const navigate = useNavigate();
 
-  
   const classes = useStyles();
-  async function getAlerts(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getAlerts(
+    pageNumber: number,
+    pageSize: number,
+    searchText?: string
+  ) {
     let getApiUrl = `${monitor}/alerts/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
-   
     const response = await client.get(getApiUrl);
 
     return response.data;
   }
 
-  const handleOpenDelete = ( 
+  const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
-    id: string) => {
-      setDeleteId(id)
+    id: string
+  ) => {
+    setDeleteId(id);
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
-    getAlerts(page, rowsPerPage, searchText)
+    getAlerts(page, rowsPerPage, searchText);
   };
-
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -140,18 +146,12 @@ export default function Alerts() {
     setPage(0);
   };
 
-  function openAlertDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function openAlertDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.ALERTS}/${id}`);
   }
 
-  function editAlertDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function editAlertDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.ALERTS}/${SubPaths.EDIT}/${id}`);
   }
@@ -161,14 +161,19 @@ export default function Alerts() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openAlertDetails,
-      access:true
+      access: true,
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editAlertDetails,access:isEdit },
+    {
+      label: "Edit",
+      icon: <EditOutlinedIcon />,
+      onClick: editAlertDetails,
+      access: isEdit,
+    },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: handleOpenDelete,
-      access:isDelete
+      access: isDelete,
     },
   ];
 
@@ -213,68 +218,65 @@ export default function Alerts() {
   };
 
   const deleteAlertMutation = useMutation(deleteAlert, {
-    onSuccess: () =>{
-       handleClose()
-        setSnackbar({
-            open: true,
-            variant: "success",
-            message: "Alert deleted.",
-        })
-        setTimeout(() => {
-            navigate(`/${AppPaths.ALERTS}`);
-        }, 1000);
+    onSuccess: () => {
+      handleClose();
+      setSnackbar({
+        open: true,
+        variant: "success",
+        message: "Alert deleted.",
+      });
+      setTimeout(() => {
+        navigate(`/${AppPaths.ALERTS}`);
+      }, 1000);
     },
-        
+
     onError: () =>
-        setSnackbar({
-            open: true,
-            variant: "error",
-            message: "Something went wrong.",
-        }),
-});
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      }),
+  });
 
-const { mutate: mutateDeleteAlert } =deleteAlertMutation;
+  const { mutate: mutateDeleteAlert } = deleteAlertMutation;
 
-function deleteAlert() {
-  return client.delete(`${monitor}/alerts/${deleteId}`)
-}
+  function deleteAlert() {
+    return client.delete(`${monitor}/alerts/${deleteId}`);
+  }
 
   function handleDelete() {
-    mutateDeleteAlert()
-      
+    mutateDeleteAlert();
   }
-  const [open, setOpen] = React.useState(false);
-  const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => setOpen(false); 
-  const handleCloseAlert = () => setOpenAlert(false); 
-  const handleOpenAlert = (id:string) =>{
-   setAlertId(id)
-    setOpenAlert(true); 
-  } 
 
-  const renderMarkers = (map :any, maps:any) => {
-    let marker = new maps.Marker({
-     position: { lat: 25.28, lng: 81.54 },
-     map,
-     title: 'Hello World!'
-     });
-     return marker;
-   };
+  const handleCloseAlert = () => setOpenAlert(false);
+  const handleOpenAlert = (id: string) => {
+    setAlertId(id);
+    setOpenAlert(true);
+  };
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="alert"/>}
+      {openDelete && (
+        <DeleteModal
+          open={openDelete}
+          handleClose={handleClose}
+          handleDelete={handleDelete}
+          label="alert"
+        />
+      )}
 
-      {openAlert && <AlertModal open={openAlert} handleClose={handleCloseAlert} id={alertId}/>}
+      {openAlert && (
+        <AlertModal
+          open={openAlert}
+          handleClose={handleCloseAlert}
+          id={alertId}
+        />
+      )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Alerts</Heading>
-       
-       
-
 
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: isAdd ? 12 : 0
-             }}>
+          <Box style={{ marginRight: isAdd ? 12 : 0 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search Alerts by Name or Id"
@@ -283,13 +285,13 @@ function deleteAlert() {
           {isAdd ? (
             <Button
               variant="contained"
-              style={{ background: COLORS.GRADIENT, color:COLORS.WHITE }}
+              style={{ background: COLORS.GRADIENT, color: COLORS.WHITE }}
               onClick={addAlerts}
             >
               <AddIcon />
               add alert
             </Button>
-          ) : null} 
+          ) : null}
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -316,27 +318,29 @@ function deleteAlert() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {alert.device_imei}
-                      </Span>
+                      <Span fontType="secondary">{alert.device_imei}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{alert.vehicle}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{getDateTime(alert.created_at)}</Span>
+                      <Span fontType="secondary">
+                        {getDateTime(alert.created_at)}
+                      </Span>
                     </TableCell>
                     <TableCell align="left">
-                    <Button
-                    variant="contained"
-                    style={{ color:COLORS.WHITE }}
-                    onClick={()=>{handleOpenAlert(alert.id)}}
-                    >
-                      Details
-                    </Button>
+                      <Button
+                        variant="contained"
+                        style={{ color: COLORS.WHITE }}
+                        onClick={() => {
+                          handleOpenAlert(alert.id);
+                        }}
+                      >
+                        Details
+                      </Button>
                     </TableCell>
-                    
-{/*                    
+
+                    {/*                    
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={alert.id} />
                     </TableCell> */}
