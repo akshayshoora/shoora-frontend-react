@@ -75,7 +75,7 @@ export default function () {
     deviceid: string,
     searchText?: string
   ) {
-    let getApiUrl = `${monitor}/current-location/?id=${deviceid}&page=${
+    let getApiUrl = `${monitor}/current-location/?imei=${deviceid}&page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -101,6 +101,7 @@ export default function () {
       id: index,
       lat: 1 * item.latitude,
       lng: 1 * item.longitude,
+      vehicleInfo: item,
     }));
     return markersData;
   };

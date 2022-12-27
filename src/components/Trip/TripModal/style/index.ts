@@ -18,20 +18,15 @@ export default makeStyles({
   alertList: {
     padding: "0",
     overflow: "hidden",
-    margin: "-20px 0 0 0",
+    margin: "-28px 0 0 0",
+    marginBottom: "10px",
+    fontSize: "14px",
     "& li": {
-      float: "left",
-      width: "60%",
       marginBottom: "10px",
-      listStyle: "none",
-      fontSize: "14px",
-      "&:nth-child(odd)": {
-        width: "40%",
-      },
     },
   },
   videoAlert: {
-    margin: "70px 0 0 0",
+    margin: "10px 0 0 0",
     "& video": {
       width: "465px !important",
       height: "300px !important",

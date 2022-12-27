@@ -16,11 +16,13 @@ import { useQuery } from "react-query";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { auth, monitor, transport } from "constants/RouteMiddlePath";
-import { getDateDisplayFormat, getDateTime } from "utils/calenderUtils";
+import { getDateTime, getDuration } from "utils/calenderUtils";
 import { Player } from "video-react";
 import { IonAvatar } from "@ionic/react";
 import GoogleMapReact from "google-map-react";
-
+import { latLongToPlace } from "utils/helpers";
+import { useEffect, useState } from "react";
+import Marker from "components/Map/Marker";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -45,33 +47,45 @@ const Item = styled(Paper)(({ theme }) => ({
   },
 }));
 
-interface IAlertModalProps {
+interface ITripModalProps {
   open: boolean;
   handleClose: () => void;
   id: string;
 }
 
-export function AlertModal(props: IAlertModalProps) {
+export function TripModal(props: ITripModalProps) {
   const { open, handleClose, id } = props;
   const classes = useStyles();
   const navigate = useNavigate();
+  const [startLoc, setStartLoc] = useState("");
+  const [endLoc, setEndLoc] = useState("");
 
-  const { data: alert, isLoading } = useQuery(["alert_modal_details", id], () =>
-    getAlertDetails(String(id))
+  const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () =>
+    getTripDetails(String(id))
   );
 
-  async function getAlertDetails(id: string) {
-    return (await client.get(`${monitor}/alerts/${id}/`)).data;
+  async function getTripDetails(id: string) {
+    return (await client.get(`${monitor}/trips/${id}/`)).data;
   }
 
   const renderMarkers = (map: any, maps: any) => {
     let marker = new maps.Marker({
-      position: { lat: Number(alert.latitude), lng: Number(alert.longitude) },
+      position: {
+        lat: Number(trip.end_latitude),
+        lng: Number(trip.end_longitude),
+      },
       map,
       title: "Hello World!",
     });
     return marker;
   };
+
+  const { data: startlocation } = useQuery(["start_location", trip], () =>
+    latLongToPlace(trip.start_latitude, trip.start_longitude)
+  );
+  const { data: endlocation } = useQuery(["end_location", trip], () =>
+    latLongToPlace(trip.end_latitude, trip.end_longitude)
+  );
 
   return (
     <Box>
@@ -91,7 +105,7 @@ export function AlertModal(props: IAlertModalProps) {
               variant="h6"
               component="h2"
             >
-              Alert Details{" "}
+              Trip Details{" "}
               <i onClick={handleClose}>
                 <svg
                   width="24"
@@ -153,82 +167,79 @@ export function AlertModal(props: IAlertModalProps) {
               columns={{ xs: 6, sm: 8, md: 12 }}
               style={{ marginTop: 24 }}
             >
-              <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
-                <Item elevation={1}>
-                  <ul className={classes.alertList}>
-                    <li>
-                      <span>{alert.vehicle}</span>
-                    </li>
-                    <li>
-                      <span>{alert.alert_name}</span>
-                    </li>
-
-                    <li>
-                      <span>{getDateDisplayFormat(alert.created_at)}</span>
-                    </li>
-
-                    <li>
-                      <span>
-                        {alert.latitude}, {alert.longitude}
-                      </span>
-                    </li>
-                  </ul>
-                  <Box className={classes.videoAlert}>
-                    <Player
-                      autoPlay
-                      poster="/assets/poster.png"
-                      src={alert.video_url}
-                    />
-                  </Box>
-                </Item>
-              </Grid>
-              <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+              <Grid xs={12} sm={12} md={12} style={{ paddingLeft: 24 }}>
                 <Item elevation={0}>
-                  <Box className={classes.avtarDriveInfo}>
-                    <IonAvatar className={classes.avtarIcon}>
-                      <img
-                        alt="avtar icon"
-                        src="https://ionicframework.com/docs/img/demos/avatar.svg"
-                      />
-                    </IonAvatar>
-                    <ul className={classes.alertListInfo}>
-                      <li>
-                        <span>
-                          Driver Name: {alert.driver ? alert.driver.name : ""}
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Contact Details:{" "}
-                          {alert.driver ? alert.driver.phone_number : ""}
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Licence No:{" "}
-                          {alert.driver
-                            ? alert.driver.driving_license_number
-                            : ""}
-                        </span>
-                      </li>
-                    </ul>
-                  </Box>
+                  <Grid container>
+                    <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+                      <Box className={classes.avtarDriveInfo}>
+                        <IonAvatar className={classes.avtarIcon}>
+                          <img
+                            alt="avtar icon"
+                            src="https://ionicframework.com/docs/img/demos/avatar.svg"
+                          />
+                        </IonAvatar>
+                        <ul className={classes.alertListInfo}>
+                          <li>
+                            <span>
+                              Driver Name: {trip.driver ? trip.driver.name : ""}
+                            </span>
+                          </li>
+                          <li>
+                            <span>
+                              Contact Details:{" "}
+                              {trip.driver ? trip.driver.phone_number : ""}
+                            </span>
+                          </li>
+                          <li>
+                            <span>
+                              Licence No:{" "}
+                              {trip.driver
+                                ? trip.driver.driving_license_number
+                                : ""}
+                            </span>
+                          </li>
+                        </ul>
+                      </Box>
+                    </Grid>
+                    <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+                      <ul className={classes.alertList}>
+                        <li>
+                          <span>Start Location: {startlocation}</span>
+                        </li>
+                        <li>
+                          <span>End Location: {endlocation}</span>
+                        </li>
+                        <li>
+                          <span>Distance: {trip.distance} km</span>
+                        </li>
+                        <li>
+                          <span>Duration: {getDuration(trip.duration)}</span>
+                        </li>
+                      </ul>
+                    </Grid>
+                  </Grid>
                   <Box className="livemap">
                     <GoogleMapReact
-                      style={{ height: `300px` }}
                       bootstrapURLKeys={{
                         key: `${process.env.REACT_APP_MAP_KEY}`,
                       }}
+                      style={{ height: `300px` }}
                       defaultZoom={10}
                       resetBoundsOnResize={true}
                       defaultCenter={{
-                        lat: Number(alert.latitude),
-                        lng: Number(alert.longitude),
+                        lat: Number(trip.start_latitude),
+                        lng: Number(trip.start_longitude),
                       }}
                       onGoogleApiLoaded={({ map, maps }) =>
                         renderMarkers(map, maps)
                       }
-                    />
+                    >
+                      <Marker
+                        key={1}
+                        lat={trip.start_latitude}
+                        lng={trip.start_longitude}
+                      />
+                    </GoogleMapReact>
                   </Box>
                 </Item>
               </Grid>
