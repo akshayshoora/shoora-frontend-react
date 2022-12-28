@@ -11,8 +11,6 @@ export function latLongToPlace(lat: number, long: number) {
     axios
       .get(URL)
       .then(function (response) {
-        // console.log("response--", response.data.results[0].formatted_address);
-        console.log(JSON.stringify(response.data));
         resolve(response.data.results[0].formatted_address);
       })
       .catch(function (error) {
@@ -20,4 +18,12 @@ export function latLongToPlace(lat: number, long: number) {
         resolve(error);
       });
   });
+}
+
+export function getUserRoles(roles: any) {
+  let role = "";
+  for (let i = 0; i < roles.length; i++) {
+    role = role + roles[i].display_name + (roles.length - 1 != i ? "|" : "");
+  }
+  return role;
 }

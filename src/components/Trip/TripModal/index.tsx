@@ -86,6 +86,15 @@ export function TripModal(props: ITripModalProps) {
   const { data: endlocation } = useQuery(["end_location", trip], () =>
     latLongToPlace(trip.end_latitude, trip.end_longitude)
   );
+  const { data: tripPath } = useQuery(["trip_path", trip], () =>
+    getTripPath(trip.id)
+  );
+
+  async function getTripPath(id: string) {
+    return (await client.get(`${monitor}/trips/${id}/path`)).data;
+  }
+
+  console.log(tripPath, "tripppathh");
 
   return (
     <Box>

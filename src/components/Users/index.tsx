@@ -27,12 +27,13 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import { useQuery,useMutation } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
+import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
-import { actionAccess} from "utils/FeatureCheck";
+import { actionAccess } from "utils/FeatureCheck";
 import { auth } from "constants/RouteMiddlePath";
+import { getUserRoles } from "utils/helpers";
 
 export default function Users() {
   const [searchText, setSearchText] = React.useState("");
@@ -47,44 +48,45 @@ export default function Users() {
     open: boolean;
     variant: "success" | "error" | "info";
     message: string;
-}>({ open: false, variant: "info", message: "" });
+  }>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("user");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.USERS,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.USERS,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.USERS,Actions.DELETE)
-  
-  
+  const isAdd = actionAccess(AppPaths.USERS, Actions.ADD);
+  const isEdit = actionAccess(AppPaths.USERS, Actions.EDIT);
+  const isDelete = actionAccess(AppPaths.USERS, Actions.DELETE);
+
   const navigate = useNavigate();
 
-  
   const classes = useStyles();
-  async function getUsers(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getUsers(
+    pageNumber: number,
+    pageSize: number,
+    searchText?: string
+  ) {
     let getApiUrl = `${auth}/users/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
-   
     const response = await client.get(getApiUrl);
 
     return response.data;
   }
 
-  const handleOpenDelete = ( 
+  const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
-    id: string) => {
-      setDeleteId(id)
+    id: string
+  ) => {
+    setDeleteId(id);
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
-    getUsers(page, rowsPerPage, searchText)
+    getUsers(page, rowsPerPage, searchText);
   };
-
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -105,18 +107,12 @@ export default function Users() {
     setPage(0);
   };
 
-  function openUserDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function openUserDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.USERS}/${id}`);
   }
 
-  function editUserDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function editUserDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.USERS}/${SubPaths.EDIT}/${id}`);
   }
@@ -126,14 +122,19 @@ export default function Users() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openUserDetails,
-      access:true
+      access: true,
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editUserDetails,access:isEdit },
+    {
+      label: "Edit",
+      icon: <EditOutlinedIcon />,
+      onClick: editUserDetails,
+      access: isEdit,
+    },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: handleOpenDelete,
-      access:isDelete
+      access: isDelete,
     },
   ];
 
@@ -163,6 +164,12 @@ export default function Users() {
       numeric: false,
       disablePadding: false,
     },
+    {
+      id: "role",
+      label: "Roles",
+      numeric: false,
+      disablePadding: false,
+    },
   ];
 
   function addUser() {
@@ -173,49 +180,50 @@ export default function Users() {
   };
 
   const deleteUserMutation = useMutation(deleteUser, {
-    onSuccess: () =>{
-       handleClose()
-        setSnackbar({
-            open: true,
-            variant: "success",
-            message: "User deleted.",
-        })
-        setTimeout(() => {
-            navigate(`/${AppPaths.USERS}`);
-        }, 1000);
+    onSuccess: () => {
+      handleClose();
+      setSnackbar({
+        open: true,
+        variant: "success",
+        message: "User deleted.",
+      });
+      setTimeout(() => {
+        navigate(`/${AppPaths.USERS}`);
+      }, 1000);
     },
-        
+
     onError: () =>
-        setSnackbar({
-            open: true,
-            variant: "error",
-            message: "Something went wrong.",
-        }),
-});
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      }),
+  });
 
-const { mutate: mutateDeleteUser } =deleteUserMutation;
+  const { mutate: mutateDeleteUser } = deleteUserMutation;
 
-function deleteUser() {
-  return client.delete(`${auth}/users/${deleteId}`)
-}
+  function deleteUser() {
+    return client.delete(`${auth}/users/${deleteId}`);
+  }
 
-
-     function handleDelete() {
-      mutateDeleteUser()
-       
-    }
-   
-
-
+  function handleDelete() {
+    mutateDeleteUser();
+  }
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="user"/>}
+      {openDelete && (
+        <DeleteModal
+          open={openDelete}
+          handleClose={handleClose}
+          handleDelete={handleDelete}
+          label="user"
+        />
+      )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Users</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: isAdd ? 12 : 0
-             }}>
+          <Box style={{ marginRight: isAdd ? 12 : 0 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search User by Name or Id"
@@ -224,13 +232,13 @@ function deleteUser() {
           {isAdd ? (
             <Button
               variant="contained"
-              style={{ color:COLORS.WHITE }}
+              style={{ color: COLORS.WHITE }}
               onClick={addUser}
             >
               <AddIcon />
               add user
             </Button>
-          ) : null} 
+          ) : null}
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -257,9 +265,7 @@ function deleteUser() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {user.email}
-                      </Span>
+                      <Span fontType="secondary">{user.email}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{user.address}</Span>
@@ -270,8 +276,12 @@ function deleteUser() {
                     <TableCell align="left">
                       <Span fontType="secondary">{user.contact_number}</Span>
                     </TableCell>
-                    
-                   
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {getUserRoles(user.roles)}
+                      </Span>
+                    </TableCell>
+
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={user.id} />
                     </TableCell>
