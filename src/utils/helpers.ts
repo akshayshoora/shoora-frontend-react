@@ -1,7 +1,6 @@
-//https://maps.googleapis.com/maps/api/geocode/json?latlng=44.4647452,7.3553838&key=AIzaSyDv0VwXjXpb0Ob88D2ZI5pj5gO0HaGZTx4
 import client from "serverCommunication/client";
 import axios from "axios";
-export function latLongToPlace(lat: number, long: number) {
+export async function latLongToPlace(lat: number, long: number, shortName: boolean) {
   return new Promise((resolve: any) => {
     const APIkey = process.env.REACT_APP_MAP_KEY;
     const URL =
@@ -11,7 +10,15 @@ export function latLongToPlace(lat: number, long: number) {
     axios
       .get(URL)
       .then(function (response) {
-        resolve(response.data.results[0].formatted_address);
+        if(shortName){
+          resolve(response.data.results[0].address_components[1]?.long_name?
+            response.data.results[0].address_components[1].long_name : 
+            response.data.results[0].address_components[0].long_name);
+        }
+        else{
+          resolve(response.data.results[0].formatted_address);
+        }
+        
       })
       .catch(function (error) {
         console.log(error);
