@@ -23,6 +23,7 @@ import GoogleMapReact from "google-map-react";
 import { latLongToPlace } from "utils/helpers";
 import { useEffect, useState } from "react";
 import Marker from "components/Map/Marker";
+
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -94,7 +95,39 @@ export function TripModal(props: ITripModalProps) {
     return (await client.get(`${monitor}/trips/${id}/path`)).data;
   }
 
-  console.log(tripPath, "tripppathh");
+  const getMapRoute = (map: any, maps: any) => {
+    const directionsService = new (
+      window as any
+    ).google.maps.DirectionsService();
+    const directionsRenderer = new (
+      window as any
+    ).google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+    const origin = {
+      lat: Number(trip.start_latitude),
+      lng: Number(trip.start_longitude),
+    };
+    const destination = {
+      lat: Number(trip.end_latitude),
+      lng: Number(trip.end_longitude),
+    };
+
+    directionsService.route(
+      {
+        origin: origin,
+        destination: destination,
+        travelMode: (window as any).google.maps.TravelMode.DRIVING,
+        waypoints: tripPath.gps_cordinate,
+      },
+      (result: any, status: any) => {
+        if (status === (window as any).google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(result);
+        } else {
+          console.error(`error fetching directions ${result}`);
+        }
+      }
+    );
+  };
 
   return (
     <Box>
@@ -239,15 +272,16 @@ export function TripModal(props: ITripModalProps) {
                         lat: Number(trip.start_latitude),
                         lng: Number(trip.start_longitude),
                       }}
-                      onGoogleApiLoaded={({ map, maps }) =>
-                        renderMarkers(map, maps)
-                      }
+                      onGoogleApiLoaded={({ map, maps }) => {
+                        // renderMarkers(map, maps);
+                        getMapRoute(map, maps);
+                      }}
                     >
-                      <Marker
+                      {/* <Marker
                         key={1}
                         lat={trip.start_latitude}
                         lng={trip.start_longitude}
-                      />
+                      /> */}
                     </GoogleMapReact>
                   </Box>
                 </Item>
