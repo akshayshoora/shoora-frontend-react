@@ -16,10 +16,7 @@ import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
 import Iframe from "react-iframe";
 import Table from "@mui/material/Table";
-import {
-  TableFooter,
-} from "components/commonComponent/Table";
-
+import { TableFooter } from "components/commonComponent/Table";
 
 export default function () {
   const Item = styled(Paper)(({ theme }) => ({
@@ -62,8 +59,9 @@ export default function () {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${pageNumber + 1
-      }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${transport}/vehicles/?page=${
+      pageNumber + 1
+    }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 
@@ -148,53 +146,68 @@ export default function () {
                   </List>
                   <Box className="notfound">
                     <div className="contendata">
-                      {!isVehicleLoading && <div>
-                        <Table>
-                          {vehicleList?.results.map((item: any, index: number) => (
-                            <TableRow>
-                              <div
-                                className="loaddata"
-                                style={
-                                  selectedDevice.includes(item.device)
-                                    ? { background: "#fef8f0" }
-                                    : {}
-                                }
-                              >
-                                <i className="circle"></i>
-                                <span className="trackid">{item.vin}</span>
-                                <span
-                                  className="arrowright"
-                                  onClick={() => {
-                                    handleVehicleView(item.device);
-                                  }}
-                                >
-                                  <svg
-                                    width="17"
-                                    height="15"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
+                      {!isVehicleLoading && (
+                        <div>
+                          <Table>
+                            {vehicleList?.results.map(
+                              (item: any, index: number) => (
+                                <TableRow>
+                                  <div
+                                    className="loaddata"
+                                    style={
+                                      selectedDevice.includes(item.device)
+                                        ? { background: "#fef8f0" }
+                                        : {}
+                                    }
                                   >
-                                    <path
-                                      d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                      stroke="#3BB3C3"
-                                      stroke-width="1.5"
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                    ></path>
-                                  </svg>
-                                </span>
-                              </div>
-                            </TableRow>
-                          ))}
-                        </Table>
-                        <TableFooter
-                          totalPages={Math.ceil(vehicleList?.count / rowsPerPage)}
-                          currentPage={page + 1}
-                          onPageChange={handleChangePage}
-                          rowsPerPage={rowsPerPage}
-                          onChangeRowsPerPage={handleChangeRowsPerPage}
-                        />
-                      </div>}
+                                    <i className="circle"></i>
+                                    <span className="trackid">{item.vin}</span>
+                                    <span
+                                      className="arrowright"
+                                      onClick={() => {
+                                        handleVehicleView(item.device);
+                                      }}
+                                    >
+                                      <svg
+                                        width="17"
+                                        height="15"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <path
+                                          d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
+                                          stroke="#3BB3C3"
+                                          stroke-width="1.5"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                        ></path>
+                                      </svg>
+                                    </span>
+                                  </div>
+                                </TableRow>
+                              )
+                            )}
+                          </Table>
+                          <Box
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              paddingBottom: "20px",
+                            }}
+                          >
+                            <TableFooter
+                              totalPages={Math.ceil(
+                                vehicleList?.count / rowsPerPage
+                              )}
+                              currentPage={page + 1}
+                              onPageChange={handleChangePage}
+                              rowsPerPage={rowsPerPage}
+                              onChangeRowsPerPage={handleChangeRowsPerPage}
+                              showRow={false}
+                            />
+                          </Box>
+                        </div>
+                      )}
 
                       {!isVehicleLoading && !vehicleList?.results.length && (
                         <div className="notfoundimg">
@@ -219,8 +232,9 @@ export default function () {
                   }}
                 >
                   <Iframe
-                    url={`https://livefeed.shoora.com/videofeed/${videoUrl == "" ? "?device=" : videoUrl
-                      }&email=its@its.com&password=123456`}
+                    url={`https://livefeed.shoora.com/videofeed/${
+                      videoUrl == "" ? "?device=" : videoUrl
+                    }&email=its@its.com&password=123456`}
                     position="relative"
                     width="100%"
                     id="myId"

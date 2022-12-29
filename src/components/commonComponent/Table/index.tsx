@@ -27,6 +27,7 @@ interface ITableFooterProps {
   onPageChange: (event: unknown, newPage: number) => void;
   rowsPerPage: number;
   onChangeRowsPerPage: (event: SelectChangeEvent) => void;
+  showRow?: boolean;
 }
 
 interface ITableHeadingProps {
@@ -44,6 +45,7 @@ export function TableFooter(props: ITableFooterProps) {
     onPageChange,
     rowsPerPage,
     onChangeRowsPerPage,
+    showRow,
   } = props;
 
   const classes = useStyles();
@@ -59,42 +61,48 @@ export function TableFooter(props: ITableFooterProps) {
         color="primary"
         className={classes.pagination}
       />
-      <Box className={classes.numberOfRows}>
-        <Span size="small">Shows: </Span>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          //@ts-ignore
-          value={rowsPerPage}
-          onChange={onChangeRowsPerPage}
-          size="small"
-          className={classes.dropDown}
-        >
-          <MenuItem value={10} selected>
-            <Span size="small" fontType="secondary">
-              10 ROWS
-            </Span>
-          </MenuItem>
-          <MenuItem value={25}>
-            <Span size="small" fontType="secondary">
-              25 ROWS
-            </Span>
-          </MenuItem>
-          <MenuItem value={50}>
-            <Span size="small" fontType="secondary">
-              50 ROWS
-            </Span>
-          </MenuItem>
-          <MenuItem value={100}>
-            <Span size="small" fontType="secondary">
-              100 ROWS
-            </Span>
-          </MenuItem>
-        </Select>
-      </Box>
+      {showRow && (
+        <Box className={classes.numberOfRows}>
+          <Span size="small">Shows: </Span>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            //@ts-ignore
+            value={rowsPerPage}
+            onChange={onChangeRowsPerPage}
+            size="small"
+            className={classes.dropDown}
+          >
+            <MenuItem value={10} selected>
+              <Span size="small" fontType="secondary">
+                10 ROWS
+              </Span>
+            </MenuItem>
+            <MenuItem value={25}>
+              <Span size="small" fontType="secondary">
+                25 ROWS
+              </Span>
+            </MenuItem>
+            <MenuItem value={50}>
+              <Span size="small" fontType="secondary">
+                50 ROWS
+              </Span>
+            </MenuItem>
+            <MenuItem value={100}>
+              <Span size="small" fontType="secondary">
+                100 ROWS
+              </Span>
+            </MenuItem>
+          </Select>
+        </Box>
+      )}
     </Box>
   );
 }
+
+TableFooter.defaultProps = {
+  showRow: true,
+};
 
 export function TableHeader(props: ITableHeadingProps) {
   const { headings, order, orderBy, onRequestSort, shouldShowActionMenu } =
