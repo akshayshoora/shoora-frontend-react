@@ -160,15 +160,13 @@ export default function () {
                                       ? { background: "#fef8f0" }
                                       : {}
                                   }
+                                  onClick={() => {
+                                    setDeviceId(item.device);
+                                  }}
                                 >
                                   <i className="circle"></i>
                                   <span className="trackid">{item.vin}</span>
-                                  <span
-                                    className="arrowright"
-                                    onClick={() => {
-                                      setDeviceId(item.device);
-                                    }}
-                                  >
+                                  <span className="arrowright">
                                     <svg
                                       width="17"
                                       height="15"
@@ -225,7 +223,7 @@ export default function () {
                 <Box className="livemap">
                   <GoogleMap list={locationList} />
 
-                  <Box className={classes.mapdropdown}>
+                  {/* <Box className={classes.mapdropdown}>
                     <button className="mapoptions" onClick={handleMapOption}>
                       Map Options
                     </button>
@@ -284,7 +282,7 @@ export default function () {
                         </ul>
                       </div>
                     )}
-                  </Box>
+                  </Box> */}
                 </Box>
               </Item>
             </Grid>
