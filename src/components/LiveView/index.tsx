@@ -159,15 +159,13 @@ export default function () {
                                         ? { background: "#fef8f0" }
                                         : {}
                                     }
+                                    onClick={() => {
+                                      handleVehicleView(item.device);
+                                    }}
                                   >
                                     <i className="circle"></i>
                                     <span className="trackid">{item.vin}</span>
-                                    <span
-                                      className="arrowright"
-                                      onClick={() => {
-                                        handleVehicleView(item.device);
-                                      }}
-                                    >
+                                    <span className="arrowright">
                                       <svg
                                         width="17"
                                         height="15"

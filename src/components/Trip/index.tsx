@@ -61,13 +61,12 @@ export default function Trip() {
   const navigate = useNavigate();
   const [placeDataStatus, setPlaceDataStatus] = React.useState<boolean>(true);
   const classes = useStyles();
-  
-  useEffect(() => {    
-      if(tripList){
-        renderPlaceName();
-      }    
-     },[tripList]);
 
+  // useEffect(() => {
+  //     if(tripList){
+  //       renderPlaceName();
+  //     }
+  //    },[tripList]);
 
   async function getTrips(
     pageNumber: number,
@@ -113,7 +112,6 @@ export default function Trip() {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPlaceDataStatus(true);
     setPage(newPage - 1);
-    
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
@@ -144,14 +142,14 @@ export default function Trip() {
       disablePadding: false,
     },
     {
-      id: "start_latitude",
-      label: "Start Location",
+      id: "start_ltime",
+      label: "Start Time",
       numeric: false,
       disablePadding: false,
     },
     {
-      id: "end_longitude",
-      label: "End location",
+      id: "end_time",
+      label: "End Time",
       numeric: false,
       disablePadding: false,
     },
@@ -219,20 +217,25 @@ export default function Trip() {
 
   const handleCloseTrip = () => setOpenTrip(false);
 
-
-  
   async function renderPlaceName() {
-    for(let i=0; i< tripList?.results.length; i++){
-      let startPlace = await latLongToPlace(tripList.results[i].start_latitude,tripList.results[i].start_longitude,true);
-      let endPlace = await latLongToPlace(tripList.results[i].end_latitude, tripList.results[i].end_longitude,true);
+    for (let i = 0; i < tripList?.results.length; i++) {
+      let startPlace = await latLongToPlace(
+        tripList.results[i].start_latitude,
+        tripList.results[i].start_longitude,
+        true
+      );
+      let endPlace = await latLongToPlace(
+        tripList.results[i].end_latitude,
+        tripList.results[i].end_longitude,
+        true
+      );
       tripList.results[i]["startPlace"] = startPlace;
       tripList.results[i]["endPlace"] = endPlace;
-    } 
-    
+    }
+
     setPlaceDataStatus(false);
   }
-  
-  
+
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && (
@@ -267,64 +270,55 @@ export default function Trip() {
             shouldShowActionMenu={true}
           />
           <TableBody>
-            {placeDataStatus ? (
+            {isLoading ? (
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
             ) : tripList?.results.length ? (
               tripList?.results.map((trip: any, index: number) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={0} key={index}>
-                      <TableCell align="left">
-                        <Span fontType="secondary">
-                          {getDateDisplayFormat(trip.created_at)}
-                        </Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        
-                          <Span fontType="secondary">
-                            {trip.startPlace?trip.startPlace:'-'}
-                          </Span>
-                        
-                        
-                      </TableCell>
-                      <TableCell align="left">
-                     
-                          <Span fontType="secondary">
-                            {trip.endPlace?trip.endPlace:'-'}
-                          </Span>
-                        
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">
-                          {trip.driver ? trip.driver.name : "-"}
-                        </Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">{trip.total_incidents}</Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">{trip.distance} km</Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">
-                          {getDuration(trip.duration)}
-                        </Span>
-                      </TableCell>
-  
-                      <TableCell align="left">
-                        <Button
-                          variant="contained"
-                          style={{ color: COLORS.WHITE }}
-                          onClick={() => {
-                            handleOpenTrip(trip.id);
-                          }}
-                        >
-                          Details
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
+                return (
+                  <TableRow hover role="checkbox" tabIndex={0} key={index}>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {getDateDisplayFormat(trip.created_at)}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">{"-"}</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">{"-"}</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {trip.driver ? trip.driver.name : "-"}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">{trip.total_incidents}</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">{trip.distance} km</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {getDuration(trip.duration)}
+                      </Span>
+                    </TableCell>
+
+                    <TableCell align="left">
+                      <Button
+                        variant="contained"
+                        style={{ color: COLORS.WHITE }}
+                        onClick={() => {
+                          handleOpenTrip(trip.id);
+                        }}
+                      >
+                        Details
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
               })
             ) : (
               <TableCell colSpan={8}>

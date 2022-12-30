@@ -24,6 +24,10 @@ export function AlertDetails() {
     return (await client.get(`${monitor}/alerts/${id}/`)).data;
   }
 
+  function GoToBack() {
+    navigate(-1);
+  }
+
   if (isLoading) {
     return <LoadingScreen />;
   }
@@ -32,8 +36,15 @@ export function AlertDetails() {
     <Box>
       <Box className={classes.headingWrapper}>
         <Box className={classes.headingContent}>
+          <IconButton
+            className={classes.headingBackButton}
+            size="small"
+            onClick={GoToBack}
+          >
+            <ArrowBackIcon />
+          </IconButton>
           <Typography fontSize={24} style={{ textTransform: "capitalize" }}>
-            {alert.alert_name}
+            Alert Details
           </Typography>
         </Box>
       </Box>
