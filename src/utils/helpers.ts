@@ -34,3 +34,18 @@ export function getUserRoles(roles: any) {
   }
   return role;
 }
+
+export function sanitizeURL(incomingURL: string){
+    let paramArray = incomingURL.split('?');
+    let returnURL = paramArray[0]+'?'
+    paramArray = paramArray[1].split('&');
+    for(let i=0; i < paramArray.length; i++){
+      if(paramArray[i].split('=')[1] !== '' ){
+        returnURL += paramArray[i]+'&'
+        }
+    }
+    if(returnURL.slice(-1) == '&'){
+      returnURL = returnURL.slice(0,-1)
+    }
+    return returnURL;
+}
