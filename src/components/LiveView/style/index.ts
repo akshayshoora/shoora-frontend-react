@@ -34,20 +34,12 @@ export default makeStyles({
 
     },
     "& .contentMain":{
-     "& .MuiList-root":{
-      display:'flex',
+     "& .MuiFormControl-fullWidth":{
+      // display:'flex',
       margin: '0 15px 17px',
-      overflowY:'scroll',
-      whiteSpace:'nowrap',
-      "& .MuiListItemText-root":{
-        minWidth:'auto',
-        marginRight:'10px',
-        borderRadius:'50px',
-        cursor:'pointer',
-        padding:'8px 20px',
-        textAlign:'center',
-        border: '1px solid #ddd',
-      }
+      width:'calc(100% - 30px)',
+      // overflowY:'scroll',
+      // whiteSpace:'nowrap',
      },
      "& .notfound":{
       padding:'0 15px',
