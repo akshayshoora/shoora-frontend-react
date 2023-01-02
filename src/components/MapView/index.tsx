@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Snackbar, { TableRow } from "@mui/material";
+import Snackbar, { FormControl, InputLabel, Select, TableRow, MenuItem } from "@mui/material";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Paper from "@mui/material/Paper";
@@ -27,6 +27,12 @@ export default function () {
     position: "relative",
     boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
   }));
+
+  const [selectAssets, setSelectAssets] = useState('');
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setSelectAssets(event.target.value as string);
+  };
   const classes = useStyles();
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -140,12 +146,27 @@ export default function () {
                       <img src={SerachIcon} height={24} width={24} alt="" />
                     </Button>
                   </Box>
-                  <List component="nav" aria-label="search user">
+                  {/* <List component="nav" aria-label="search user">
                     <ListItemText primary="All" />
                     <ListItemText primary="Active assets" />
                     <ListItemText primary="Unreachable Assets" />
                     <ListItemText primary="Inactive assets" />
-                  </List>
+                  </List> */}
+                   <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">Select Assets</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={selectAssets}
+                      label="selectAssets"
+                      onChange={handleChange}
+                    >
+                      <MenuItem value={1}>All</MenuItem>
+                      <MenuItem value={2}>Active assets</MenuItem>
+                      <MenuItem value={3}>Unreachable Assets</MenuItem>
+                      <MenuItem value={3}>Inactive assets</MenuItem>
+                    </Select>
+                  </FormControl>
                   <Box className="notfound">
                     <div className="contendata">
                       {!isVehicleLoading && (
