@@ -71,7 +71,32 @@ export default makeStyles({
        },
        "& .notfoundimg":{
         marginTop:'10%',
-       }
+       },  "& .loaddataDisable":{
+        display:'flex',
+        padding:'7px 10px',
+        borderBottom:'1px solid #ddd',
+        justifyContent:'space-around',
+        alignItems:'center',
+        borderRadius:'3px',
+        color:"#a7a5a5",
+        "&:hover":{
+          background:'#dddddd5e',
+        },
+        cursor:'pointer',
+        "& .circle":{
+          width:'10px',
+          height:'10px',
+          borderRadius:'50px',
+          background:COLORS.GRADIENT,
+          marginRight:'10px',
+        },
+        "& .trackid":{
+          marginRight:'auto',
+        },
+        "& .arrowright":{
+          marginLeft:'auto',
+        }
+       },
      }
     },
     
