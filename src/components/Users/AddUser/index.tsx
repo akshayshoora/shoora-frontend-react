@@ -226,8 +226,9 @@ export default function AddUser() {
       </Box>
 
       <Box className={classes.padding_24}>
-        <Grid container spacing={4}>
-          <Grid item xs={4}>
+      <Box className={classes.formContainer}>
+        <Grid container spacing={3}>
+          <Grid item xs={3}>
             <TextInput
               label="User Name"
               placeholder="Enter User name"
@@ -238,7 +239,7 @@ export default function AddUser() {
             />
           </Grid>
           {userId ? (
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextInput
                 label="Email"
                 placeholder="Enter Email"
@@ -250,7 +251,7 @@ export default function AddUser() {
               />
             </Grid>
           ) : (
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextInput
                 label="Email"
                 placeholder="Enter Email"
@@ -261,7 +262,7 @@ export default function AddUser() {
               />
             </Grid>
           )}
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <TextInput
               label="Contact"
               placeholder="Enter contact number"
@@ -272,10 +273,8 @@ export default function AddUser() {
               onChange={(value) => handleFormUser("contact_number", value)}
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={4}>
           {!userId && (
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextInput
                 label="Password"
                 placeholder="Enter Password"
@@ -286,7 +285,7 @@ export default function AddUser() {
               />
             </Grid>
           )}
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <TextInput
               label="Contact Code"
               placeholder="Enter Contact Code"
@@ -297,7 +296,7 @@ export default function AddUser() {
               onChange={(value) => handleFormUser("contact_code", value)}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Typography
               fontSize={16}
               style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
@@ -339,7 +338,7 @@ export default function AddUser() {
           </Grid>
 
           {userId && (
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextInput
                 label="Address"
                 placeholder="Enter address"
@@ -350,10 +349,8 @@ export default function AddUser() {
               />
             </Grid>
           )}
-        </Grid>
         {!userId && (
-          <Grid container spacing={4}>
-            <Grid item xs={4}>
+            <Grid item xs={3}>
               <TextInput
                 label="Address"
                 placeholder="Enter address"
@@ -363,8 +360,9 @@ export default function AddUser() {
                 onChange={(value) => handleFormUser("address", value)}
               />
             </Grid>
-          </Grid>
         )}
+         </Grid>
+      </Box>
       </Box>
 
       <Box className={classes.footerWrapper}>
