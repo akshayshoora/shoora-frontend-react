@@ -33,11 +33,19 @@ export default makeStyles({
     },
     footerWrapper: {
         padding: '16px 24px',
-        background: "#F8F8FB",
+        // background: "#F8F8FB",
         display: 'flex',
         justifyContent: 'flex-end',
         position: 'fixed',
-        bottom: '0',
-        right:'0',
+        bottom: '30px',
+        right:'20px',
+    },
+    formContainer:{
+     background:'#fff',
+     padding:'20px 30px',
+     borderRadius:'15px',
+     marginTop:'0px',
+     boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
+     minHeight:'calc(100vh - 345px)',
     },
 });

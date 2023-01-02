@@ -87,4 +87,15 @@ export default makeStyles({
             border:'1px solid #eee',
         }
     },
+    reportDate:{
+    display:'flex',
+    justifyContent:'space-between',
+    '& .MuiOutlinedInput-root':{
+        width:'100%',
+    },
+    '& input':{
+        height:'38px',
+        boxSizing:'border-box',
+    }
+    },
 });
