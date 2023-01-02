@@ -32,7 +32,7 @@ import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
 import { getDateDisplayFormat, getDuration } from "utils/calenderUtils";
-import { latLongToPlace } from "utils/helpers";
+import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import { endianness } from "os";
 import { useEffect } from "react";
 
@@ -76,8 +76,8 @@ export default function Trip() {
     let getApiUrl = `${monitor}/trips/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
-
-    const response = await client.get(getApiUrl);
+    const finalURL = sanitizeURL(getApiUrl)
+    const response = await client.get(finalURL);
 
     return response.data;
   }
