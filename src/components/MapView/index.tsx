@@ -197,7 +197,7 @@ export default function () {
                       <MenuItem value={"moving"}>Moving</MenuItem>
                       <MenuItem value={"idle"}>Idle</MenuItem>
                       <MenuItem value={"stopped"}>Stopped</MenuItem>
-                      <MenuItem value={"complete"}>Complete</MenuItem>
+                      <MenuItem value={"online"}>Online</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">

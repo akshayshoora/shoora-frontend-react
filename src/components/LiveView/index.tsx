@@ -177,8 +177,8 @@ export default function () {
                       onChange={handleChange}
                     >
                       <MenuItem value={""}>All</MenuItem>
-                      <MenuItem value={"complete"}>Complete</MenuItem>
-                      <MenuItem value={"incomplete"}>Incomplete</MenuItem>
+                      <MenuItem value={"online"}>Online</MenuItem>
+                      <MenuItem value={"offlne"}>Offline</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">
