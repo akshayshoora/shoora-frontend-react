@@ -87,6 +87,7 @@ export default function () {
             variant: "error",
             message: "vehicle is not moving",
           });
+          return
         }
       }
     }
@@ -176,9 +177,8 @@ export default function () {
                       onChange={handleChange}
                     >
                       <MenuItem value={""}>All</MenuItem>
-                      <MenuItem value={"moving"}>Moving</MenuItem>
-                      <MenuItem value={"idle"}>Idle</MenuItem>
-                      <MenuItem value={"stopped"}>Stopped</MenuItem>
+                      <MenuItem value={"complete"}>Complete</MenuItem>
+                      <MenuItem value={"incomplete"}>Incomplete</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">
