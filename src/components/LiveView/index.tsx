@@ -241,25 +241,127 @@ export default function () {
             </Grid>
             <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
               <Item elevation={0}>
-                <Box
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                    width: "100%",
-                  }}
-                >
+                <Box className="liveViewVideo">
+                   <Grid xs={2} sm={4} md={4} className="liveframe">
                   <Iframe
-                    url={`https://livefeed.shoora.com/videofeed/${
-                      videoUrl == "" ? "?device=" : videoUrl
-                    }&email=its@its.com&password=123456`}
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
                     position="relative"
                     width="100%"
                     id="myId"
                     className="myClassname"
-                    height="100%"
+                    height="300"
                   />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
+                  <Grid xs={2} sm={4} md={4} className="liveframe">
+                  <Iframe
+                    url={`https://livefeed.shoora.com/liveview/?device=784087666481&email=its@its.com&password=123456&channel=1`}
+                    position="relative"
+                    width="100%"
+                    id="myId"
+                    className="myClassname"
+                    height="300"
+                  />
+                  </Grid>
                 </Box>
               </Item>
             </Grid>
