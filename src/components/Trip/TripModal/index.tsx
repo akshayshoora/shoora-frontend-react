@@ -23,6 +23,7 @@ import GoogleMapReact from "google-map-react";
 import { latLongToPlace } from "utils/helpers";
 import { useEffect, useState } from "react";
 import Marker from "components/Map/Marker";
+
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -81,11 +82,52 @@ export function TripModal(props: ITripModalProps) {
   };
 
   const { data: startlocation } = useQuery(["start_location", trip], () =>
-    latLongToPlace(trip.start_latitude, trip.start_longitude)
+    latLongToPlace(trip.start_latitude, trip.start_longitude, false)
   );
   const { data: endlocation } = useQuery(["end_location", trip], () =>
-    latLongToPlace(trip.end_latitude, trip.end_longitude)
+    latLongToPlace(trip.end_latitude, trip.end_longitude, false)
   );
+  const { data: tripPath } = useQuery(["trip_path", trip], () =>
+    getTripPath(trip.id)
+  );
+
+  async function getTripPath(id: string) {
+    return (await client.get(`${monitor}/trips/${id}/path`)).data;
+  }
+
+  const getMapRoute = (map: any, maps: any) => {
+    const directionsService = new (
+      window as any
+    ).google.maps.DirectionsService();
+    const directionsRenderer = new (
+      window as any
+    ).google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
+    const origin = {
+      lat: Number(trip.start_latitude),
+      lng: Number(trip.start_longitude),
+    };
+    const destination = {
+      lat: Number(trip.end_latitude),
+      lng: Number(trip.end_longitude),
+    };
+
+    directionsService.route(
+      {
+        origin: origin,
+        destination: destination,
+        travelMode: (window as any).google.maps.TravelMode.DRIVING,
+        waypoints: tripPath.gps_cordinate,
+      },
+      (result: any, status: any) => {
+        if (status === (window as any).google.maps.DirectionsStatus.OK) {
+          directionsRenderer.setDirections(result);
+        } else {
+          console.error(`error fetching directions ${result}`);
+        }
+      }
+    );
+  };
 
   return (
     <Box>
@@ -213,7 +255,9 @@ export function TripModal(props: ITripModalProps) {
                           <span>Distance: {trip.distance} km</span>
                         </li>
                         <li>
-                          <span>Duration: {getDuration(trip.duration)}</span>
+                          <span>
+                            Duration: {getDuration(trip.duration / 60)}
+                          </span>
                         </li>
                       </ul>
                     </Grid>
@@ -230,15 +274,16 @@ export function TripModal(props: ITripModalProps) {
                         lat: Number(trip.start_latitude),
                         lng: Number(trip.start_longitude),
                       }}
-                      onGoogleApiLoaded={({ map, maps }) =>
-                        renderMarkers(map, maps)
-                      }
+                      onGoogleApiLoaded={({ map, maps }) => {
+                        // renderMarkers(map, maps);
+                        getMapRoute(map, maps);
+                      }}
                     >
-                      <Marker
+                      {/* <Marker
                         key={1}
                         lat={trip.start_latitude}
                         lng={trip.start_longitude}
-                      />
+                      /> */}
                     </GoogleMapReact>
                   </Box>
                 </Item>

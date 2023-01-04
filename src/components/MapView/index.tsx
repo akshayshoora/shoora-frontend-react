@@ -2,7 +2,15 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Snackbar from "@mui/material";
+import {
+  FormControl,
+  Snackbar,
+  InputLabel,
+  Select,
+  TableRow,
+  MenuItem,
+  Alert,
+} from "@mui/material";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Paper from "@mui/material/Paper";
@@ -12,9 +20,11 @@ import mapIcon from "../../assets/location.png";
 import { monitor, transport } from "constants/RouteMiddlePath";
 import { useQuery } from "react-query";
 import client from "serverCommunication/client";
-import { Button, List, ListItemText } from "@mui/material";
+import { Button, List, ListItemText, SelectChangeEvent } from "@mui/material";
 import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
+import Table from "@mui/material/Table";
+import { TableFooter } from "components/commonComponent/Table";
 
 export default function () {
   const Item = styled(Paper)(({ theme }) => ({
@@ -25,6 +35,12 @@ export default function () {
     position: "relative",
     boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
   }));
+
+  const [selectStatus, setSelectStatus] = useState("");
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setSelectStatus(event.target.value as string);
+  };
   const classes = useStyles();
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -34,7 +50,7 @@ export default function () {
 
   const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(1000);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [deviceId, setDeviceId] = useState("");
   const [locationList, setLocationList] = useState<any[]>([]);
 
@@ -46,8 +62,8 @@ export default function () {
   };
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId],
-    () => getVehicles(page, rowsPerPage, searchText)
+    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
+    () => getVehicles(page, rowsPerPage, searchText, selectStatus)
   );
 
   const { data: gpsList, isLoading: isGpsLoading } = useQuery(
@@ -58,16 +74,25 @@ export default function () {
   async function getVehicles(
     pageNumber: number,
     pageSize: number,
-    searchText?: string
+    searchText?: string,
+    selectStatus?: string
   ) {
     let getApiUrl = `${transport}/vehicles/?page=${
       pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
 
     const response = await client.get(getApiUrl);
 
     return response.data;
   }
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage - 1);
+  };
+
+  const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   async function getGpsList(
     pageNumber: number,
@@ -95,6 +120,22 @@ export default function () {
     //   }
     // }
   }
+  const handleVehicleView = (id: any) => {
+    const arrVehicleList = [...vehicleList?.results];
+    for (let i in arrVehicleList) {
+      if (arrVehicleList[i]["device"] === id) {
+        if (arrVehicleList[i]["status"] !== "moving") {
+          setSnackbar({
+            open: true,
+            variant: "error",
+            message: "vehicle is not moving",
+          });
+          return;
+        }
+      }
+    }
+    setDeviceId(id);
+  };
 
   const getLocation = (list: string[]) => {
     const markersData = list.map((item: any, index) => ({
@@ -108,6 +149,20 @@ export default function () {
 
   return (
     <Box style={{ padding: "20px 0 0 25px" }}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.variant}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <Box>
         <Heading>Map View</Heading>
         <Box className={classes.live}>
@@ -123,56 +178,105 @@ export default function () {
                   <Box className="searchbar" style={{ padding: "20px 15px" }}>
                     <input
                       className="searchField"
-                      placeholder="Search Asset ID"
+                      placeholder="Search Vehicle ID"
                       type="search"
+                      onChange={(e) => {
+                        setSearchText(e.target.value);
+                      }}
                     />
                     <Button className="searchBtn">
                       <img src={SerachIcon} height={24} width={24} alt="" />
                     </Button>
                   </Box>
-                  <List component="nav" aria-label="search user">
+                  {/* <List component="nav" aria-label="search user">
                     <ListItemText primary="All" />
                     <ListItemText primary="Active assets" />
                     <ListItemText primary="Unreachable Assets" />
                     <ListItemText primary="Inactive assets" />
-                  </List>
+                  </List> */}
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Select Filter
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={selectStatus}
+                      label="selectFilter"
+                      onChange={handleChange}
+                    >
+                      <MenuItem value={1}>All</MenuItem>
+                      <MenuItem value={"moving"}>Moving</MenuItem>
+                      <MenuItem value={"idle"}>Idle</MenuItem>
+                      <MenuItem value={"stopped"}>Stopped</MenuItem>
+                      <MenuItem value={"online"}>Online</MenuItem>
+                    </Select>
+                  </FormControl>
                   <Box className="notfound">
                     <div className="contendata">
-                      {!isVehicleLoading &&
-                        vehicleList?.results.map((item: any) => (
-                          <div
-                            className="loaddata"
-                            style={
-                              deviceId == item.device
-                                ? { background: "#fef8f0" }
-                                : {}
-                            }
+                      {!isVehicleLoading && (
+                        <div>
+                          <Table>
+                            {vehicleList?.results.map((item: any) => (
+                              <TableRow>
+                                <div
+                                  className="loaddata"
+                                  style={
+                                    deviceId == item.device
+                                      ? { background: "#fef8f0" }
+                                      : {}
+                                  }
+                                  onClick={() => {
+                                    handleVehicleView(item.device);
+                                  }}
+                                >
+                                  <i className="circle"></i>
+                                  <span className="trackid">{item.vin}</span>
+                                  <span className="arrowright">
+                                    <svg
+                                      width="17"
+                                      height="15"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
+                                        stroke={
+                                          item.status !== "moving"
+                                            ? "#D3D3D3"
+                                            : "#3BB3C3"
+                                        }
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                      ></path>
+                                    </svg>
+                                  </span>
+                                </div>
+                              </TableRow>
+                            ))}
+                          </Table>
+                          <Box
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              paddingBottom: "20px",
+                            }}
                           >
-                            <i className="circle"></i>
-                            <span className="trackid">{item.vin}</span>
-                            <span
-                              className="arrowright"
-                              onClick={() => {
-                                setDeviceId(item.device);
-                              }}
-                            >
-                              <svg
-                                width="17"
-                                height="15"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <path
-                                  d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                  stroke="#3BB3C3"
-                                  stroke-width="1.5"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                ></path>
-                              </svg>
-                            </span>
-                          </div>
-                        ))}
+                            <TableFooter
+                              totalPages={Math.ceil(
+                                vehicleList?.count / rowsPerPage
+                              )}
+                              currentPage={page + 1}
+                              onPageChange={handleChangePage}
+                              rowsPerPage={rowsPerPage}
+                              onChangeRowsPerPage={handleChangeRowsPerPage}
+                              showRow={false}
+                            />
+                          </Box>
+                        </div>
+                      )}
+
                       {!isVehicleLoading && !vehicleList?.results.length && (
                         <div className="notfoundimg">
                           {" "}
@@ -189,7 +293,7 @@ export default function () {
                 <Box className="livemap">
                   <GoogleMap list={locationList} />
 
-                  <Box className={classes.mapdropdown}>
+                  {/* <Box className={classes.mapdropdown}>
                     <button className="mapoptions" onClick={handleMapOption}>
                       Map Options
                     </button>
@@ -248,7 +352,7 @@ export default function () {
                         </ul>
                       </div>
                     )}
-                  </Box>
+                  </Box> */}
                 </Box>
               </Item>
             </Grid>

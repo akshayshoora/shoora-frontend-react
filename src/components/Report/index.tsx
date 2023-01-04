@@ -9,7 +9,7 @@ import Chip from "@mui/material/Chip";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { useAppContext } from "ContextAPIs/appContext";
-import { Button, CircularProgress, Modal, InputLabel } from "@mui/material";
+import { Button, CircularProgress, Modal, InputLabel, TextField } from "@mui/material";
 import SearchBox from "components/commonComponent/SearchField";
 import COLORS from "constants/colors";
 import style from "./style";
@@ -248,13 +248,22 @@ export default function Report() {
             />
             <small>You can give this report a custom name</small>
         </Grid>
-        <Grid style={{ marginBottom: 24 }}>
-            <TextInput
-                label="Date Range"
-                placeholder="12 Dec 2022 12:00 AM - 12 Dec 2022 12:00 AM -"
-                value=""
-                isRequired={false}
-                onChange={(value) => handleFormUser()}
+        <Grid style={{ marginBottom: 24 }} className={classes.reportDate}>
+            <TextField
+              id="datetime-local1"
+              type="datetime-local"
+              defaultValue="2023-01-02T09:30"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+             <TextField
+              id="datetime-local2"
+              type="datetime-local"
+              defaultValue="2023-02-02T10:30"
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
         </Grid>
         <Grid style={{ marginBottom: 24 }}>

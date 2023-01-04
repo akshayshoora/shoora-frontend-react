@@ -32,8 +32,9 @@ import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
 import { getDateDisplayFormat, getDuration } from "utils/calenderUtils";
-import { latLongToPlace } from "utils/helpers";
+import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import { endianness } from "os";
+import { useEffect } from "react";
 
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
@@ -44,7 +45,8 @@ export default function Trip() {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { data: tripList, isLoading } = useQuery(
     ["trips", page, rowsPerPage, searchText],
-    () => getTrips(page, rowsPerPage, searchText)
+    () => getTrips(page, rowsPerPage, searchText),
+    { refetchOnWindowFocus: false }
   );
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
@@ -57,8 +59,15 @@ export default function Trip() {
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
   const navigate = useNavigate();
-
+  const [placeDataStatus, setPlaceDataStatus] = React.useState<boolean>(true);
   const classes = useStyles();
+
+  // useEffect(() => {
+  //     if(tripList){
+  //       renderPlaceName();
+  //     }
+  //    },[tripList]);
+
   async function getTrips(
     pageNumber: number,
     pageSize: number,
@@ -67,8 +76,8 @@ export default function Trip() {
     let getApiUrl = `${monitor}/trips/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
-
-    const response = await client.get(getApiUrl);
+    const finalURL = sanitizeURL(getApiUrl);
+    const response = await client.get(finalURL);
 
     return response.data;
   }
@@ -101,10 +110,12 @@ export default function Trip() {
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
+    setPlaceDataStatus(true);
     setPage(newPage - 1);
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
+    setPlaceDataStatus(true);
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -131,14 +142,14 @@ export default function Trip() {
       disablePadding: false,
     },
     {
-      id: "start_latitude",
-      label: "Start Location",
+      id: "start_ltime",
+      label: "Start Time",
       numeric: false,
       disablePadding: false,
     },
     {
-      id: "end_longitude",
-      label: "End location",
+      id: "end_time",
+      label: "End Time",
       numeric: false,
       disablePadding: false,
     },
@@ -206,10 +217,23 @@ export default function Trip() {
 
   const handleCloseTrip = () => setOpenTrip(false);
 
-  async function getLocations(lat: number, long: number) {
-    const result = await latLongToPlace(lat, long);
-    // console.log(result, "resulttt");
-    return result;
+  async function renderPlaceName() {
+    for (let i = 0; i < tripList?.results.length; i++) {
+      let startPlace = await latLongToPlace(
+        tripList.results[i].start_latitude,
+        tripList.results[i].start_longitude,
+        true
+      );
+      let endPlace = await latLongToPlace(
+        tripList.results[i].end_latitude,
+        tripList.results[i].end_longitude,
+        true
+      );
+      tripList.results[i]["startPlace"] = startPlace;
+      tripList.results[i]["endPlace"] = endPlace;
+    }
+
+    setPlaceDataStatus(false);
   }
 
   return (
@@ -260,19 +284,10 @@ export default function Trip() {
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {/* {latLongToPlace(
-                          trip.start_latitude,
-                          trip.start_longitude
-                        )} */}
-                        {trip.start_latitude}
-                      </Span>
+                      <Span fontType="secondary">{trip.start_time}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {/* {latLongToPlace(trip.end_latitude, trip.end_longitude)} */}
-                        {trip.end_latitude}
-                      </Span>
+                      <Span fontType="secondary">{trip.end_time}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
@@ -287,7 +302,7 @@ export default function Trip() {
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {getDuration(trip.duration)}
+                        {getDuration(trip.duration / 60)}
                       </Span>
                     </TableCell>
 

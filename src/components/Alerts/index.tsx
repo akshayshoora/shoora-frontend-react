@@ -182,17 +182,18 @@ export default function Alerts() {
       id: "alert_name",
       numeric: false,
       disablePadding: true,
-      label: "Name",
+      label: "Alert",
     },
+
     {
-      id: "device_imei",
-      label: "Device",
+      id: "vehicle",
+      label: "Vehicle Numer",
       numeric: false,
       disablePadding: false,
     },
     {
-      id: "vehicle",
-      label: "Vehicle Numer",
+      id: "driver",
+      label: "Driver",
       numeric: false,
       disablePadding: false,
     },
@@ -317,11 +318,14 @@ export default function Alerts() {
                         <Span>{alert.alert_name}</Span>
                       </Box>
                     </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{alert.device_imei}</Span>
-                    </TableCell>
+
                     <TableCell align="left">
                       <Span fontType="secondary">{alert.vehicle}</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {alert.driver ? alert.driver.name : ""}
+                      </Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">

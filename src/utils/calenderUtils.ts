@@ -66,7 +66,7 @@ export const getDateTime = (dateTime: string | null): string => {
 
 export function getDuration(time: number) {
   if (time < 60) {
-    return time;
+    return Math.round(time) + "m";
   }
   let hours = time / 60;
   let rhours = Math.floor(hours);

@@ -27,12 +27,12 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import {useMutation, useQuery} from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
+import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
-import { actionAccess} from "utils/FeatureCheck";
-import {auth, transport} from "constants/RouteMiddlePath";
+import { actionAccess } from "utils/FeatureCheck";
+import { auth, transport } from "constants/RouteMiddlePath";
 
 export default function Driver() {
   const [deleteId, setDeleteId] = React.useState<string>("");
@@ -53,36 +53,37 @@ export default function Driver() {
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.DRIVERS,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.DRIVERS,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.DRIVERS,Actions.DELETE)
-  
-  
+  const isAdd = actionAccess(AppPaths.DRIVERS, Actions.ADD);
+  const isEdit = actionAccess(AppPaths.DRIVERS, Actions.EDIT);
+  const isDelete = actionAccess(AppPaths.DRIVERS, Actions.DELETE);
+
   const navigate = useNavigate();
 
-  
   const classes = useStyles();
-  async function getDevices(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getDevices(
+    pageNumber: number,
+    pageSize: number,
+    searchText?: string
+  ) {
     let getApiUrl = `${transport}/drivers/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
-   
     const response = await client.get(getApiUrl);
 
     return response.data;
   }
 
   const handleOpenDelete = (
-      event: React.MouseEvent<HTMLElement>,
-      id: string) => {
-    setDeleteId(id)
+    event: React.MouseEvent<HTMLElement>,
+    id: string
+  ) => {
+    setDeleteId(id);
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
   };
-
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -103,18 +104,12 @@ export default function Driver() {
     setPage(0);
   };
 
-  function openDriverDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function openDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.DRIVERS}/${id}`);
   }
 
-  function editDriverDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function editDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.DRIVERS}/${SubPaths.EDIT}/${id}`);
   }
@@ -124,14 +119,19 @@ export default function Driver() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openDriverDetails,
-      access:true
+      access: true,
     },
-    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editDriverDetails,access:isEdit },
+    {
+      label: "Edit",
+      icon: <EditOutlinedIcon />,
+      onClick: editDriverDetails,
+      access: isEdit,
+    },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: handleOpenDelete,
-      access:isDelete
+      access: isDelete,
     },
   ];
 
@@ -148,11 +148,11 @@ export default function Driver() {
       numeric: false,
       disablePadding: false,
     },
-    { 
-    id: "passport_number", 
-    label: "Passport Number", 
-    numeric: false,
-     disablePadding: false 
+    {
+      id: "passport_number",
+      label: "Passport Number",
+      numeric: false,
+      disablePadding: false,
     },
     {
       id: "driving_license_number",
@@ -166,6 +166,12 @@ export default function Driver() {
       numeric: false,
       disablePadding: false,
     },
+    {
+      id: "vin",
+      label: "Vehicle Number",
+      numeric: false,
+      disablePadding: false,
+    },
   ];
 
   function addDriver() {
@@ -176,45 +182,49 @@ export default function Driver() {
   };
 
   const deleteUserMutation = useMutation(deleteUser, {
-    onSuccess: () =>{
-      handleClose()
+    onSuccess: () => {
+      handleClose();
       setSnackbar({
         open: true,
         variant: "success",
         message: "Driver deleted.",
-      })
+      });
       setTimeout(() => {
         navigate(`/${AppPaths.DRIVERS}`);
       }, 1000);
     },
 
     onError: () =>
-        setSnackbar({
-          open: true,
-          variant: "error",
-          message: "Something went wrong.",
-        }),
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      }),
   });
 
-  const { mutate: mutateDeleteUser } =deleteUserMutation;
+  const { mutate: mutateDeleteUser } = deleteUserMutation;
 
   function deleteUser() {
-    return client.delete(`${transport}/drivers/${deleteId}`)
+    return client.delete(`${transport}/drivers/${deleteId}`);
   }
 
-
   function handleDelete() {
-    mutateDeleteUser()
-
+    mutateDeleteUser();
   }
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="driver" handleDelete={handleDelete}/>}
+      {openDelete && (
+        <DeleteModal
+          open={openDelete}
+          handleClose={handleClose}
+          label="driver"
+          handleDelete={handleDelete}
+        />
+      )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Drivers</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: isAdd ? 12 : 0
-             }}>
+          <Box style={{ marginRight: isAdd ? 12 : 0 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search Driver by Name or Id"
@@ -223,13 +233,13 @@ export default function Driver() {
           {isAdd ? (
             <Button
               variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
+              style={{ background: COLORS.PRIMARY_COLOR, color: COLORS.WHITE }}
               onClick={addDriver}
             >
               <AddIcon />
               add driver
             </Button>
-          ) : null} 
+          ) : null}
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -256,20 +266,25 @@ export default function Driver() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {driver.phone_number}
-                      </Span>
+                      <Span fontType="secondary">{driver.phone_number}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{driver.passport_number}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{driver.driving_license_number}</Span>
+                      <Span fontType="secondary">
+                        {driver.driving_license_number}
+                      </Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{driver.driver_score}</Span>
                     </TableCell>
-                   
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {driver.vehicle ? driver.vehicle.vin : ""}
+                      </Span>
+                    </TableCell>
+
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={driver.id} />
                     </TableCell>

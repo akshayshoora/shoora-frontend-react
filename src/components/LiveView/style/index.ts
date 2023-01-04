@@ -34,20 +34,12 @@ export default makeStyles({
 
     },
     "& .contentMain":{
-     "& .MuiList-root":{
-      display:'flex',
+     "& .MuiFormControl-fullWidth":{
+      // display:'flex',
       margin: '0 15px 17px',
-      overflowY:'scroll',
-      whiteSpace:'nowrap',
-      "& .MuiListItemText-root":{
-        minWidth:'auto',
-        marginRight:'10px',
-        borderRadius:'50px',
-        cursor:'pointer',
-        padding:'8px 20px',
-        textAlign:'center',
-        border: '1px solid #ddd',
-      }
+      width:'calc(100% - 30px)',
+      // overflowY:'scroll',
+      // whiteSpace:'nowrap',
      },
      "& .notfound":{
       padding:'0 15px',
@@ -79,10 +71,47 @@ export default makeStyles({
        },
        "& .notfoundimg":{
         marginTop:'10%',
-       }
+       },  "& .loaddataDisable":{
+        display:'flex',
+        padding:'7px 10px',
+        borderBottom:'1px solid #ddd',
+        justifyContent:'space-around',
+        alignItems:'center',
+        borderRadius:'3px',
+        color:"#a7a5a5",
+        "&:hover":{
+          background:'#dddddd5e',
+        },
+        cursor:'pointer',
+        "& .circle":{
+          width:'10px',
+          height:'10px',
+          borderRadius:'50px',
+          background:COLORS.GRADIENT,
+          marginRight:'10px',
+        },
+        "& .trackid":{
+          marginRight:'auto',
+        },
+        "& .arrowright":{
+          marginLeft:'auto',
+        }
+       },
      }
     },
-    
+    '& .liveViewVideo':{
+        background:'white',
+        overflow:'hidden',
+        padding:'20px',
+        borderRadius:'4px',
+      '& .liveframe':{
+       float:'left',
+      },
+      '& iframe':{
+       border:'none',
+       display:'block !important',
+      },
+    }, 
   },
   mapdropdown:{
     position:'absolute',

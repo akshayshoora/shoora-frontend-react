@@ -10,70 +10,88 @@ import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { transport } from "constants/RouteMiddlePath";
 
 export function DeviceDetails() {
-    const classes = useStyles();
-    const navigate = useNavigate();
+  const classes = useStyles();
+  const navigate = useNavigate();
 
-    const { id } = useParams();
+  const { id } = useParams();
 
-    const { data: device, isLoading } = useQuery(["devices", id], () =>
-        getDeviceDetails(String(id))
-    );
+  const { data: device, isLoading } = useQuery(["devices", id], () =>
+    getDeviceDetails(String(id))
+  );
 
-    async function getDeviceDetails(id: string) {
-        return (await client.get(`${transport}/devices/${id}/`)).data;
-    }
+  async function getDeviceDetails(id: string) {
+    return (await client.get(`${transport}/devices/${id}/`)).data;
+  }
 
+  function GoToBack() {
+    navigate(-1);
+  }
 
-    if (isLoading) {
-        return <LoadingScreen />;
-    }
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
-    return (
-        <Box>
-            <Box className={classes.headingWrapper}>
-                <Box className={classes.headingContent}>
-               
-                <Typography fontSize={24} style={{ textTransform: "capitalize" }}>{device.device_type}</Typography>
-                </Box>
-            </Box>
-            <Box className={classes.bodyContent}>
-                <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Device Type:</Box>
-                <Box className={classes.bodyInfo} style={{ textTransform: "capitalize" }}>{device.device_type}</Box>
-                </Box>
-                <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Device ID:</Box>
-                <Box className={classes.bodyInfo}>{device.id}</Box>
-                </Box>
-                <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Organisation:</Box>
-                <Box className={classes.bodyInfo}>{device.organization}</Box>
-                </Box>
-                <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Assigned to Vehicle:</Box>
-                <Box className={classes.bodyInfo}>
-                    {device.is_assigned_to_vehicle ? device.is_assigned_to_vehicle : "-"}
-                </Box>
-                </Box>
-                <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Activation Date:</Box>
-                <Box className={classes.bodyInfo}>
-                    {device.activation_date ? device.activation_date : "-"}
-                </Box>
-                </Box>
-                <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}>Sim Number:</Box>
-                <Box className={classes.bodyInfo} >
-                    {device.sim_number ? device.sim_number : "-"}
-                </Box>
-                </Box>
-                <Box className={classes.infoBodyWrapper}>
-                <Box className={classes.bodyInfoTitle}> IMEI Number:</Box>
-                <Box className={classes.bodyInfo}>
-                    {device.imei_number ? device.imei_number : "-"}
-                </Box>
-                </Box>
-            </Box>
+  return (
+    <Box>
+      <Box className={classes.headingWrapper}>
+        <Box className={classes.headingContent}>
+          <IconButton
+            className={classes.headingBackButton}
+            size="small"
+            onClick={GoToBack}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography fontSize={24} style={{ textTransform: "capitalize" }}>
+            Device Details
+          </Typography>
         </Box>
-    );
+      </Box>
+      <Box className={classes.bodyContent}>
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Device Type:</Box>
+          <Box
+            className={classes.bodyInfo}
+            style={{ textTransform: "capitalize" }}
+          >
+            {device.device_type}
+          </Box>
+        </Box>
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Device ID:</Box>
+          <Box className={classes.bodyInfo}>{device.id}</Box>
+        </Box>
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Organisation:</Box>
+          <Box className={classes.bodyInfo}>{device.organization}</Box>
+        </Box>
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Assigned to Vehicle:</Box>
+          <Box className={classes.bodyInfo}>
+            {device.is_assigned_to_vehicle
+              ? device.is_assigned_to_vehicle
+              : "-"}
+          </Box>
+        </Box>
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Activation Date:</Box>
+          <Box className={classes.bodyInfo}>
+            {device.activation_date ? device.activation_date : "-"}
+          </Box>
+        </Box>
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Sim Number:</Box>
+          <Box className={classes.bodyInfo}>
+            {device.sim_number ? device.sim_number : "-"}
+          </Box>
+        </Box>
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}> IMEI Number:</Box>
+          <Box className={classes.bodyInfo}>
+            {device.imei_number ? device.imei_number : "-"}
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
 }
