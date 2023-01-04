@@ -99,7 +99,19 @@ export default makeStyles({
        },
      }
     },
-    
+    '& .liveViewVideo':{
+        background:'white',
+        overflow:'hidden',
+        padding:'20px',
+        borderRadius:'4px',
+      '& .liveframe':{
+       float:'left',
+      },
+      '& iframe':{
+       border:'none',
+       display:'block !important',
+      },
+    }, 
   },
   mapdropdown:{
     position:'absolute',

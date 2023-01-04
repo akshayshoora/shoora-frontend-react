@@ -57,7 +57,8 @@ export default function () {
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
     ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
-    () => getVehicles(page, rowsPerPage, searchText, selectStatus)
+    () => getVehicles(page, rowsPerPage, searchText, selectStatus),
+    { refetchOnWindowFocus: false }
   );
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage - 1);
@@ -128,6 +129,37 @@ export default function () {
       }
     }
     setVideoUrl(url);
+  };
+
+  const renderIframe = (index: number) => {
+    return (
+      <>
+        <Grid xs={2} sm={4} md={4} className="liveframe">
+          <Iframe
+            url={`https://livefeed.shoora.com/liveview/?device=${
+              selectedDevice[index] ? selectedDevice[index] : "-"
+            }&email=its@its.com&password=123456&channel=0`}
+            position="relative"
+            width="100%"
+            id="myId"
+            className="myClassname"
+            height="300"
+          />
+        </Grid>
+        <Grid xs={2} sm={4} md={4} className="liveframe">
+          <Iframe
+            url={`https://livefeed.shoora.com/liveview/?device=${
+              selectedDevice[index] ? selectedDevice[index] : "-"
+            }&email=its@its.com&password=123456&channel=1`}
+            position="relative"
+            width="100%"
+            id="myId"
+            className="myClassname"
+            height="300"
+          />
+        </Grid>
+      </>
+    );
   };
 
   return (
@@ -277,25 +309,10 @@ export default function () {
             </Grid>
             <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
               <Item elevation={0}>
-                <Box
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "100vh",
-                    width: "100%",
-                  }}
-                >
-                  <Iframe
-                    url={`https://livefeed.shoora.com/videofeed/${
-                      videoUrl == "" ? "?device=" : videoUrl
-                    }&email=its@its.com&password=123456`}
-                    position="relative"
-                    width="100%"
-                    id="myId"
-                    className="myClassname"
-                    height="100%"
-                  />
+                <Box className="liveViewVideo">
+                  {Array(8)
+                    .fill(0)
+                    .map((item, index) => renderIframe(index))}
                 </Box>
               </Item>
             </Grid>
