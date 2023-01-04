@@ -48,8 +48,8 @@ export default function () {
   const [selectedDevice, setSelectedDevice] = useState<string[]>([]);
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId],
-    () => getVehicles(page, rowsPerPage, searchText)
+    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectAssets],
+    () => getVehicles(page, rowsPerPage, searchText, selectAssets)
   );
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage - 1);
@@ -63,11 +63,11 @@ export default function () {
   async function getVehicles(
     pageNumber: number,
     pageSize: number,
-    searchText?: string
+    searchText?: string,
+    selectAssets?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${transport}/vehicles/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}&status=${selectAssets}`;
 
     const response = await client.get(getApiUrl);
 
@@ -77,9 +77,26 @@ export default function () {
   const handleVehicleView = (id: string) => {
     let arr = [...selectedDevice];
 
+    const arrSelectedDev: any = [...vehicleList?.results];
+    
+    for(let i in arrSelectedDev){
+      if(arrSelectedDev[i]["device"] == id){
+        if(arrSelectedDev[i]["status"] !== "moving"){
+          setSnackbar({
+            open: true,
+            variant: "error",
+            message: "vehicle is not moving",
+          });
+          return
+        }
+      }
+    }
+
+
     if (arr.includes(id)) {
       arr.splice(selectedDevice.indexOf(id), 1);
     } else {
+
       if (arr.length < 8) {
         arr = [...selectedDevice, id];
       } else {
@@ -159,10 +176,9 @@ export default function () {
                       label="selectAssets"
                       onChange={handleChange}
                     >
-                      <MenuItem value={1}>All</MenuItem>
-                      <MenuItem value={2}>Active assets</MenuItem>
-                      <MenuItem value={3}>Unreachable Assets</MenuItem>
-                      <MenuItem value={4}>Inactive assets</MenuItem>
+                      <MenuItem value={""}>All</MenuItem>
+                      <MenuItem value={"online"}>Online</MenuItem>
+                      <MenuItem value={"offlne"}>Offline</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">
@@ -174,7 +190,8 @@ export default function () {
                               (item: any, index: number) => (
                                 <TableRow>
                                   <div
-                                    className="loaddata"
+                                    
+                                    className={item["status"] !== "moving" ? "loaddataDisable":"loaddata"}
                                     style={
                                       selectedDevice.includes(item.device)
                                         ? { background: "#fef8f0" }
@@ -186,16 +203,17 @@ export default function () {
                                   >
                                     <i className="circle"></i>
                                     <span className="trackid">{item.vin}</span>
-                                    <span className="arrowright">
+                                    <span  className="arrowright">
                                       <svg
                                         width="17"
                                         height="15"
                                         fill="none"
+                                        
                                         xmlns="http://www.w3.org/2000/svg"
                                       >
                                         <path
                                           d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                          stroke="#3BB3C3"
+                                          stroke={item.status !== "moving" ? "#D3D3D3" : "#3BB3C3"}
                                           stroke-width="1.5"
                                           stroke-linecap="round"
                                           stroke-linejoin="round"
@@ -251,9 +269,8 @@ export default function () {
                   }}
                 >
                   <Iframe
-                    url={`https://livefeed.shoora.com/videofeed/${
-                      videoUrl == "" ? "?device=" : videoUrl
-                    }&email=its@its.com&password=123456`}
+                    url={`https://livefeed.shoora.com/videofeed/${videoUrl == "" ? "?device=" : videoUrl
+                      }&email=its@its.com&password=123456`}
                     position="relative"
                     width="100%"
                     id="myId"

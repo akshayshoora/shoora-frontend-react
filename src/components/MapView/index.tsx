@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Snackbar, { FormControl, InputLabel, Select, TableRow, MenuItem } from "@mui/material";
+import { FormControl,Snackbar, InputLabel, Select, TableRow, MenuItem ,Alert} from "@mui/material";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Paper from "@mui/material/Paper";
@@ -54,8 +54,8 @@ export default function () {
   };
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId],
-    () => getVehicles(page, rowsPerPage, searchText)
+    ["vehiclelist", page, rowsPerPage, searchText, deviceId,selectAssets],
+    () => getVehicles(page, rowsPerPage, searchText,selectAssets)
   );
 
   const { data: gpsList, isLoading: isGpsLoading } = useQuery(
@@ -66,11 +66,12 @@ export default function () {
   async function getVehicles(
     pageNumber: number,
     pageSize: number,
-    searchText?: string
+    searchText?: string,
+    selectAssets?: string
   ) {
     let getApiUrl = `${transport}/vehicles/?page=${
       pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    }&page_size=${pageSize}&search=${searchText}&status=${selectAssets}`;
 
     const response = await client.get(getApiUrl);
 
@@ -111,6 +112,23 @@ export default function () {
     //   }
     // }
   }
+  const handleVehicleView = (id : any)=>{
+    const arrVehicleList = [...vehicleList?.results];
+    for(let i in arrVehicleList){
+      if(arrVehicleList[i]["device"] === id){
+        if(arrVehicleList[i]["status"] !== "moving"){
+          setSnackbar({
+            open: true,
+            variant: "error",
+            message: "vehicle is not moving",
+          });
+          return
+        }
+      }
+    }
+    setDeviceId(id);
+
+  }
 
   const getLocation = (list: string[]) => {
     const markersData = list.map((item: any, index) => ({
@@ -124,6 +142,20 @@ export default function () {
 
   return (
     <Box style={{ padding: "20px 0 0 25px" }}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.variant}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <Box>
         <Heading>Map View</Heading>
         <Box className={classes.live}>
@@ -162,9 +194,10 @@ export default function () {
                       onChange={handleChange}
                     >
                       <MenuItem value={1}>All</MenuItem>
-                      <MenuItem value={2}>Active assets</MenuItem>
-                      <MenuItem value={3}>Unreachable Assets</MenuItem>
-                      <MenuItem value={3}>Inactive assets</MenuItem>
+                      <MenuItem value={"moving"}>Moving</MenuItem>
+                      <MenuItem value={"idle"}>Idle</MenuItem>
+                      <MenuItem value={"stopped"}>Stopped</MenuItem>
+                      <MenuItem value={"online"}>Online</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">
@@ -182,7 +215,7 @@ export default function () {
                                       : {}
                                   }
                                   onClick={() => {
-                                    setDeviceId(item.device);
+                                    handleVehicleView(item.device);
                                   }}
                                 >
                                   <i className="circle"></i>
@@ -196,7 +229,7 @@ export default function () {
                                     >
                                       <path
                                         d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                        stroke="#3BB3C3"
+                                        stroke={item.status !== "moving" ? "#D3D3D3" : "#3BB3C3"}
                                         stroke-width="1.5"
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
