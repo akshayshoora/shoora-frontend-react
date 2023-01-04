@@ -76,7 +76,7 @@ export default function Trip() {
     let getApiUrl = `${monitor}/trips/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
-    const finalURL = sanitizeURL(getApiUrl)
+    const finalURL = sanitizeURL(getApiUrl);
     const response = await client.get(finalURL);
 
     return response.data;
@@ -284,10 +284,10 @@ export default function Trip() {
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{"-"}</Span>
+                      <Span fontType="secondary">{trip.start_time}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{"-"}</Span>
+                      <Span fontType="secondary">{trip.end_time}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
@@ -302,7 +302,7 @@ export default function Trip() {
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {getDuration(trip.duration)}
+                        {getDuration(trip.duration / 60)}
                       </Span>
                     </TableCell>
 

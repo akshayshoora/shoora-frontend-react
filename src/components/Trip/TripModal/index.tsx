@@ -82,10 +82,10 @@ export function TripModal(props: ITripModalProps) {
   };
 
   const { data: startlocation } = useQuery(["start_location", trip], () =>
-    latLongToPlace(trip.start_latitude, trip.start_longitude,false)
+    latLongToPlace(trip.start_latitude, trip.start_longitude, false)
   );
   const { data: endlocation } = useQuery(["end_location", trip], () =>
-    latLongToPlace(trip.end_latitude, trip.end_longitude,false)
+    latLongToPlace(trip.end_latitude, trip.end_longitude, false)
   );
   const { data: tripPath } = useQuery(["trip_path", trip], () =>
     getTripPath(trip.id)
@@ -255,7 +255,9 @@ export function TripModal(props: ITripModalProps) {
                           <span>Distance: {trip.distance} km</span>
                         </li>
                         <li>
-                          <span>Duration: {getDuration(trip.duration)}</span>
+                          <span>
+                            Duration: {getDuration(trip.duration / 60)}
+                          </span>
                         </li>
                       </ul>
                     </Grid>

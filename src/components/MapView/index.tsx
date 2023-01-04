@@ -2,7 +2,15 @@ import React from "react";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { FormControl,Snackbar, InputLabel, Select, TableRow, MenuItem ,Alert} from "@mui/material";
+import {
+  FormControl,
+  Snackbar,
+  InputLabel,
+  Select,
+  TableRow,
+  MenuItem,
+  Alert,
+} from "@mui/material";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Paper from "@mui/material/Paper";
@@ -28,10 +36,10 @@ export default function () {
     boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
   }));
 
-  const [selectAssets, setSelectAssets] = useState('');
+  const [selectStatus, setSelectStatus] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
-    setSelectAssets(event.target.value as string);
+    setSelectStatus(event.target.value as string);
   };
   const classes = useStyles();
   const [snackbar, setSnackbar] = useState<{
@@ -54,8 +62,8 @@ export default function () {
   };
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId,selectAssets],
-    () => getVehicles(page, rowsPerPage, searchText,selectAssets)
+    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
+    () => getVehicles(page, rowsPerPage, searchText, selectStatus)
   );
 
   const { data: gpsList, isLoading: isGpsLoading } = useQuery(
@@ -67,11 +75,11 @@ export default function () {
     pageNumber: number,
     pageSize: number,
     searchText?: string,
-    selectAssets?: string
+    selectStatus?: string
   ) {
     let getApiUrl = `${transport}/vehicles/?page=${
       pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}&status=${selectAssets}`;
+    }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
 
     const response = await client.get(getApiUrl);
 
@@ -112,23 +120,22 @@ export default function () {
     //   }
     // }
   }
-  const handleVehicleView = (id : any)=>{
+  const handleVehicleView = (id: any) => {
     const arrVehicleList = [...vehicleList?.results];
-    for(let i in arrVehicleList){
-      if(arrVehicleList[i]["device"] === id){
-        if(arrVehicleList[i]["status"] !== "moving"){
+    for (let i in arrVehicleList) {
+      if (arrVehicleList[i]["device"] === id) {
+        if (arrVehicleList[i]["status"] !== "moving") {
           setSnackbar({
             open: true,
             variant: "error",
             message: "vehicle is not moving",
           });
-          return
+          return;
         }
       }
     }
     setDeviceId(id);
-
-  }
+  };
 
   const getLocation = (list: string[]) => {
     const markersData = list.map((item: any, index) => ({
@@ -171,8 +178,11 @@ export default function () {
                   <Box className="searchbar" style={{ padding: "20px 15px" }}>
                     <input
                       className="searchField"
-                      placeholder="Search Asset ID"
+                      placeholder="Search Vehicle ID"
                       type="search"
+                      onChange={(e) => {
+                        setSearchText(e.target.value);
+                      }}
                     />
                     <Button className="searchBtn">
                       <img src={SerachIcon} height={24} width={24} alt="" />
@@ -184,13 +194,15 @@ export default function () {
                     <ListItemText primary="Unreachable Assets" />
                     <ListItemText primary="Inactive assets" />
                   </List> */}
-                   <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Select Assets</InputLabel>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Select Filter
+                    </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={selectAssets}
-                      label="selectAssets"
+                      value={selectStatus}
+                      label="selectFilter"
                       onChange={handleChange}
                     >
                       <MenuItem value={1}>All</MenuItem>
@@ -229,7 +241,11 @@ export default function () {
                                     >
                                       <path
                                         d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                        stroke={item.status !== "moving" ? "#D3D3D3" : "#3BB3C3"}
+                                        stroke={
+                                          item.status !== "moving"
+                                            ? "#D3D3D3"
+                                            : "#3BB3C3"
+                                        }
                                         stroke-width="1.5"
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
