@@ -1,7 +1,15 @@
 import { useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import { Snackbar, Alert, TableRow, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import {
+  Snackbar,
+  Alert,
+  TableRow,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Paper from "@mui/material/Paper";
@@ -27,10 +35,10 @@ export default function () {
     position: "relative",
     boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
   }));
-  const [selectAssets, setSelectAssets] = useState('');
+  const [selectStatus, setSelectStatus] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
-    setSelectAssets(event.target.value as string);
+    setSelectStatus(event.target.value as string);
   };
 
   const classes = useStyles();
@@ -48,8 +56,8 @@ export default function () {
   const [selectedDevice, setSelectedDevice] = useState<string[]>([]);
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectAssets],
-    () => getVehicles(page, rowsPerPage, searchText, selectAssets)
+    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
+    () => getVehicles(page, rowsPerPage, searchText, selectStatus)
   );
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage - 1);
@@ -64,10 +72,11 @@ export default function () {
     pageNumber: number,
     pageSize: number,
     searchText?: string,
-    selectAssets?: string
+    selectStatus?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${pageNumber + 1
-      }&page_size=${pageSize}&search=${searchText}&status=${selectAssets}`;
+    let getApiUrl = `${transport}/vehicles/?page=${
+      pageNumber + 1
+    }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
 
     const response = await client.get(getApiUrl);
 
@@ -78,25 +87,23 @@ export default function () {
     let arr = [...selectedDevice];
 
     const arrSelectedDev: any = [...vehicleList?.results];
-    
-    for(let i in arrSelectedDev){
-      if(arrSelectedDev[i]["device"] == id){
-        if(arrSelectedDev[i]["status"] !== "moving"){
+
+    for (let i in arrSelectedDev) {
+      if (arrSelectedDev[i]["device"] == id) {
+        if (arrSelectedDev[i]["status"] !== "moving") {
           setSnackbar({
             open: true,
             variant: "error",
             message: "vehicle is not moving",
           });
-          return
+          return;
         }
       }
     }
 
-
     if (arr.includes(id)) {
       arr.splice(selectedDevice.indexOf(id), 1);
     } else {
-
       if (arr.length < 8) {
         arr = [...selectedDevice, id];
       } else {
@@ -154,8 +161,11 @@ export default function () {
                   <Box className="searchbar" style={{ padding: "20px 15px" }}>
                     <input
                       className="searchField"
-                      placeholder="Search Asset ID"
+                      placeholder="Search Vehicle ID"
                       type="search"
+                      onChange={(e) => {
+                        setSearchText(e.target.value);
+                      }}
                     />
                     <Button className="searchBtn">
                       <img src={SerachIcon} height={24} width={24} alt="" />
@@ -168,12 +178,14 @@ export default function () {
                     <ListItemText primary="Inactive assets" />
                   </List> */}
                   <FormControl fullWidth>
-                    <InputLabel id="demo-simple-select-label">Select Assets</InputLabel>
+                    <InputLabel id="demo-simple-select-label">
+                      Select Filter
+                    </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      value={selectAssets}
-                      label="selectAssets"
+                      value={selectStatus}
+                      label="selectFilter"
                       onChange={handleChange}
                     >
                       <MenuItem value={""}>All</MenuItem>
@@ -190,8 +202,11 @@ export default function () {
                               (item: any, index: number) => (
                                 <TableRow>
                                   <div
-                                    
-                                    className={item["status"] !== "moving" ? "loaddataDisable":"loaddata"}
+                                    className={
+                                      item["status"] !== "moving"
+                                        ? "loaddataDisable"
+                                        : "loaddata"
+                                    }
                                     style={
                                       selectedDevice.includes(item.device)
                                         ? { background: "#fef8f0" }
@@ -203,17 +218,20 @@ export default function () {
                                   >
                                     <i className="circle"></i>
                                     <span className="trackid">{item.vin}</span>
-                                    <span  className="arrowright">
+                                    <span className="arrowright">
                                       <svg
                                         width="17"
                                         height="15"
                                         fill="none"
-                                        
                                         xmlns="http://www.w3.org/2000/svg"
                                       >
                                         <path
                                           d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                          stroke={item.status !== "moving" ? "#D3D3D3" : "#3BB3C3"}
+                                          stroke={
+                                            item.status !== "moving"
+                                              ? "#D3D3D3"
+                                              : "#3BB3C3"
+                                          }
                                           stroke-width="1.5"
                                           stroke-linecap="round"
                                           stroke-linejoin="round"
@@ -269,8 +287,9 @@ export default function () {
                   }}
                 >
                   <Iframe
-                    url={`https://livefeed.shoora.com/videofeed/${videoUrl == "" ? "?device=" : videoUrl
-                      }&email=its@its.com&password=123456`}
+                    url={`https://livefeed.shoora.com/videofeed/${
+                      videoUrl == "" ? "?device=" : videoUrl
+                    }&email=its@its.com&password=123456`}
                     position="relative"
                     width="100%"
                     id="myId"
