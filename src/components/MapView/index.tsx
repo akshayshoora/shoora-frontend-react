@@ -123,19 +123,14 @@ export default function () {
     //   }
     // }
   }
-  const handleVehicleView = (id: any) => {
-    const arrVehicleList = [...vehicleList?.results];
-    for (let i in arrVehicleList) {
-      if (arrVehicleList[i]["device"] === id) {
-        if (arrVehicleList[i]["status"] !== "moving") {
-          setSnackbar({
-            open: true,
-            variant: "error",
-            message: "vehicle is not moving",
-          });
-          return;
-        }
-      }
+  const handleVehicleView = (id: string, status: string) => {
+    if (status != "moving") {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "vehicle is not moving",
+      });
+      return;
     }
     setDeviceId(id);
   };
@@ -230,7 +225,7 @@ export default function () {
                                       : {}
                                   }
                                   onClick={() => {
-                                    handleVehicleView(item.device);
+                                    handleVehicleView(item.device, item.status);
                                   }}
                                 >
                                   <i className="circle"></i>
