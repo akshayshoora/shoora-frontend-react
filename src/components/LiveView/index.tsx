@@ -84,23 +84,16 @@ export default function () {
     return response.data;
   }
 
-  const handleVehicleView = (id: string) => {
-    let arr = [...selectedDevice];
-
-    const arrSelectedDev: any = [...vehicleList?.results];
-
-    for (let i in arrSelectedDev) {
-      if (arrSelectedDev[i]["device"] == id) {
-        if (arrSelectedDev[i]["status"] !== "moving") {
-          setSnackbar({
-            open: true,
-            variant: "error",
-            message: "vehicle is not moving",
-          });
-          return;
-        }
-      }
+  const handleVehicleView = (id: string, status: string) => {
+    if (status != "moving") {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "vehicle is not moving",
+      });
+      return;
     }
+    let arr = [...selectedDevice];
 
     if (arr.includes(id)) {
       arr.splice(selectedDevice.indexOf(id), 1);
@@ -245,7 +238,10 @@ export default function () {
                                         : {}
                                     }
                                     onClick={() => {
-                                      handleVehicleView(item.device);
+                                      handleVehicleView(
+                                        item.device,
+                                        item.status
+                                      );
                                     }}
                                   >
                                     <i className="circle"></i>
