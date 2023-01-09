@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import vehicleImage from "../../assets/vehicle.png";
+import vehicleImage from "../../assets/truck.png";
 
 interface IMapTestProps {
   list: any[];
@@ -55,7 +55,7 @@ export default function MapMarker(props: IMapTestProps) {
         const marker = new (window as any).google.maps.Marker({
           position,
           // label,
-          // icon: vehicleImage,
+          icon: vehicleImage,
         });
 
         marker.addListener("click", () => {
