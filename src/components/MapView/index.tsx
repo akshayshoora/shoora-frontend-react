@@ -25,6 +25,7 @@ import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
 import Table from "@mui/material/Table";
 import { TableFooter } from "components/commonComponent/Table";
+import MapMarker from "components/MapMarker";
 
 export default function () {
   const Item = styled(Paper)(({ theme }) => ({
@@ -63,12 +64,14 @@ export default function () {
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
     ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
-    () => getVehicles(page, rowsPerPage, searchText, selectStatus)
+    () => getVehicles(page, rowsPerPage, searchText, selectStatus),
+    { refetchOnWindowFocus: false }
   );
 
   const { data: gpsList, isLoading: isGpsLoading } = useQuery(
     ["gpslist", page, rowsPerPage, deviceId, searchText],
-    () => getGpsList(page, rowsPerPage, deviceId, searchText)
+    () => getGpsList(page, rowsPerPage, deviceId, searchText),
+    { refetchOnWindowFocus: false }
   );
 
   async function getVehicles(
@@ -120,19 +123,14 @@ export default function () {
     //   }
     // }
   }
-  const handleVehicleView = (id: any) => {
-    const arrVehicleList = [...vehicleList?.results];
-    for (let i in arrVehicleList) {
-      if (arrVehicleList[i]["device"] === id) {
-        if (arrVehicleList[i]["status"] !== "moving") {
-          setSnackbar({
-            open: true,
-            variant: "error",
-            message: "vehicle is not moving",
-          });
-          return;
-        }
-      }
+  const handleVehicleView = (id: string, status: string) => {
+    if (status != "moving") {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "vehicle is not moving",
+      });
+      return;
     }
     setDeviceId(id);
   };
@@ -227,7 +225,7 @@ export default function () {
                                       : {}
                                   }
                                   onClick={() => {
-                                    handleVehicleView(item.device);
+                                    handleVehicleView(item.device, item.status);
                                   }}
                                 >
                                   <i className="circle"></i>
@@ -291,7 +289,8 @@ export default function () {
             <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
               <Item elevation={0}>
                 <Box className="livemap">
-                  <GoogleMap list={locationList} />
+                  {/* <GoogleMap list={locationList} /> */}
+                  <MapMarker list={locationList} />
 
                   {/* <Box className={classes.mapdropdown}>
                     <button className="mapoptions" onClick={handleMapOption}>

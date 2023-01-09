@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import {
@@ -22,19 +22,23 @@ import client from "serverCommunication/client";
 import { Button, List, ListItemText, SelectChangeEvent } from "@mui/material";
 import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
+import VedioLogoImg from '../../assets/vedio-logo.png';
 import Iframe from "react-iframe";
 import Table from "@mui/material/Table";
 import { TableFooter } from "components/commonComponent/Table";
 
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(4, 2, 2),
+  color: theme.palette.text.secondary,
+  position: "relative",
+  boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
+}));
+
+const STATIC_TILES_COUNT = 16;
 export default function () {
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(4, 2, 2),
-    color: theme.palette.text.secondary,
-    position: "relative",
-    boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
-  }));
   const [selectStatus, setSelectStatus] = useState("");
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -75,32 +79,24 @@ export default function () {
     searchText?: string,
     selectStatus?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
+    let getApiUrl = `${transport}/vehicles/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
 
     const response = await client.get(getApiUrl);
 
     return response.data;
   }
 
-  const handleVehicleView = (id: string) => {
-    let arr = [...selectedDevice];
-
-    const arrSelectedDev: any = [...vehicleList?.results];
-
-    for (let i in arrSelectedDev) {
-      if (arrSelectedDev[i]["device"] == id) {
-        if (arrSelectedDev[i]["status"] !== "moving") {
-          setSnackbar({
-            open: true,
-            variant: "error",
-            message: "vehicle is not moving",
-          });
-          return;
-        }
-      }
+  const handleVehicleView = (id: string, status: string) => {
+    if (status != "moving") {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "vehicle is not moving",
+      });
+      return;
     }
+    let arr = [...selectedDevice];
 
     if (arr.includes(id)) {
       arr.splice(selectedDevice.indexOf(id), 1);
@@ -136,9 +132,8 @@ export default function () {
       <>
         <Grid xs={2} sm={4} md={4} className="liveframe">
           <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${
-              selectedDevice[index] ? selectedDevice[index] : "-"
-            }&email=its@its.com&password=123456&channel=0`}
+            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
+              }&email=its@its.com&password=123456&channel=0`}
             position="relative"
             width="100%"
             id="myId"
@@ -148,9 +143,8 @@ export default function () {
         </Grid>
         <Grid xs={2} sm={4} md={4} className="liveframe">
           <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${
-              selectedDevice[index] ? selectedDevice[index] : "-"
-            }&email=its@its.com&password=123456&channel=1`}
+            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
+              }&email=its@its.com&password=123456&channel=1`}
             position="relative"
             width="100%"
             id="myId"
@@ -183,11 +177,11 @@ export default function () {
         <Box className={classes.live}>
           <Grid
             container
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 6, sm: 8, md: 12 }}
+            spacing={{ xs: 2, md: 3, lg: 3 }}
+            columns={{ xs:12, sm:12, md:12, lg: 12 }}
             style={{ marginTop: 24 }}
           >
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+            <Grid xs={12} sm={4} md={4} lg={3} style={{ paddingLeft: 24 }}>
               <Item elevation={1}>
                 <Box className="contentMain">
                   <Box className="searchbar" style={{ padding: "20px 15px" }}>
@@ -245,7 +239,10 @@ export default function () {
                                         : {}
                                     }
                                     onClick={() => {
-                                      handleVehicleView(item.device);
+                                      handleVehicleView(
+                                        item.device,
+                                        item.status
+                                      );
                                     }}
                                   >
                                     <i className="circle"></i>
@@ -307,12 +304,53 @@ export default function () {
                 </Box>
               </Item>
             </Grid>
-            <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
+            <Grid xs={12} sm={8} md={8} lg={9} style={{ paddingLeft: 16 }}>
               <Item elevation={0}>
                 <Box className="liveViewVideo">
-                  {Array(8)
-                    .fill(0)
-                    .map((item, index) => renderIframe(index))}
+                  <Grid container lg={12}>
+                    {selectedDevice.map(item => (
+                      <Fragment key={item}>
+                        <Grid item xs={12} sm={6} md={4} lg={3} className="liveframe">
+                          <Iframe
+                            url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
+                              }&email=its@its.com&password=123456&channel=0`}
+                            position="relative"
+                            width="100%"
+                            id="myId"
+                            className="myClassname"
+                            height="300"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}  md={4} lg={3} className="liveframe">
+                          <Iframe
+                            url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
+                              }&email=its@its.com&password=123456&channel=1`}
+                            position="relative"
+                            width="100%"
+                            id="myId"
+                            className="myClassname"
+                            height="300"
+                          />
+                        </Grid>
+                      </Fragment>
+                    ))}
+
+                    {Array(STATIC_TILES_COUNT - (selectedDevice.length * 2))
+                      .fill(0).map((item, index) => (
+                        <Grid key={`vedio-${index}`} item xs={12} sm={6}  md={4} lg={3} className="noVedioContainer">
+                          <Box className="vedioLogoScreen">
+                            <img src={VedioLogoImg} alt="dummy-vedio-img" />
+                          </Box>
+                          <Box sx={{ my: 2 }} className="dummy-title">
+
+                          </Box>
+                          <Box className="dummyBtnContainer">
+                            <Box className="dummBtn"></Box>
+                            <Box className="dummBtn"></Box>
+                          </Box>
+                        </Grid>
+                      ))}
+                  </Grid>
                 </Box>
               </Item>
             </Grid>
