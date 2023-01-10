@@ -1,6 +1,6 @@
 import { HeadCell } from "components/commonComponent/Table";
 import { AppPaths } from "../constants/commonEnums";
-import DistanceIcon from "../assets/distance.png"
+import DistanceIcon from "../assets/distance.png";
 import Trips from "../assets/trips.png";
 import DurationIcon from "../assets/time.png";
 import kilometresIcon from "../assets/speedometer.png";
@@ -13,25 +13,26 @@ export const USER_ID = "user_id";
 // Add label here for menu render
 export const sideMenuLabel: {
   [key: string]: string;
-  } = {
-    [AppPaths.DASHBOARD]:"Dashboard",
-    [AppPaths.USERS]:"Users",
-    [AppPaths.ORGANIZATIONS]:"Organizations",
-    [AppPaths.DEVICES]:"Devices",
-    [AppPaths.DRIVERS]:"Drivers",
-    [AppPaths.VEHICLES]:"Vehicles",
-    [AppPaths.ALERTS]:"Alerts",
-    [AppPaths.LIVE]:"Live View",
-    [AppPaths.MAP]:"Map View",
-    [AppPaths.TRIP]:"Trip",
-    [AppPaths.REPORT]:"Report",
-    [AppPaths.FINANCE]:"finance",
-    [AppPaths.FUEL]:"Fuel",
-    [AppPaths.TYRE]:"Tyre",
-    [AppPaths.COACHING]:"Coaching",
-    [AppPaths.MAINTENANCE]:"Maintenance",
-    [AppPaths.JOBCARD]:"Job Card"
-}
+} = {
+  [AppPaths.DASHBOARD]: "Dashboard",
+  [AppPaths.USERS]: "Users",
+  [AppPaths.ORGANIZATIONS]: "Organizations",
+  [AppPaths.DEVICES]: "Devices",
+  [AppPaths.DRIVERS]: "Drivers",
+  [AppPaths.VEHICLES]: "Vehicles",
+  [AppPaths.ALERTS]: "Alerts",
+  [AppPaths.LIVE]: "Live View",
+  [AppPaths.MAP]: "Map View",
+  [AppPaths.TRIP]: "Trip",
+  [AppPaths.REPORT]: "Report",
+  [AppPaths.FINANCE]: "finance",
+  [AppPaths.FUEL]: "Fuel",
+  [AppPaths.TYRE]: "Tyre",
+  [AppPaths.COACHING]: "Coaching",
+  [AppPaths.MAINTENANCE]: "Maintenance",
+  [AppPaths.JOBCARD]: "Job Card",
+  [AppPaths.GEOFENCE]: "Geofence",
+};
 
 export const ALL_MENU = [
   AppPaths.DASHBOARD,
@@ -43,6 +44,7 @@ export const ALL_MENU = [
   AppPaths.ALERTS,
   AppPaths.LIVE,
   AppPaths.MAP,
+  AppPaths.GEOFENCE,
   AppPaths.TRIP,
   AppPaths.REPORT,
   AppPaths.FINANCE,
@@ -50,9 +52,8 @@ export const ALL_MENU = [
   AppPaths.TYRE,
   AppPaths.COACHING,
   AppPaths.MAINTENANCE,
-  AppPaths.JOBCARD
+  AppPaths.JOBCARD,
 ];
-
 
 export const ALL_ROUTES = [
   AppPaths.DASHBOARD,
@@ -64,6 +65,7 @@ export const ALL_ROUTES = [
   AppPaths.ALERTS,
   AppPaths.LIVE,
   AppPaths.MAP,
+  AppPaths.GEOFENCE,
   AppPaths.TRIP,
   AppPaths.REPORT,
   AppPaths.FINANCE,
@@ -71,53 +73,46 @@ export const ALL_ROUTES = [
   AppPaths.TYRE,
   AppPaths.COACHING,
   AppPaths.MAINTENANCE,
-  AppPaths.JOBCARD
+  AppPaths.JOBCARD,
 ];
 
-
-
 type ROLE_BASED_FILTERED_SUMMARY = {
-    dataIndex: string;
-    label: string;
-    icon: string;
-    unit?: string;
-    extraDataIndex?: string;
-    value?:string;
+  dataIndex: string;
+  label: string;
+  icon: string;
+  unit?: string;
+  extraDataIndex?: string;
+  value?: string;
 };
 
 export const getRoleBasedFilteredSummary = () => {
-
-  const data : ROLE_BASED_FILTERED_SUMMARY[] = [
+  const data: ROLE_BASED_FILTERED_SUMMARY[] = [
     {
       dataIndex: "total_trips",
       label: "Trips",
-      icon: Trips ,
-      value:"10",
-
+      icon: Trips,
+      value: "10",
     },
     {
       dataIndex: "total_distance",
       label: "Distance (km)",
       icon: DistanceIcon,
-      value:"50",
-
+      value: "50",
     },
     {
       dataIndex: "total_duration",
       label: "Duration (hours)",
       icon: DurationIcon,
-      value:"15",
-      
+      value: "15",
     },
 
     {
       dataIndex: "total_kilometres",
       label: "Incidents / 100 kilometres",
       icon: kilometresIcon,
-      value:"70",
-     
+      value: "70",
     },
   ];
 
   return data;
-}
+};
