@@ -30,6 +30,15 @@ import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
 import { auth, transport } from "constants/RouteMiddlePath";
+import {
+  Circle,
+  DrawingManager,
+  GoogleMap,
+  LoadScript,
+} from "@react-google-maps/api";
+import GeoFenceMap from "../GeoFenceMap";
+import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
+const libraries = ["drawing", "places"];
 
 class NewVehicleType {
   "vehicle_type": string = "";
@@ -41,6 +50,8 @@ class NewVehicleType {
 
 export default function AddGeoFence() {
   const [vehicles, setVehicle] = useState<NewVehicleType>(new NewVehicleType());
+  const [path, setPath] = useState([]);
+  const [geofenceType, setGeofenceType] = useState("circle");
   const { user } = useAppContext();
   const navigate = useNavigate();
   const classes = useStyles();
@@ -166,6 +177,29 @@ export default function AddGeoFence() {
     ? "Updating Vehicle..."
     : "";
 
+  const polyAxis = (polyaxisData: any) => {
+    setPath(polyaxisData);
+  };
+
+  const onPolygonComplete = (polygon: any) => {
+    console.log(polygon.getPath().getArray());
+    const polyAxiss = polygon.getPath().getArray();
+    let tempArr = [];
+    for (let i in polyAxiss) {
+      tempArr.push({ lat: polyAxiss[i].lat(), lng: polyAxiss[i].lng() });
+      //   console.log(polyAxiss[i].lat());
+    }
+    polyAxis(tempArr);
+  };
+
+  const onCircleComplete = (circle: any) => {
+    console.log(circle.radius);
+  };
+
+  const onLoad = (drawingManager: any) => {
+    console.log(drawingManager);
+  };
+
   return (
     <Box className={classes.positionRelative}>
       <Snackbar
@@ -203,44 +237,119 @@ export default function AddGeoFence() {
         </Box>
       </Box>
 
-      <Box className={classes.padding_24}>
-        <Grid container spacing={4}>
-          <Grid item xs={4}>
-            <TextInput
-              label="Vehicle Number"
-              placeholder="Enter Vehicle Number"
-              style={{ marginBottom: 24 }}
-              value={vehicles.vin}
-              isRequired={false}
-              onChange={(value) => handleFormVehicle("vin", value)}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextInput
-              label="Model"
-              placeholder="Enter Model"
-              style={{ marginBottom: 24 }}
-              value={vehicles.model}
-              isRequired={false}
-              onChange={(value) => handleFormVehicle("model", value)}
-            />
-          </Grid>
-        </Grid>
-      </Box>
+      <div style={{ marginLeft: "90px", marginRight: "90px" }}>
+        <div style={{ display: "flex" }}>
+          <div style={{ width: "50%" }}>
+            {" "}
+            <Box>
+              <CustomRadioGroup
+                selected={geofenceType}
+                options={[
+                  { label: "Polygon", value: "polygon" },
+                  { label: "Circle", value: "circle" },
+                ]}
+                onChange={(value) => {
+                  setGeofenceType(value);
+                }}
+              />
+              {geofenceType == "circle" ? (
+                <Box>
+                  <TextInput
+                    label="Name"
+                    placeholder="Enter Name"
+                    style={{ marginBottom: 24, width: "400px" }}
+                    value={vehicles.model}
+                    isRequired={false}
+                    onChange={(value) => handleFormVehicle("model", value)}
+                  />
 
-      <Box className={classes.footerWrapper}>
-        <Button style={{ marginRight: 12 }} onClick={backToProperties}>
-          Cancel
-        </Button>
-        <Button
-          id="submit"
-          variant={isSaveButtonDisabled ? "outlined" : "contained"}
-          onClick={handleSubmit}
-          disabled={isSaveButtonDisabled}
-        >
-          Save
-        </Button>
-      </Box>
+                  <Typography
+                    fontSize={16}
+                    style={{
+                      fontWeight: 200,
+                      marginBottom: 10,
+                      marginRight: 2,
+                    }}
+                  >
+                    Select Place
+                  </Typography>
+                  <Select
+                    id="demo-simple-select"
+                    value={vehicles.make}
+                    onChange={(e: any) => {}}
+                    size="small"
+                    style={{ marginBottom: 14, width: "400px" }}
+                  >
+                    <MenuItem selected value="" disabled>
+                      Select Place
+                    </MenuItem>
+
+                    <MenuItem style={{ fontSize: 14 }} value={"place 1"}>
+                      place 1
+                    </MenuItem>
+                  </Select>
+                  <TextInput
+                    label="Radius"
+                    placeholder="Enter Radius"
+                    style={{ marginBottom: 24, width: "400px" }}
+                    value={vehicles.model}
+                    isRequired={false}
+                    onChange={(value) => handleFormVehicle("model", value)}
+                  />
+                  <Button onClick={() => {}} variant="outlined">
+                    Save
+                  </Button>
+                </Box>
+              ) : (
+                <Box>
+                  <h2>paths</h2>
+                  <TextInput
+                    label="Name"
+                    placeholder="Enter Name"
+                    style={{ marginBottom: 24, width: "400px" }}
+                    value={vehicles.model}
+                    isRequired={false}
+                    onChange={(value) => handleFormVehicle("model", value)}
+                  />
+                  <Typography
+                    fontSize={16}
+                    style={{
+                      fontWeight: 200,
+                      marginBottom: 10,
+                      marginRight: 2,
+                    }}
+                  >
+                    Select Place
+                  </Typography>
+                  <Select
+                    id="demo-simple-select"
+                    value={vehicles.make}
+                    onChange={(e: any) => {}}
+                    size="small"
+                    style={{ marginBottom: 14, width: "400px" }}
+                  >
+                    <MenuItem selected value="" disabled>
+                      Select Place
+                    </MenuItem>
+
+                    <MenuItem style={{ fontSize: 14 }} value={"place 1"}>
+                      place 1
+                    </MenuItem>
+                  </Select>
+                  <Box>
+                    <Button onClick={() => {}} variant="outlined">
+                      Save
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+            </Box>
+          </div>
+          <div style={{ width: "50%" }}>
+            <GeoFenceMap polyAxis={polyAxis} type={geofenceType} />
+          </div>
+        </div>
+      </div>
     </Box>
   );
 }
