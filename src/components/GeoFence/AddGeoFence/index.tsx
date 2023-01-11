@@ -30,6 +30,7 @@ import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
 import { auth, transport } from "constants/RouteMiddlePath";
+import Autocomplete from "react-google-autocomplete";
 import {
   Circle,
   DrawingManager,
@@ -46,12 +47,14 @@ class NewVehicleType {
   "model": string | null = null;
   "vin": string | null = null;
   "organization_id": string | null = null;
+  "radius" : string | number 
 }
 
 export default function AddGeoFence() {
   const [vehicles, setVehicle] = useState<NewVehicleType>(new NewVehicleType());
   const [path, setPath] = useState([]);
   const [geofenceType, setGeofenceType] = useState("circle");
+  const [center, setCenter] = useState<any>({ lat: 28.6862738, lng: 77.2217831 });
   const { user } = useAppContext();
   const navigate = useNavigate();
   const classes = useStyles();
@@ -174,8 +177,8 @@ export default function AddGeoFence() {
   const loadingMessage = isAddingVehicle
     ? "Adding Vehicle..."
     : updatingVehicle
-    ? "Updating Vehicle..."
-    : "";
+      ? "Updating Vehicle..."
+      : "";
 
   const polyAxis = (polyaxisData: any) => {
     setPath(polyaxisData);
@@ -187,7 +190,6 @@ export default function AddGeoFence() {
     let tempArr = [];
     for (let i in polyAxiss) {
       tempArr.push({ lat: polyAxiss[i].lat(), lng: polyAxiss[i].lng() });
-      //   console.log(polyAxiss[i].lat());
     }
     polyAxis(tempArr);
   };
@@ -273,30 +275,29 @@ export default function AddGeoFence() {
                   >
                     Select Place
                   </Typography>
-                  <Select
-                    id="demo-simple-select"
-                    value={vehicles.make}
-                    onChange={(e: any) => {}}
-                    size="small"
-                    style={{ marginBottom: 14, width: "400px" }}
-                  >
-                    <MenuItem selected value="" disabled>
-                      Select Place
-                    </MenuItem>
-
-                    <MenuItem style={{ fontSize: 14 }} value={"place 1"}>
-                      place 1
-                    </MenuItem>
-                  </Select>
+                  <Autocomplete
+                    style={{ marginBottom: 14, 
+                      width: "376px", 
+                      padding: "10px", 
+                      background: "none",
+                      border: "2px solid #bfbec1" }}
+                    // id="demo-simple-select"
+                    apiKey={process.env.REACT_APP_MAP_KEY}
+                    onPlaceSelected={(place) => {
+                      console.log(place.geometry?.location);
+                      const location: any = place.geometry?.location
+                      setCenter({ lat: location.lat(), lng: location.lng() })
+                    }}
+                  />
                   <TextInput
                     label="Radius"
                     placeholder="Enter Radius"
                     style={{ marginBottom: 24, width: "400px" }}
-                    value={vehicles.model}
+                    value={vehicles.radius}
                     isRequired={false}
-                    onChange={(value) => handleFormVehicle("model", value)}
+                    onChange={(value) => handleFormVehicle("radius", value)}
                   />
-                  <Button onClick={() => {}} variant="outlined">
+                  <Button onClick={() => { }} variant="outlined">
                     Save
                   </Button>
                 </Box>
@@ -321,23 +322,19 @@ export default function AddGeoFence() {
                   >
                     Select Place
                   </Typography>
-                  <Select
-                    id="demo-simple-select"
-                    value={vehicles.make}
-                    onChange={(e: any) => {}}
-                    size="small"
-                    style={{ marginBottom: 14, width: "400px" }}
-                  >
-                    <MenuItem selected value="" disabled>
-                      Select Place
-                    </MenuItem>
-
-                    <MenuItem style={{ fontSize: 14 }} value={"place 1"}>
-                      place 1
-                    </MenuItem>
-                  </Select>
+              
+                  <Autocomplete
+                    style={{ marginBottom: 14, width: "376px", padding: "10px", background: "none", border: "2px solid #bfbec1" }}
+                    // id="demo-simple-select"
+                    apiKey={process.env.REACT_APP_MAP_KEY}
+                    onPlaceSelected={(place) => {
+                      console.log(place.geometry?.location);
+                      const location: any = place.geometry?.location
+                      setCenter({ lat: location.lat(), lng: location.lng() })
+                    }}
+                  />
                   <Box>
-                    <Button onClick={() => {}} variant="outlined">
+                    <Button onClick={() => { }} variant="outlined">
                       Save
                     </Button>
                   </Box>
@@ -346,7 +343,11 @@ export default function AddGeoFence() {
             </Box>
           </div>
           <div style={{ width: "50%" }}>
-            <GeoFenceMap polyAxis={polyAxis} type={geofenceType} />
+            <GeoFenceMap
+              circleRadius={Number (vehicles?.radius)}
+              center={center} 
+              polyAxis={polyAxis} 
+              type={geofenceType} />
           </div>
         </div>
       </div>
