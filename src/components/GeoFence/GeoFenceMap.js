@@ -3,12 +3,14 @@ import {
   DrawingManager,
   GoogleMap,
   LoadScript,
+  Polygon
 } from "@react-google-maps/api";
 import React, { useState } from "react";
 
 const libraries = ["drawing", "places"];
 
-const GeoFenceMap = ({ polyAxis, type }) => {
+const GeoFenceMap = ({ polyAxis, type,center,circleRadius }) => {
+
   const onLoad = (drawingManager) => {
     console.log(drawingManager);
   };
@@ -19,12 +21,18 @@ const GeoFenceMap = ({ polyAxis, type }) => {
     fillColor: "#FF0000",
     fillOpacity: 0.35,
     clickable: false,
-    draggable: false,
-    editable: false,
+    draggable: true,
+    editable: true,
     visible: true,
-    radius: 3000,
     zIndex: 1,
   };
+
+  const paths = [
+    { lat: 25.774, lng: -80.19 },
+    { lat: 18.466, lng: -66.118 },
+    { lat: 32.321, lng: -64.757 },
+    { lat: 25.774, lng: -80.19 }
+  ]
 
   const onPolygonComplete = (polygon) => {
     console.log(polygon.getPath().getArray());
@@ -32,7 +40,6 @@ const GeoFenceMap = ({ polyAxis, type }) => {
     let tempArr = [];
     for (let i in polyAxiss) {
       tempArr.push({ lat: polyAxiss[i].lat(), lng: polyAxiss[i].lng() });
-      //   console.log(polyAxiss[i].lat());
     }
     polyAxis(tempArr);
   };
@@ -53,17 +60,17 @@ const GeoFenceMap = ({ polyAxis, type }) => {
             height: "400px",
             width: "500px",
           }}
-          center={{ lat: 20.5937, lng: 78.9629 }}
-          zoom={10}
+           center={center}
+          zoom={12}
         >
           {type == "polygon" ? (
-            <DrawingManager
-              onLoad={onLoad}
-              onPolygonComplete={onPolygonComplete}
-              drawingMode={"polygon"}
-              onCircleComplete={onCircleComplete}
-              editable
-              draggable
+            <Polygon
+             
+              paths={paths}
+              options={options}
+              
+              // onPolygonComplete={onPolygonComplete}
+          
             />
           ) : (
             <Circle
@@ -71,13 +78,11 @@ const GeoFenceMap = ({ polyAxis, type }) => {
               onLoad={onLoad}
               // optional
               // onUnmount={onUnmount}
+              center={center}
               // required
-              editable
-              draggable
-              center={{ lat: 20.5937, lng: 78.9629 }}
-              // required
-              radius={20}
-              // options={options}
+              radius={circleRadius}
+              options={options}
+    
             />
           )}
         </GoogleMap>
