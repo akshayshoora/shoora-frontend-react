@@ -34,6 +34,7 @@ import Coaching from "components/Coaching";
 import JobCard from "components/JobCard";
 import GeoFence from "components/GeoFence";
 import AddGeoFence from "components/GeoFence/AddGeoFence";
+import { GeofenceDetails } from "components/GeoFence/GeofenceDetails";
 
 //todo: Need to be updated
 export default function AppRouter() {
@@ -501,6 +502,19 @@ export default function AppRouter() {
           <ProtectedRoute
             route={AppPaths.GEOFENCE}
             component={<AddGeoFence />}
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.GEOFENCE}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.GEOFENCE}
+            component={
+              <ErrorBoundary>
+                <GeofenceDetails />
+              </ErrorBoundary>
+            }
           />
         }
       />

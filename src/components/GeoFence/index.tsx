@@ -39,9 +39,9 @@ export default function GeoFence() {
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: vehicleList, isLoading } = useQuery(
-    ["vehicle", page, rowsPerPage, searchText],
-    () => getVehicles(page, rowsPerPage, searchText)
+  const { data: geofenceList, isLoading } = useQuery(
+    ["geofences", page, rowsPerPage, searchText],
+    () => getGeofences(page, rowsPerPage, searchText)
   );
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
@@ -50,23 +50,23 @@ export default function GeoFence() {
   }>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("vehicle");
+  const [orderBy, setOrderBy] = React.useState<string>("geofence");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd = actionAccess(AppPaths.VEHICLES, Actions.ADD);
-  const isEdit = actionAccess(AppPaths.VEHICLES, Actions.EDIT);
-  const isDelete = actionAccess(AppPaths.VEHICLES, Actions.DELETE);
+  const isAdd = actionAccess(AppPaths.GEOFENCE, Actions.ADD);
+  const isEdit = actionAccess(AppPaths.GEOFENCE, Actions.EDIT);
+  const isDelete = actionAccess(AppPaths.GEOFENCE, Actions.DELETE);
 
   const navigate = useNavigate();
 
   const classes = useStyles();
-  async function getVehicles(
+  async function getGeofences(
     pageNumber: number,
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${
+    let getApiUrl = `${transport}/geofences/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
@@ -84,17 +84,17 @@ export default function GeoFence() {
   };
   const handleClose = () => {
     setOpenDelete(false);
-    getVehicles(page, rowsPerPage, searchText);
+    getGeofences(page, rowsPerPage, searchText);
   };
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    vehicle: string
+    geofence: string
   ) => {
-    const isAsc = orderBy === vehicle && order === "asc";
+    const isAsc = orderBy === geofence && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     //@ts-ignore
-    setOrderBy(vehicle);
+    setOrderBy(geofence);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -106,7 +106,7 @@ export default function GeoFence() {
     setPage(0);
   };
 
-  function openVehicleDetails(
+  function openGeofenceDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
@@ -114,7 +114,7 @@ export default function GeoFence() {
     navigate(`/${AppPaths.GEOFENCE}/${id}`);
   }
 
-  function editVehicleDetails(
+  function editGeofenceDetails(
     event: React.MouseEvent<HTMLElement>,
     id: string
   ) {
@@ -126,10 +126,10 @@ export default function GeoFence() {
     {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
-      onClick: openVehicleDetails,
+      onClick: openGeofenceDetails,
       access: true,
     },
-    // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editVehicleDetails,access:isEdit },
+    // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editGeofenceDetails,access:isEdit },
     // {
     //   label: "Delete",
     //   icon: <DeleteOutlineOutlinedIcon />,
@@ -140,21 +140,27 @@ export default function GeoFence() {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "vehicle_type",
+      id: "name",
       numeric: false,
       disablePadding: true,
-      label: "Data 1",
+      label: "Name",
     },
     {
-      id: "make",
-      label: "Data 2",
+      id: "lat",
+      label: "Latitude",
       numeric: false,
       disablePadding: false,
     },
-    { id: "model", label: "Data 3", numeric: false, disablePadding: false },
     {
-      id: "vin",
-      label: "Data 4",
+      id: "lng",
+      label: "Longitude",
+      numeric: false,
+      disablePadding: false,
+    },
+    { id: "radius", label: "Radius", numeric: false, disablePadding: false },
+    {
+      id: "created_at",
+      label: "Created At",
       numeric: false,
       disablePadding: false,
     },
@@ -167,13 +173,13 @@ export default function GeoFence() {
     setSearchText(e);
   };
 
-  const deleteVehicleMutation = useMutation(deleteVehicle, {
+  const deleteGeofenceMutation = useMutation(deleteGeofence, {
     onSuccess: () => {
       handleClose();
       setSnackbar({
         open: true,
         variant: "success",
-        message: "vehicle deleted.",
+        message: "Geofence deleted.",
       });
       setTimeout(() => {
         navigate(`/${AppPaths.GEOFENCE}`);
@@ -188,14 +194,14 @@ export default function GeoFence() {
       }),
   });
 
-  const { mutate: mutateDeleteVehicle } = deleteVehicleMutation;
+  const { mutate: mutateDeleteGeofence } = deleteGeofenceMutation;
 
-  function deleteVehicle() {
-    return client.delete(`${auth}/users/${deleteId}`);
+  function deleteGeofence() {
+    return client.delete(`${auth}/geofences/${deleteId}`);
   }
 
   function handleDelete() {
-    mutateDeleteVehicle();
+    mutateDeleteGeofence();
   }
 
   return (
@@ -205,7 +211,7 @@ export default function GeoFence() {
           open={openDelete}
           handleClose={handleClose}
           handleDelete={handleDelete}
-          label="vehicle"
+          label="geofence"
         />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
@@ -242,27 +248,32 @@ export default function GeoFence() {
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : vehicleList?.results.length ? (
-              vehicleList?.results.map((vehicle: any, index: number) => {
+            ) : geofenceList?.results.length ? (
+              geofenceList?.results.map((item: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
                       <Box className={classes.columnView}>
-                        <Span>{"-"}</Span>
+                        <Span>{item.name}</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{"-"}</Span>
+                      <Span fontType="secondary">{item.latitude}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{"-"}</Span>
+                      <Span fontType="secondary">{item.longitude}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{"-"}</Span>
+                      <Span fontType="secondary">{item.radius}</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {item.created_at ? item.created_at : "-"}
+                      </Span>
                     </TableCell>
 
                     <TableCell align="left">
-                      <ActionMenu menu={actionMenuItems} id={vehicle.id} />
+                      <ActionMenu menu={actionMenuItems} id={item.id} />
                     </TableCell>
                   </TableRow>
                 );
@@ -277,7 +288,7 @@ export default function GeoFence() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(vehicleList?.count / rowsPerPage)}
+          totalPages={Math.ceil(geofenceList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
