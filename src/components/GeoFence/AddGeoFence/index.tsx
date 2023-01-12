@@ -31,34 +31,34 @@ import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
 import { auth, transport } from "constants/RouteMiddlePath";
 import Autocomplete from "react-google-autocomplete";
-import {
-  Circle,
-  DrawingManager,
-  GoogleMap,
-  LoadScript,
-} from "@react-google-maps/api";
 import GeoFenceMap from "../GeoFenceMap";
 import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
-const libraries = ["drawing", "places"];
 
-class NewVehicleType {
-  "vehicle_type": string = "";
-  "make": string | null = null;
-  "model": string | null = null;
-  "vin": string | null = null;
-  "organization_id": string | null = null;
-  "radius" : string | number 
+class NewGeofenceType {
+  "name": string = "";
+  "latitude": number;
+  "longitude": number;
+  "radius": string | number;
+  "organization_id": string;
+  "branch_id": string;
 }
 
 export default function AddGeoFence() {
-  const [vehicles, setVehicle] = useState<NewVehicleType>(new NewVehicleType());
+  const [geofenceData, setGeofenceData] = useState<NewGeofenceType>(
+    new NewGeofenceType()
+  );
   const [path, setPath] = useState([]);
   const [geofenceType, setGeofenceType] = useState("circle");
-  const [center, setCenter] = useState<any>({ lat: 28.6862738, lng: 77.2217831 });
+  const [center, setCenter] = useState<any>({
+    lat: 28.6862738,
+    lng: 77.2217831,
+  });
+  const [lat, setLat] = useState(28.6862738);
+  const [lng, setLng] = useState(77.2217831);
   const { user } = useAppContext();
   const navigate = useNavigate();
   const classes = useStyles();
-  const { id: vehicleId } = useParams();
+  const { id: geofenceId } = useParams();
 
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -66,12 +66,12 @@ export default function AddGeoFence() {
     message: string;
   }>({ open: false, variant: "info", message: "" });
 
-  const addVehicleMutation = useMutation(addVehicle, {
+  const addGeofenceMutation = useMutation(addGeofence, {
     onSuccess: () => {
       setSnackbar({
         open: true,
         variant: "success",
-        message: "Vehicle added successfully.",
+        message: "Geofence added successfully.",
       });
 
       setTimeout(() => {
@@ -87,12 +87,12 @@ export default function AddGeoFence() {
     },
   });
 
-  const updateVehicleMutation = useMutation(updateVehicle, {
+  const updateGeofenceMutation = useMutation(updateGeofence, {
     onSuccess: () => {
       setSnackbar({
         open: true,
         variant: "success",
-        message: "Vehicle Updated.",
+        message: "Geofence Updated.",
       });
       setTimeout(() => {
         navigate(`/${AppPaths.GEOFENCE}`);
@@ -107,100 +107,80 @@ export default function AddGeoFence() {
       }),
   });
 
-  const { isLoading: loadingVehicleInfo } = useQuery(
-    ["vehicles", vehicleId],
-    () => getVehicleDetails(String(vehicleId)),
+  const { isLoading: loadingGeofenceInfo } = useQuery(
+    ["Geofence", geofenceId],
+    () => getGeofenceDetails(String(geofenceId)),
     {
-      enabled: Boolean(vehicleId),
+      enabled: Boolean(geofenceId),
       refetchOnWindowFocus: false,
-      onSuccess: (vehicleDetails) => {
-        setVehicle({
-          ...vehicles,
-          ...vehicleDetails,
+      onSuccess: (geofenceDetails) => {
+        setGeofenceData({
+          ...geofenceData,
+          ...geofenceDetails,
         });
       },
     }
   );
-  function backToProperties() {
-    navigate(-1);
-  }
 
-  function handleFormVehicle(
-    key: keyof NewVehicleType,
+  function handleFormGeofence(
+    key: keyof NewGeofenceType,
     value: string | boolean | number | string[] | SelectChangeEvent<string[]>
   ) {
-    setVehicle({ ...vehicles, [key]: value });
+    setGeofenceData({ ...geofenceData, [key]: value });
   }
 
-  function addVehicle(vehicles: NewVehicleType) {
-    return client.post(`${transport}/vehicles/`, {
-      ...vehicles,
+  function addGeofence(geofence: NewGeofenceType) {
+    return client.post(`${transport}/geofences/`, {
+      ...geofence,
     });
   }
 
-  function updateVehicle(vehicles: NewVehicleType) {
-    return client.patch(`${transport}/vehicles/${vehicleId}/`, {
-      ...vehicles,
+  function updateGeofence(geofence: NewGeofenceType) {
+    return client.patch(`${transport}/geofences/${geofenceId}/`, {
+      ...geofence,
     });
   }
 
-  const { mutate: mutateAddVehicle, isLoading: isAddingVehicle } =
-    addVehicleMutation;
-  const { mutate: mutateUpdateVehicle, isLoading: updatingVehicle } =
-    updateVehicleMutation;
+  const { mutate: mutateAddGeofence, isLoading: isAddingGeofence } =
+    addGeofenceMutation;
+  const { mutate: mutateUpdateGeofence, isLoading: isUpdatingGeofence } =
+    updateGeofenceMutation;
 
-  function handleSubmit() {
-    if (vehicleId) {
-      mutateUpdateVehicle(vehicles);
+  const handleSubmit = () => {
+    if (geofenceId) {
+      mutateUpdateGeofence(geofenceData);
       return;
     }
-    vehicles.organization_id = user.organization_id;
+    geofenceData.organization_id = user.organization_id;
+    geofenceData.latitude = lat;
+    geofenceData.longitude = lng;
 
-    mutateAddVehicle(vehicles);
-  }
+    mutateAddGeofence(geofenceData);
+  };
 
-  if (vehicleId && loadingVehicleInfo && !vehicles.vehicle_type) {
+  if (geofenceId && loadingGeofenceInfo) {
     return <LoadingScreen />;
   }
 
-  async function getVehicleDetails(id: string) {
-    return (await client.get(`${transport}/vehicles/${id}/`)).data;
+  async function getGeofenceDetails(id: string) {
+    return (await client.get(`${transport}/geofences/${id}/`)).data;
   }
 
   function GoToBack() {
     navigate(-1);
   }
 
-  const { vehicle_type } = vehicles;
-  const isSaveButtonDisabled = !vehicle_type;
-
-  const loadingMessage = isAddingVehicle
-    ? "Adding Vehicle..."
-    : updatingVehicle
-      ? "Updating Vehicle..."
-      : "";
+  const loadingMessage = isAddingGeofence
+    ? "Adding Geofence..."
+    : isUpdatingGeofence
+    ? "Updating Geofence..."
+    : "";
 
   const polyAxis = (polyaxisData: any) => {
     setPath(polyaxisData);
   };
 
-  const onPolygonComplete = (polygon: any) => {
-    console.log(polygon.getPath().getArray());
-    const polyAxiss = polygon.getPath().getArray();
-    let tempArr = [];
-    for (let i in polyAxiss) {
-      tempArr.push({ lat: polyAxiss[i].lat(), lng: polyAxiss[i].lng() });
-    }
-    polyAxis(tempArr);
-  };
-
-  const onCircleComplete = (circle: any) => {
-    console.log(circle.radius);
-  };
-
-  const onLoad = (drawingManager: any) => {
-    console.log(drawingManager);
-  };
+  const isSaveButtonDisabled = !geofenceData.name || !geofenceData.radius;
 
   return (
     <Box className={classes.positionRelative}>
@@ -220,7 +200,7 @@ export default function AddGeoFence() {
       </Snackbar>
 
       <PageLoading
-        open={isAddingVehicle || updatingVehicle}
+        open={isAddingGeofence || isUpdatingGeofence}
         loadingMessage={loadingMessage}
       />
 
@@ -234,7 +214,7 @@ export default function AddGeoFence() {
             <ArrowBackIcon />
           </IconButton>
           <Typography fontSize={24}>
-            {!vehicleId ? "Add Geofence" : "Edit Geofence"}
+            {!geofenceId ? "Add Geofence" : "Edit Geofence"}
           </Typography>
         </Box>
       </Box>
@@ -260,9 +240,9 @@ export default function AddGeoFence() {
                     label="Name"
                     placeholder="Enter Name"
                     style={{ marginBottom: 24, width: "400px" }}
-                    value={vehicles.model}
+                    value={geofenceData.name}
                     isRequired={false}
-                    onChange={(value) => handleFormVehicle("model", value)}
+                    onChange={(value) => handleFormGeofence("name", value)}
                   />
 
                   <Typography
@@ -276,28 +256,37 @@ export default function AddGeoFence() {
                     Select Place
                   </Typography>
                   <Autocomplete
-                    style={{ marginBottom: 14, 
-                      width: "376px", 
-                      padding: "10px", 
+                    style={{
+                      marginBottom: 14,
+                      width: "376px",
+                      padding: "10px",
                       background: "none",
-                      border: "2px solid #bfbec1" }}
-                    // id="demo-simple-select"
+                      border: "2px solid #bfbec1",
+                    }}
                     apiKey={process.env.REACT_APP_MAP_KEY}
                     onPlaceSelected={(place) => {
-                      console.log(place.geometry?.location);
-                      const location: any = place.geometry?.location
-                      setCenter({ lat: location.lat(), lng: location.lng() })
+                      const location: any = place.geometry?.location;
+                      setLat(location.lat());
+                      setLng(location.lng());
+                      setCenter({ lat: location.lat(), lng: location.lng() });
                     }}
                   />
                   <TextInput
                     label="Radius"
+                    regex={/[^0-9]/g}
                     placeholder="Enter Radius"
                     style={{ marginBottom: 24, width: "400px" }}
-                    value={vehicles.radius}
+                    value={geofenceData.radius}
                     isRequired={false}
-                    onChange={(value) => handleFormVehicle("radius", value)}
+                    onChange={(value) => handleFormGeofence("radius", value)}
                   />
-                  <Button onClick={() => { }} variant="outlined">
+                  <Button
+                    onClick={() => {
+                      handleSubmit();
+                    }}
+                    disabled={isSaveButtonDisabled}
+                    variant={isSaveButtonDisabled ? "outlined" : "contained"}
+                  >
                     Save
                   </Button>
                 </Box>
@@ -308,9 +297,9 @@ export default function AddGeoFence() {
                     label="Name"
                     placeholder="Enter Name"
                     style={{ marginBottom: 24, width: "400px" }}
-                    value={vehicles.model}
+                    value={geofenceData.name}
                     isRequired={false}
-                    onChange={(value) => handleFormVehicle("model", value)}
+                    onChange={(value) => handleFormGeofence("name", value)}
                   />
                   <Typography
                     fontSize={16}
@@ -322,19 +311,30 @@ export default function AddGeoFence() {
                   >
                     Select Place
                   </Typography>
-              
+
                   <Autocomplete
-                    style={{ marginBottom: 14, width: "376px", padding: "10px", background: "none", border: "2px solid #bfbec1" }}
-                    // id="demo-simple-select"
+                    style={{
+                      marginBottom: 14,
+                      width: "376px",
+                      padding: "10px",
+                      background: "none",
+                      border: "2px solid #bfbec1",
+                    }}
                     apiKey={process.env.REACT_APP_MAP_KEY}
                     onPlaceSelected={(place) => {
-                      console.log(place.geometry?.location);
-                      const location: any = place.geometry?.location
-                      setCenter({ lat: location.lat(), lng: location.lng() })
+                      const location: any = place.geometry?.location;
+                      setLat(location.lat());
+                      setLng(location.lng());
+                      setCenter({ lat: location.lat(), lng: location.lng() });
                     }}
                   />
                   <Box>
-                    <Button onClick={() => { }} variant="outlined">
+                    <Button
+                      id="submit"
+                      variant={isSaveButtonDisabled ? "outlined" : "contained"}
+                      onClick={() => {}}
+                      disabled={isSaveButtonDisabled}
+                    >
                       Save
                     </Button>
                   </Box>
@@ -344,10 +344,11 @@ export default function AddGeoFence() {
           </div>
           <div style={{ width: "50%" }}>
             <GeoFenceMap
-              circleRadius={Number (vehicles?.radius)}
-              center={center} 
-              polyAxis={polyAxis} 
-              type={geofenceType} />
+              circleRadius={Number(geofenceData?.radius)}
+              center={center}
+              polyAxis={polyAxis}
+              type={geofenceType}
+            />
           </div>
         </div>
       </div>

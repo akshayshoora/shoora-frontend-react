@@ -3,17 +3,18 @@ import {
   DrawingManager,
   GoogleMap,
   LoadScript,
-  Polygon
+  Polygon,
 } from "@react-google-maps/api";
 import React, { useState } from "react";
 
 const libraries = ["drawing", "places"];
 
-const GeoFenceMap = ({ polyAxis, type,center,circleRadius }) => {
-
+const GeoFenceMap = ({ polyAxis, type, center, circleRadius }) => {
   const onLoad = (drawingManager) => {
     console.log(drawingManager);
   };
+
+  console.log(typeof circleRadius, "radiusss");
   const options = {
     strokeColor: "#FF0000",
     strokeOpacity: 0.8,
@@ -31,8 +32,8 @@ const GeoFenceMap = ({ polyAxis, type,center,circleRadius }) => {
     { lat: 25.774, lng: -80.19 },
     { lat: 18.466, lng: -66.118 },
     { lat: 32.321, lng: -64.757 },
-    { lat: 25.774, lng: -80.19 }
-  ]
+    { lat: 25.774, lng: -80.19 },
+  ];
 
   const onPolygonComplete = (polygon) => {
     console.log(polygon.getPath().getArray());
@@ -60,17 +61,18 @@ const GeoFenceMap = ({ polyAxis, type,center,circleRadius }) => {
             height: "400px",
             width: "500px",
           }}
-           center={center}
+          center={center}
           zoom={12}
         >
           {type == "polygon" ? (
-            <Polygon
-             
-              paths={paths}
-              options={options}
-              
-              // onPolygonComplete={onPolygonComplete}
-          
+            <DrawingManager
+              style={{ display: "none" }}
+              onLoad={onLoad}
+              onPolygonComplete={onPolygonComplete}
+              drawingMode={"polygon"}
+              onCircleComplete={onCircleComplete}
+              editable
+              draggable
             />
           ) : (
             <Circle
@@ -80,9 +82,8 @@ const GeoFenceMap = ({ polyAxis, type,center,circleRadius }) => {
               // onUnmount={onUnmount}
               center={center}
               // required
-              radius={circleRadius}
+              radius={circleRadius ? circleRadius : ""}
               options={options}
-    
             />
           )}
         </GoogleMap>
