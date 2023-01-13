@@ -58,8 +58,8 @@ const GeoFenceMap = ({ polyAxis, type, center, circleRadius }) => {
       >
         <GoogleMap
           mapContainerStyle={{
-            height: "400px",
-            width: "500px",
+            height: "calc(100vh - 260px)",
+            width: "100%",
           }}
           center={center}
           zoom={12}

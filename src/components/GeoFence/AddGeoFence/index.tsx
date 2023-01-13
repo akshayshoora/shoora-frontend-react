@@ -33,6 +33,7 @@ import { auth, transport } from "constants/RouteMiddlePath";
 import Autocomplete from "react-google-autocomplete";
 import GeoFenceMap from "../GeoFenceMap";
 import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
+import COLORS from "constants/colors";
 
 class NewGeofenceType {
   "name": string = "";
@@ -219,11 +220,15 @@ export default function AddGeoFence() {
         </Box>
       </Box>
 
-      <div style={{ marginLeft: "90px", marginRight: "90px" }}>
-        <div style={{ display: "flex" }}>
-          <div style={{ width: "50%" }}>
-            {" "}
-            <Box>
+      <div style={{ marginLeft: "25px", marginRight: "25px" }} className={classes.geoFenceContainer}>
+      <Grid
+            container
+            spacing={{ xs: 2, md: 3 }}
+            columns={{ xs: 6, sm: 8, md: 12 }}
+            style={{ marginTop: 24 }}
+          >
+            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+            <Box className={classes.geoFenceLeft}>
               <CustomRadioGroup
                 selected={geofenceType}
                 options={[
@@ -235,11 +240,11 @@ export default function AddGeoFence() {
                 }}
               />
               {geofenceType == "circle" ? (
-                <Box>
+                <Box className={classes.geoFenceForm}>
                   <TextInput
                     label="Name"
                     placeholder="Enter Name"
-                    style={{ marginBottom: 24, width: "400px" }}
+                    style={{ marginBottom: 24, width: "100%" }}
                     value={geofenceData.name}
                     isRequired={false}
                     onChange={(value) => handleFormGeofence("name", value)}
@@ -258,10 +263,9 @@ export default function AddGeoFence() {
                   <Autocomplete
                     style={{
                       marginBottom: 14,
-                      width: "376px",
-                      padding: "10px",
+                      width: "100%",
+                      padding: "8.5px 14px",
                       background: "none",
-                      border: "2px solid #bfbec1",
                     }}
                     apiKey={process.env.REACT_APP_MAP_KEY}
                     onPlaceSelected={(place) => {
@@ -275,7 +279,7 @@ export default function AddGeoFence() {
                     label="Radius"
                     regex={/[^0-9]/g}
                     placeholder="Enter Radius"
-                    style={{ marginBottom: 24, width: "400px" }}
+                    style={{ marginBottom: 24, width: "100%" }}
                     value={geofenceData.radius}
                     isRequired={false}
                     onChange={(value) => handleFormGeofence("radius", value)}
@@ -291,12 +295,12 @@ export default function AddGeoFence() {
                   </Button>
                 </Box>
               ) : (
-                <Box>
+                <Box className={classes.geoFenceForm}>
                   <h2>paths</h2>
                   <TextInput
                     label="Name"
                     placeholder="Enter Name"
-                    style={{ marginBottom: 24, width: "400px" }}
+                    style={{ marginBottom: 24, width: "100%" }}
                     value={geofenceData.name}
                     isRequired={false}
                     onChange={(value) => handleFormGeofence("name", value)}
@@ -315,10 +319,8 @@ export default function AddGeoFence() {
                   <Autocomplete
                     style={{
                       marginBottom: 14,
-                      width: "376px",
-                      padding: "10px",
+                      width: "100%",
                       background: "none",
-                      border: "2px solid #bfbec1",
                     }}
                     apiKey={process.env.REACT_APP_MAP_KEY}
                     onPlaceSelected={(place) => {
@@ -341,16 +343,17 @@ export default function AddGeoFence() {
                 </Box>
               )}
             </Box>
-          </div>
-          <div style={{ width: "50%" }}>
+         </Grid>
+          <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
             <GeoFenceMap
               circleRadius={Number(geofenceData?.radius)}
               center={center}
               polyAxis={polyAxis}
               type={geofenceType}
             />
-          </div>
-        </div>
+          </Grid>
+        </Grid>
+
       </div>
     </Box>
   );
