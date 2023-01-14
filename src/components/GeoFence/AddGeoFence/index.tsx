@@ -34,6 +34,7 @@ import Autocomplete from "react-google-autocomplete";
 import GeoFenceMap from "../GeoFenceMap";
 import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
 import COLORS from "constants/colors";
+import { latLongToPlace } from "utils/helpers";
 
 class NewGeofenceType {
   "name": string = "";
@@ -66,6 +67,10 @@ export default function AddGeoFence() {
     variant: "success" | "error" | "info";
     message: string;
   }>({ open: false, variant: "info", message: "" });
+
+  const { data: address } = useQuery(["address", lat, lng], () =>
+    latLongToPlace(lat, lng, false)
+  );
 
   const addGeofenceMutation = useMutation(addGeofence, {
     onSuccess: () => {
@@ -220,14 +225,17 @@ export default function AddGeoFence() {
         </Box>
       </Box>
 
-      <div style={{ marginLeft: "25px", marginRight: "25px" }} className={classes.geoFenceContainer}>
-      <Grid
-            container
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 6, sm: 8, md: 12 }}
-            style={{ marginTop: 24 }}
-          >
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+      <div
+        style={{ marginLeft: "25px", marginRight: "25px" }}
+        className={classes.geoFenceContainer}
+      >
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 6, sm: 8, md: 12 }}
+          style={{ marginTop: 24 }}
+        >
+          <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
             <Box className={classes.geoFenceLeft}>
               <CustomRadioGroup
                 selected={geofenceType}
@@ -279,11 +287,29 @@ export default function AddGeoFence() {
                     label="Radius"
                     regex={/[^0-9]/g}
                     placeholder="Enter Radius"
-                    style={{ marginBottom: 24, width: "100%" }}
+                    style={{ marginBottom: 14, width: "100%" }}
                     value={geofenceData.radius}
                     isRequired={false}
                     onChange={(value) => handleFormGeofence("radius", value)}
                   />
+                  <Typography
+                    fontSize={16}
+                    style={{
+                      fontWeight: 200,
+                      marginBottom: 2,
+                      marginRight: 2,
+                    }}
+                  >
+                    Address
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    style={{
+                      marginBottom: 25,
+                    }}
+                  >
+                    {address}
+                  </Typography>
                   <Button
                     onClick={() => {
                       handleSubmit();
@@ -330,6 +356,24 @@ export default function AddGeoFence() {
                       setCenter({ lat: location.lat(), lng: location.lng() });
                     }}
                   />
+                  <Typography
+                    fontSize={16}
+                    style={{
+                      fontWeight: 200,
+                      marginBottom: 2,
+                      marginRight: 2,
+                    }}
+                  >
+                    Address
+                  </Typography>
+                  <Typography
+                    variant="body2"
+                    style={{
+                      marginBottom: 25,
+                    }}
+                  >
+                    {address}
+                  </Typography>
                   <Box>
                     <Button
                       id="submit"
@@ -343,17 +387,19 @@ export default function AddGeoFence() {
                 </Box>
               )}
             </Box>
-         </Grid>
+          </Grid>
           <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
             <GeoFenceMap
               circleRadius={Number(geofenceData?.radius)}
               center={center}
               polyAxis={polyAxis}
               type={geofenceType}
+              setCenter={setCenter}
+              setLat={setLat}
+              setLng={setLng}
             />
           </Grid>
         </Grid>
-
       </div>
     </Box>
   );

@@ -9,12 +9,11 @@ import React, { useState } from "react";
 
 const libraries = ["drawing", "places"];
 
-const GeoFenceMap = ({ polyAxis, type, center, circleRadius }) => {
-  const onLoad = (drawingManager) => {
-    console.log(drawingManager);
-  };
+const GeoFenceMap = (props) => {
+  const { polyAxis, type, center, setCenter, circleRadius, setLat, setLng } =
+    props;
+  const onLoad = (drawingManager) => {};
 
-  console.log(typeof circleRadius, "radiusss");
   const options = {
     strokeColor: "#FF0000",
     strokeOpacity: 0.8,
@@ -48,6 +47,14 @@ const GeoFenceMap = ({ polyAxis, type, center, circleRadius }) => {
   const onCircleComplete = (circle) => {
     console.log(circle.radius);
   };
+
+  const handleClickedMap = (e) => {
+    let latitude = e.latLng.lat();
+    let longtitude = e.latLng.lng();
+    setCenter({ lat: latitude, lng: longtitude });
+    setLat(latitude);
+    setLng(longtitude);
+  };
   return (
     <>
       <h2>Map view</h2>
@@ -57,12 +64,14 @@ const GeoFenceMap = ({ polyAxis, type, center, circleRadius }) => {
         libraries={libraries}
       >
         <GoogleMap
+          onClick={handleClickedMap}
           mapContainerStyle={{
             height: "calc(100vh - 260px)",
             width: "100%",
           }}
           center={center}
           zoom={12}
+          bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_KEY }}
         >
           {type == "polygon" ? (
             <DrawingManager
