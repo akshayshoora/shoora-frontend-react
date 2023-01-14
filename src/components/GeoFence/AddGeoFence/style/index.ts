@@ -40,4 +40,34 @@ export default makeStyles({
     bottom: "0",
     right: "0",
   },
+  geoFenceContainer:{
+    margin:'10px 0 0 0',
+    "& input":{
+      height:'38px',
+      boxSizing:'border-box',
+      border:'1px solid #0000003b',
+      borderRadius:'4px',
+      color:COLORS.BLACK,
+      padding:'8px 10px',
+    },
+    "& fieldset":{
+     border:'none',
+    },
+    "& button[disabled]":{
+     color:'#0000003b',
+     },
+  },
+  geoFenceLeft:{
+    margin:'20px 0 0 0',
+    background:'white',
+    padding:'15px',
+    borderRadius:'4px',
+  },
+  geoFenceForm:{
+   marginTop:'15px',
+   "& h2":{
+   marginTop:'0px',
+   textTransform:'capitalize',
+   },
+  },
 });
