@@ -3,17 +3,21 @@ import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import TableRow from "@mui/material/TableRow";
 import { SelectChangeEvent, Button } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 import Span from "components/commonComponent/Span";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import SearchBox from "components/commonComponent/SearchField";
+import COLORS from "../../constants/colors";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
+import { stringCheckForTableCell } from "utils/StringCheck";
 import { useAppContext } from "ContextAPIs/appContext";
-import COLORS from "../../constants/colors";
 import {
   HeadCell,
   Order,
@@ -28,25 +32,16 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess } from "utils/FeatureCheck";
-import { auth, monitor } from "constants/RouteMiddlePath";
-import { AlertModal } from "components/Alerts/AlertModal";
-import { TripModal } from "./TripModal";
-import { getDateDisplayFormat, getDuration, getDateTime } from "utils/calenderUtils";
-import { latLongToPlace, sanitizeURL } from "utils/helpers";
-import { endianness } from "os";
-import { useEffect } from "react";
+import { auth, transport } from "constants/RouteMiddlePath";
 
-export default function Trip() {
-  const [openTrip, setOpenTrip] = React.useState<boolean>(false);
-  const [triptId, setTripId] = React.useState<string>("false");
+export default function GeoFence() {
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: tripList, isLoading } = useQuery(
-    ["trips", page, rowsPerPage, searchText],
-    () => getTrips(page, rowsPerPage, searchText),
-    { refetchOnWindowFocus: false }
+  const { data: geofenceList, isLoading } = useQuery(
+    ["geofences", page, rowsPerPage, searchText],
+    () => getGeofences(page, rowsPerPage, searchText)
   );
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
@@ -55,36 +50,30 @@ export default function Trip() {
   }>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<string>("trip");
+  const [orderBy, setOrderBy] = React.useState<string>("geofence");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
+
+  const isAdd = actionAccess(AppPaths.GEOFENCE, Actions.ADD);
+  const isEdit = actionAccess(AppPaths.GEOFENCE, Actions.EDIT);
+  const isDelete = actionAccess(AppPaths.GEOFENCE, Actions.DELETE);
+
   const navigate = useNavigate();
-  const [placeDataStatus, setPlaceDataStatus] = React.useState<boolean>(true);
+
   const classes = useStyles();
-
-  // useEffect(() => {
-  //     if(tripList){
-  //       renderPlaceName();
-  //     }
-  //    },[tripList]);
-
-  async function getTrips(
+  async function getGeofences(
     pageNumber: number,
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${monitor}/trips/?page=${pageNumber + 1
-      }&page_size=${pageSize}&search=${searchText}`;
-    const finalURL = sanitizeURL(getApiUrl);
-    const response = await client.get(finalURL);
+    let getApiUrl = `${transport}/geofences/?page=${
+      pageNumber + 1
+    }&page_size=${pageSize}&search=${searchText}`;
+
+    const response = await client.get(getApiUrl);
 
     return response.data;
   }
-
-  const handleOpenTrip = (id: string) => {
-    setTripId(id);
-    setOpenTrip(true);
-  };
 
   const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
@@ -95,104 +84,105 @@ export default function Trip() {
   };
   const handleClose = () => {
     setOpenDelete(false);
-    getTrips(page, rowsPerPage, searchText);
+    getGeofences(page, rowsPerPage, searchText);
   };
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
-    vehicle: string
+    geofence: string
   ) => {
-    const isAsc = orderBy === vehicle && order === "asc";
+    const isAsc = orderBy === geofence && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
     //@ts-ignore
-    setOrderBy(vehicle);
+    setOrderBy(geofence);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
-    setPlaceDataStatus(true);
     setPage(newPage - 1);
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
-    setPlaceDataStatus(true);
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-  function openTripDetails(event: React.MouseEvent<HTMLElement>, id: string) {
+  function openGeofenceDetails(
+    event: React.MouseEvent<HTMLElement>,
+    id: string
+  ) {
     event.stopPropagation();
-    navigate(`/${AppPaths.TRIP}/${id}`);
+    navigate(`/${AppPaths.GEOFENCE}/${id}`);
+  }
+
+  function editGeofenceDetails(
+    event: React.MouseEvent<HTMLElement>,
+    id: string
+  ) {
+    event.stopPropagation();
+    navigate(`/${AppPaths.GEOFENCE}/${SubPaths.EDIT}/${id}`);
   }
 
   const actionMenuItems: MenuType[] = [
     {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
-      onClick: openTripDetails,
+      onClick: openGeofenceDetails,
       access: true,
     },
+    // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editGeofenceDetails,access:isEdit },
+    // {
+    //   label: "Delete",
+    //   icon: <DeleteOutlineOutlinedIcon />,
+    //   onClick: handleOpenDelete,
+    //   access:isDelete
+    // },
   ];
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "crerated_at",
-      label: "Start Date/Time",
+      id: "name",
+      numeric: false,
+      disablePadding: true,
+      label: "Name",
+    },
+    {
+      id: "lat",
+      label: "Latitude",
       numeric: false,
       disablePadding: false,
     },
     {
-      id: "start_ltime",
-      label: "Start Time",
+      id: "lng",
+      label: "Longitude",
       numeric: false,
       disablePadding: false,
     },
+    { id: "radius", label: "Radius", numeric: false, disablePadding: false },
     {
-      id: "end_time",
-      label: "End Time",
-      numeric: false,
-      disablePadding: false,
-    },
-
-    {
-      id: "driver",
-      label: "Driver",
-      numeric: false,
-      disablePadding: false,
-    },
-    {
-      id: "incidents",
-      label: "Incidents",
-      numeric: false,
-      disablePadding: false,
-    },
-    {
-      id: "distance",
-      label: "Distance",
-      numeric: false,
-      disablePadding: false,
-    },
-    {
-      id: "duration",
-      label: "Duration",
+      id: "created_at",
+      label: "Created At",
       numeric: false,
       disablePadding: false,
     },
   ];
 
+  function addGeoFence() {
+    navigate(`/${AppPaths.GEOFENCE}/${SubPaths.ADD}`);
+  }
   const handleSearchInput = (e: any) => {
     setSearchText(e);
   };
 
-  const deleteTripMutation = useMutation(deleteTrip, {
+  const deleteGeofenceMutation = useMutation(deleteGeofence, {
     onSuccess: () => {
       handleClose();
       setSnackbar({
         open: true,
         variant: "success",
-        message: "Trip deleted.",
+        message: "Geofence deleted.",
       });
       setTimeout(() => {
-        navigate(`/${AppPaths.TRIP}`);
+        navigate(`/${AppPaths.GEOFENCE}`);
       }, 1000);
     },
 
@@ -204,35 +194,14 @@ export default function Trip() {
       }),
   });
 
-  const { mutate: mutateDeleteTrip } = deleteTripMutation;
+  const { mutate: mutateDeleteGeofence } = deleteGeofenceMutation;
 
-  function deleteTrip() {
-    return client.delete(`${auth}/users/${deleteId}`);
+  function deleteGeofence() {
+    return client.delete(`${auth}/geofences/${deleteId}`);
   }
 
   function handleDelete() {
-    mutateDeleteTrip();
-  }
-
-  const handleCloseTrip = () => setOpenTrip(false);
-
-  async function renderPlaceName() {
-    for (let i = 0; i < tripList?.results.length; i++) {
-      let startPlace = await latLongToPlace(
-        tripList.results[i].start_latitude,
-        tripList.results[i].start_longitude,
-        true
-      );
-      let endPlace = await latLongToPlace(
-        tripList.results[i].end_latitude,
-        tripList.results[i].end_longitude,
-        true
-      );
-      tripList.results[i]["startPlace"] = startPlace;
-      tripList.results[i]["endPlace"] = endPlace;
-    }
-
-    setPlaceDataStatus(false);
+    mutateDeleteGeofence();
   }
 
   return (
@@ -242,21 +211,27 @@ export default function Trip() {
           open={openDelete}
           handleClose={handleClose}
           handleDelete={handleDelete}
-          label="trip"
+          label="geofence"
         />
       )}
-      {openTrip && (
-        <TripModal open={openTrip} handleClose={handleCloseTrip} id={triptId} />
-      )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Trips</Heading>
+        <Heading>Geofence</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
           <Box style={{ marginRight: 12 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
-              placeholder="Search Trips"
+              placeholder="Search Geofence Name"
             />
           </Box>
+
+          <Button
+            variant="contained"
+            style={{ color: COLORS.WHITE }}
+            onClick={addGeoFence}
+          >
+            <AddIcon />
+            add geofence
+          </Button>
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -273,48 +248,32 @@ export default function Trip() {
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : tripList?.results.length ? (
-              tripList?.results.map((trip: any, index: number) => {
+            ) : geofenceList?.results.length ? (
+              geofenceList?.results.map((item: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
-                    <TableCell align="left">
-                      <Span fontType="secondary">
-                        {getDateDisplayFormat(trip.created_at)}
-                      </Span>
+                    <TableCell className={classes.tableBodyCell} align="left">
+                      <Box className={classes.columnView}>
+                        <Span>{item.name}</Span>
+                      </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{getDateTime(trip.trip_started_at)}</Span>
+                      <Span fontType="secondary">{item.latitude}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{getDateTime(trip.trip_ended_at)}</Span>
+                      <Span fontType="secondary">{item.longitude}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {trip.driver || "-"}
-                      </Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{trip.total_incidents}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{trip.distance} km</Span>
+                      <Span fontType="secondary">{item.radius}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {getDuration(trip.duration / 60)}
+                        {item.created_at ? item.created_at : "-"}
                       </Span>
                     </TableCell>
 
                     <TableCell align="left">
-                      <Button
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={() => {
-                          handleOpenTrip(trip.id);
-                        }}
-                      >
-                        Details
-                      </Button>
+                      <ActionMenu menu={actionMenuItems} id={item.id} />
                     </TableCell>
                   </TableRow>
                 );
@@ -329,7 +288,7 @@ export default function Trip() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(tripList?.count / rowsPerPage)}
+          totalPages={Math.ceil(geofenceList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

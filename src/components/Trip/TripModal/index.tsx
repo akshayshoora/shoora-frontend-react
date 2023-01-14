@@ -92,7 +92,7 @@ export function TripModal(props: ITripModalProps) {
   );
 
   async function getTripPath(id: string) {
-    return (await client.get(`${monitor}/trips/${id}/path`)).data;
+    return (await client.get(`${monitor}/trips/${id}/path/`)).data;
   }
 
   const getMapRoute = (map: any, maps: any) => {
