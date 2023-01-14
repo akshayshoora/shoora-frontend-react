@@ -31,7 +31,7 @@ import { actionAccess } from "utils/FeatureCheck";
 import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
-import { getDateDisplayFormat, getDuration } from "utils/calenderUtils";
+import { getDateDisplayFormat, getDuration, getDateTime } from "utils/calenderUtils";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import { endianness } from "os";
 import { useEffect } from "react";
@@ -73,9 +73,8 @@ export default function Trip() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${monitor}/trips/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${monitor}/trips/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
     const finalURL = sanitizeURL(getApiUrl);
     const response = await client.get(finalURL);
 
@@ -284,14 +283,14 @@ export default function Trip() {
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.start_time}</Span>
+                      <Span fontType="secondary">{getDateTime(trip.trip_started_at)}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.end_time}</Span>
+                      <Span fontType="secondary">{getDateTime(trip.trip_ended_at)}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {trip.driver ? trip.driver.name : "-"}
+                        {trip.driver || "-"}
                       </Span>
                     </TableCell>
                     <TableCell align="left">

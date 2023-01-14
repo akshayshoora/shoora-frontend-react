@@ -10,6 +10,7 @@ import {
   TableRow,
   MenuItem,
   Alert,
+  TableBody,
 } from "@mui/material";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
@@ -27,20 +28,22 @@ import Table from "@mui/material/Table";
 import { TableFooter } from "components/commonComponent/Table";
 import MapMarker from "components/MapMarker";
 
-export default function () {
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(4, 2, 2),
-    color: theme.palette.text.secondary,
-    position: "relative",
-    boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
-  }));
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(4, 2, 2),
+  color: theme.palette.text.secondary,
+  position: "relative",
+  boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
+}));
 
+export default function MapView() {
   const [selectStatus, setSelectStatus] = useState("");
+  const [visibleVehicleState, setVisibleVehicleState] = useState<any>([]);
 
   const handleChange = (event: SelectChangeEvent) => {
     setSelectStatus(event.target.value as string);
+    setDeviceId("");
   };
   const classes = useStyles();
   const [snackbar, setSnackbar] = useState<{
@@ -63,32 +66,24 @@ export default function () {
   };
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
-    () => getVehicles(page, rowsPerPage, searchText, selectStatus),
+    ["vehiclelist", searchText, selectStatus],
+    () => getVehicles(searchText, selectStatus),
     { refetchOnWindowFocus: false }
   );
 
-  const { data: gpsList, isLoading: isGpsLoading } = useQuery(
-    ["gpslist", page, rowsPerPage, deviceId, searchText],
-    () => getGpsList(page, rowsPerPage, deviceId, searchText),
-    { refetchOnWindowFocus: false }
-  );
 
   async function getVehicles(
-    pageNumber: number,
-    pageSize: number,
     searchText?: string,
     selectStatus?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
-
+    let getApiUrl = `${transport}/vehicles-current-locations/?search=${searchText}&status=${selectStatus}`;
     const response = await client.get(getApiUrl);
-
+    showTableVehicleListHnldr(0, rowsPerPage, response?.data?.results);
+    setPage(0);
     return response.data;
   }
   const handleChangePage = (event: unknown, newPage: number) => {
+    showTableVehicleListHnldr(newPage - 1, rowsPerPage, vehicleList?.results);
     setPage(newPage - 1);
   };
 
@@ -97,32 +92,6 @@ export default function () {
     setPage(0);
   };
 
-  async function getGpsList(
-    pageNumber: number,
-    pageSize: number,
-    deviceid: string,
-    searchText?: string
-  ) {
-    let getApiUrl = `${monitor}/current-location/?imei=${deviceid}&page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
-
-    const response: any = await client.get(getApiUrl);
-    // if(deviceid == ""){
-    setLocationList(getLocation(response.data?.results));
-    return response.data;
-    //   }
-    //   else{
-    //   for(let i=0;i<response.data?.results.length;i++){
-
-    //   if(response.data?.results[i].imei == deviceid){
-    //     setLocationList(getLocation(response.data?.results[i]))
-
-    //     return response.data;
-    //   }
-    //   }
-    // }
-  }
   const handleVehicleView = (id: string, status: string) => {
     if (status != "moving") {
       setSnackbar({
@@ -135,15 +104,14 @@ export default function () {
     setDeviceId(id);
   };
 
-  const getLocation = (list: string[]) => {
-    const markersData = list.map((item: any, index) => ({
-      id: index,
-      lat: 1 * item.latitude,
-      lng: 1 * item.longitude,
-      vehicleInfo: item,
-    }));
-    return markersData;
-  };
+  function showTableVehicleListHnldr(page: any, rowPerPage: any, vehicleList: any) {
+    if (Array.isArray(vehicleList)) {
+      const startIndex = rowPerPage * page,
+        lastIndex = (((page * rowPerPage) + rowPerPage) < vehicleList.length) ? ((page * rowPerPage) + rowPerPage) : vehicleList.length;
+      setVisibleVehicleState(vehicleList.slice(startIndex, lastIndex))
+    }
+
+  }
 
   return (
     <Box style={{ padding: "20px 0 0 25px" }}>
@@ -207,7 +175,7 @@ export default function () {
                       <MenuItem value={"moving"}>Moving</MenuItem>
                       <MenuItem value={"idle"}>Idle</MenuItem>
                       <MenuItem value={"stopped"}>Stopped</MenuItem>
-                      <MenuItem value={"online"}>Online</MenuItem>
+                      <MenuItem value={"offline"}>Offline</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">
@@ -215,44 +183,44 @@ export default function () {
                       {!isVehicleLoading && (
                         <div>
                           <Table>
-                            {vehicleList?.results.map((item: any) => (
-                              <TableRow>
-                                <div
-                                  className="loaddata"
-                                  style={
-                                    deviceId == item.device
-                                      ? { background: "#fef8f0" }
-                                      : {}
-                                  }
-                                  onClick={() => {
-                                    handleVehicleView(item.device, item.status);
-                                  }}
-                                >
-                                  <i className="circle"></i>
-                                  <span className="trackid">{item.vin}</span>
-                                  <span className="arrowright">
-                                    <svg
-                                      width="17"
-                                      height="15"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                        stroke={
-                                          item.status !== "moving"
-                                            ? "#D3D3D3"
-                                            : "#3BB3C3"
-                                        }
-                                        stroke-width="1.5"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                      ></path>
-                                    </svg>
-                                  </span>
-                                </div>
-                              </TableRow>
-                            ))}
+                            <TableBody>
+                              {Array.isArray(visibleVehicleState) && visibleVehicleState.map((item: any) => (
+                                <TableRow key={item.id}>
+                                  <div
+                                    className="loaddata"
+                                    style={
+                                      deviceId == item.device
+                                        ? { background: "#fef8f0" }
+                                        : {}
+                                    }
+                                    onClick={() => handleVehicleView(item.device, item.status)}
+                                  >
+                                    <i className="circle"></i>
+                                    <span className="trackid">{item.vin}</span>
+                                    <span className="arrowright">
+                                      <svg
+                                        width="17"
+                                        height="15"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                      >
+                                        <path
+                                          d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
+                                          stroke={
+                                            item.status !== "moving"
+                                              ? "#D3D3D3"
+                                              : "#3BB3C3"
+                                          }
+                                          stroke-width="1.5"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                        ></path>
+                                      </svg>
+                                    </span>
+                                  </div>
+                                </TableRow>
+                              ))}
+                            </TableBody>
                           </Table>
                           <Box
                             style={{
@@ -263,7 +231,7 @@ export default function () {
                           >
                             <TableFooter
                               totalPages={Math.ceil(
-                                vehicleList?.count / rowsPerPage
+                                vehicleList?.results.length / rowsPerPage
                               )}
                               currentPage={page + 1}
                               onPageChange={handleChangePage}
@@ -290,7 +258,7 @@ export default function () {
               <Item elevation={0}>
                 <Box className="livemap">
                   {/* <GoogleMap list={locationList} /> */}
-                  <MapMarker list={locationList} />
+                  <MapMarker zoomDeviceId={deviceId} list={vehicleList?.results} />
 
                   {/* <Box className={classes.mapdropdown}>
                     <button className="mapoptions" onClick={handleMapOption}>
