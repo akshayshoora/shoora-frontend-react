@@ -174,10 +174,11 @@ export function GeoFenceModal(props: IGeofenceProps) {
       setSnackbar({
         open: true,
         variant: "success",
-        message: "Geofence added successfully.",
+        message: "Vehicle assigned successfully.",
       });
 
       setTimeout(() => {
+        props.handleClose();
         navigate(`/${AppPaths.GEOFENCE}`);
       }, 2000);
     },
@@ -204,9 +205,9 @@ export function GeoFenceModal(props: IGeofenceProps) {
 
   const handleSubmit = () => {
     geofenceVehicleData.organization_id = user.organization_id;
-    geofenceVehicleData.vehicle_group_ids = getVehicleId(
-      geofenceVehicleData.vehicle_ids
-    );
+    // geofenceVehicleData.vehicle_group_ids = getVehicleId(
+    //   geofenceVehicleData.vehicle_ids
+    // );
     geofenceVehicleData.vehicle_ids = getVehicleId(
       geofenceVehicleData.vehicle_ids
     );
