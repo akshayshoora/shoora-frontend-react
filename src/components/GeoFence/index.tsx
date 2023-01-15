@@ -33,6 +33,7 @@ import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess } from "utils/FeatureCheck";
 import { auth, transport } from "constants/RouteMiddlePath";
+import { GeoFenceModal } from "./GeoFenceModal";
 
 export default function GeoFence() {
   const [searchText, setSearchText] = React.useState("");
@@ -52,6 +53,8 @@ export default function GeoFence() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("geofence");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+  const [selectedResult, setSelectedResult] = React.useState<any[]>([]);
+  const [openGeofenceModal, setOpenGeofenceModal] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
   const isAdd = actionAccess(AppPaths.GEOFENCE, Actions.ADD);
@@ -164,6 +167,8 @@ export default function GeoFence() {
       numeric: false,
       disablePadding: false,
     },
+    { id: "assignVehicle", label: "Assign Vehicle", numeric: false, disablePadding: false },
+
   ];
 
   function addGeoFence() {
@@ -204,6 +209,13 @@ export default function GeoFence() {
     mutateDeleteGeofence();
   }
 
+  const handleGeofenceModal = (index :any)=>{
+    if(!geofenceList?.results) return;
+    const selctedArray = [...geofenceList?.results];
+    setSelectedResult(selctedArray[index])
+    setOpenGeofenceModal(true)
+  }
+
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && (
@@ -212,6 +224,13 @@ export default function GeoFence() {
           handleClose={handleClose}
           handleDelete={handleDelete}
           label="geofence"
+        />
+      )}
+      {openGeofenceModal && (
+        <GeoFenceModal 
+        handleClose = {()=> setOpenGeofenceModal(false)}
+        open={true}
+        selectedItem={selectedResult}
         />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
@@ -266,12 +285,23 @@ export default function GeoFence() {
                     <TableCell align="left">
                       <Span fontType="secondary">{item.radius}</Span>
                     </TableCell>
+                   
                     <TableCell align="left">
                       <Span fontType="secondary">
                         {item.created_at ? item.created_at : "-"}
                       </Span>
                     </TableCell>
-
+                    <TableCell align="left">
+                      <Button
+                        variant="contained"
+                        style={{ color: COLORS.WHITE }}
+                        onClick={() => {
+                           handleGeofenceModal(index);
+                        }}
+                      >
+                        Add Vehicle
+                      </Button>
+                    </TableCell>
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={item.id} />
                     </TableCell>
