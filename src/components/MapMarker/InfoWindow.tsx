@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import useStyles from "./style";
 import VehicleIcons from "assets/cargo-truck.png";
-import { getDateDisplayFormat, getDateTime } from "utils/calenderUtils";
+import { getDateTime, getDuration } from "utils/calenderUtils";
 
 enum Status {
     Moving = 'moving',
     Idle = 'idle',
-    Stop = 'stop',
+    Stopped = 'stopped',
 }
 // class Marker extends React.PureComponent {
 interface IMarkerprops {
@@ -15,6 +15,11 @@ interface IMarkerprops {
     lng: number;
     current_location: any;
     vehicleInfo?: any;
+}
+
+function validDuration(time: string | undefined): number {
+    const validTime: number = (Number(time) < 0) ? -Number(time) : Number(time);
+    return validTime;
 }
 
 function Marker(props: any) {
@@ -33,10 +38,10 @@ function Marker(props: any) {
                 <Box className={classes.vehicleTrip}>
                     <h2>Trip Details:</h2>
                     <Box className="fw-bold" sx={{ mb: 1.2 }}>
-                        <Box component="span" className={((vehicleInfo.status) === Status.Moving) ? 'status-moving' : 'status-danger'}> {vehicleInfo.status}: {"n/a"} minutes</Box>
+                        <Box component="span" className={((vehicleInfo.status) === Status.Moving) ? 'status-moving' : 'status-danger'}> {vehicleInfo?.status || "-"}: {getDuration(validDuration(vehicleInfo?.trip_duration))} minutes</Box>
                         <Box component="span"> | </Box>
                         <Box component="span" className="label-light">Today: </Box>
-                        <Box component="span" className=" label-light">{'n/a'} km</Box>
+                        <Box component="span" className=" label-light">{Math.ceil(vehicleInfo?.trip_distance) || '0'} km</Box>
                     </Box>
                     <Box sx={{ mb: 1.2, display: 'flex' }} >
                         <Box component="span" sx={{ mr: 0.5 }} className="fw-bold label-light">Last data received:  </Box>
@@ -52,9 +57,13 @@ function Marker(props: any) {
 
                     </Box>
                     <Box sx={{ mb: 1.2, display: 'flex' }}>
-                        <Box component="span" sx={{ mr: 0.5 }} className="fw-bold label-light">Trip: </Box>
-                        <Box component="span" className="fw-bold  label-dark">{vehicleInfo?.driver || "n/a"}</Box>
+                        <Box component="span" sx={{ mr: 0.5 }} className="fw-bold label-light">Trip Start At: </Box>
+                        <Box component="span" className="fw-bold  label-dark">{getDateTime(vehicleInfo?.trip_started_at)}</Box>
                     </Box>
+                    {((vehicleInfo.status) === Status.Stopped) && <Box sx={{ mb: 1.2, display: 'flex' }}>
+                        <Box component="span" sx={{ mr: 0.5 }} className="fw-bold label-light">Trip End At: </Box>
+                        <Box component="span" className="fw-bold  label-dark">{getDateTime(vehicleInfo?.trip_ended_at)}</Box>
+                    </Box>}
                     <Box sx={{ mb: 1.2, display: 'flex' }}>
                         <Box component="span" sx={{ mr: 0.5 }} className="fw-bold label-light">Driver: </Box>
                         <Box component="span" className="fw-bold label-dark">{vehicleInfo?.driver || "n/a"}</Box>
