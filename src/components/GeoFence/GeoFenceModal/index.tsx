@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 import {
   Autocomplete,
@@ -10,32 +10,57 @@ import {
   Paper,
   styled,
   Typography,
+  Alert,
+  Snackbar,
+  SelectChangeEvent,
 } from "@mui/material";
 import useStyles from "./style";
-import { auth,transport } from "constants/RouteMiddlePath";
-import LoadingScreen from 'components/commonComponent/LoadingScreen';
+import { auth, transport } from "constants/RouteMiddlePath";
+import LoadingScreen from "components/commonComponent/LoadingScreen";
 import client from "serverCommunication/client";
-import { useQuery } from 'react-query';
-
-
+import { useMutation, useQuery } from "react-query";
+import { useAppContext } from "ContextAPIs/appContext";
+import { AppPaths } from "constants/commonEnums";
+import { useNavigate } from "react-router-dom";
+import PageLoading from "components/commonComponent/PageLoading";
 
 interface IGeofenceProps {
   handleClose: () => void;
-  selectedItem: any[];
+  selectedItem: any;
   open: boolean;
 }
 
-export function GeoFenceModal(props: IGeofenceProps) {
-  const [selelectedName, setSelelectedName] = React.useState<any>();
+interface IGeofenceAutocomplete {
+  id: number;
+  label: string;
+  value: string;
+}
 
+class NewGeofenceVehicleType {
+  "vehicle_ids": any[] = [];
+  "vehicle_group_ids": any[] = [];
+  "geofence_id": string;
+  "organization_id": string;
+  "branch_id": string;
+  "alert_type": IGeofenceAutocomplete;
+}
+
+class Vehicles {
+  id: string = "";
+  label: string = "";
+  value = "";
+}
+
+export function GeoFenceModal(props: IGeofenceProps) {
+  const { selectedItem } = props;
   const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     width: 350,
-    bgcolor: 'background.paper',
-    border: '2px solid #FFFFFF',
+    bgcolor: "background.paper",
+    border: "2px solid #FFFFFF",
     boxShadow: 24,
     pt: 1,
     px: 2,
@@ -44,25 +69,35 @@ export function GeoFenceModal(props: IGeofenceProps) {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
-  const [geoVehicleList,setGeoVehicleList]=React.useState<any[]>([]);
+  const [geoVehicleList, setGeoVehicleList] = React.useState<any[]>([]);
+  const [alertType, setAlertType] = React.useState();
+  const { user } = useAppContext();
 
+  const [geofenceVehicleData, setGeofenceVehicleData] =
+    React.useState<NewGeofenceVehicleType>(new NewGeofenceVehicleType());
 
-  const [rqstBody,setRqstBody]=React.useState<any>({
-    alertType:"",
-    vehicle:[]
-  })
+  const [snackbar, setSnackbar] = React.useState<{
+    open: boolean;
+    variant: "success" | "error" | "info";
+    message: string;
+  }>({ open: false, variant: "info", message: "" });
 
+  const navigate = useNavigate();
   const { data: vehicleList, isLoading } = useQuery(
     ["vehicle", page, rowsPerPage, searchText],
-    () => getVehicles(page, rowsPerPage, searchText)
+    () => getVehicles(page, rowsPerPage, searchText),
+    { refetchOnWindowFocus: false }
   );
 
-  async function getVehicles(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getVehicles(
+    pageNumber: number,
+    pageSize: number,
+    searchText?: string
+  ) {
     let getApiUrl = `${transport}/vehicles/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
-   
     const response = await client.get(getApiUrl);
 
     return response.data;
@@ -80,92 +115,130 @@ export function GeoFenceModal(props: IGeofenceProps) {
       justifyContent: "center",
     },
   }));
-  const classes = useStyles()
-  //   const { data: alert, isLoading } = useQuery(["alert_modal_details", id], () =>
-  //   getAlertDetails(String(id))
-  // );
-  console.log(props.selectedItem, 'selected item');
-  // const options = [
-  //   { label: 'The Godfather', id: 1 },
-  //   { label: 'Pulp Fiction', id: 2 },
-  // ];
+  const classes = useStyles();
+
+  const alertOptions = [
+    {
+      id: 1,
+      label: "In Alert",
+      value: "IN_ALERT",
+    },
+    {
+      id: 2,
+      label: "Out Alert",
+      value: "OUT_ALERT",
+    },
+    {
+      id: 3,
+      label: "Both",
+      value: "BOTH",
+    },
+  ];
+
   React.useEffect(() => {
-    if(!props.selectedItem) return;
-    setSelelectedName(props.selectedItem)
-  }, [props.selectedItem]);
+    if (!vehicleList) return;
+    let filterArr: any[] = [];
+    const arrVehicle = vehicleList.results;
+    for (let i in arrVehicle) {
+      filterArr.push({
+        label: arrVehicle[i]?.vin,
+        id: arrVehicle[i]?.id,
+        value: arrVehicle[i]?.id,
+      });
+      setGeoVehicleList(filterArr);
+    }
+  }, [vehicleList]);
 
-  const options = [
-    {
-        "id": "1",
-        "url": "http://admin.shoora.com/transport/api/v1/vehicles/1e/",
-        "label": "EICHER",
-        "model": "2517",
-        "vin": "HR55AM1495",
-        "vehicle_type": "Truck",
-        "organization": "Instant Transport",
-        "branch": null,
-        "device": "784087664163",
-        "status": "stopped",
-        "last_device_status_timestamp": "2023-01-14T15:18:48Z",
-        "driver": "Test Driver"
-    },
-    {
-        "id": "86726808-78a5-43e9-807d-0345b7e76586",
-        "url": "http://admin.shoora.com/transport/api/v1/vehicles/86726808-78a5-43e9-807d-0345b7e76586/",
-        "label": "EICHER",
-        "model": "2517",
-        "vin": "HR55AM4655",
-        "vehicle_type": "Truck",
-        "organization": "Instant Transport",
-        "branch": null,
-        "device": "784087664056",
-        "status": "stopped",
-        "last_device_status_timestamp": "2023-01-14T15:38:59Z",
-        "driver": null
-    },
-    {
-      "id": "86",
-      "url": "http://admin.shoora.com/transport/api/v1/vehicles/86726808-78a5-43e9-807d-0345b7e76586/",
-      "label": "volvo",
-      "model": "2517",
-      "vin": "HR55AM4655",
-      "vehicle_type": "Truck",
-      "organization": "Instant Transport",
-      "branch": null,
-      "device": "784087664056",
-      "status": "stopped",
-      "last_device_status_timestamp": "2023-01-14T15:38:59Z",
-      "driver": null
-  },
-   
-]
-const alertOptions =[{
-  id:1,
-  label: "IN_ALERT"
-},{
-  id:2,
-  label: "OUT_ALERT"
-},{
-  id:3,
-  label: "OUT_ALERT"
-}]
-
-React.useEffect(()=>{
-  if(!vehicleList) return;
-  let filterArr : any[] =[];
-  const arrVehicle= vehicleList.results;
-  for(let i in arrVehicle){
-    console.log(arrVehicle[i])
-    filterArr.push({label:arrVehicle[i]?.make,id:arrVehicle[i]?.id})
-    setGeoVehicleList(filterArr)
+  function handleFormGeofenceVehicle(
+    key: keyof NewGeofenceVehicleType,
+    value:
+      | string
+      | boolean
+      | number
+      | string[]
+      | SelectChangeEvent<string[]>
+      | IGeofenceAutocomplete
+  ) {
+    setGeofenceVehicleData({ ...geofenceVehicleData, [key]: value });
   }
-},[vehicleList]);
 
-React.useEffect(()=>{console.log(rqstBody)},[rqstBody])
+  function addGeofenceVehilce(geofenceVehicle: NewGeofenceVehicleType) {
+    console.log("sjdhbfjsdkks");
+    return client.post(`${transport}/vehicle-geofences/`, {
+      ...geofenceVehicle,
+    });
+  }
+
+  const addGeofenceVehicleMutation = useMutation(addGeofenceVehilce, {
+    onSuccess: () => {
+      setSnackbar({
+        open: true,
+        variant: "success",
+        message: "Geofence added successfully.",
+      });
+
+      setTimeout(() => {
+        navigate(`/${AppPaths.GEOFENCE}`);
+      }, 2000);
+    },
+    onError: (error) => {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      });
+    },
+  });
+
+  const {
+    mutate: mutateAddGeofenceVehicle,
+    isLoading: isAddingGeofenceVehicle,
+  } = addGeofenceVehicleMutation;
+  const getVehicleId = (vehicles: Vehicles[]) => {
+    const arr: string[] = [];
+    for (let i = 0; i < vehicles.length; i++) {
+      arr.push(vehicles[i].value);
+    }
+    return arr;
+  };
+
+  const handleSubmit = () => {
+    geofenceVehicleData.organization_id = user.organization_id;
+    geofenceVehicleData.vehicle_group_ids = getVehicleId(
+      geofenceVehicleData.vehicle_ids
+    );
+    geofenceVehicleData.vehicle_ids = getVehicleId(
+      geofenceVehicleData.vehicle_ids
+    );
+    geofenceVehicleData.geofence_id = selectedItem.id;
+
+    mutateAddGeofenceVehicle(geofenceVehicleData);
+  };
+
+  const loadingMessage = isAddingGeofenceVehicle
+    ? "Adding Geofence Vehicle..."
+    : "";
 
   return (
-
     <Box>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.variant}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+      <PageLoading
+        open={isAddingGeofenceVehicle}
+        loadingMessage={loadingMessage}
+      />
       <Modal
         open={props.open}
         onClose={props.handleClose}
@@ -182,7 +255,7 @@ React.useEffect(()=>{console.log(rqstBody)},[rqstBody])
               variant="h6"
               component="h2"
             >
-             Assign Vehicle{" "}
+              Assign Vehicle{" "}
               <i onClick={props.handleClose}>
                 <svg
                   width="24"
@@ -242,50 +315,61 @@ React.useEffect(()=>{console.log(rqstBody)},[rqstBody])
               container
               spacing={{ xs: 2, md: 3 }}
               columns={{ xs: 6, sm: 8, md: 12 }}
-              style={{ marginTop: -20 }}
+              style={{ marginTop: -10 }}
             >
               <Grid xs={12} sm={12} md={12} style={{ paddingLeft: 24 }}>
                 <Item elevation={1}>
-                  <Box >
-                    <Typography
-                    >Geofence name : {selelectedName?.name}</Typography>
+                  <Box>
+                    <Typography>
+                      Geofence name : {selectedItem?.name}
+                    </Typography>
                     <Autocomplete
-                    multiple
-                     id="combo-box-demo"
+                      multiple
+                      value={geofenceVehicleData.vehicle_ids}
+                      id="combo-box-demo"
                       options={geoVehicleList}
                       style={{
-                        marginTop:"20px",
-                        marginBottom:"10px"
-
+                        marginTop: "20px",
+                        marginBottom: "10px",
                       }}
-                      //onChange={(event, value) => setRqstBody((prev :any)=>({...prev,vehicle :value }) )}
+                      onChange={(e, value: any) => {
+                        handleFormGeofenceVehicle("vehicle_ids", value);
+                      }}
                       sx={{ width: 300 }}
-                      renderInput={(params) => <TextField {...params} label="select vehicle" />}
+                      renderInput={(params) => (
+                        <TextField {...params} label="select vehicle" />
+                      )}
                     />
                   </Box>
-                  <Box >
+                  <Box>
                     <Autocomplete
-                    
-                     id="combo-box-demo"
+                      id="combo-box-demo"
                       options={alertOptions}
                       style={{
-                        marginTop:"20x",
-                        marginBottom:"10px"
+                        marginTop: "20x",
+                        marginBottom: "10px",
                       }}
-                     onChange={(event, value) => setRqstBody((prev :any)=>({...prev,alertType :value?.label }) )}
+                      value={alertType}
+                      onChange={(e, value: any) => {
+                        setAlertType(value);
+                        handleFormGeofenceVehicle("alert_type", value?.value);
+                      }}
                       sx={{ width: 300 }}
-                      renderInput={(params) => <TextField {...params} label="Alert type" />}
+                      renderInput={(params) => (
+                        <TextField {...params} label="Alert type" />
+                      )}
                     />
                   </Box>
                   <Button
-                        variant="contained"
-                        style={{ color: "#fff" ,marginTop:"5px"}}
-                        
-                      >
-                        Save
-                      </Button>
+                    variant="contained"
+                    style={{ color: "#fff", marginTop: "5px" }}
+                    onClick={() => {
+                      handleSubmit();
+                    }}
+                  >
+                    Save
+                  </Button>
                 </Item>
-            
               </Grid>
             </Grid>
           </Box>
@@ -294,4 +378,3 @@ React.useEffect(()=>{console.log(rqstBody)},[rqstBody])
     </Box>
   );
 }
-
