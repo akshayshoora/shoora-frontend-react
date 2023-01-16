@@ -31,7 +31,11 @@ import { actionAccess } from "utils/FeatureCheck";
 import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
-import { getDateDisplayFormat, getDuration, getDateTime } from "utils/calenderUtils";
+import {
+  getDateDisplayFormat,
+  getDuration,
+  getDateTime,
+} from "utils/calenderUtils";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import { endianness } from "os";
 import { useEffect } from "react";
@@ -73,8 +77,9 @@ export default function Trip() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${monitor}/trips/?page=${pageNumber + 1
-      }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${monitor}/trips/?page=${
+      pageNumber + 1
+    }&page_size=${pageSize}&search=${searchText}`;
     const finalURL = sanitizeURL(getApiUrl);
     const response = await client.get(finalURL);
 
@@ -135,8 +140,8 @@ export default function Trip() {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "crerated_at",
-      label: "Start Date/Time",
+      id: "Vehicle Number",
+      label: "vin",
       numeric: false,
       disablePadding: false,
     },
@@ -278,20 +283,20 @@ export default function Trip() {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {getDateDisplayFormat(trip.created_at)}
-                      </Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{getDateTime(trip.trip_started_at)}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{getDateTime(trip.trip_ended_at)}</Span>
+                      <Span fontType="secondary">{trip.vehicle_vin}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {trip.driver || "-"}
+                        {getDateTime(trip.trip_started_at)}
                       </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {getDateTime(trip.trip_ended_at)}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">{trip.driver || "-"}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{trip.total_incidents}</Span>

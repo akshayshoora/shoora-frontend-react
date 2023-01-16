@@ -174,11 +174,7 @@ export function AlertModal(props: IAlertModalProps) {
                     </li>
                   </ul>
                   <Box className={classes.videoAlert}>
-                    <Player
-                      autoPlay
-                      poster="/assets/poster.png"
-                      src={alert.video_url}
-                    />
+                    <Player poster="/assets/poster.png" src={alert.video_url} />
                   </Box>
                 </Item>
               </Grid>
