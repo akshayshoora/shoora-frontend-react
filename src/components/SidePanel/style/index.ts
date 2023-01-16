@@ -34,8 +34,8 @@ export default makeStyles({
     // opacity:0,
     transition: "0.3s",
     overflow: "hidden",
-    display:'flex',
-    whiteSpace:'nowrap',
+    display: "flex",
+    whiteSpace: "nowrap",
     "& .MuiTypography-root": {
       color: "white",
     },
@@ -52,8 +52,8 @@ export default makeStyles({
   },
   menu: {
     width: "100%",
-    overflowY:'scroll',
-    height:'calc(100vh - 90px)',
+    overflowY: "scroll",
+    height: "calc(100vh - 90px)",
   },
   supportWrapper: {
     background: COLORS.WHITE,

@@ -1,3 +1,3 @@
-declare module "*.woff"
+declare module "*.woff";
 
-declare module "*.ttf"
+declare module "*.ttf";

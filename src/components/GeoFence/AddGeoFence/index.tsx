@@ -240,7 +240,7 @@ export default function AddGeoFence() {
               <CustomRadioGroup
                 selected={geofenceType}
                 options={[
-                  { label: "Polygon", value: "polygon" },
+                  // { label: "Polygon", value: "polygon" },
                   { label: "Circle", value: "circle" },
                 ]}
                 onChange={(value) => {
@@ -250,8 +250,8 @@ export default function AddGeoFence() {
               {geofenceType == "circle" ? (
                 <Box className={classes.geoFenceForm}>
                   <TextInput
-                    label="Name"
-                    placeholder="Enter Name"
+                    label="Title"
+                    placeholder="Enter Title"
                     style={{ marginBottom: 24, width: "100%" }}
                     value={geofenceData.name}
                     isRequired={false}
@@ -324,8 +324,8 @@ export default function AddGeoFence() {
                 <Box className={classes.geoFenceForm}>
                   <h2>paths</h2>
                   <TextInput
-                    label="Name"
-                    placeholder="Enter Name"
+                    label="Title"
+                    placeholder="Enter Title"
                     style={{ marginBottom: 24, width: "100%" }}
                     value={geofenceData.name}
                     isRequired={false}

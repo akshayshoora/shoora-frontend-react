@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { COLORS, easyMove } from 'constants/colors';
+import styled from "styled-components";
+import { COLORS, easyMove } from "constants/colors";
 
 const MarkerStyled = styled.div`
   display: flex;
@@ -21,7 +21,3 @@ const MarkerStyled = styled.div`
 `;
 
 export default MarkerStyled;
-
-
-
-

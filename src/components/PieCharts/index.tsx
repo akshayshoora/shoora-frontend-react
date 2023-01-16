@@ -16,7 +16,7 @@ export const options = {
   title: "Incident Summary",
   is3D: true,
   series: { 8: { type: "line" } },
-  legend: { position: "bottom" }
+  legend: { position: "bottom" },
 };
 
 function PieCharts() {
@@ -30,4 +30,4 @@ function PieCharts() {
     />
   );
 }
-export default PieCharts
+export default PieCharts;

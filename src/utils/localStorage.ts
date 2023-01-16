@@ -1,4 +1,4 @@
-import { TOKEN, USER_ID } from 'constants/commonConstants';
+import { TOKEN, USER_ID } from "constants/commonConstants";
 
 export function setUserToken(token: string) {
   localStorage.setItem(TOKEN, token);
@@ -17,6 +17,6 @@ export function getUserID(): string {
   if (user_id) {
     return user_id;
   }
-  setUserToken('');
-  return '';
+  setUserToken("");
+  return "";
 }

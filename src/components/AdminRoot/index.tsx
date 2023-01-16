@@ -15,7 +15,7 @@ import client from "serverCommunication/client";
 import { getUserID } from "utils/localStorage";
 import ThemeProviderWrapper from "ThemeProviderWrapper";
 import useStyles from "./style";
-import {auth} from 'constants/RouteMiddlePath'
+import { auth } from "constants/RouteMiddlePath";
 
 function AdminRoot() {
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(
@@ -50,7 +50,7 @@ function AdminRoot() {
     refetch();
   }
 
-  if (isLoading || (!isError && (!Boolean(user.id) && getUserID()))) {
+  if (isLoading || (!isError && !Boolean(user.id) && getUserID())) {
     return (
       <Box className={classes.loadingScreen}>
         <LoadingScreen />
@@ -108,17 +108,15 @@ function AdminRoot() {
                       <Box className={classes.header}>
                         <Header />
                       </Box>
-                        <ErrorBoundary>
-                          <Box>{getAppBody()}</Box>
-                        </ErrorBoundary>
+                      <ErrorBoundary>
+                        <Box>{getAppBody()}</Box>
+                      </ErrorBoundary>
                     </Box>
                   </ErrorBoundary>
                 </ErrorBoundary>
               </>
             ) : (
-              <ErrorBoundary>
-                {getAppBody()}
-              </ErrorBoundary>
+              <ErrorBoundary>{getAppBody()}</ErrorBoundary>
             )}
           </BrowserRouter>
         </AppProvider>
