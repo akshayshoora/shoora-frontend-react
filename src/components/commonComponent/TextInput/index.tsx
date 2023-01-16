@@ -18,7 +18,6 @@ interface ITextInputProps {
 }
 
 export default function TextInput(props: ITextInputProps) {
-
   const {
     label,
     style,
@@ -80,7 +79,7 @@ export default function TextInput(props: ITextInputProps) {
         size="small"
         id={label}
         {...textFieldProps}
-        value={textFieldProps.value!==null ? textFieldProps.value : ''}
+        value={textFieldProps.value !== null ? textFieldProps.value : ""}
         label=""
         onChange={handleTextChange}
         disabled={disabled}

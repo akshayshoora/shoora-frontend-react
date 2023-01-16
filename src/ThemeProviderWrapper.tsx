@@ -59,7 +59,7 @@ export const themeOptions: ThemeOptions = {
       color: COLORS.SECONDARY_FONT,
       fontSize: 16,
       lineHeight: "21.6px",
-      fontWeight:'600'
+      fontWeight: "600",
     },
     subtitle2: {
       color: COLORS.SECONDARY_FONT,

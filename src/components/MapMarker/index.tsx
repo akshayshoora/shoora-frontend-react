@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import vehicleImage from "../../assets/truck.png";
-import ReactDOMServer from 'react-dom/server';
+import ReactDOMServer from "react-dom/server";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import Marker from "./InfoWindow";
 interface IMapTestProps {
@@ -20,16 +20,19 @@ export default function MapMarker(props: IMapTestProps) {
 
   useEffect(() => {
     if (props.zoomDeviceId && Array.isArray(list)) {
-      const {
-        current_location
-      } = Array.isArray(list) && list.find(item => item.device === props.zoomDeviceId) || {},
+      const { current_location } =
+          (Array.isArray(list) &&
+            list.find((item) => item.device === props.zoomDeviceId)) ||
+          {},
         { latitude, longitude } = current_location || {};
       MapRef.current.setCenter(new google.maps.LatLng(+latitude, +longitude));
       MapRef.current.setZoom(10);
 
-      const clickMarkersElem: any = Markers.current.find((item: any) => item.id === props.zoomDeviceId);
+      const clickMarkersElem: any = Markers.current.find(
+        (item: any) => item.id === props.zoomDeviceId
+      );
       if (clickMarkersElem) {
-        google.maps.event.trigger(clickMarkersElem, 'click');
+        google.maps.event.trigger(clickMarkersElem, "click");
       }
     }
   }, [props.zoomDeviceId, list]);
@@ -77,13 +80,17 @@ export default function MapMarker(props: IMapTestProps) {
             icon: vehicleImage,
           });
 
-
           marker.addListener("click", async () => {
-            let address = await latLongToPlace(current_location?.latitude, current_location?.longitude, false);
-            infoWindow.setContent(ReactDOMServer.renderToString(<Marker
-              vehicleInfo={vehicleDetails}
-              address={address}
-            />));
+            let address = await latLongToPlace(
+              current_location?.latitude,
+              current_location?.longitude,
+              false
+            );
+            infoWindow.setContent(
+              ReactDOMServer.renderToString(
+                <Marker vehicleInfo={vehicleDetails} address={address} />
+              )
+            );
             infoWindow.open(MapRef, marker);
           });
 

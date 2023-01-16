@@ -1,7 +1,6 @@
 import { ISideBarIconProps } from "./interfaces";
-import LiveIcons from '../../../assets/live.png';
+import LiveIcons from "../../../assets/live.png";
 import useStyles from "./style";
-
 
 const LiveIcon = (props: ISideBarIconProps) => {
   const classes = useStyles();
@@ -9,7 +8,13 @@ const LiveIcon = (props: ISideBarIconProps) => {
   return isActive ? (
     <img src={LiveIcons} height={32} width={32} alt="" />
   ) : (
-<img src={LiveIcons} height={32} width={32} className={classes.disabledImage} alt="" />
+    <img
+      src={LiveIcons}
+      height={32}
+      width={32}
+      className={classes.disabledImage}
+      alt=""
+    />
   );
 };
 export default LiveIcon;

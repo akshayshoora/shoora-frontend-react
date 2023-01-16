@@ -226,143 +226,143 @@ export default function AddUser() {
       </Box>
 
       <Box className={classes.padding_24}>
-      <Box className={classes.formContainer}>
-        <Grid container spacing={3}>
-          <Grid item xs={3}>
-            <TextInput
-              label="User Name"
-              placeholder="Enter User name"
-              style={{ marginBottom: 24 }}
-              value={users.name}
-              isRequired={true}
-              onChange={(value) => handleFormUser("name", value)}
-            />
-          </Grid>
-          {userId ? (
+        <Box className={classes.formContainer}>
+          <Grid container spacing={3}>
             <Grid item xs={3}>
               <TextInput
-                label="Email"
-                placeholder="Enter Email"
+                label="User Name"
+                placeholder="Enter User name"
                 style={{ marginBottom: 24 }}
-                value={users.email}
-                isRequired={false}
-                disabled
-                onChange={(value) => {}}
-              />
-            </Grid>
-          ) : (
-            <Grid item xs={3}>
-              <TextInput
-                label="Email"
-                placeholder="Enter Email"
-                style={{ marginBottom: 24 }}
-                value={users.email}
+                value={users.name}
                 isRequired={true}
-                onChange={(value) => handleFormUser("email", value)}
+                onChange={(value) => handleFormUser("name", value)}
               />
             </Grid>
-          )}
-          <Grid item xs={3}>
-            <TextInput
-              label="Contact"
-              placeholder="Enter contact number"
-              regex={/[^0-9]/g}
-              style={{ marginBottom: 24 }}
-              value={users.contact_number}
-              isRequired={false}
-              onChange={(value) => handleFormUser("contact_number", value)}
-            />
-          </Grid>
-          {!userId && (
+            {userId ? (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Email"
+                  placeholder="Enter Email"
+                  style={{ marginBottom: 24 }}
+                  value={users.email}
+                  isRequired={false}
+                  disabled
+                  onChange={(value) => {}}
+                />
+              </Grid>
+            ) : (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Email"
+                  placeholder="Enter Email"
+                  style={{ marginBottom: 24 }}
+                  value={users.email}
+                  isRequired={true}
+                  onChange={(value) => handleFormUser("email", value)}
+                />
+              </Grid>
+            )}
             <Grid item xs={3}>
               <TextInput
-                label="Password"
-                placeholder="Enter Password"
+                label="Contact"
+                placeholder="Enter contact number"
+                regex={/[^0-9]/g}
                 style={{ marginBottom: 24 }}
-                value={users.password}
+                value={users.contact_number}
                 isRequired={false}
-                onChange={(value) => handleFormUser("password", value)}
+                onChange={(value) => handleFormUser("contact_number", value)}
               />
             </Grid>
-          )}
-          <Grid item xs={3}>
-            <TextInput
-              label="Contact Code"
-              placeholder="Enter Contact Code"
-              regex={/[^0-9]/g}
-              style={{ marginBottom: 24 }}
-              value={users.contact_code}
-              isRequired={false}
-              onChange={(value) => handleFormUser("contact_code", value)}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <Typography
-              fontSize={16}
-              style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
-            >
-              Select Roles
-            </Typography>
-            <Select
-              multiple
-              fullWidth
-              id="demo-simple-select"
-              value={users.role_ids}
-              onChange={(e: any) =>
-                handleFormUser(
-                  "role_ids",
-                  typeof e.target.value === "string"
-                    ? e.target.value.split(",")
-                    : e.target.value
-                )
-              }
-              size="small"
-            >
-              <MenuItem selected value="" disabled>
+            {!userId && (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Password"
+                  placeholder="Enter Password"
+                  style={{ marginBottom: 24 }}
+                  value={users.password}
+                  isRequired={false}
+                  onChange={(value) => handleFormUser("password", value)}
+                />
+              </Grid>
+            )}
+            <Grid item xs={3}>
+              <TextInput
+                label="Contact Code"
+                placeholder="Enter Contact Code"
+                regex={/[^0-9]/g}
+                style={{ marginBottom: 24 }}
+                value={users.contact_code}
+                isRequired={false}
+                onChange={(value) => handleFormUser("contact_code", value)}
+              />
+            </Grid>
+            <Grid item xs={3}>
+              <Typography
+                fontSize={16}
+                style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+              >
                 Select Roles
-              </MenuItem>
-              {loadingRoleInfo ? (
-                <MenuItem>
-                  <CircularProgress />
+              </Typography>
+              <Select
+                multiple
+                fullWidth
+                id="demo-simple-select"
+                value={users.role_ids}
+                onChange={(e: any) =>
+                  handleFormUser(
+                    "role_ids",
+                    typeof e.target.value === "string"
+                      ? e.target.value.split(",")
+                      : e.target.value
+                  )
+                }
+                size="small"
+              >
+                <MenuItem selected value="" disabled>
+                  Select Roles
                 </MenuItem>
-              ) : roleList?.results.length ? (
-                roleList?.results.map((item: any) => (
-                  <MenuItem style={{ fontSize: 14 }} value={item.id}>
-                    {item.name}
+                {loadingRoleInfo ? (
+                  <MenuItem>
+                    <CircularProgress />
                   </MenuItem>
-                ))
-              ) : (
-                <MenuItem>Nothing to Select</MenuItem>
-              )}
-            </Select>
-          </Grid>
+                ) : roleList?.results.length ? (
+                  roleList?.results.map((item: any) => (
+                    <MenuItem style={{ fontSize: 14 }} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem>Nothing to Select</MenuItem>
+                )}
+              </Select>
+            </Grid>
 
-          {userId && (
-            <Grid item xs={3}>
-              <TextInput
-                label="Address"
-                placeholder="Enter address"
-                style={{ marginBottom: 24 }}
-                value={users.address}
-                isRequired={false}
-                onChange={(value) => handleFormUser("address", value)}
-              />
-            </Grid>
-          )}
-        {!userId && (
-            <Grid item xs={3}>
-              <TextInput
-                label="Address"
-                placeholder="Enter address"
-                style={{ marginBottom: 24 }}
-                value={users.address}
-                isRequired={false}
-                onChange={(value) => handleFormUser("address", value)}
-              />
-            </Grid>
-        )}
-         </Grid>
-      </Box>
+            {userId && (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Address"
+                  placeholder="Enter address"
+                  style={{ marginBottom: 24 }}
+                  value={users.address}
+                  isRequired={false}
+                  onChange={(value) => handleFormUser("address", value)}
+                />
+              </Grid>
+            )}
+            {!userId && (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Address"
+                  placeholder="Enter address"
+                  style={{ marginBottom: 24 }}
+                  value={users.address}
+                  isRequired={false}
+                  onChange={(value) => handleFormUser("address", value)}
+                />
+              </Grid>
+            )}
+          </Grid>
+        </Box>
       </Box>
 
       <Box className={classes.footerWrapper}>

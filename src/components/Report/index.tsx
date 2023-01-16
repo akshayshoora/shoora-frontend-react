@@ -9,7 +9,13 @@ import Chip from "@mui/material/Chip";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { useAppContext } from "ContextAPIs/appContext";
-import { Button, CircularProgress, Modal, InputLabel, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Modal,
+  InputLabel,
+  TextField,
+} from "@mui/material";
 import SearchBox from "components/commonComponent/SearchField";
 import COLORS from "constants/colors";
 import style from "./style";
@@ -25,13 +31,13 @@ export default function Report() {
     setSearchText(e);
   };
   const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute" as "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     width: 500,
-    bgcolor: 'background.paper',
-    border: '1px solid #000',
+    bgcolor: "background.paper",
+    border: "1px solid #000",
     boxShadow: 24,
   };
 
@@ -51,131 +57,192 @@ export default function Report() {
     setOpen(false);
   };
 
-  function handleFormUser(){
+  function handleFormUser() {
     return;
   }
 
-
   return (
     <Box style={{ padding: "20px 40px" }}>
-
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>My Reports</Heading>
-        </Box>
-        <Box>
+      </Box>
+      <Box>
         {/* <CircularProgress /> */}
         <Box className={classes.searchWrapper}>
-        <Heading>Generate a New Report</Heading>
-        <SearchBox
-              onChangeFunc={handleSearchInput}
-              placeholder="Search"
-            />
+          <Heading>Generate a New Report</Heading>
+          <SearchBox onChangeFunc={handleSearchInput} placeholder="Search" />
         </Box>
         <Box className={classes.allReports}>
-        <span>All Reports</span>
-        <Box className={classes.allReportView}>
-          <Grid
-            container
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 6, sm: 8, md: 12 }}
-            style={{ marginTop: 24 }}
-          >
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+          <span>All Reports</span>
+          <Box className={classes.allReportView}>
+            <Grid
+              container
+              spacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 6, sm: 8, md: 12 }}
+              style={{ marginTop: 24 }}
+            >
+              <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                 <Box className="reportBox">
                   <h3>Event Report</h3>
-                  <p>Event Report provides us you with the list of events of the vehicle throughout the specified date range set by you.</p>
+                  <p>
+                    Event Report provides us you with the list of events of the
+                    vehicle throughout the specified date range set by you.
+                  </p>
                   <p>Last Generated on: </p>
-                  <h4>Report not generated <br />yet</h4>
+                  <h4>
+                    Report not generated <br />
+                    yet
+                  </h4>
 
-                 <div className="btnWrapper"> 
-                 <Button className="gbtn" variant="contained" style={{ color:COLORS.WHITE }} onClick={handleOpen}>
-                    <AddIcon /> Generate Report 
-                </Button>
-                </div>
+                  <div className="btnWrapper">
+                    <Button
+                      className="gbtn"
+                      variant="contained"
+                      style={{ color: COLORS.WHITE }}
+                      onClick={handleOpen}
+                    >
+                      <AddIcon /> Generate Report
+                    </Button>
+                  </div>
                 </Box>
-            </Grid>
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+              </Grid>
+              <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                 <Box className="reportBox">
                   <h3>Trip Report</h3>
-                  <p>Event Report provides us you with the list of events of the vehicle throughout the specified date range set by you.</p>
+                  <p>
+                    Event Report provides us you with the list of events of the
+                    vehicle throughout the specified date range set by you.
+                  </p>
                   <p>Last Generated on: </p>
-                  <h4>Report not generated <br />yet</h4>
-                 
-                  <div className="btnWrapper"> 
-                  <Button className="gbtn" variant="contained" style={{ color:COLORS.WHITE }}  onClick={handleOpen}>
-                    <AddIcon /> Generate Report 
-                </Button>
-                </div>
+                  <h4>
+                    Report not generated <br />
+                    yet
+                  </h4>
+
+                  <div className="btnWrapper">
+                    <Button
+                      className="gbtn"
+                      variant="contained"
+                      style={{ color: COLORS.WHITE }}
+                      onClick={handleOpen}
+                    >
+                      <AddIcon /> Generate Report
+                    </Button>
+                  </div>
                 </Box>
-            </Grid>
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+              </Grid>
+              <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                 <Box className="reportBox">
                   <h3>Trip Report</h3>
-                  <p>Event Report provides us you with the list of events of the vehicle throughout the specified date range set by you.</p>
+                  <p>
+                    Event Report provides us you with the list of events of the
+                    vehicle throughout the specified date range set by you.
+                  </p>
                   <p>Last Generated on: </p>
-                  <h4>Report not generated <br />yet</h4>
-                 
-                  <div className="btnWrapper"> 
-                  <Button className="gbtn" variant="contained" style={{ color:COLORS.WHITE }}  onClick={handleOpen}>
-                    <AddIcon /> Generate Report 
-                </Button>
-                </div>
+                  <h4>
+                    Report not generated <br />
+                    yet
+                  </h4>
+
+                  <div className="btnWrapper">
+                    <Button
+                      className="gbtn"
+                      variant="contained"
+                      style={{ color: COLORS.WHITE }}
+                      onClick={handleOpen}
+                    >
+                      <AddIcon /> Generate Report
+                    </Button>
+                  </div>
                 </Box>
-            </Grid>
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+              </Grid>
+              <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                 <Box className="reportBox">
                   <h3>Trip Report</h3>
-                  <p>Event Report provides us you with the list of events of the vehicle throughout the specified date range set by you.</p>
+                  <p>
+                    Event Report provides us you with the list of events of the
+                    vehicle throughout the specified date range set by you.
+                  </p>
                   <p>Last Generated on: </p>
-                  <h4>Report not generated <br />yet</h4>
-                 
-                  <div className="btnWrapper"> 
-                  <Button className="gbtn" variant="contained" style={{ color:COLORS.WHITE }}  onClick={handleOpen}>
-                    <AddIcon /> Generate Report 
-                </Button>
-                </div>
+                  <h4>
+                    Report not generated <br />
+                    yet
+                  </h4>
+
+                  <div className="btnWrapper">
+                    <Button
+                      className="gbtn"
+                      variant="contained"
+                      style={{ color: COLORS.WHITE }}
+                      onClick={handleOpen}
+                    >
+                      <AddIcon /> Generate Report
+                    </Button>
+                  </div>
                 </Box>
-            </Grid>
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+              </Grid>
+              <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                 <Box className="reportBox">
                   <h3>Trip Report</h3>
-                  <p>Event Report provides us you with the list of events of the vehicle throughout the specified date range set by you.</p>
+                  <p>
+                    Event Report provides us you with the list of events of the
+                    vehicle throughout the specified date range set by you.
+                  </p>
                   <p>Last Generated on: </p>
-                  <h4>Report not generated <br />yet</h4>
-                 
-                  <div className="btnWrapper"> 
-                  <Button className="gbtn" variant="contained" style={{ color:COLORS.WHITE }}  onClick={handleOpen}>
-                    <AddIcon /> Generate Report 
-                </Button>
-                </div>
+                  <h4>
+                    Report not generated <br />
+                    yet
+                  </h4>
+
+                  <div className="btnWrapper">
+                    <Button
+                      className="gbtn"
+                      variant="contained"
+                      style={{ color: COLORS.WHITE }}
+                      onClick={handleOpen}
+                    >
+                      <AddIcon /> Generate Report
+                    </Button>
+                  </div>
                 </Box>
-            </Grid>
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+              </Grid>
+              <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                 <Box className="reportBox">
                   <h3>Trip Report</h3>
-                  <p>Event Report provides us you with the list of events of the vehicle throughout the specified date range set by you.</p>
+                  <p>
+                    Event Report provides us you with the list of events of the
+                    vehicle throughout the specified date range set by you.
+                  </p>
                   <p>Last Generated on: </p>
-                  <h4>Report not generated <br />yet</h4>
-                 
-                  <div className="btnWrapper"> 
-                  <Button className="gbtn" variant="contained" style={{ color:COLORS.WHITE }}  onClick={handleOpen}>
-                    <AddIcon /> Generate Report 
-                </Button>
-                </div>
+                  <h4>
+                    Report not generated <br />
+                    yet
+                  </h4>
+
+                  <div className="btnWrapper">
+                    <Button
+                      className="gbtn"
+                      variant="contained"
+                      style={{ color: COLORS.WHITE }}
+                      onClick={handleOpen}
+                    >
+                      <AddIcon /> Generate Report
+                    </Button>
+                  </div>
                 </Box>
+              </Grid>
             </Grid>
-          </Grid>
-         </Box>
+          </Box>
         </Box>
-       </Box>
-       <Modal
+      </Box>
+      <Modal
         open={open}
         onClose={handleClose}
         aria-labelledby="child-modal-title"
         aria-describedby="child-modal-description"
       >
-         <Box sx={style}>
-         <Typography
+        <Box sx={style}>
+          <Typography
             id="modal-modal-title"
             className={classes.alertHead}
             variant="h6"
@@ -237,49 +304,57 @@ export default function Report() {
               </svg>
             </i>
           </Typography>
-        <Box className={classes.reportContent}>
-          <Grid style={{ marginBottom: 24 }}>
-            <TextInput
+          <Box className={classes.reportContent}>
+            <Grid style={{ marginBottom: 24 }}>
+              <TextInput
                 label="Enter Report Name (Optional)"
                 placeholder=""
                 value=""
                 isRequired={false}
                 onChange={(value) => handleFormUser()}
-            />
-            <small>You can give this report a custom name</small>
-        </Grid>
-        <Grid style={{ marginBottom: 24 }} className={classes.reportDate}>
-            <TextField
-              id="datetime-local1"
-              type="datetime-local"
-              defaultValue="2023-01-02T09:30"
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-             <TextField
-              id="datetime-local2"
-              type="datetime-local"
-              defaultValue="2023-02-02T10:30"
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-        </Grid>
-        <Grid style={{ marginBottom: 24 }}>
-            <TextInput
+              />
+              <small>You can give this report a custom name</small>
+            </Grid>
+            <Grid style={{ marginBottom: 24 }} className={classes.reportDate}>
+              <TextField
+                id="datetime-local1"
+                type="datetime-local"
+                defaultValue="2023-01-02T09:30"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+              <TextField
+                id="datetime-local2"
+                type="datetime-local"
+                defaultValue="2023-02-02T10:30"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </Grid>
+            <Grid style={{ marginBottom: 24 }}>
+              <TextInput
                 label="Enter Email Address"
                 placeholder=""
                 value=""
                 isRequired={false}
                 onChange={(value) => handleFormUser()}
-            />
-        </Grid>
-        <Box>
-          <Button className="cBtn" onClick={handleClose}>Cancel</Button>
-          <Button className="gbtn" variant="contained" style={{ color:COLORS.WHITE }}>Generate Report</Button>
-        </Box>
-        </Box>
+              />
+            </Grid>
+            <Box>
+              <Button className="cBtn" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button
+                className="gbtn"
+                variant="contained"
+                style={{ color: COLORS.WHITE }}
+              >
+                Generate Report
+              </Button>
+            </Box>
+          </Box>
         </Box>
       </Modal>
     </Box>

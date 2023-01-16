@@ -29,9 +29,9 @@ import ActionMenu, {
 } from "components/commonComponent/Table/ActionMenu";
 import { useQuery } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
+import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
-import { actionAccess} from "utils/FeatureCheck";
+import { actionAccess } from "utils/FeatureCheck";
 import { transport } from "constants/RouteMiddlePath";
 
 export default function Devices() {
@@ -48,21 +48,22 @@ export default function Devices() {
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.DEVICES,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.DEVICES,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.DEVICES,Actions.DELETE)
-  
-  
+  const isAdd = actionAccess(AppPaths.DEVICES, Actions.ADD);
+  const isEdit = actionAccess(AppPaths.DEVICES, Actions.EDIT);
+  const isDelete = actionAccess(AppPaths.DEVICES, Actions.DELETE);
+
   const navigate = useNavigate();
 
-  
   const classes = useStyles();
-  async function getDevices(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getDevices(
+    pageNumber: number,
+    pageSize: number,
+    searchText?: string
+  ) {
     let getApiUrl = `${transport}/devices/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
-   
     const response = await client.get(getApiUrl);
 
     return response.data;
@@ -74,7 +75,6 @@ export default function Devices() {
   const handleClose = () => {
     setOpenDelete(false);
   };
-
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -95,18 +95,12 @@ export default function Devices() {
     setPage(0);
   };
 
-  function openDeviceDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function openDeviceDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.DEVICES}/${id}`);
   }
 
-  function editDeviceDetails(
-    event: React.MouseEvent<HTMLElement>,
-    id: string
-  ) {
+  function editDeviceDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
     navigate(`/${AppPaths.DEVICES}/${SubPaths.EDIT}/${id}`);
   }
@@ -116,8 +110,8 @@ export default function Devices() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openDeviceDetails,
-      access:true
-    }
+      access: true,
+    },
     // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editDeviceDetails,access:isEdit },
     // {
     //   label: "Delete",
@@ -140,11 +134,11 @@ export default function Devices() {
       numeric: false,
       disablePadding: false,
     },
-    { 
-    id: "is_assigned_to_vehicle", 
-    label: "Assigned to Vehicle", 
-    numeric: false,
-     disablePadding: false 
+    {
+      id: "is_assigned_to_vehicle",
+      label: "Assigned to Vehicle",
+      numeric: false,
+      disablePadding: false,
     },
     {
       id: "activation_date",
@@ -162,12 +156,17 @@ export default function Devices() {
   };
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose} label="device"/>}
+      {openDelete && (
+        <DeleteModal
+          open={openDelete}
+          handleClose={handleClose}
+          label="device"
+        />
+      )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Devices</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: 12 
-             }}>
+          <Box style={{ marginRight: 12 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search Device by Name or Id"
@@ -200,7 +199,7 @@ export default function Devices() {
                 <LoadingScreen />
               </TableCell>
             ) : deviceList?.results.length ? (
-                deviceList?.results.map((device: any, index: number) => {
+              deviceList?.results.map((device: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
@@ -209,18 +208,17 @@ export default function Devices() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {device.organization}
-                      </Span>
+                      <Span fontType="secondary">{device.organization}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{device.is_assigned_to_vehicle.toString()}</Span>
+                      <Span fontType="secondary">
+                        {device.is_assigned_to_vehicle.toString()}
+                      </Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{device.activation_date}</Span>
                     </TableCell>
-                   
-                   
+
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={device.id} />
                     </TableCell>

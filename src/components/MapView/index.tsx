@@ -71,11 +71,7 @@ export default function MapView() {
     { refetchOnWindowFocus: false }
   );
 
-
-  async function getVehicles(
-    searchText?: string,
-    selectStatus?: string
-  ) {
+  async function getVehicles(searchText?: string, selectStatus?: string) {
     let getApiUrl = `${transport}/vehicles-current-locations/?search=${searchText}&status=${selectStatus}`;
     const response = await client.get(getApiUrl);
     showTableVehicleListHnldr(0, rowsPerPage, response?.data?.results);
@@ -104,13 +100,19 @@ export default function MapView() {
     setDeviceId(id);
   };
 
-  function showTableVehicleListHnldr(page: any, rowPerPage: any, vehicleList: any) {
+  function showTableVehicleListHnldr(
+    page: any,
+    rowPerPage: any,
+    vehicleList: any
+  ) {
     if (Array.isArray(vehicleList)) {
       const startIndex = rowPerPage * page,
-        lastIndex = (((page * rowPerPage) + rowPerPage) < vehicleList.length) ? ((page * rowPerPage) + rowPerPage) : vehicleList.length;
-      setVisibleVehicleState(vehicleList.slice(startIndex, lastIndex))
+        lastIndex =
+          page * rowPerPage + rowPerPage < vehicleList.length
+            ? page * rowPerPage + rowPerPage
+            : vehicleList.length;
+      setVisibleVehicleState(vehicleList.slice(startIndex, lastIndex));
     }
-
   }
 
   return (
@@ -184,42 +186,50 @@ export default function MapView() {
                         <div>
                           <Table>
                             <TableBody>
-                              {Array.isArray(visibleVehicleState) && visibleVehicleState.map((item: any) => (
-                                <TableRow key={item.id}>
-                                  <div
-                                    className="loaddata"
-                                    style={
-                                      deviceId == item.device
-                                        ? { background: "#fef8f0" }
-                                        : {}
-                                    }
-                                    onClick={() => handleVehicleView(item.device, item.status)}
-                                  >
-                                    <i className="circle"></i>
-                                    <span className="trackid">{item.vin}</span>
-                                    <span className="arrowright">
-                                      <svg
-                                        width="17"
-                                        height="15"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                          stroke={
-                                            item.status !== "moving"
-                                              ? "#D3D3D3"
-                                              : "#3BB3C3"
-                                          }
-                                          stroke-width="1.5"
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                        ></path>
-                                      </svg>
-                                    </span>
-                                  </div>
-                                </TableRow>
-                              ))}
+                              {Array.isArray(visibleVehicleState) &&
+                                visibleVehicleState.map((item: any) => (
+                                  <TableRow key={item.id}>
+                                    <div
+                                      className="loaddata"
+                                      style={
+                                        deviceId == item.device
+                                          ? { background: "#fef8f0" }
+                                          : {}
+                                      }
+                                      onClick={() =>
+                                        handleVehicleView(
+                                          item.device,
+                                          item.status
+                                        )
+                                      }
+                                    >
+                                      <i className="circle"></i>
+                                      <span className="trackid">
+                                        {item.vin}
+                                      </span>
+                                      <span className="arrowright">
+                                        <svg
+                                          width="17"
+                                          height="15"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path
+                                            d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
+                                            stroke={
+                                              item.status !== "moving"
+                                                ? "#D3D3D3"
+                                                : "#3BB3C3"
+                                            }
+                                            stroke-width="1.5"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                          ></path>
+                                        </svg>
+                                      </span>
+                                    </div>
+                                  </TableRow>
+                                ))}
                             </TableBody>
                           </Table>
                           <Box
@@ -258,7 +268,10 @@ export default function MapView() {
               <Item elevation={0}>
                 <Box className="livemap">
                   {/* <GoogleMap list={locationList} /> */}
-                  <MapMarker zoomDeviceId={deviceId} list={vehicleList?.results} />
+                  <MapMarker
+                    zoomDeviceId={deviceId}
+                    list={vehicleList?.results}
+                  />
 
                   {/* <Box className={classes.mapdropdown}>
                     <button className="mapoptions" onClick={handleMapOption}>

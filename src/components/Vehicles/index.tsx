@@ -27,12 +27,12 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
-import { useQuery,useMutation } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
+import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
-import { actionAccess} from "utils/FeatureCheck";
-import { auth,transport } from "constants/RouteMiddlePath";
+import { actionAccess } from "utils/FeatureCheck";
+import { auth, transport } from "constants/RouteMiddlePath";
 
 export default function Vehicles() {
   const [searchText, setSearchText] = React.useState("");
@@ -47,44 +47,45 @@ export default function Vehicles() {
     open: boolean;
     variant: "success" | "error" | "info";
     message: string;
-}>({ open: false, variant: "info", message: "" });
+  }>({ open: false, variant: "info", message: "" });
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("vehicle");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const { user } = useAppContext();
 
-  const isAdd=actionAccess(AppPaths.VEHICLES,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.VEHICLES,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.VEHICLES,Actions.DELETE)
-  
-  
+  const isAdd = actionAccess(AppPaths.VEHICLES, Actions.ADD);
+  const isEdit = actionAccess(AppPaths.VEHICLES, Actions.EDIT);
+  const isDelete = actionAccess(AppPaths.VEHICLES, Actions.DELETE);
+
   const navigate = useNavigate();
 
-  
   const classes = useStyles();
-  async function getVehicles(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getVehicles(
+    pageNumber: number,
+    pageSize: number,
+    searchText?: string
+  ) {
     let getApiUrl = `${transport}/vehicles/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
-   
     const response = await client.get(getApiUrl);
 
     return response.data;
   }
 
-  const handleOpenDelete = ( 
+  const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
-    id: string) => {
-      setDeleteId(id)
+    id: string
+  ) => {
+    setDeleteId(id);
     setOpenDelete(true);
   };
   const handleClose = () => {
     setOpenDelete(false);
-    getVehicles(page, rowsPerPage, searchText)
+    getVehicles(page, rowsPerPage, searchText);
   };
-
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -126,7 +127,7 @@ export default function Vehicles() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openVehicleDetails,
-      access:true
+      access: true,
     },
     // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editVehicleDetails,access:isEdit },
     // {
@@ -167,49 +168,50 @@ export default function Vehicles() {
   };
 
   const deleteVehicleMutation = useMutation(deleteVehicle, {
-    onSuccess: () =>{
-       handleClose()
-        setSnackbar({
-            open: true,
-            variant: "success",
-            message: "vehicle deleted.",
-        })
-        setTimeout(() => {
-            navigate(`/${AppPaths.VEHICLES}`);
-        }, 1000);
+    onSuccess: () => {
+      handleClose();
+      setSnackbar({
+        open: true,
+        variant: "success",
+        message: "vehicle deleted.",
+      });
+      setTimeout(() => {
+        navigate(`/${AppPaths.VEHICLES}`);
+      }, 1000);
     },
-        
+
     onError: () =>
-        setSnackbar({
-            open: true,
-            variant: "error",
-            message: "Something went wrong.",
-        }),
-});
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      }),
+  });
 
-const { mutate: mutateDeleteVehicle } =deleteVehicleMutation;
+  const { mutate: mutateDeleteVehicle } = deleteVehicleMutation;
 
-function deleteVehicle() {
-  return client.delete(`${auth}/users/${deleteId}`)
-}
+  function deleteVehicle() {
+    return client.delete(`${auth}/users/${deleteId}`);
+  }
 
-
-     function handleDelete() {
-      mutateDeleteVehicle()
-       
-    }
-   
-
-
+  function handleDelete() {
+    mutateDeleteVehicle();
+  }
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && <DeleteModal open={openDelete} handleClose={handleClose}   handleDelete={handleDelete} label="vehicle"/>}
+      {openDelete && (
+        <DeleteModal
+          open={openDelete}
+          handleClose={handleClose}
+          handleDelete={handleDelete}
+          label="vehicle"
+        />
+      )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Vehicles</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: isAdd ? 12 : 0
-             }}>
+          <Box style={{ marginRight: isAdd ? 12 : 0 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search Vehicle Name"
@@ -251,9 +253,7 @@ function deleteVehicle() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {vehicle.make}
-                      </Span>
+                      <Span fontType="secondary">{vehicle.make}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{vehicle.model}</Span>
@@ -261,8 +261,7 @@ function deleteVehicle() {
                     <TableCell align="left">
                       <Span fontType="secondary">{vehicle.vin}</Span>
                     </TableCell>
-                    
-                   
+
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={vehicle.id} />
                     </TableCell>

@@ -18,11 +18,17 @@ export default function Coaching() {
     <Box style={{ padding: "20px 40px" }}>
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Coaching (Under Development)</Heading>
-       
-        </Box>
-        <Box style={{ display: "flex", justifyContent: "center", alignItems:"center",height:"80vh" }}>
+      </Box>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
         <CircularProgress />
-        </Box>
+      </Box>
     </Box>
   );
 }

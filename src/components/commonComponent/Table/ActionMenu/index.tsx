@@ -10,7 +10,7 @@ export type MenuType = {
   label: string;
   icon?: JSX.Element;
   onClick: (event: React.MouseEvent<HTMLElement>, id: string) => void;
-  access:boolean
+  access: boolean;
 };
 
 interface IActionMenuProps {
@@ -59,30 +59,32 @@ export default function ActionMenu(props: IActionMenuProps) {
         open={showActions}
         onClose={handleClose}
       >
-        {menu.map((menuItem) => (
-          menuItem.access==true &&
-          <MenuItem
-            onClick={(event) => {
-              menuItem.onClick(event, props.id);
-              handleClose(event);
-            }}
-          >
-            <Box className={classes.numberOfRows}>
-              {menuItem.icon ? (
-                <SvgIcon
-                  fontSize="small"
-                  style={{ marginRight: 4, color: COLORS.SECONDARY_FONT }}
-                >
-                  {menuItem.icon}
-                </SvgIcon>
-              ) : null}
+        {menu.map(
+          (menuItem) =>
+            menuItem.access == true && (
+              <MenuItem
+                onClick={(event) => {
+                  menuItem.onClick(event, props.id);
+                  handleClose(event);
+                }}
+              >
+                <Box className={classes.numberOfRows}>
+                  {menuItem.icon ? (
+                    <SvgIcon
+                      fontSize="small"
+                      style={{ marginRight: 4, color: COLORS.SECONDARY_FONT }}
+                    >
+                      {menuItem.icon}
+                    </SvgIcon>
+                  ) : null}
 
-              <Span fontType="secondary" size="extra-small">
-                {menuItem.label}
-              </Span>
-            </Box>
-          </MenuItem>
-        ))}
+                  <Span fontType="secondary" size="extra-small">
+                    {menuItem.label}
+                  </Span>
+                </Box>
+              </MenuItem>
+            )
+        )}
       </Menu>
     </>
   );

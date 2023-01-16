@@ -22,11 +22,10 @@ import client from "serverCommunication/client";
 import { Button, List, ListItemText, SelectChangeEvent } from "@mui/material";
 import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
-import VedioLogoImg from '../../assets/vedio-logo.png';
+import VedioLogoImg from "../../assets/vedio-logo.png";
 import Iframe from "react-iframe";
 import Table from "@mui/material/Table";
 import { TableFooter } from "components/commonComponent/Table";
-
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -79,8 +78,9 @@ export default function () {
     searchText?: string,
     selectStatus?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${pageNumber + 1
-      }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
+    let getApiUrl = `${transport}/vehicles/?page=${
+      pageNumber + 1
+    }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
 
     const response = await client.get(getApiUrl);
 
@@ -132,8 +132,9 @@ export default function () {
       <>
         <Grid xs={2} sm={4} md={4} className="liveframe">
           <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
-              }&email=its@its.com&password=123456&channel=0`}
+            url={`https://livefeed.shoora.com/liveview/?device=${
+              selectedDevice[index] ? selectedDevice[index] : "-"
+            }&email=its@its.com&password=123456&channel=0`}
             position="relative"
             width="100%"
             id="myId"
@@ -143,8 +144,9 @@ export default function () {
         </Grid>
         <Grid xs={2} sm={4} md={4} className="liveframe">
           <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
-              }&email=its@its.com&password=123456&channel=1`}
+            url={`https://livefeed.shoora.com/liveview/?device=${
+              selectedDevice[index] ? selectedDevice[index] : "-"
+            }&email=its@its.com&password=123456&channel=1`}
             position="relative"
             width="100%"
             id="myId"
@@ -178,7 +180,7 @@ export default function () {
           <Grid
             container
             spacing={{ xs: 2, md: 3, lg: 3 }}
-            columns={{ xs:12, sm:12, md:12, lg: 12 }}
+            columns={{ xs: 12, sm: 12, md: 12, lg: 12 }}
             style={{ marginTop: 24 }}
           >
             <Grid xs={12} sm={4} md={4} lg={3} style={{ paddingLeft: 24 }}>
@@ -308,12 +310,20 @@ export default function () {
               <Item elevation={0}>
                 <Box className="liveViewVideo">
                   <Grid container lg={12}>
-                    {selectedDevice.map(item => (
+                    {selectedDevice.map((item) => (
                       <Fragment key={item}>
-                        <Grid item xs={12} sm={6} md={4} lg={3} className="liveframe">
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="liveframe"
+                        >
                           <Iframe
-                            url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
-                              }&email=its@its.com&password=123456&channel=0`}
+                            url={`https://livefeed.shoora.com/liveview/?device=${
+                              item ? item : "-"
+                            }&email=its@its.com&password=123456&channel=0`}
                             position="relative"
                             width="100%"
                             id="myId"
@@ -321,10 +331,18 @@ export default function () {
                             height="300"
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}  md={4} lg={3} className="liveframe">
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="liveframe"
+                        >
                           <Iframe
-                            url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
-                              }&email=its@its.com&password=123456&channel=1`}
+                            url={`https://livefeed.shoora.com/liveview/?device=${
+                              item ? item : "-"
+                            }&email=its@its.com&password=123456&channel=1`}
                             position="relative"
                             width="100%"
                             id="myId"
@@ -335,15 +353,22 @@ export default function () {
                       </Fragment>
                     ))}
 
-                    {Array(STATIC_TILES_COUNT - (selectedDevice.length * 2))
-                      .fill(0).map((item, index) => (
-                        <Grid key={`vedio-${index}`} item xs={12} sm={6}  md={4} lg={3} className="noVedioContainer">
+                    {Array(STATIC_TILES_COUNT - selectedDevice.length * 2)
+                      .fill(0)
+                      .map((item, index) => (
+                        <Grid
+                          key={`vedio-${index}`}
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="noVedioContainer"
+                        >
                           <Box className="vedioLogoScreen">
                             <img src={VedioLogoImg} alt="dummy-vedio-img" />
                           </Box>
-                          <Box sx={{ my: 2 }} className="dummy-title">
-
-                          </Box>
+                          <Box sx={{ my: 2 }} className="dummy-title"></Box>
                           <Box className="dummyBtnContainer">
                             <Box className="dummBtn"></Box>
                             <Box className="dummBtn"></Box>

@@ -25,10 +25,9 @@ import ActionMenu, {
 } from "components/commonComponent/Table/ActionMenu";
 import { useQuery } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { AppPaths, SubPaths,Actions } from "../../constants/commonEnums";
-import { actionAccess} from "utils/FeatureCheck";
+import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
+import { actionAccess } from "utils/FeatureCheck";
 import { auth } from "constants/RouteMiddlePath";
-
 
 export default function Organization() {
   const [searchText, setSearchText] = React.useState("");
@@ -39,25 +38,28 @@ export default function Organization() {
     () => getOrgs(page, rowsPerPage, searchText)
   );
 
-  const isAdd=actionAccess(AppPaths.ORGANIZATIONS,Actions.ADD)
-  const isEdit=actionAccess(AppPaths.ORGANIZATIONS,Actions.EDIT)
-  const isDelete=actionAccess(AppPaths.ORGANIZATIONS,Actions.DELETE)
+  const isAdd = actionAccess(AppPaths.ORGANIZATIONS, Actions.ADD);
+  const isEdit = actionAccess(AppPaths.ORGANIZATIONS, Actions.EDIT);
+  const isDelete = actionAccess(AppPaths.ORGANIZATIONS, Actions.DELETE);
 
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("user");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
-  
+
   const navigate = useNavigate();
 
   const { user } = useAppContext();
   const classes = useStyles();
 
-  async function getOrgs(pageNumber: number, pageSize: number, searchText?: string) {
+  async function getOrgs(
+    pageNumber: number,
+    pageSize: number,
+    searchText?: string
+  ) {
     let getApiUrl = `${auth}/organizations/?page=${
       pageNumber + 1
     }&page_size=${pageSize}&search=${searchText}`;
 
-   
     const response = await client.get(getApiUrl);
 
     return response.data;
@@ -69,7 +71,6 @@ export default function Organization() {
   const handleClose = () => {
     setOpenDelete(false);
   };
-
 
   const handleRequestSort = (
     _event: React.MouseEvent<unknown>,
@@ -103,16 +104,20 @@ export default function Organization() {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openOrganizationDetails,
-      access:true,
+      access: true,
     },
-      { label: "Edit", icon: <InfoOutlinedIcon />, onClick: openOrganizationDetails,access:isEdit },
+    {
+      label: "Edit",
+      icon: <InfoOutlinedIcon />,
+      onClick: openOrganizationDetails,
+      access: isEdit,
+    },
     {
       label: "Delete",
       icon: <DeleteOutlineOutlinedIcon />,
       onClick: handleOpenDelete,
-      access:isDelete
+      access: isDelete,
     },
-    
   ];
 
   const headCells: readonly HeadCell[] = [
@@ -157,8 +162,7 @@ export default function Organization() {
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Organizations</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: 12
-             }}>
+          <Box style={{ marginRight: 12 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
               placeholder="Search Organization by Name or Id"
@@ -190,9 +194,7 @@ export default function Organization() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {orgs.email}
-                      </Span>
+                      <Span fontType="secondary">{orgs.email}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{orgs.address}</Span>
@@ -204,10 +206,11 @@ export default function Organization() {
                       <Span fontType="secondary">{orgs.contact_number}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{orgs.registration_number}</Span>
+                      <Span fontType="secondary">
+                        {orgs.registration_number}
+                      </Span>
                     </TableCell>
-                    
-                   
+
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={orgs.id} />
                     </TableCell>
