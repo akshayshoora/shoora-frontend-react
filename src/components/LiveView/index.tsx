@@ -22,7 +22,7 @@ import client from "serverCommunication/client";
 import { Button, List, ListItemText, SelectChangeEvent } from "@mui/material";
 import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
-import VedioLogoImg from "../../assets/vedio-logo.png";
+import VedioLogoImg from "../../assets/video-logo.png";
 import Iframe from "react-iframe";
 import Table from "@mui/material/Table";
 import { TableFooter } from "components/commonComponent/Table";
@@ -38,8 +38,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const STATIC_TILES_COUNT = 16;
 export default function () {
-  const [selectStatus, setSelectStatus] = useState("");
-
+  const [selectStatus, setSelectStatus] = useState("all");
+  const [visibleVehicleState, setVisibleVehicleState] = useState<any>([]);
   const handleChange = (event: SelectChangeEvent) => {
     setSelectStatus(event.target.value as string);
   };
@@ -59,11 +59,12 @@ export default function () {
   const [selectedDevice, setSelectedDevice] = useState<string[]>([]);
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
+    ["vehiclelist", searchText, deviceId, selectStatus],
     () => getVehicles(page, rowsPerPage, searchText, selectStatus),
     { refetchOnWindowFocus: false }
   );
   const handleChangePage = (event: unknown, newPage: number) => {
+    showTableVehicleListHnldr(newPage - 1, rowsPerPage, vehicleList?.results);
     setPage(newPage - 1);
   };
 
@@ -78,24 +79,26 @@ export default function () {
     searchText?: string,
     selectStatus?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
+    // let getApiUrl = `${transport}/vehicles/?page=${
+    //   pageNumber + 1
+    // }&page_size=${pageSize}&search=${searchText}&vedio=${selectStatus}`;
+    let getApiUrl = `${transport}/vehicles/?search=${searchText}&video=${selectStatus}`;
 
     const response = await client.get(getApiUrl);
-
+    showTableVehicleListHnldr(0, rowsPerPage, response?.data?.results);
+    setPage(0);
     return response.data;
   }
 
   const handleVehicleView = (id: string, status: string) => {
-    if (status != "moving") {
-      setSnackbar({
-        open: true,
-        variant: "error",
-        message: "vehicle is not moving",
-      });
-      return;
-    }
+    // if (status != "moving") {
+    //   setSnackbar({
+    //     open: true,
+    //     variant: "error",
+    //     message: "vehicle is not moving",
+    //   });
+    //   return;
+    // }
     let arr = [...selectedDevice];
 
     if (arr.includes(id)) {
@@ -127,14 +130,27 @@ export default function () {
     setVideoUrl(url);
   };
 
+  function showTableVehicleListHnldr(
+    page: any,
+    rowPerPage: any,
+    vehicleList: any
+  ) {
+    if (Array.isArray(vehicleList)) {
+      console.log({ page, rowPerPage, vehicleList });
+      const startIndex = rowPerPage * page,
+        lastIndex = (page * rowPerPage) + rowPerPage < vehicleList.length
+          ? (page * rowPerPage) + rowPerPage : vehicleList.length;
+      setVisibleVehicleState(vehicleList.slice(startIndex, lastIndex));
+    }
+  }
+
   const renderIframe = (index: number) => {
     return (
       <>
         <Grid xs={2} sm={4} md={4} className="liveframe">
           <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${
-              selectedDevice[index] ? selectedDevice[index] : "-"
-            }&email=its@its.com&password=123456&channel=0`}
+            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
+              }&email=its@its.com&password=123456&channel=0`}
             position="relative"
             width="100%"
             id="myId"
@@ -144,9 +160,8 @@ export default function () {
         </Grid>
         <Grid xs={2} sm={4} md={4} className="liveframe">
           <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${
-              selectedDevice[index] ? selectedDevice[index] : "-"
-            }&email=its@its.com&password=123456&channel=1`}
+            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
+              }&email=its@its.com&password=123456&channel=1`}
             position="relative"
             width="100%"
             id="myId"
@@ -216,9 +231,9 @@ export default function () {
                       label="selectFilter"
                       onChange={handleChange}
                     >
-                      <MenuItem value={""}>All</MenuItem>
+                      <MenuItem value={"all"}>All</MenuItem>
                       <MenuItem value={"online"}>Online</MenuItem>
-                      <MenuItem value={"offlne"}>Offline</MenuItem>
+                      <MenuItem value={"offline"}>Offline</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">
@@ -226,12 +241,12 @@ export default function () {
                       {!isVehicleLoading && (
                         <div>
                           <Table>
-                            {vehicleList?.results.map(
+                            {Array.isArray(visibleVehicleState) && visibleVehicleState.map(
                               (item: any, index: number) => (
                                 <TableRow>
                                   <div
                                     className={
-                                      item["status"] !== "moving"
+                                      item["video"] !== "online"
                                         ? "loaddataDisable"
                                         : "loaddata"
                                     }
@@ -259,7 +274,7 @@ export default function () {
                                         <path
                                           d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
                                           stroke={
-                                            item.status !== "moving"
+                                            item.video !== "online"
                                               ? "#D3D3D3"
                                               : "#3BB3C3"
                                           }
@@ -283,7 +298,7 @@ export default function () {
                           >
                             <TableFooter
                               totalPages={Math.ceil(
-                                vehicleList?.count / rowsPerPage
+                                vehicleList?.results.length / rowsPerPage
                               )}
                               currentPage={page + 1}
                               onPageChange={handleChangePage}
@@ -321,9 +336,8 @@ export default function () {
                           className="liveframe"
                         >
                           <Iframe
-                            url={`https://livefeed.shoora.com/liveview/?device=${
-                              item ? item : "-"
-                            }&email=its@its.com&password=123456&channel=0`}
+                            url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
+                              }&email=its@its.com&password=123456&channel=0`}
                             position="relative"
                             width="100%"
                             id="myId"
@@ -340,9 +354,8 @@ export default function () {
                           className="liveframe"
                         >
                           <Iframe
-                            url={`https://livefeed.shoora.com/liveview/?device=${
-                              item ? item : "-"
-                            }&email=its@its.com&password=123456&channel=1`}
+                            url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
+                              }&email=its@its.com&password=123456&channel=1`}
                             position="relative"
                             width="100%"
                             id="myId"
