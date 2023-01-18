@@ -347,6 +347,7 @@ export default function AddDriver() {
               style={{ marginBottom: 24 }}
               value={drivers.driver_score}
               isRequired={false}
+              disabled={driverId ? true : false}
               onChange={(value) => handleFormDriver("driver_score", value)}
             />
           </Grid>

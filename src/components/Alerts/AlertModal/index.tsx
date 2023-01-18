@@ -168,9 +168,7 @@ export function AlertModal(props: IAlertModalProps) {
                     </li>
 
                     <li>
-                      <span>
-                        {alert.latitude}, {alert.longitude}
-                      </span>
+                      <span>{alert.alert_address}</span>
                     </li>
                   </ul>
                   <Box className={classes.videoAlert}>
