@@ -150,17 +150,12 @@ export default function GeoFence() {
       label: "Title",
     },
     {
-      id: "lat",
-      label: "Latitude",
+      id: "address",
+      label: "Address",
       numeric: false,
       disablePadding: false,
     },
-    {
-      id: "lng",
-      label: "Longitude",
-      numeric: false,
-      disablePadding: false,
-    },
+
     { id: "radius", label: "Radius", numeric: false, disablePadding: false },
     {
       id: "created_at",
@@ -282,11 +277,9 @@ export default function GeoFence() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{item.latitude}</Span>
+                      <Span fontType="secondary">{item.address}</Span>
                     </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{item.longitude}</Span>
-                    </TableCell>
+
                     <TableCell align="left">
                       <Span fontType="secondary">{item.radius}</Span>
                     </TableCell>
