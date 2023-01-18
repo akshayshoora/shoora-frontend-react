@@ -30,8 +30,6 @@ export default function TextInput(props: ITextInputProps) {
     ...textFieldProps
   } = props;
 
-  console.log(textFieldProps);
-
   function handleTextChange(event: React.ChangeEvent<{ value: unknown }>) {
     const textValue = String(event.target.value);
 
