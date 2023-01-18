@@ -324,7 +324,7 @@ export default function Alerts() {
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {alert.driver ? alert.driver.name : ""}
+                        {alert.driver ? alert.driver.name : "-"}
                       </Span>
                     </TableCell>
                     <TableCell align="left">

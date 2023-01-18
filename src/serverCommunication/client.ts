@@ -1,16 +1,16 @@
-import axios from 'axios';
-import { setUserId, setUserToken } from 'utils/localStorage';
+import axios from "axios";
+import { setUserId, setUserToken } from "utils/localStorage";
 
 const client = axios.create({
   baseURL: `${process.env.REACT_APP_API_BASE_URL}`,
-  responseType: 'json',
+  responseType: "json",
 });
 
 client.interceptors.request.use(
   function (config: any) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
     return config;
   },
@@ -25,9 +25,9 @@ client.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      setUserId('');
-      setUserToken('');
-       //window.location.reload();
+      setUserId("");
+      setUserToken("");
+      //window.location.reload();
     }
     return Promise.reject(error);
   }

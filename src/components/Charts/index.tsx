@@ -23,7 +23,7 @@ export const options = {
   hAxis: { title: "Time" },
   seriesType: "bars",
   series: { 8: { type: "line" } },
-  legend: { position: "bottom" }
+  legend: { position: "bottom" },
 };
 
 function Charts() {
@@ -37,4 +37,4 @@ function Charts() {
     />
   );
 }
-export default Charts
+export default Charts;

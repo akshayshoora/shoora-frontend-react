@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { COLORS } from 'constants/colors';
+import styled from "styled-components";
+import { COLORS } from "constants/colors";
 
 const MarkerInGroupStyled = styled.div`
   display: flex;

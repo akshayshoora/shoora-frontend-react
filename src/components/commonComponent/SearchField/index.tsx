@@ -45,7 +45,7 @@ interface ITextInputProps {
   style?: React.CSSProperties;
   value?: string | number | null;
   placeholder?: string;
-  regex?: RegExp; 
+  regex?: RegExp;
 }
 
 export default function SearchBox(props: ITextInputProps) {

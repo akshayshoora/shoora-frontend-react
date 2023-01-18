@@ -22,11 +22,10 @@ import client from "serverCommunication/client";
 import { Button, List, ListItemText, SelectChangeEvent } from "@mui/material";
 import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
-import VedioLogoImg from '../../assets/vedio-logo.png';
+import VedioLogoImg from "../../assets/video-logo.png";
 import Iframe from "react-iframe";
 import Table from "@mui/material/Table";
 import { TableFooter } from "components/commonComponent/Table";
-
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -39,8 +38,8 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const STATIC_TILES_COUNT = 16;
 export default function () {
-  const [selectStatus, setSelectStatus] = useState("");
-
+  const [selectStatus, setSelectStatus] = useState("all");
+  const [visibleVehicleState, setVisibleVehicleState] = useState<any>([]);
   const handleChange = (event: SelectChangeEvent) => {
     setSelectStatus(event.target.value as string);
   };
@@ -60,11 +59,12 @@ export default function () {
   const [selectedDevice, setSelectedDevice] = useState<string[]>([]);
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
+    ["vehiclelist", searchText, deviceId, selectStatus],
     () => getVehicles(page, rowsPerPage, searchText, selectStatus),
     { refetchOnWindowFocus: false }
   );
   const handleChangePage = (event: unknown, newPage: number) => {
+    showTableVehicleListHnldr(newPage - 1, rowsPerPage, vehicleList?.results);
     setPage(newPage - 1);
   };
 
@@ -79,23 +79,26 @@ export default function () {
     searchText?: string,
     selectStatus?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${pageNumber + 1
-      }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
+    // let getApiUrl = `${transport}/vehicles/?page=${
+    //   pageNumber + 1
+    // }&page_size=${pageSize}&search=${searchText}&vedio=${selectStatus}`;
+    let getApiUrl = `${transport}/vehicles/?search=${searchText}&video=${selectStatus}`;
 
     const response = await client.get(getApiUrl);
-
+    showTableVehicleListHnldr(0, rowsPerPage, response?.data?.results);
+    setPage(0);
     return response.data;
   }
 
   const handleVehicleView = (id: string, status: string) => {
-    if (status != "moving") {
-      setSnackbar({
-        open: true,
-        variant: "error",
-        message: "vehicle is not moving",
-      });
-      return;
-    }
+    // if (status != "moving") {
+    //   setSnackbar({
+    //     open: true,
+    //     variant: "error",
+    //     message: "vehicle is not moving",
+    //   });
+    //   return;
+    // }
     let arr = [...selectedDevice];
 
     if (arr.includes(id)) {
@@ -126,6 +129,20 @@ export default function () {
     }
     setVideoUrl(url);
   };
+
+  function showTableVehicleListHnldr(
+    page: any,
+    rowPerPage: any,
+    vehicleList: any
+  ) {
+    if (Array.isArray(vehicleList)) {
+      console.log({ page, rowPerPage, vehicleList });
+      const startIndex = rowPerPage * page,
+        lastIndex = (page * rowPerPage) + rowPerPage < vehicleList.length
+          ? (page * rowPerPage) + rowPerPage : vehicleList.length;
+      setVisibleVehicleState(vehicleList.slice(startIndex, lastIndex));
+    }
+  }
 
   const renderIframe = (index: number) => {
     return (
@@ -178,7 +195,7 @@ export default function () {
           <Grid
             container
             spacing={{ xs: 2, md: 3, lg: 3 }}
-            columns={{ xs:12, sm:12, md:12, lg: 12 }}
+            columns={{ xs: 12, sm: 12, md: 12, lg: 12 }}
             style={{ marginTop: 24 }}
           >
             <Grid xs={12} sm={4} md={4} lg={3} style={{ paddingLeft: 24 }}>
@@ -214,9 +231,9 @@ export default function () {
                       label="selectFilter"
                       onChange={handleChange}
                     >
-                      <MenuItem value={""}>All</MenuItem>
+                      <MenuItem value={"all"}>All</MenuItem>
                       <MenuItem value={"online"}>Online</MenuItem>
-                      <MenuItem value={"offlne"}>Offline</MenuItem>
+                      <MenuItem value={"offline"}>Offline</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">
@@ -224,12 +241,12 @@ export default function () {
                       {!isVehicleLoading && (
                         <div>
                           <Table>
-                            {vehicleList?.results.map(
+                            {Array.isArray(visibleVehicleState) && visibleVehicleState.map(
                               (item: any, index: number) => (
                                 <TableRow>
                                   <div
                                     className={
-                                      item["status"] !== "moving"
+                                      item["video"] !== "online"
                                         ? "loaddataDisable"
                                         : "loaddata"
                                     }
@@ -257,7 +274,7 @@ export default function () {
                                         <path
                                           d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
                                           stroke={
-                                            item.status !== "moving"
+                                            item.video !== "online"
                                               ? "#D3D3D3"
                                               : "#3BB3C3"
                                           }
@@ -281,7 +298,7 @@ export default function () {
                           >
                             <TableFooter
                               totalPages={Math.ceil(
-                                vehicleList?.count / rowsPerPage
+                                vehicleList?.results.length / rowsPerPage
                               )}
                               currentPage={page + 1}
                               onPageChange={handleChangePage}
@@ -308,9 +325,16 @@ export default function () {
               <Item elevation={0}>
                 <Box className="liveViewVideo">
                   <Grid container lg={12}>
-                    {selectedDevice.map(item => (
+                    {selectedDevice.map((item) => (
                       <Fragment key={item}>
-                        <Grid item xs={12} sm={6} md={4} lg={3} className="liveframe">
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="liveframe"
+                        >
                           <Iframe
                             url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
                               }&email=its@its.com&password=123456&channel=0`}
@@ -321,7 +345,14 @@ export default function () {
                             height="300"
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}  md={4} lg={3} className="liveframe">
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="liveframe"
+                        >
                           <Iframe
                             url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
                               }&email=its@its.com&password=123456&channel=1`}
@@ -335,15 +366,22 @@ export default function () {
                       </Fragment>
                     ))}
 
-                    {Array(STATIC_TILES_COUNT - (selectedDevice.length * 2))
-                      .fill(0).map((item, index) => (
-                        <Grid key={`vedio-${index}`} item xs={12} sm={6}  md={4} lg={3} className="noVedioContainer">
+                    {Array(STATIC_TILES_COUNT - selectedDevice.length * 2)
+                      .fill(0)
+                      .map((item, index) => (
+                        <Grid
+                          key={`vedio-${index}`}
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="noVedioContainer"
+                        >
                           <Box className="vedioLogoScreen">
                             <img src={VedioLogoImg} alt="dummy-vedio-img" />
                           </Box>
-                          <Box sx={{ my: 2 }} className="dummy-title">
-
-                          </Box>
+                          <Box sx={{ my: 2 }} className="dummy-title"></Box>
                           <Box className="dummyBtnContainer">
                             <Box className="dummBtn"></Box>
                             <Box className="dummBtn"></Box>

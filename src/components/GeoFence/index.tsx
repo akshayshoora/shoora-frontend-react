@@ -54,7 +54,8 @@ export default function GeoFence() {
   const [orderBy, setOrderBy] = React.useState<string>("geofence");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const [selectedResult, setSelectedResult] = React.useState<any[]>([]);
-  const [openGeofenceModal, setOpenGeofenceModal] = React.useState<boolean>(false);
+  const [openGeofenceModal, setOpenGeofenceModal] =
+    React.useState<boolean>(false);
   const { user } = useAppContext();
 
   const isAdd = actionAccess(AppPaths.GEOFENCE, Actions.ADD);
@@ -69,9 +70,8 @@ export default function GeoFence() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${transport}/geofences/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${transport}/geofences/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 
@@ -110,7 +110,7 @@ export default function GeoFence() {
   };
 
   function openGeofenceDetails(
-    event: React.MouseEvent<HTMLElement>,
+    event: React.MouseEvent<HTMLButtonElement>,
     id: string
   ) {
     event.stopPropagation();
@@ -125,41 +125,36 @@ export default function GeoFence() {
     navigate(`/${AppPaths.GEOFENCE}/${SubPaths.EDIT}/${id}`);
   }
 
-  const actionMenuItems: MenuType[] = [
-    {
-      label: "More Info",
-      icon: <InfoOutlinedIcon />,
-      onClick: openGeofenceDetails,
-      access: true,
-    },
-    // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editGeofenceDetails,access:isEdit },
-    // {
-    //   label: "Delete",
-    //   icon: <DeleteOutlineOutlinedIcon />,
-    //   onClick: handleOpenDelete,
-    //   access:isDelete
-    // },
-  ];
+  // const actionMenuItems: MenuType[] = [
+  //   {
+  //     label: "More Info",
+  //     icon: <InfoOutlinedIcon />,
+  //     onClick: openGeofenceDetails,
+  //     access: true,
+  //   },
+  //   // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editGeofenceDetails,access:isEdit },
+  //   // {
+  //   //   label: "Delete",
+  //   //   icon: <DeleteOutlineOutlinedIcon />,
+  //   //   onClick: handleOpenDelete,
+  //   //   access:isDelete
+  //   // },
+  // ];
 
   const headCells: readonly HeadCell[] = [
     {
       id: "name",
       numeric: false,
       disablePadding: true,
-      label: "Name",
+      label: "Title",
     },
     {
-      id: "lat",
-      label: "Latitude",
+      id: "address",
+      label: "Address",
       numeric: false,
       disablePadding: false,
     },
-    {
-      id: "lng",
-      label: "Longitude",
-      numeric: false,
-      disablePadding: false,
-    },
+
     { id: "radius", label: "Radius", numeric: false, disablePadding: false },
     {
       id: "created_at",
@@ -167,8 +162,12 @@ export default function GeoFence() {
       numeric: false,
       disablePadding: false,
     },
-    { id: "assignVehicle", label: "Assign Vehicle", numeric: false, disablePadding: false },
-
+    {
+      id: "assignVehicle",
+      label: "Assign Vehicle",
+      numeric: false,
+      disablePadding: false,
+    },
   ];
 
   function addGeoFence() {
@@ -209,12 +208,12 @@ export default function GeoFence() {
     mutateDeleteGeofence();
   }
 
-  const handleGeofenceModal = (index :any)=>{
-    if(!geofenceList?.results) return;
+  const handleGeofenceModal = (index: any) => {
+    if (!geofenceList?.results) return;
     const selctedArray = [...geofenceList?.results];
-    setSelectedResult(selctedArray[index])
-    setOpenGeofenceModal(true)
-  }
+    setSelectedResult(selctedArray[index]);
+    setOpenGeofenceModal(true);
+  };
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
@@ -227,10 +226,10 @@ export default function GeoFence() {
         />
       )}
       {openGeofenceModal && (
-        <GeoFenceModal 
-        handleClose = {()=> setOpenGeofenceModal(false)}
-        open={true}
-        selectedItem={selectedResult}
+        <GeoFenceModal
+          handleClose={() => setOpenGeofenceModal(false)}
+          open={true}
+          selectedItem={selectedResult}
         />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
@@ -260,7 +259,7 @@ export default function GeoFence() {
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
-            shouldShowActionMenu={true}
+            shouldShowActionMenu={false}
           />
           <TableBody>
             {isLoading ? (
@@ -277,15 +276,13 @@ export default function GeoFence() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{item.latitude}</Span>
+                      <Span fontType="secondary">{item.address}</Span>
                     </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{item.longitude}</Span>
-                    </TableCell>
+
                     <TableCell align="left">
                       <Span fontType="secondary">{item.radius}</Span>
                     </TableCell>
-                   
+
                     <TableCell align="left">
                       <Span fontType="secondary">
                         {item.created_at ? item.created_at : "-"}
@@ -295,16 +292,14 @@ export default function GeoFence() {
                       <Button
                         variant="contained"
                         style={{ color: COLORS.WHITE }}
-                        onClick={() => {
-                           handleGeofenceModal(index);
-                        }}
+                        onClick={(event: React.MouseEvent<HTMLButtonElement>) => openGeofenceDetails(event, item.id)}
                       >
                         Add Vehicle
                       </Button>
                     </TableCell>
-                    <TableCell align="left">
+                    {/* <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={item.id} />
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 );
               })

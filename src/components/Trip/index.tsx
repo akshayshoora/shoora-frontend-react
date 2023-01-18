@@ -31,7 +31,11 @@ import { actionAccess } from "utils/FeatureCheck";
 import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
-import { getDateDisplayFormat, getDuration, getDateTime } from "utils/calenderUtils";
+import {
+  getDateDisplayFormat,
+  getDuration,
+  getDateTime,
+} from "utils/calenderUtils";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import { endianness } from "os";
 import { useEffect } from "react";
@@ -57,6 +61,7 @@ export default function Trip() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("trip");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+  const [row, setRow] = React.useState();
   const { user } = useAppContext();
   const navigate = useNavigate();
   const [placeDataStatus, setPlaceDataStatus] = React.useState<boolean>(true);
@@ -81,8 +86,9 @@ export default function Trip() {
     return response.data;
   }
 
-  const handleOpenTrip = (id: string) => {
+  const handleOpenTrip = (id: string, trip: any) => {
     setTripId(id);
+    setRow(trip);
     setOpenTrip(true);
   };
 
@@ -135,8 +141,8 @@ export default function Trip() {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "crerated_at",
-      label: "Start Date/Time",
+      id: "Vehicle Number",
+      label: "vin",
       numeric: false,
       disablePadding: false,
     },
@@ -246,7 +252,11 @@ export default function Trip() {
         />
       )}
       {openTrip && (
-        <TripModal open={openTrip} handleClose={handleCloseTrip} id={triptId} />
+        <TripModal
+          open={openTrip}
+          handleClose={handleCloseTrip}
+          id={triptId}
+        />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Trips</Heading>
@@ -278,20 +288,20 @@ export default function Trip() {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {getDateDisplayFormat(trip.created_at)}
-                      </Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{getDateTime(trip.trip_started_at)}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{getDateTime(trip.trip_ended_at)}</Span>
+                      <Span fontType="secondary">{trip.vehicle_vin}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {trip.driver || "-"}
+                        {getDateTime(trip.trip_started_at)}
                       </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {getDateTime(trip.trip_ended_at)}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">{trip.driver || "-"}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{trip.total_incidents}</Span>
@@ -310,7 +320,7 @@ export default function Trip() {
                         variant="contained"
                         style={{ color: COLORS.WHITE }}
                         onClick={() => {
-                          handleOpenTrip(trip.id);
+                          handleOpenTrip(trip.id, trip);
                         }}
                       >
                         Details
@@ -329,7 +339,7 @@ export default function Trip() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(tripList?.count / rowsPerPage)}
+          totalPages={Number(tripList?.count) ? Math.ceil(tripList?.count / rowsPerPage) : 1}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

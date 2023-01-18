@@ -107,7 +107,7 @@ export const getRoleBasedFilteredSummary = () => {
     },
 
     {
-      dataIndex: "total_kilometres",
+      dataIndex: "total_incidents",
       label: "Incidents / 100 kilometres",
       icon: kilometresIcon,
       value: "70",

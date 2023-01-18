@@ -168,17 +168,11 @@ export function AlertModal(props: IAlertModalProps) {
                     </li>
 
                     <li>
-                      <span>
-                        {alert.latitude}, {alert.longitude}
-                      </span>
+                      <span>{alert.alert_address}</span>
                     </li>
                   </ul>
                   <Box className={classes.videoAlert}>
-                    <Player
-                      autoPlay
-                      poster="/assets/poster.png"
-                      src={alert.video_url}
-                    />
+                    <Player poster="/assets/poster.png" src={alert.video_url} />
                   </Box>
                 </Item>
               </Grid>
