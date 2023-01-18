@@ -5,7 +5,7 @@ export default makeStyles({
   alertHead: {
     display: "flex",
     alignItems: "center",
-    padding: "10px 15px",
+    fontWeight: "bolder !important",
     // background: "#261F5A",
     // color: "#fff",
     "& i": {

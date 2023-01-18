@@ -91,7 +91,7 @@ const GeoFenceMap = (props) => {
               // onUnmount={onUnmount}
               center={center}
               // required
-              radius={circleRadius ? circleRadius : ""}
+              radius={Number(circleRadius) ? Number(circleRadius) : 0}
               options={options}
             />
           )}

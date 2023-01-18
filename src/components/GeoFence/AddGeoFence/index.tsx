@@ -179,15 +179,17 @@ export default function AddGeoFence() {
   const loadingMessage = isAddingGeofence
     ? "Adding Geofence..."
     : isUpdatingGeofence
-    ? "Updating Geofence..."
-    : "";
+      ? "Updating Geofence..."
+      : "";
 
   const polyAxis = (polyaxisData: any) => {
+    console.log(polyaxisData);
     setPath(polyaxisData);
   };
 
   const isSaveButtonDisabled = !geofenceData.name || !geofenceData.radius;
 
+  // console.log({ sdfs: Number(geofenceData?.radius), center, polyAxis, geofenceType, setCenter, setLat, setLng });
   return (
     <Box className={classes.positionRelative}>
       <Snackbar
@@ -378,7 +380,7 @@ export default function AddGeoFence() {
                     <Button
                       id="submit"
                       variant={isSaveButtonDisabled ? "outlined" : "contained"}
-                      onClick={() => {}}
+                      onClick={() => { }}
                       disabled={isSaveButtonDisabled}
                     >
                       Save

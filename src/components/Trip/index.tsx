@@ -78,9 +78,8 @@ export default function Trip() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${monitor}/trips/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${monitor}/trips/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
     const finalURL = sanitizeURL(getApiUrl);
     const response = await client.get(finalURL);
 
@@ -257,7 +256,6 @@ export default function Trip() {
           open={openTrip}
           handleClose={handleCloseTrip}
           id={triptId}
-          row={row}
         />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
@@ -341,7 +339,7 @@ export default function Trip() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(tripList?.count / rowsPerPage)}
+          totalPages={Number(tripList?.count) ? Math.ceil(tripList?.count / rowsPerPage) : 1}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
