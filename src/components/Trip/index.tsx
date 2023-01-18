@@ -61,6 +61,7 @@ export default function Trip() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("trip");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+  const [row, setRow] = React.useState();
   const { user } = useAppContext();
   const navigate = useNavigate();
   const [placeDataStatus, setPlaceDataStatus] = React.useState<boolean>(true);
@@ -85,8 +86,9 @@ export default function Trip() {
     return response.data;
   }
 
-  const handleOpenTrip = (id: string) => {
+  const handleOpenTrip = (id: string, trip: any) => {
     setTripId(id);
+    setRow(trip);
     setOpenTrip(true);
   };
 
@@ -250,7 +252,11 @@ export default function Trip() {
         />
       )}
       {openTrip && (
-        <TripModal open={openTrip} handleClose={handleCloseTrip} id={triptId} />
+        <TripModal
+          open={openTrip}
+          handleClose={handleCloseTrip}
+          id={triptId}
+        />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Trips</Heading>
@@ -314,7 +320,7 @@ export default function Trip() {
                         variant="contained"
                         style={{ color: COLORS.WHITE }}
                         onClick={() => {
-                          handleOpenTrip(trip.id);
+                          handleOpenTrip(trip.id, trip);
                         }}
                       >
                         Details

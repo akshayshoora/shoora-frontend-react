@@ -31,7 +31,7 @@ export default makeStyles({
     },
   },
   videoAlert: {
-    margin: "70px 0 0 0",
+    margin: "50px 0 0 0",
     "& video": {
       width: "465px !important",
       height: "300px !important",
