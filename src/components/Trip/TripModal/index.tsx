@@ -231,19 +231,19 @@ export function TripModal(props: ITripModalProps) {
                         <ul className={classes.alertListInfo}>
                           <li>
                             <span>
-                              Driver Name: {trip.driver || "-"}
+                              Driver Name: {trip?.driver?.name || "-"}
                             </span>
                           </li>
                           <li>
                             <span>
                               Contact Details:{" "}
-                              {trip.phone_number || "-"}
+                              {trip?.driver?.phone_number || "-"}
                             </span>
                           </li>
                           <li>
                             <span>
                               Licence No:{" "}
-                              {trip.driving_license_number || "-"}
+                              {trip?.driver?.driving_license_number || "-"}
                             </span>
                           </li>
                         </ul>
