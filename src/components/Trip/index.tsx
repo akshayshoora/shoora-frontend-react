@@ -301,7 +301,7 @@ export default function Trip() {
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.driver || "-"}</Span>
+                      <Span fontType="secondary">{trip?.driver?.name || "-"}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{trip.total_incidents}</Span>
