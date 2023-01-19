@@ -262,8 +262,9 @@ export default function () {
                                       );
                                     }}
                                   >
-                                    <i className="circle"></i>
-                                    <span className="trackid">{item.vin}</span>
+                                    <i className="circle" style={item?.organization?.is_active == true ? {background :"green"}:{background :"red"}}></i>
+                                 
+                                    <span className="trackid" >{item.vin}</span>
                                     <span className="arrowright">
                                       <svg
                                         width="17"
