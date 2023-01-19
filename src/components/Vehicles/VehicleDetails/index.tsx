@@ -69,7 +69,7 @@ export function VehicleDetails() {
         </Box>
         <Box className={classes.infoBodyWrapper}>
           <Box className={classes.bodyInfoTitle}>Assets Created On:</Box>
-          <Box className={classes.bodyInfo}>{getDateTime(vehicle.last_device_status_timestamp)}</Box>
+          <Box className={classes.bodyInfo}>{getDateTime(vehicle.created_at)}</Box>
         </Box>
         <Box className={classes.infoBodyWrapper}>
           <Box className={classes.bodyInfoTitle}>Make By:</Box>
