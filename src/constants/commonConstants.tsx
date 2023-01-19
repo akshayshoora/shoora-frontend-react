@@ -9,6 +9,8 @@ import React from "react";
 
 export const TOKEN = "token";
 export const USER_ID = "user_id";
+export const IS_SHIPPER = "is_shipper";
+
 
 // Add label here for menu render
 export const sideMenuLabel: {

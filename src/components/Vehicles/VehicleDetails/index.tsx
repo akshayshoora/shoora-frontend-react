@@ -8,12 +8,17 @@ import { useQuery } from "react-query";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { auth, transport } from "constants/RouteMiddlePath";
+import { getDateTime } from "utils/calenderUtils";
+import { getIsShipper } from "utils/localStorage";
+import { useEffect } from "react";
 
 export function VehicleDetails() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const isShipper: any = getIsShipper();
 
   const { id } = useParams();
+
 
   const { data: vehicle, isLoading } = useQuery(["vehicle_details", id], () =>
     getVehicleDetails(String(id))
@@ -48,6 +53,12 @@ export function VehicleDetails() {
       </Box>
       <Box className={classes.bodyContent}>
         <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Vehicle Number:</Box>
+          <Box className={classes.bodyInfo}>
+            {vehicle.vin ? vehicle.vin : "-"}
+          </Box>
+        </Box>
+        <Box className={classes.infoBodyWrapper}>
           <Box className={classes.bodyInfoTitle}>Vehicle Type:</Box>
           <Box
             className={classes.bodyInfo}
@@ -57,11 +68,11 @@ export function VehicleDetails() {
           </Box>
         </Box>
         <Box className={classes.infoBodyWrapper}>
-          <Box className={classes.bodyInfoTitle}>Vehicle ID:</Box>
-          <Box className={classes.bodyInfo}>{vehicle.id}</Box>
+          <Box className={classes.bodyInfoTitle}>Assets Created On:</Box>
+          <Box className={classes.bodyInfo}>{getDateTime(vehicle.created_at)}</Box>
         </Box>
         <Box className={classes.infoBodyWrapper}>
-          <Box className={classes.bodyInfoTitle}>Made By:</Box>
+          <Box className={classes.bodyInfoTitle}>Make By:</Box>
           <Box className={classes.bodyInfo}>{vehicle.make}</Box>
         </Box>
         <Box className={classes.infoBodyWrapper}>
@@ -70,12 +81,25 @@ export function VehicleDetails() {
             {vehicle.model ? vehicle.model : "-"}
           </Box>
         </Box>
-        <Box className={classes.infoBodyWrapper}>
-          <Box className={classes.bodyInfoTitle}>Vehicle Number:</Box>
+        {(isShipper === "true") && <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Transporter:</Box>
           <Box className={classes.bodyInfo}>
-            {vehicle.vin ? vehicle.vin : "-"}
+            {vehicle.transporter ? vehicle.transporter : "-"}
+          </Box>
+        </Box>}
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Capacity:</Box>
+          <Box className={classes.bodyInfo}>
+            {vehicle.capacity ? vehicle.capacity : "-"}
           </Box>
         </Box>
+        <Box className={classes.infoBodyWrapper}>
+          <Box className={classes.bodyInfoTitle}>Fuel Type:</Box>
+          <Box className={classes.bodyInfo}>
+            {vehicle.fuel_type ? vehicle.fuel_type : "-"}
+          </Box>
+        </Box>
+
       </Box>
     </Box>
   );
