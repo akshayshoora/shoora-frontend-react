@@ -269,7 +269,7 @@ export function GeofenceTripModal(props: ITripModalProps) {
                         </Box>
 
                     </Box>
-                {/* )} */}
+                )}
             </Modal>
         </Box>
     );
