@@ -31,6 +31,7 @@ import { actionAccess } from "utils/FeatureCheck";
 import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
+import { GeofenceTripModal } from "./GeofenceTripModal";
 import {
   getDateDisplayFormat,
   getDuration,
@@ -52,6 +53,7 @@ export default function Trip() {
     () => getTrips(page, rowsPerPage, searchText),
     { refetchOnWindowFocus: false }
   );
+  const [betweenTripModal, setBetweenTripModal] = React.useState<any>(false);
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
     variant: "success" | "error" | "info";
@@ -91,6 +93,11 @@ export default function Trip() {
     setRow(trip);
     setOpenTrip(true);
   };
+
+  const handleBetweenTripModal = () => {
+    setBetweenTripModal(true);
+  };
+  const handleCloseBetweenTripModal = () => setBetweenTripModal(false);
 
   const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
@@ -251,6 +258,13 @@ export default function Trip() {
           label="trip"
         />
       )}
+      {betweenTripModal && (
+        <GeofenceTripModal
+          open={betweenTripModal}
+          handleClose={handleCloseBetweenTripModal}
+          id={triptId}
+        />
+      )}
       {openTrip && (
         <TripModal
           open={openTrip}
@@ -267,6 +281,13 @@ export default function Trip() {
               placeholder="Search Trips"
             />
           </Box>
+          <Button
+            variant="contained"
+            style={{ color: COLORS.WHITE }}
+            onClick={handleBetweenTripModal}
+          >
+            Trip Between Geofence
+          </Button>
         </Box>
       </Box>
       <Box className={classes.root}>
