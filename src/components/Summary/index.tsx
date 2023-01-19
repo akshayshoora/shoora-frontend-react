@@ -13,6 +13,7 @@ import COLORS from "constants/colors";
 import { monitor } from "constants/RouteMiddlePath";
 import { data } from "components/PieCharts";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
+import { getHoursFromSeconds } from "../../utils/calenderUtils";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -67,7 +68,8 @@ export default function Summary() {
                 {item.label}
               </Typography>
               <Typography variant="h1" mt={1} component="div">
-                {summary[item.dataIndex]}
+                {/* {summary[item.dataIndex]} */}
+                {item.dataIndex === "total_duration" ? getHoursFromSeconds(summary[item.dataIndex]) : summary[item.dataIndex]}
                 {item.unit ? (
                   <Typography
                     variant="body1"
