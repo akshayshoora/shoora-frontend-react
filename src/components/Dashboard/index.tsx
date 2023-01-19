@@ -14,6 +14,7 @@ import { useAppContext } from "ContextAPIs/appContext";
 import Charts from "components/Charts";
 import PieCharts from "components/PieCharts";
 import Iframe from "react-iframe";
+import WorstDrivers from "components/WorstDrivers";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -57,7 +58,7 @@ export default function Dashboard() {
         </Grid>
       </Box>
       <Box className={classes.usrTable}>
-        <Users />
+        <WorstDrivers />
       </Box>
     </Box>
   );

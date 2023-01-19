@@ -13,6 +13,7 @@ import COLORS from "constants/colors";
 import { monitor } from "constants/RouteMiddlePath";
 import { data } from "components/PieCharts";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
+import { dashboardSummary } from "utils/helpers";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -60,6 +61,7 @@ export default function Summary() {
       columns={{ xs: 4, sm: 8, md: 12 }}
     >
       {ROLE_BASED_FILTERED_SUMMARY.map((item) => {
+        console.log('--item--',item)
         return (
           <Grid item xs={2} sm={3} md={3} key={item.dataIndex}>
             <Item elevation={0}>
@@ -67,7 +69,8 @@ export default function Summary() {
                 {item.label}
               </Typography>
               <Typography variant="h1" mt={1} component="div">
-                {summary[item.dataIndex]}
+                {dashboardSummary(summary[item.dataIndex],item.dataIndex)}
+                {/* {summary[item.dataIndex]} */}
                 {item.unit ? (
                   <Typography
                     variant="body1"

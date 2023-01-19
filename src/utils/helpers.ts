@@ -53,3 +53,10 @@ export function sanitizeURL(incomingURL: string) {
   }
   return returnURL;
 }
+
+export function dashboardSummary(seconds: number,dataIndex: string){
+  if(dataIndex === 'total_duration')
+      return Math.floor(seconds/3600);
+  else
+    return seconds;
+}
