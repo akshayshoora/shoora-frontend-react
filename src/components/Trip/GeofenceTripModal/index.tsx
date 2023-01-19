@@ -61,7 +61,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 interface ITripModalProps {
     open: boolean;
-    handleClose: () => void;
+    handleClose: (applyFilter: any) => void;
     id: string;
 }
 
@@ -101,7 +101,7 @@ export function GeofenceTripModal(props: ITripModalProps) {
         <Box>
             <Modal
                 open={open}
-                onClose={handleClose}
+                onClose={() => handleClose(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -116,7 +116,7 @@ export function GeofenceTripModal(props: ITripModalProps) {
                             component="h2"
                         >
                             Trip Between Geofence{" "}
-                            <i onClick={handleClose}>
+                            <i onClick={() => handleClose(false)}>
                                 <svg
                                     width="24"
                                     height="25"
@@ -188,9 +188,13 @@ export function GeofenceTripModal(props: ITripModalProps) {
                                         size="medium"
                                         displayEmpty
                                     >
-                                        <MenuItem value="" disabled>
-                                            Vehicles
-                                        </MenuItem>
+                                        {geofenceList?.results?.map((item: any, index: any) => {
+                                            if (item.address) {
+                                                return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
+                                                    {item.address}
+                                                </MenuItem>)
+                                            }
+                                        })}
 
                                     </Select>
                                 </Grid>
@@ -209,10 +213,13 @@ export function GeofenceTripModal(props: ITripModalProps) {
                                         size="medium"
                                         displayEmpty
                                     >
-                                        <MenuItem value="" disabled>
-                                            Vehicles
-                                        </MenuItem>
-
+                                        {geofenceList?.results?.map((item: any, index: any) => {
+                                            if (item.address) {
+                                                return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
+                                                    {item.address}
+                                                </MenuItem>)
+                                            }
+                                        })}
                                     </Select>
                                 </Grid>
                                 <Grid item xs={6}>
@@ -230,8 +237,8 @@ export function GeofenceTripModal(props: ITripModalProps) {
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
-                                        value={""}
-                                        onChange={() => { }}
+                                    // value={""}
+                                    // onChange={() => { }}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -249,8 +256,8 @@ export function GeofenceTripModal(props: ITripModalProps) {
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
-                                        value={""}
-                                        onChange={() => { }}
+                                    // value={""}
+                                    // onChange={() => { }}
                                     />
                                 </Grid>
                                 <Grid xs={12}>
@@ -259,7 +266,7 @@ export function GeofenceTripModal(props: ITripModalProps) {
                                             variant="contained"
                                             style={{ color: "#fff" }}
                                             size="large"
-                                            onClick={() => { }}
+                                            onClick={() => props.handleClose(true)}
                                         >
                                             Apply Filter
                                         </Button>

@@ -38,8 +38,9 @@ import {
   getDateTime,
 } from "utils/calenderUtils";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
-import { endianness } from "os";
 import { useEffect } from "react";
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
@@ -48,6 +49,7 @@ export default function Trip() {
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [appliedDistanceFilter, setAppliedDistanceFilter] = React.useState<any>(false);
   const { data: tripList, isLoading } = useQuery(
     ["trips", page, rowsPerPage, searchText],
     () => getTrips(page, rowsPerPage, searchText),
@@ -97,7 +99,16 @@ export default function Trip() {
   const handleBetweenTripModal = () => {
     setBetweenTripModal(true);
   };
-  const handleCloseBetweenTripModal = () => setBetweenTripModal(false);
+  const handleCloseBetweenTripModal = (appliedFilter: any) => {
+    if (appliedFilter) {
+      setAppliedDistanceFilter(true);
+    }
+    setBetweenTripModal(false)
+  };
+
+  function handleClearGeofenceFilter() {
+    setAppliedDistanceFilter(false);
+  }
 
   const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
@@ -281,13 +292,23 @@ export default function Trip() {
               placeholder="Search Trips"
             />
           </Box>
-          <Button
+          {!appliedDistanceFilter && <Button
             variant="contained"
             style={{ color: COLORS.WHITE }}
             onClick={handleBetweenTripModal}
           >
+            <MyLocationIcon sx={{ marginRight: 0.5 }} />
             Trip Between Geofence
-          </Button>
+          </Button>}
+          {appliedDistanceFilter && <Button
+            variant="contained"
+            // style={{ color: COLORS.WHITE }}
+            onClick={handleClearGeofenceFilter}
+            style={{ backgroundColor: "#d32f2f", color: COLORS.WHITE }}
+          >
+            <CancelIcon sx={{ marginRight: 0.5 }} />
+            Clear Geofence Filter
+          </Button>}
         </Box>
       </Box>
       <Box className={classes.root}>

@@ -25,6 +25,7 @@
     "google-map-react": "^2.2.0",
     "immutable": "^4.1.0",
     "lodash": "^4.17.21",
+    "notistack": "^2.0.8",
     "points-cluster": "^0.1.4",
     "qrcode.react": "^3.0.2",
     "react": "^17.0.2",
@@ -70,6 +71,7 @@
     "@types/lodash": "^4.14.182",
     "@types/react-router-dom": "^5.3.3",
     "@types/video-react": "^0.15.1",
+    "node-sass": "^8.0.0",
     "prettier": "2.8.3"
   }
 }
