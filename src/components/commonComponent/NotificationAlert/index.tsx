@@ -68,29 +68,29 @@ export default function NoificationAlert(props: any): any {
                 }} />
                 <Grid container spacing={2}>
                     <Grid item xs={3}>
-                        <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Alarm Name:</span>
+                        <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Alarm:</span>
                     </Grid>
                     <Grid item xs={9}>
                         <span>{notificationInfo?.alertName}</span>
                     </Grid>
 
                     <Grid item xs={3}>
-                        <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Driver Name:</span>
+                        <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Driver:</span>
                     </Grid>
                     <Grid item xs={9}>
-                        <span>{notificationInfo?.driverName}</span>
+                        <span>{notificationInfo?.driverName || "-"}</span>
                     </Grid>
                     <Grid item xs={3}>
                         <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Vehicle:</span>
                     </Grid>
                     <Grid item xs={9}>
-                        <span>{notificationInfo?.vehicle}</span>
+                        <span>{notificationInfo?.vehicle || "-"}</span>
                     </Grid>
                     <Grid item xs={3}>
                         <span style={{ fontWeight: "bold", whiteSpace: "nowrap" }}>Address:</span>
                     </Grid>
                     <Grid item xs={9}>
-                        <span>{notificationInfo?.address}</span>
+                        <span>{notificationInfo?.address || "-"}</span>
                     </Grid>
 
                 </Grid>
