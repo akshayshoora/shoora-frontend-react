@@ -11,7 +11,7 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import { useAppContext } from "ContextAPIs/appContext";
 import useStyles from "./style";
-import { setUserId, setUserToken, getUserToken, setIsShipper } from "utils/localStorage";
+import { setUserId, setUserToken, getUserToken, setIsShipper, setCanPollNotification } from "utils/localStorage";
 import { useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths } from "../../../constants/commonEnums";
 import client from "serverCommunication/client";
@@ -49,6 +49,7 @@ export default function UserMenu() {
     setUserId("");
     setUserToken("");
     setIsShipper("");
+    setCanPollNotification("");
     setUser();
     navigate(`/${AppPaths.LOGIN}`);
     // }
