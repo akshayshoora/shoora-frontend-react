@@ -15,7 +15,7 @@ import { useAppContext } from "ContextAPIs/appContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import client from "serverCommunication/client";
-import { setUserId, setUserToken, setIsShipper } from "utils/localStorage";
+import { setUserId, setUserToken, setIsShipper, setCanPollNotification } from "utils/localStorage";
 import BRAND from "BrandingConstants";
 import useStyles from "./style";
 import { USER_ID } from "constants/commonConstants";
@@ -63,6 +63,7 @@ export default function Login() {
         setUserToken(data.access);
         setUserId(data.id);
         setIsShipper(data.is_shipper);
+        setCanPollNotification(data.long_polling);
         setUser();
         navigate(`/${AppPaths.DASHBOARD}`);
       })
