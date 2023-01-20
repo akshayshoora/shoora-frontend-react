@@ -60,7 +60,7 @@ function AdminRoot() {
         }
       }
     }
-    if (canPollNotification === "false") {
+    if (canPollNotification === "true") {
       getAlerts();
       timeOutInfo.current = setInterval(() => {
         getAlerts();
