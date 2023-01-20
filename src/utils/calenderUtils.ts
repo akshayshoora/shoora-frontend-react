@@ -77,7 +77,6 @@ export function getDuration(time: number) {
 
 
 export function getHoursFromSeconds(time: any) {
-  console.log({ time });
   if (isNaN(time)) {
     return time;
   }

@@ -31,14 +31,16 @@ import { actionAccess } from "utils/FeatureCheck";
 import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
+import { GeofenceTripModal } from "./GeofenceTripModal";
 import {
   getDateDisplayFormat,
   getDuration,
   getDateTime,
 } from "utils/calenderUtils";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
-import { endianness } from "os";
 import { useEffect } from "react";
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
@@ -47,11 +49,13 @@ export default function Trip() {
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [appliedDistanceFilter, setAppliedDistanceFilter] = React.useState<any>(false);
   const { data: tripList, isLoading } = useQuery(
     ["trips", page, rowsPerPage, searchText],
     () => getTrips(page, rowsPerPage, searchText),
     { refetchOnWindowFocus: false }
   );
+  const [betweenTripModal, setBetweenTripModal] = React.useState<any>(false);
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
     variant: "success" | "error" | "info";
@@ -91,6 +95,20 @@ export default function Trip() {
     setRow(trip);
     setOpenTrip(true);
   };
+
+  const handleBetweenTripModal = () => {
+    setBetweenTripModal(true);
+  };
+  const handleCloseBetweenTripModal = (appliedFilter: any) => {
+    if (appliedFilter) {
+      setAppliedDistanceFilter(true);
+    }
+    setBetweenTripModal(false)
+  };
+
+  function handleClearGeofenceFilter() {
+    setAppliedDistanceFilter(false);
+  }
 
   const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
@@ -251,6 +269,13 @@ export default function Trip() {
           label="trip"
         />
       )}
+      {betweenTripModal && (
+        <GeofenceTripModal
+          open={betweenTripModal}
+          handleClose={handleCloseBetweenTripModal}
+          id={triptId}
+        />
+      )}
       {openTrip && (
         <TripModal
           open={openTrip}
@@ -267,6 +292,23 @@ export default function Trip() {
               placeholder="Search Trips"
             />
           </Box>
+          {!appliedDistanceFilter && <Button
+            variant="contained"
+            style={{ color: COLORS.WHITE }}
+            onClick={handleBetweenTripModal}
+          >
+            <MyLocationIcon sx={{ marginRight: 0.5 }} />
+            Trip Between Geofence
+          </Button>}
+          {appliedDistanceFilter && <Button
+            variant="contained"
+            // style={{ color: COLORS.WHITE }}
+            onClick={handleClearGeofenceFilter}
+            style={{ backgroundColor: "#d32f2f", color: COLORS.WHITE }}
+          >
+            <CancelIcon sx={{ marginRight: 0.5 }} />
+            Clear Geofence Filter
+          </Button>}
         </Box>
       </Box>
       <Box className={classes.root}>

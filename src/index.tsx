@@ -4,6 +4,7 @@ import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import "./index.css";
+import "video-react/dist/video-react.css"; 
 import AdminRoot from "components/AdminRoot";
 
 const queryClient = new QueryClient();
