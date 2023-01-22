@@ -287,7 +287,7 @@ export default function Driver() {
                           
                               >
                                 <VerifiedIcon fontSize="small"  />
-                                Verified
+                                Verify
                               </Button>
                             </Grid>
                       </Grid>
