@@ -27,17 +27,35 @@ import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { auth, transport } from "constants/RouteMiddlePath";
 import { GeoFenceModal } from "../GeoFenceModal";
 import GeoFenceMap from "../GeoFenceMap";
+import { useEffect, useState } from "react";
+import { latLongToPlace, sanitizeURL } from "utils/helpers";
+
 
 export function GeofenceDetails() {
   const classes = useStyles();
   const navigate = useNavigate();
 
   const { id } = useParams();
+  const [address, setAddress] = useState("");
 
   const { data: geofenceData, isLoading } = useQuery(
     ["geofence_details", id],
     () => getGeofenceDetails(String(id))
   );
+
+  useEffect(() => {
+    if (geofenceData && !address) {
+      const getAddressCall: any = async () => {
+        let address: any = await latLongToPlace(
+          geofenceData?.latitude,
+          geofenceData?.longitude,
+          false
+        );
+        setAddress(address);
+      }
+      getAddressCall();
+    }
+  }, [geofenceData, address]);
 
   async function getGeofenceDetails(id: string) {
     return (await client.get(`${transport}/geofences/${id}/`)).data;
@@ -83,18 +101,18 @@ export function GeofenceDetails() {
                 {geofenceData.name}
               </Box>
             </Box>
-            <Box className={classes.infoBodyWrapper}>
+            {/* <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Geofence ID:</Box>
               <Box className={classes.bodyInfo}>{geofenceData.id}</Box>
-            </Box>
+            </Box> */}
             <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Latitude:</Box>
-              <Box className={classes.bodyInfo}>{geofenceData.latitude}</Box>
+              <Box className={classes.bodyInfoTitle}>Address:</Box>
+              <Box className={classes.bodyInfo}>{address || "-"}</Box>
             </Box>
-            <Box className={classes.infoBodyWrapper}>
+            {/* <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Longitude:</Box>
               <Box className={classes.bodyInfo}>{geofenceData.longitude}</Box>
-            </Box>
+            </Box> */}
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Radius</Box>
               <Box className={classes.bodyInfo}>{geofenceData.radius}</Box>
@@ -103,15 +121,7 @@ export function GeofenceDetails() {
               <GeoFenceModal
                 open={true}
                 handleClose={() => { }}
-                selectedItem={{
-                  "id": "4d4e8cd5-5688-4612-8062-64d8820c7bba",
-                  "latitude": 28.5355161,
-                  "longitude": 77.3910265,
-                  "radius": 2000,
-                  "organization_id": "b08eaad3-f9ee-44cc-a947-70bc2cd4cb89",
-                  "name": "Testing",
-                  "address": "G9PR+6C3, Bhangel, Sector - 106, Noida, Uttar Pradesh, India"
-                }}
+                selectedItem={geofenceData || {}}
               />
             </Box>
           </Grid>

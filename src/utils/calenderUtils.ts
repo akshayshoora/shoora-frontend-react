@@ -74,3 +74,11 @@ export function getDuration(time: number) {
   let rminutes = Math.round(minutes);
   return rhours + "h " + rminutes + " mins";
 }
+
+
+export function getHoursFromSeconds(time: any) {
+  if (isNaN(time)) {
+    return time;
+  }
+  return Math.round(Number(time) / 3600).toFixed(1);
+}

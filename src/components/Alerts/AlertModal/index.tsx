@@ -213,7 +213,7 @@ export function AlertModal(props: IAlertModalProps) {
                       bootstrapURLKeys={{
                         key: `${process.env.REACT_APP_MAP_KEY}`,
                       }}
-                      defaultZoom={10}
+                      defaultZoom={15}
                       resetBoundsOnResize={true}
                       defaultCenter={{
                         lat: Number(alert.latitude),
