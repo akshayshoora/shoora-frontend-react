@@ -134,4 +134,8 @@ export default makeStyles({
     display: "flex",
     justifyContent: "center",
   },
+  verifiedBtn: {
+    background: "#2e7d32",
+  
+  },
 });

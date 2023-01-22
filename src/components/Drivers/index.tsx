@@ -6,6 +6,7 @@ import TableCell from "@mui/material/TableCell";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import VerifiedIcon from '@mui/icons-material/Verified';
 import TableRow from "@mui/material/TableRow";
 import { SelectChangeEvent, Button, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -277,28 +278,19 @@ export default function Driver() {
                             {driver.driving_license_number}
                           </Span>
                         </Grid>
-                        <Grid item xs={6} xl={6} alignContent={"start"}>
+                        <Grid item xs={6} xl={6} >
                          
                               <Button
                                 size="small"
                                 variant="contained"
-                                style={{ background: COLORS.PRIMARY_COLOR, color: COLORS.WHITE }}
-                              //   onClick={addDriver}
+                                style={{background:"#2e7d32"}}
+                          
                               >
-                                <AddIcon />
-                                Verify
+                                <VerifiedIcon fontSize="small"  />
+                                Verified
                               </Button>
                             </Grid>
-                    
-
-
                       </Grid>
-
-
-
-
-
-
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{driver.driver_score}</Span>
