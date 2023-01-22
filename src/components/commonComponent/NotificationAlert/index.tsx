@@ -10,7 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import useEnhancedEffect from '@mui/material/utils/useEnhancedEffect';
 
 type TransitionProps = Omit<SlideProps, 'direction'>;
-
+//To be updated
 function TransitionLeft(props: TransitionProps) {
     return <Slide {...props} direction="left" />;
 }
