@@ -10,6 +10,7 @@ import React from "react";
 export const TOKEN = "token";
 export const USER_ID = "user_id";
 export const IS_SHIPPER = "is_shipper";
+export const CAN_POLL_NOTIFICATION = "can_poll_notification";
 
 
 // Add label here for menu render
