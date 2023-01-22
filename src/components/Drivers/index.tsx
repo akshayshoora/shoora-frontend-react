@@ -7,7 +7,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import TableRow from "@mui/material/TableRow";
-import { SelectChangeEvent, Button } from "@mui/material";
+import { SelectChangeEvent, Button, Grid } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Span from "components/commonComponent/Span";
 import useStyles from "./style";
@@ -65,9 +65,8 @@ export default function Driver() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${transport}/drivers/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${transport}/drivers/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 
@@ -271,10 +270,35 @@ export default function Driver() {
                     <TableCell align="left">
                       <Span fontType="secondary">{driver.passport_number}</Span>
                     </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">
-                        {driver.driving_license_number}
-                      </Span>
+                    <TableCell align="justify">
+                      <Grid container justifyContent={"space-around"}>
+                        <Grid item xs={6} xl={6}>
+                          <Span  fontType="secondary">
+                            {driver.driving_license_number}
+                          </Span>
+                        </Grid>
+                        <Grid item xs={6} xl={6} alignContent={"start"}>
+                         
+                              <Button
+                                size="small"
+                                variant="contained"
+                                style={{ background: COLORS.PRIMARY_COLOR, color: COLORS.WHITE }}
+                              //   onClick={addDriver}
+                              >
+                                <AddIcon />
+                                Verify
+                              </Button>
+                            </Grid>
+                    
+
+
+                      </Grid>
+
+
+
+
+
+
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{driver.driver_score}</Span>
