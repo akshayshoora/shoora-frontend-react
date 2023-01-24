@@ -1,3 +1,7 @@
+import {
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -6,6 +10,8 @@ import TableCell from "@mui/material/TableCell";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import VerifiedIcon from '@mui/icons-material/Verified';
+
 import TableRow from "@mui/material/TableRow";
 import { SelectChangeEvent, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,7 +28,7 @@ import {
   HeadCell,
   Order,
   TableFooter,
-  TableHeader,
+  TableHeaderUpdated,
 } from "components/commonComponent/Table";
 import ActionMenu, {
   MenuType,
@@ -65,9 +71,8 @@ export default function Driver() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${transport}/drivers/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${transport}/drivers/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 
@@ -135,43 +140,51 @@ export default function Driver() {
     },
   ];
 
-  const headCells: readonly HeadCell[] = [
+  const headCells: any = [
     {
       id: "name",
       numeric: false,
       disablePadding: true,
       label: "Driver Name",
-    },
-    {
-      id: "phone_number",
-      label: "Phone Number",
-      numeric: false,
-      disablePadding: false,
+      rowSpan: 2
     },
     {
       id: "passport_number",
       label: "Passport Number",
       numeric: false,
       disablePadding: false,
+      rowSpan: 2
     },
     {
-      id: "driving_license_number",
-      label: "Driving Lincence",
+      id: "working_hours_yesterday",
+      label: "Working Hours Yesterday",
       numeric: false,
       disablePadding: false,
+      alignment: "center",
+      colSpan: 2,
+    },
+    {
+      id: "working_hours_today",
+      label: "Working Hours Today",
+      numeric: false,
+      disablePadding: false,
+      alignment: "center",
+      colSpan: 2,
     },
     {
       id: "driver_score",
       label: "Driver Score",
       numeric: false,
       disablePadding: false,
+      rowSpan: 2
     },
     {
-      id: "vin",
-      label: "Vehicle Number",
+      id: "verify_license",
+      label: "Verify License",
       numeric: false,
       disablePadding: false,
-    },
+      rowSpan: 2
+    }
   ];
 
   function addDriver() {
@@ -202,17 +215,58 @@ export default function Driver() {
       }),
   });
 
+  const verifyDriverMutation = useMutation(verifyDriver, {
+    onSuccess: (data: any) => {
+      setSnackbar({
+        open: true,
+        variant: "success",
+        message: "Driver verified successfully.",
+      });
+    },
+    onError: () =>
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      }),
+  });
+
   const { mutate: mutateDeleteUser } = deleteUserMutation;
+  const { mutate: mutateVerifyDriver } = verifyDriverMutation;
 
   function deleteUser() {
     return client.delete(`${transport}/drivers/${deleteId}`);
   }
 
+  function verifyDriver(): any {
+    return Promise.resolve(400);
+    // return setTimeout(() => { return Promise.resolve(40) }, 2000);
+  }
+
   function handleDelete() {
     mutateDeleteUser();
   }
+
+  function verifyDriverHndlr() {
+    mutateVerifyDriver();
+  }
+
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.variant}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       {openDelete && (
         <DeleteModal
           open={openDelete}
@@ -244,7 +298,7 @@ export default function Driver() {
       </Box>
       <Box className={classes.root}>
         <Table className={classes.table}>
-          <TableHeader
+          <TableHeaderUpdated
             headings={headCells}
             order={order}
             orderBy={orderBy}
@@ -266,24 +320,60 @@ export default function Driver() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{driver.phone_number}</Span>
-                    </TableCell>
-                    <TableCell align="left">
                       <Span fontType="secondary">{driver.passport_number}</Span>
                     </TableCell>
-                    <TableCell align="left">
+                    {/* <TableCell align="center">
+                      <Span fontType="secondary">{driver.passport_number}</Span>
+                    </TableCell> */}
+
+                    <TableCell align="center">
                       <Span fontType="secondary">
-                        {driver.driving_license_number}
+                        {driver?.yesterday_working_hours?.yesterday_duty_hours || "-"}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Span fontType="secondary"> {driver?.yesterday_working_hours?.yesterday_duty_hours || "-"}</Span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Span fontType="secondary">
+                        {driver?.yesterday_working_hours?.yesterday_duty_hours || "-"}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Span fontType="secondary">
+                        {driver?.yesterday_working_hours?.yesterday_duty_hours || "-"}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{driver.driver_score}</Span>
+                      <Span fontType="secondary">
+                        {driver?.driver_score || 0}
+                      </Span>
                     </TableCell>
                     <TableCell align="left">
+                      {/* <Button
+                        size="small"
+                        variant="contained"
+                        style={{ background: "#2e7d32" }}
+                        onClick={verifyDriverHndlr}
+                      >
+                        <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
+                        Verify
+                      </Button> */}
+                      <Button
+                        size="small"
+                        variant="contained"
+                        style={{ background: "#ed6c02" }}
+                        onClick={verifyDriverHndlr}
+                      >
+                        <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
+                        Reverify
+                      </Button>
+                    </TableCell>
+                    {/* <TableCell align="left">
                       <Span fontType="secondary">
                         {driver.vehicle ? driver.vehicle.vin : ""}
                       </Span>
-                    </TableCell>
+                    </TableCell> */}
 
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={driver.id} />

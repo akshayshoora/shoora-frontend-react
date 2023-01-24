@@ -136,7 +136,6 @@ export default function () {
     vehicleList: any
   ) {
     if (Array.isArray(vehicleList)) {
-      console.log({ page, rowPerPage, vehicleList });
       const startIndex = rowPerPage * page,
         lastIndex = (page * rowPerPage) + rowPerPage < vehicleList.length
           ? (page * rowPerPage) + rowPerPage : vehicleList.length;
@@ -262,7 +261,7 @@ export default function () {
                                       );
                                     }}
                                   >
-                                    <i className="circle"></i>
+                                    <i className={`circle ${(item.video === "online" ? "online-vehicle" : "offline-vehicle")}`}></i>
                                     <span className="trackid">{item.vin}</span>
                                     <span className="arrowright">
                                       <svg
@@ -334,6 +333,7 @@ export default function () {
                           md={4}
                           lg={3}
                           className="liveframe"
+                          style={{ height: "238px", overflow: "hidden" }}
                         >
                           <Iframe
                             url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
@@ -341,7 +341,7 @@ export default function () {
                             position="relative"
                             width="100%"
                             id="myId"
-                            className="myClassname"
+                            // className="myClassname"
                             height="300"
                           />
                         </Grid>
@@ -352,6 +352,7 @@ export default function () {
                           md={4}
                           lg={3}
                           className="liveframe"
+                          style={{ height: "238px", overflow: "hidden" }}
                         >
                           <Iframe
                             url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
@@ -359,13 +360,12 @@ export default function () {
                             position="relative"
                             width="100%"
                             id="myId"
-                            className="myClassname"
+                            // className="myClassname"
                             height="300"
                           />
                         </Grid>
                       </Fragment>
                     ))}
-
                     {Array(STATIC_TILES_COUNT - selectedDevice.length * 2)
                       .fill(0)
                       .map((item, index) => (
@@ -381,11 +381,7 @@ export default function () {
                           <Box className="vedioLogoScreen">
                             <img src={VedioLogoImg} alt="dummy-vedio-img" />
                           </Box>
-                          <Box sx={{ my: 2 }} className="dummy-title"></Box>
-                          <Box className="dummyBtnContainer">
-                            <Box className="dummBtn"></Box>
-                            <Box className="dummBtn"></Box>
-                          </Box>
+                          <Box sx={{ mt: 1.8 }} className="dummy-title"></Box>
                         </Grid>
                       ))}
                   </Grid>
@@ -398,3 +394,8 @@ export default function () {
     </Box>
   );
 }
+
+{/* <Box className="dummyBtnContainer">
+                            <Box className="dummBtn"></Box>
+                            <Box className="dummBtn"></Box>
+                          </Box> */}

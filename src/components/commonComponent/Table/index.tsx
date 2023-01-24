@@ -194,3 +194,63 @@ export function TableHeader(props: ITableHeadingProps) {
     </TableHead>
   );
 }
+
+
+export function TableHeaderUpdated(props: any) {
+  const { headings, order, orderBy, onRequestSort, shouldShowActionMenu } =
+    props;
+
+  const classes = useStyles();
+
+  return (
+    <TableHead>
+      <TableRow>
+        {headings.map((cell: any) => (
+          <TableCell
+            key={cell.id}
+            align={cell.alignment ? cell.alignment : "left"}
+            padding={"none"}
+            sortDirection={orderBy === cell.id ? order : false}
+            className={classes.multiColumnTableHeading}
+            style={{ paddingRight: 20 }}
+            colSpan={cell.colSpan || 1}
+            rowSpan={cell.rowSpan || 1}
+          >
+            <Span fontType="secondary" size="small">
+              {cell.label}
+            </Span>
+          </TableCell>
+        ))}
+        {shouldShowActionMenu ? (
+          <TableCell
+            key={"action"}
+            align="left"
+            padding={"normal"}
+            variant={"head"}
+            rowSpan={2}
+          >
+            <Span fontType="secondary" size="small">
+              Action
+            </Span>
+          </TableCell>
+        ) : null}
+      </TableRow>
+      <TableRow>
+        {/* <TableCell className={classes.multiColumnTableChildHeading} style={{ paddingRight: 20 }} colSpan={2}>
+        </TableCell> */}
+        <TableCell className={classes.multiColumnTableChildHeading} style={{ paddingRight: 20 }} align="center">
+          Driving Hours
+        </TableCell>
+        <TableCell className={classes.multiColumnTableChildHeading} style={{ paddingRight: 20 }} align="center">
+          Duty Hours
+        </TableCell >
+        <TableCell className={classes.multiColumnTableChildHeading} style={{ paddingRight: 20 }} align="center">
+          Driving Hours
+        </TableCell>
+        <TableCell className={classes.multiColumnTableChildHeading} style={{ paddingRight: 20 }} align="center">
+          Duty Hours
+        </TableCell>
+      </TableRow>
+    </TableHead>
+  );
+}
