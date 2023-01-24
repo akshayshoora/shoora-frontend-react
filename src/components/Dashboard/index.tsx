@@ -57,9 +57,9 @@ export default function Dashboard() {
           </Grid>
         </Grid>
       </Box>
-      <Box className={classes.usrTable}>
-        <WorstDrivers />
-      </Box>
+      {/* <Box className={classes.usrTable}>
+        <Users />
+      </Box> */}
     </Box>
   );
 }

@@ -136,7 +136,11 @@ export function GeoFenceModal(props: IGeofenceProps) {
   const classes = useStyles();
   React.useEffect(() => {
     if (!vehicleList) return;
-    let filterArr: any[] = [];
+    let filterArr: any[] = [{
+      label: "All",
+      id: "all",
+      value: "all"
+    }];
     const arrVehicle = vehicleList.results;
     for (let i in arrVehicle) {
       filterArr.push({
@@ -156,9 +160,27 @@ export function GeoFenceModal(props: IGeofenceProps) {
       | number
       | string[]
       | SelectChangeEvent<string[]>
-      | IGeofenceAutocomplete
+      | IGeofenceAutocomplete,
+    reason?: any, details?: any
   ) {
-    setGeofenceVehicleData({ ...geofenceVehicleData, [key]: value });
+    const { option } = details || {};
+    if (key === "vehicle_ids" && option?.value === "all") {
+      const vehicleAllVehicles = [];
+      if (vehicleList && Array.isArray(vehicleList.results)) {
+        const vehicles: any = vehicleList.results;
+        for (let i in vehicles) {
+          vehicleAllVehicles.push({
+            label: vehicles[i]?.vin,
+            id: vehicles[i]?.id,
+            value: vehicles[i]?.id,
+          });
+        }
+        setGeofenceVehicleData({ ...geofenceVehicleData, [key]: vehicleAllVehicles });
+      }
+
+    } else {
+      setGeofenceVehicleData({ ...geofenceVehicleData, [key]: value });
+    }
   }
 
   function addGeofenceVehilce(geofenceVehicle: NewGeofenceVehicleType) {
@@ -209,7 +231,7 @@ export function GeoFenceModal(props: IGeofenceProps) {
     geofenceVehicleData.vehicle_ids = getVehicleId(
       geofenceVehicleData.vehicle_ids
     );
-    geofenceVehicleData.geofence_id = selectedItem.id;
+    geofenceVehicleData.geofence_id = selectedItem?.id;
 
     mutateAddGeofenceVehicle(geofenceVehicleData);
   };
@@ -264,8 +286,8 @@ export function GeoFenceModal(props: IGeofenceProps) {
                   marginTop: "20px",
                   marginBottom: "20px",
                 }}
-                onChange={(e, value: any) => {
-                  handleFormGeofenceVehicle("vehicle_ids", value);
+                onChange={(e: any, value: any, reason: any, details: any) => {
+                  handleFormGeofenceVehicle("vehicle_ids", value, reason, details);
                 }}
                 sx={{ width: "100%" }}
                 renderInput={(params) => (

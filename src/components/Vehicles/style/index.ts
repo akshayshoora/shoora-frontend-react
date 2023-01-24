@@ -137,4 +137,16 @@ export default makeStyles({
     display: "flex",
     justifyContent: "center",
   },
+  successLabel: {
+    fontSize: "16px",
+    lineHeight: "22px",
+    color: "#2e7d32",
+    textTransform: "capitalize"
+  },
+  errorLabel: {
+    fontSize: "16px",
+    lineHeight: "22px",
+    color: "#d32f2f",
+    textTransform: "capitalize"
+  }
 });

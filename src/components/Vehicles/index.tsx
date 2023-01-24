@@ -33,6 +33,7 @@ import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess } from "utils/FeatureCheck";
 import { auth, transport } from "constants/RouteMiddlePath";
+import { getDateTime } from "utils/calenderUtils";
 
 export default function Vehicles() {
   const [searchText, setSearchText] = React.useState("");
@@ -66,9 +67,8 @@ export default function Vehicles() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${transport}/vehicles/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 
@@ -140,21 +140,28 @@ export default function Vehicles() {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "vehicle_type",
+      id: "vin",
+      label: "Vehicle Number",
       numeric: false,
-      disablePadding: true,
-      label: "Vehicle Type",
+      disablePadding: false,
     },
     {
       id: "make",
-      label: "Made By",
+      label: "Make By",
       numeric: false,
       disablePadding: false,
     },
     { id: "model", label: "Model", numeric: false, disablePadding: false },
+
     {
-      id: "vin",
-      label: "Vehicle Number",
+      id: "last_data_received",
+      label: "Last Data Recieved",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "status",
+      label: "Status",
       numeric: false,
       disablePadding: false,
     },
@@ -249,7 +256,7 @@ export default function Vehicles() {
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
                       <Box className={classes.columnView}>
-                        <Span>{vehicle.vehicle_type}</Span>
+                        <Span>{vehicle.vin}</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
@@ -259,7 +266,13 @@ export default function Vehicles() {
                       <Span fontType="secondary">{vehicle.model}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{vehicle.vin}</Span>
+                      <Span fontType="secondary">{getDateTime(vehicle.last_device_status_timestamp)}</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Box component="span" className={vehicle.status === 'moving' ? classes.successLabel : classes.errorLabel}>{vehicle.status}</Box>
+                      {/* <Span fontType="secondary">{
+                        vehicle.status
+                      }</Span> */}
                     </TableCell>
 
                     <TableCell align="left">
@@ -285,6 +298,6 @@ export default function Vehicles() {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Box>
-    </Box>
+    </Box >
   );
 }
