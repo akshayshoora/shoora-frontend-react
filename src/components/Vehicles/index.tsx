@@ -1,4 +1,8 @@
 import * as React from "react";
+import {
+  Alert,
+  Snackbar,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -18,6 +22,8 @@ import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { stringCheckForTableCell } from "utils/StringCheck";
 import { useAppContext } from "ContextAPIs/appContext";
+import VerifiedIcon from '@mui/icons-material/Verified';
+
 import {
   HeadCell,
   Order,
@@ -152,10 +158,15 @@ export default function Vehicles() {
       disablePadding: false,
     },
     { id: "model", label: "Model", numeric: false, disablePadding: false },
-
     {
       id: "last_data_received",
       label: "Last Data Recieved",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "verify_vehicle",
+      label: "Verify Vehicle",
       numeric: false,
       disablePadding: false,
     },
@@ -194,11 +205,37 @@ export default function Vehicles() {
         message: "Something went wrong.",
       }),
   });
+  const verifyVehicleMutation = useMutation(verifyVehicleApiCall, {
+    onSuccess: (data: any) => {
+      setSnackbar({
+        open: true,
+        variant: "success",
+        message: "Vehicle verified successfully.",
+      });
+    },
+    onError: () =>
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      }),
+  });
 
   const { mutate: mutateDeleteVehicle } = deleteVehicleMutation;
+  const { mutate: mutateVehicle } = verifyVehicleMutation;
+
 
   function deleteVehicle() {
     return client.delete(`${auth}/users/${deleteId}`);
+  }
+
+  function verifyVehicleApiCall(): any {
+    return Promise.resolve(400);
+    // return setTimeout(() => { return Promise.resolve(40) }, 2000);
+  }
+
+  function verifyVehicleHndlr() {
+    mutateVehicle();
   }
 
   function handleDelete() {
@@ -207,6 +244,20 @@ export default function Vehicles() {
 
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.variant}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       {openDelete && (
         <DeleteModal
           open={openDelete}
@@ -267,6 +318,17 @@ export default function Vehicles() {
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{getDateTime(vehicle.last_device_status_timestamp)}</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Button
+                        size="small"
+                        variant="contained"
+                        style={{ background: "#2e7d32" }}
+                        onClick={verifyVehicleHndlr}
+                      >
+                        <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
+                        Verify
+                      </Button>
                     </TableCell>
                     <TableCell align="left">
                       <Box component="span" className={vehicle.status === 'moving' ? classes.successLabel : classes.errorLabel}>{vehicle.status}</Box>

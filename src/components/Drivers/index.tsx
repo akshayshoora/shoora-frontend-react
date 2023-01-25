@@ -149,8 +149,8 @@ export default function Driver() {
       rowSpan: 2
     },
     {
-      id: "passport_number",
-      label: "Passport Number",
+      id: "phone_number",
+      label: "Phone Number",
       numeric: false,
       disablePadding: false,
       rowSpan: 2
@@ -320,7 +320,7 @@ export default function Driver() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{driver.passport_number}</Span>
+                      <Span fontType="secondary">{driver.phone_number}</Span>
                     </TableCell>
                     {/* <TableCell align="center">
                       <Span fontType="secondary">{driver.passport_number}</Span>
@@ -350,7 +350,7 @@ export default function Driver() {
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      {/* <Button
+                      <Button
                         size="small"
                         variant="contained"
                         style={{ background: "#2e7d32" }}
@@ -358,8 +358,8 @@ export default function Driver() {
                       >
                         <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
                         Verify
-                      </Button> */}
-                      <Button
+                      </Button>
+                      {/* <Button
                         size="small"
                         variant="contained"
                         style={{ background: "#ed6c02" }}
@@ -367,7 +367,7 @@ export default function Driver() {
                       >
                         <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
                         Reverify
-                      </Button>
+                      </Button> */}
                     </TableCell>
                     {/* <TableCell align="left">
                       <Span fontType="secondary">
