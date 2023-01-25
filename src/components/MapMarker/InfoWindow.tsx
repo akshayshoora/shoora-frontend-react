@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import useStyles from "./style";
 import VehicleIcons from "assets/cargo-truck.png";
-import { getDateTime, getDuration } from "utils/calenderUtils";
+import { getDateTime, getDurationFromSeconds } from "utils/calenderUtils";
 
 enum Status {
   Moving = "moving",
@@ -47,7 +47,7 @@ function Marker(props: any) {
             >
               {" "}
               {vehicleInfo?.status || "-"}:{" "}
-              {getDuration(validDuration(vehicleInfo?.trip_duration))} minutes
+              {getDurationFromSeconds(validDuration(vehicleInfo?.trip_duration))}
             </Box>
             <Box component="span"> | </Box>
             <Box component="span" className="label-light">

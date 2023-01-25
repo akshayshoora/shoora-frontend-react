@@ -62,6 +62,12 @@ export default makeStyles({
             background: COLORS.GRADIENT,
             marginRight: "10px",
           },
+          "& .online-vehicle": {
+            background: COLORS.SUCCESSLIGHT
+          },
+          "& .offline-vehicle": {
+            background: COLORS.DANGER
+          },
           "& .trackid": {
             marginRight: "auto",
           },
@@ -115,16 +121,16 @@ export default makeStyles({
     },
     "& .noVedioContainer": {
       padding: "5px 14px",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-between",
-      maxHeight: "255px",
-      marginBottom: `24px`,
+      // display: "flex",
+      // flexDirection: "column",
+      // justifyContent: "space-between",
+      // maxHeight: "255px",
+      marginBottom: `16px`,
       "& .vedioLogoScreen": {
         background: "#F3F3F3",
         borderRadius: "4px",
-        minHeight: "165px",
-        height: "55%",
+        height: "180px",
+        // height: "55%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -136,9 +142,9 @@ export default makeStyles({
       },
       "& .dummy-title": {
         background: "#F3F3F3",
-        borderRadius: "10px",
-        width: "40%",
-        height: "16px",
+        borderRadius: "34px",
+        width: "60px",
+        height: "34px"
       },
       "& .dummyBtnContainer": {
         display: "flex",
