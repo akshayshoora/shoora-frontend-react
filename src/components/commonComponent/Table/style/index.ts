@@ -46,4 +46,17 @@ export default makeStyles({
       padding: "12px 0 12px 16px",
     },
   },
+  multiColumnTableHeading: {
+    "&.MuiTableCell-root": {
+      padding: "12px 0 12px 16px",
+      borderRight: "1px solid #e0e0e0"
+    },
+  },
+  multiColumnTableChildHeading: {
+    "&.MuiTableCell-root": {
+      padding: "8px 0px 8px 16px",
+      whiteSpace: "nowrap",
+      borderRight: "1px solid #e0e0e0"
+    },
+  }
 });

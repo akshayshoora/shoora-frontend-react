@@ -21,7 +21,14 @@ export async function latLongToPlace(
               : response.data.results[0].address_components[0].long_name
           );
         } else {
-          resolve(response.data.results[0].formatted_address);
+          let address = response.data.results[0].formatted_address;
+          let splitAddress: any = address.split(" ");
+          if (splitAddress[0].indexOf("+")) {
+            splitAddress.splice(0, 1);
+            address = splitAddress.join(" ")
+          }
+          resolve(address)
+          // resolve(response.data.results[0].formatted_address);
         }
       })
       .catch(function (error) {
