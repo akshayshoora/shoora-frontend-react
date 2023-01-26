@@ -15,6 +15,7 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import TableRow from "@mui/material/TableRow";
 import { SelectChangeEvent, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import Download from "@mui/icons-material/Download";
 import Span from "components/commonComponent/Span";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
@@ -294,6 +295,14 @@ export default function Driver() {
               add driver
             </Button>
           ) : null}
+          <Button
+            variant="contained"
+            sx={{ ml: 1 }}
+            style={{ background: "#1d6f42", color: COLORS.WHITE }}
+            onClick={() => { }}
+          >
+            <Download />
+          </Button>
         </Box>
       </Box>
       <Box className={classes.root}>

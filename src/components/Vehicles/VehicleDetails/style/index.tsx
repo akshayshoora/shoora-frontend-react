@@ -31,6 +31,19 @@ export default makeStyles({
     color: COLORS.SECONDARY_FONT,
     marginRight: 18,
   },
+  fieldSetContainer: {
+    border: "2px solid #ECEBF1"
+  },
+  vehicleRCLabel: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: COLORS.SECONDARY_FONT,
+  },
+  vehicleRCValue: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: COLORS.PRIMARY_FONT,
+  },
   bodyInfo: {
     fontSize: 16,
     fontWeight: 500,
