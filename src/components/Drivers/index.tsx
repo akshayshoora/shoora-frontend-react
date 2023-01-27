@@ -217,12 +217,17 @@ export default function Driver() {
   });
 
   const verifyDriverMutation = useMutation(verifyDriver, {
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, context: any) => {
       setSnackbar({
         open: true,
         variant: "success",
         message: "Driver verified successfully.",
       });
+      if (typeof (context) === "string") {
+        setTimeout(() => {
+          navigate(`/${AppPaths.DRIVERS}/${SubPaths.EDIT}/${context}`);
+        }, 1000);
+      }
     },
     onError: () =>
       setSnackbar({
@@ -239,17 +244,16 @@ export default function Driver() {
     return client.delete(`${transport}/drivers/${deleteId}`);
   }
 
-  function verifyDriver(): any {
-    return Promise.resolve(400);
-    // return setTimeout(() => { return Promise.resolve(40) }, 2000);
+  function verifyDriver(driverId: any): any {
+    return client.get(`${transport}/drivers/${driverId}/verify/`);
   }
 
   function handleDelete() {
     mutateDeleteUser();
   }
 
-  function verifyDriverHndlr() {
-    mutateVerifyDriver();
+  function verifyDriverHndlr(driverId: any) {
+    mutateVerifyDriver(driverId);
   }
 
   return (
@@ -367,7 +371,7 @@ export default function Driver() {
                         color="primary"
                         // variant="contained"
                         // style={{ background: "#2e7d32" }}
-                        onClick={verifyDriverHndlr}
+                        onClick={() => verifyDriverHndlr(driver?.id)}
                       >
                         <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
                         Verify

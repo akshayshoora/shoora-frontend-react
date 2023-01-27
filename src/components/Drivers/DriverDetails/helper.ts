@@ -96,6 +96,7 @@ export const driverLicenseInfo = [
     }
 ]
 
+
 export function getDatesInRange(startDate: any, endDate: any) {
     const date = new Date(startDate.getTime());
 

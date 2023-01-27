@@ -207,27 +207,28 @@ export default function Vehicles() {
       }),
   });
   const verifyVehicleMutation = useMutation(verifyVehicleApiCall, {
-    onSuccess: () => {
+    onSuccess: (data: any, context: any) => {
       setSnackbar({
         open: true,
         variant: "success",
         message: "Vehicle verified successfully.",
       });
-      if (verifyVehicleId) {
+      if (typeof (context) === "string") {
         setTimeout(() => {
-          navigate(`/${AppPaths.VEHICLES}/${verifyVehicleId}`);
+          navigate(`/${AppPaths.VEHICLES}/${context}`);
         }, 1000);
       }
     },
-    onError: () =>
+    onError: () => {
       setSnackbar({
         open: true,
         variant: "error",
         message: "Something went wrong.",
-      }),
+      })
+    }
   });
 
-  const { mutate: mutateDeleteVehicle } = deleteVehicleMutation;
+  const { mutate: mutateDeleteVehicle, isLoading: inProgressVerifyVehicle } = deleteVehicleMutation;
   const { mutate: mutateVehicle } = verifyVehicleMutation;
 
 
@@ -303,7 +304,7 @@ export default function Vehicles() {
             shouldShowActionMenu={true}
           />
           <TableBody>
-            {isLoading ? (
+            {(isLoading || inProgressVerifyVehicle) ? (
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
