@@ -59,6 +59,7 @@ export default function Vehicles() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("vehicle");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+  const [verifyVehicleId, setVerifyVehicleId] = React.useState<string>("");
   const { user } = useAppContext();
 
   const isAdd = actionAccess(AppPaths.VEHICLES, Actions.ADD);
@@ -206,12 +207,17 @@ export default function Vehicles() {
       }),
   });
   const verifyVehicleMutation = useMutation(verifyVehicleApiCall, {
-    onSuccess: (data: any) => {
+    onSuccess: () => {
       setSnackbar({
         open: true,
         variant: "success",
         message: "Vehicle verified successfully.",
       });
+      if (verifyVehicleId) {
+        setTimeout(() => {
+          navigate(`/${AppPaths.VEHICLES}/${verifyVehicleId}`);
+        }, 1000);
+      }
     },
     onError: () =>
       setSnackbar({
@@ -229,13 +235,13 @@ export default function Vehicles() {
     return client.delete(`${auth}/users/${deleteId}`);
   }
 
-  function verifyVehicleApiCall(): any {
-    return Promise.resolve(400);
-    // return setTimeout(() => { return Promise.resolve(40) }, 2000);
+  function verifyVehicleApiCall(vehicleId: (string | undefined)): any {
+    return client.get(`${transport}/vehicles/${vehicleId}/verify/`);
   }
 
-  function verifyVehicleHndlr() {
-    mutateVehicle();
+  function verifyVehicleHndlr(vehicleId: (string | undefined)) {
+    setVerifyVehicleId(vehicleId || "");
+    mutateVehicle(vehicleId);
   }
 
   function handleDelete() {
@@ -320,15 +326,29 @@ export default function Vehicles() {
                       <Span fontType="secondary">{getDateTime(vehicle.last_device_status_timestamp)}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Button
+                      {vehicle.can_verify && <Button
                         size="small"
-                        variant="contained"
-                        style={{ background: "#2e7d32" }}
-                        onClick={verifyVehicleHndlr}
+                        variant="outlined"
+                        color="primary"
+                        // variant="contained"
+                        // style={{ background: "#2e7d32" }}
+                        onClick={() => verifyVehicleHndlr(vehicle?.id)}
                       >
                         <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
                         Verify
-                      </Button>
+                      </Button>}
+                      {
+                        !vehicle?.can_verify && <Button
+                          size="small"
+                          variant="outlined"
+                          color="success"
+                          // style={{ borderColor: "#ed6c02" }}
+                          onClick={() => { }}
+                        >
+                          <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
+                          Verified
+                        </Button>
+                      }
                     </TableCell>
                     <TableCell align="left">
                       <Box component="span" className={vehicle.status === 'moving' ? classes.successLabel : classes.errorLabel}>{vehicle.status}</Box>
