@@ -296,6 +296,8 @@ export default function Driver() {
             </Button>
           ) : null}
           <Button
+            // variant="outlined"
+            // color="success"
             variant="contained"
             sx={{ ml: 1 }}
             style={{ background: "#1d6f42", color: COLORS.WHITE }}
@@ -359,24 +361,30 @@ export default function Driver() {
                       </Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Button
+                      {driver?.can_verify && <Button
                         size="small"
-                        variant="contained"
-                        style={{ background: "#2e7d32" }}
+                        variant="outlined"
+                        color="primary"
+                        // variant="contained"
+                        // style={{ background: "#2e7d32" }}
                         onClick={verifyDriverHndlr}
                       >
                         <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
                         Verify
-                      </Button>
-                      {/* <Button
-                        size="small"
-                        variant="contained"
-                        style={{ background: "#ed6c02" }}
-                        onClick={verifyDriverHndlr}
-                      >
-                        <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
-                        Reverify
-                      </Button> */}
+                      </Button>}
+
+                      {
+                        !driver?.can_verify && <Button
+                          size="small"
+                          variant="outlined"
+                          color="success"
+                          // style={{ borderColor: "#ed6c02" }}
+                          onClick={() => { }}
+                        >
+                          <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
+                          Verified
+                        </Button>
+                      }
                     </TableCell>
                     {/* <TableCell align="left">
                       <Span fontType="secondary">

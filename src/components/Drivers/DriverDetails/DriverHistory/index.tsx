@@ -20,7 +20,7 @@ import {
     TableHeader,
 } from "components/commonComponent/Table";
 import { getDatesInRange } from "../helper";
-import { getDateTime } from "../../../../utils/calenderUtils";
+import { getDateDisplayFormat } from "../../../../utils/calenderUtils";
 
 const DrivingHistory: React.FC<any> = () => {
     const classes = useStyles();
@@ -95,11 +95,11 @@ const DrivingHistory: React.FC<any> = () => {
         let historyList: any = [];
         if (startDate && endDate) {
             const dateList = getDatesInRange(new Date(startDate), new Date(endDate)),
-                min = 10, max = 40;
+                min = 10;
             historyList = dateList.map((item: any) => {
-                const drivingHours = Math.floor(Math.random() * (max - min + 1)) + min,
-                    duty_hours = Math.floor(Math.random() * (max - min + 1)) + min;
-                return ({ date: getDateTime(item), driving_hours: `${drivingHours} h`, duty_hours: `${duty_hours} h` })
+                const randDutyHours = Math.floor(Math.random() * (24 - 10 + 1)) + 10;
+                const drivingHours = Math.floor(Math.random() * (randDutyHours - min + 1)) + min;
+                return ({ date: getDateDisplayFormat(item), driving_hours: `${drivingHours} h`, duty_hours: `${randDutyHours} h` })
             })
         }
         return Promise.resolve(historyList);

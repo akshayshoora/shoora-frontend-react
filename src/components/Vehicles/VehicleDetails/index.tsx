@@ -125,7 +125,7 @@ export function VehicleDetails() {
                             <Box className={classes.vehicleRCLabel}>{item.labelName} :</Box>
                           </Grid>
                           <Grid item xs={6}>
-                            <Box className={classes.vehicleRCValue}>{vehicle?.rcInfo?.[item.keyName] || "-"}</Box>
+                            <Box className={classes.vehicleRCValue}>{vehicle?.vehicle_rc_info?.[item.keyName] || "-"}</Box>
                           </Grid>
                         </Grid>
                       ))
