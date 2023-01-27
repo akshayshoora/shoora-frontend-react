@@ -351,12 +351,12 @@ export default function Driver() {
                     </TableCell>
                     <TableCell align="center">
                       <Span fontType="secondary">
-                        {driver?.yesterday_working_hours?.yesterday_duty_hours || "-"}
+                        {driver?.today_working_hours?.today_driver_hours || "-"}
                       </Span>
                     </TableCell>
                     <TableCell align="center">
                       <Span fontType="secondary">
-                        {driver?.yesterday_working_hours?.yesterday_duty_hours || "-"}
+                        {driver?.today_working_hours?.today_duty_hours || "-"}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
