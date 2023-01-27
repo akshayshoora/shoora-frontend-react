@@ -225,7 +225,7 @@ export default function Driver() {
       });
       if (typeof (context) === "string") {
         setTimeout(() => {
-          navigate(`/${AppPaths.DRIVERS}/${SubPaths.EDIT}/${context}`);
+          navigate(`/${AppPaths.DRIVERS}/${context}`);
         }, 1000);
       }
     },
