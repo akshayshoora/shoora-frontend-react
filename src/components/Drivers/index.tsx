@@ -343,7 +343,7 @@ export default function Driver() {
 
                     <TableCell align="center">
                       <Span fontType="secondary">
-                        {driver?.yesterday_working_hours?.yesterday_duty_hours || "-"}
+                        {driver?.yesterday_working_hours?.yesterday_driver_hours || "-"}
                       </Span>
                     </TableCell>
                     <TableCell align="center">
