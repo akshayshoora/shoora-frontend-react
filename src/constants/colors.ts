@@ -14,7 +14,8 @@ export const COLORS = {
   gray64: "#a3a3a3",
   SUCCESS: "#2e7d32",
   SUCCESSLIGHT: "#4caf50",
-  DANGER: "#d32f2f"
+  DANGER: "#d32f2f",
+  WARNING: "#d32f2f"
 };
 
 export default COLORS;
