@@ -132,7 +132,7 @@ export function DriverDetails() {
                             <Box className={classes.vehicleRCLabel}>{item.labelName} :</Box>
                           </Grid>
                           <Grid item xs={7}>
-                            <Box className={classes.vehicleRCValue}>{driverDetails?.licenseInfo?.[item.keyName] || "-"}</Box>
+                            <Box className={classes.vehicleRCValue}>{driverDetails?.driver_licence_info?.[item.keyName] || "-"}</Box>
                           </Grid>
                         </Grid>
                       ))
