@@ -203,7 +203,7 @@ export function TableHeaderUpdated(props: any) {
   const classes = useStyles();
 
   return (
-    <TableHead>
+    <TableHead style={{ background: "#ECEBF1" }}>
       <TableRow>
         {headings.map((cell: any) => (
           <TableCell
