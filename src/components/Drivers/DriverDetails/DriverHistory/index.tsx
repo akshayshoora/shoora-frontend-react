@@ -10,6 +10,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import Span from "components/commonComponent/Span";
 
+import client from "serverCommunication/client";
 import TableRow from "@mui/material/TableRow";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import useStyles from "./style";
@@ -21,8 +22,9 @@ import {
 } from "components/commonComponent/Table";
 import { getDatesInRange } from "../helper";
 import { getDateDisplayFormat } from "../../../../utils/calenderUtils";
+import { auth, transport } from "constants/RouteMiddlePath";
 
-const DrivingHistory: React.FC<any> = () => {
+const DrivingHistory: React.FC<any> = ({ driverId }) => {
     const classes = useStyles();
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("drivers");
@@ -70,10 +72,12 @@ const DrivingHistory: React.FC<any> = () => {
 
     const handleChangePage = (event: unknown, newPage: number) => {
         setPage(newPage - 1);
+        mutateDrivingHistory({ pageNo: newPage, pageSize: rowsPerPage });
     };
     const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
+        mutateDrivingHistory({ pageNo: 0, pageSize: parseInt(event.target.value, 10) });
     };
 
     function onChangeFilterHndlr(event: React.ChangeEvent<HTMLInputElement>) {
@@ -90,25 +94,31 @@ const DrivingHistory: React.FC<any> = () => {
     });
     const { mutate: mutateDrivingHistory, isLoading, data: historyDetails } = drivingHistoryMutation;
 
-    function getHistoryApiCall(): any {
+    async function getHistoryApiCall(filterProps: any) {
         const { startDate, endDate } = filterState;
-        let historyList: any = [];
-        if (startDate && endDate) {
-            const dateList = getDatesInRange(new Date(startDate), new Date(endDate)),
-                min = 10;
-            historyList = dateList.map((item: any) => {
-                const randDutyHours = Math.floor(Math.random() * (24 - 10 + 1)) + 10;
-                const drivingHours = Math.floor(Math.random() * (randDutyHours - min + 1)) + min;
-                return ({ date: getDateDisplayFormat(item), driving_hours: `${drivingHours} h`, duty_hours: `${randDutyHours} h` })
-            })
-        }
-        return Promise.resolve(historyList);
+        // let historyList: any = [];
+        // if (startDate && endDate) {
+        //     const dateList = getDatesInRange(new Date(startDate), new Date(endDate)),
+        //         min = 10;
+        //     historyList = dateList.map((item: any) => {
+        //         const randDutyHours = Math.floor(Math.random() * (24 - 10 + 1)) + 10;
+        //         const drivingHours = Math.floor(Math.random() * (randDutyHours - min + 1)) + min;
+        //         return ({ date: getDateDisplayFormat(item), driving_hours: `${drivingHours} h`, duty_hours: `${randDutyHours} h` })
+        //     })
+        // }
+        // return Promise.resolve(historyList);
         // return setTimeout(() => { return Promise.resolve(40) }, 2000);
+        const { pageNo = 0, pageSize = 10 } = filterProps;
+        const response = await client.get(`${transport}/driver-history/?driver_id=${driverId}&history_since=${startDate}&history_until=${endDate}&page=${pageNo}&page_size=${pageSize}`);
+        return response.data;
     }
 
+
     function applyFilterHndlr(event: React.MouseEvent<HTMLButtonElement>) {
-        mutateDrivingHistory();
+        mutateDrivingHistory({ pageNo: 1, pageSize: 10 });
     }
+
+    const { results: historyList } = historyDetails || {};
     return (
         <>   <Snackbar
             open={snackbar.open}
@@ -201,18 +211,18 @@ const DrivingHistory: React.FC<any> = () => {
                                     <TableCell colSpan={8}>
                                         <LoadingScreen />
                                     </TableCell>
-                                ) : Array.isArray(historyDetails) ? (
-                                    historyDetails.map((details: any, index: number) => {
+                                ) : Array.isArray(historyList) ? (
+                                    historyList.map((details: any, index: number) => {
                                         return (
                                             <TableRow hover role="checkbox" tabIndex={0} key={index}>
                                                 <TableCell align="left">
-                                                    <Span fontType="secondary">{details?.date}</Span>
+                                                    <Span fontType="secondary">{getDateDisplayFormat(details?.created_date)}</Span>
                                                 </TableCell>
                                                 <TableCell align="left">
-                                                    <Span fontType="secondary">{details?.driving_hours}</Span>
+                                                    <Span fontType="secondary">{details?.drive_hour || "-"}</Span>
                                                 </TableCell>
                                                 <TableCell align="left">
-                                                    <Span fontType="secondary">{details?.duty_hours}</Span>
+                                                    <Span fontType="secondary">{details?.duty_hour || "-"}</Span>
                                                 </TableCell>
                                             </TableRow>
                                         );
@@ -227,7 +237,7 @@ const DrivingHistory: React.FC<any> = () => {
                             </TableBody>
                         </Table>
                         <TableFooter
-                            totalPages={1}
+                            totalPages={historyDetails && Math.ceil(historyDetails?.count / rowsPerPage)}
                             currentPage={page + 1}
                             onPageChange={handleChangePage}
                             rowsPerPage={rowsPerPage}

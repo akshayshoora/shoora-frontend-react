@@ -143,7 +143,7 @@ export function DriverDetails() {
             </Box>
           </Grid>
           <Grid xs={12} sm={12} lg={7} style={{ paddingLeft: 16 }}>
-            <DrivingHistory />
+            <DrivingHistory driverId={id} />
           </Grid>
         </Grid>
       </Box>
