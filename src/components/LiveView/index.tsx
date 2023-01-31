@@ -366,7 +366,25 @@ export default function () {
                         </Grid>
                       </Fragment>
                     ))}
-                    {Array(STATIC_TILES_COUNT - selectedDevice.length * 2)
+                    {selectedDevice.length > 0 && <Grid
+                      item
+                      xs={12}
+                      sm={12}
+                      md={8}
+                      lg={6}
+                      className="liveframe"
+                      style={{ height: "238px", overflow: "hidden" }}
+                    >
+                      <Iframe
+                        url={`http://120.79.58.1:8088/808gps/open/player/RealPlayVideo.html?account=masheye&password=12345678&PlateNum=088832552&lang=en&channel=1`}
+                        position="relative"
+                        width="100%"
+                        id="myId"
+                        // className="myClassname"
+                        height="300"
+                      />
+                    </Grid>}
+                    {Array(STATIC_TILES_COUNT - (selectedDevice.length > 0 ? 1 : 0) - selectedDevice.length * 2)
                       .fill(0)
                       .map((item, index) => (
                         <Grid
