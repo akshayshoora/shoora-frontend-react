@@ -1,4 +1,4 @@
-import { TOKEN, USER_ID, IS_SHIPPER, CAN_POLL_NOTIFICATION } from "constants/commonConstants";
+import { TOKEN, USER_ID, USER_NAME, IS_SHIPPER, CAN_POLL_NOTIFICATION } from "constants/commonConstants";
 
 export function setUserToken(token: string) {
   localStorage.setItem(TOKEN, token);
@@ -10,6 +10,15 @@ export function getUserToken(): string {
 
 export function setUserId(userId: string) {
   localStorage.setItem(USER_ID, userId);
+}
+
+export function setUserName(userName: string) {
+  localStorage.setItem(USER_NAME, userName);
+}
+
+export function getUserName(): string {
+  const userName = localStorage.getItem(USER_NAME);
+  return userName || "";
 }
 
 export function setIsShipper(userId: string): any {
