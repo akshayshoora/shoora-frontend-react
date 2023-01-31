@@ -9,6 +9,8 @@ import React from "react";
 
 export const TOKEN = "token";
 export const USER_ID = "user_id";
+export const USER_NAME = "user_name";
+
 export const IS_SHIPPER = "is_shipper";
 export const CAN_POLL_NOTIFICATION = "can_poll_notification";
 

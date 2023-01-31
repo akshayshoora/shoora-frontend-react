@@ -15,10 +15,10 @@ import { useAppContext } from "ContextAPIs/appContext";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import client from "serverCommunication/client";
-import { setUserId, setUserToken, setIsShipper, setCanPollNotification } from "utils/localStorage";
+import { setUserId, setUserToken, setIsShipper, setCanPollNotification, setUserName } from "utils/localStorage";
 import BRAND from "BrandingConstants";
 import useStyles from "./style";
-import { USER_ID } from "constants/commonConstants";
+import { USER_ID, USER_NAME } from "constants/commonConstants";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoginImg from "../../assets/macbook-pro.png";
@@ -62,6 +62,7 @@ export default function Login() {
         const { data } = response;
         setUserToken(data.access);
         setUserId(data.id);
+        setUserName(data.name)
         setIsShipper(data.is_shipper);
         setCanPollNotification(data.long_polling);
         setUser();

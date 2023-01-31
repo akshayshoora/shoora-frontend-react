@@ -26,6 +26,7 @@ import VedioLogoImg from "../../assets/video-logo.png";
 import Iframe from "react-iframe";
 import Table from "@mui/material/Table";
 import { TableFooter } from "components/commonComponent/Table";
+import { getUserName } from "utils/localStorage";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -43,6 +44,7 @@ export default function () {
   const handleChange = (event: SelectChangeEvent) => {
     setSelectStatus(event.target.value as string);
   };
+  const loginUserName: any = getUserName();
 
   const classes = useStyles();
   const [snackbar, setSnackbar] = useState<{
@@ -366,7 +368,7 @@ export default function () {
                         </Grid>
                       </Fragment>
                     ))}
-                    {selectedDevice.length > 0 && <Grid
+                    {(selectedDevice.length > 0 && loginUserName === "Solar") && <Grid
                       item
                       xs={12}
                       sm={12}
@@ -376,7 +378,7 @@ export default function () {
                       style={{ height: "238px", overflow: "hidden" }}
                     >
                       <Iframe
-                        url={`http://120.79.58.1:8088/808gps/open/player/RealPlayVideo.html?account=masheye&password=12345678&PlateNum=088832552&lang=en&channel=1`}
+                        url={`http://120.79.58.1:8088/808gps/open/player/video.html?lang=en&vehiIdno=088832552&account=masheye&password=12345678&channel=1`}
                         position="relative"
                         width="100%"
                         id="myId"
@@ -384,7 +386,7 @@ export default function () {
                         height="300"
                       />
                     </Grid>}
-                    {Array(STATIC_TILES_COUNT - (selectedDevice.length > 0 ? 1 : 0) - selectedDevice.length * 2)
+                    {Array(STATIC_TILES_COUNT - ((selectedDevice.length > 0 && loginUserName === "Solar") ? 1 : 0) - selectedDevice.length * 2)
                       .fill(0)
                       .map((item, index) => (
                         <Grid
