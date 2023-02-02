@@ -56,9 +56,9 @@ export default function Dashboard() {
           </Grid>
         </Grid>
       </Box>
-      {/* <Box className={classes.usrTable}>
+      <Box className={classes.usrTable}>
         <Users />
-      </Box> */}
+      </Box>
     </Box>
   );
 }

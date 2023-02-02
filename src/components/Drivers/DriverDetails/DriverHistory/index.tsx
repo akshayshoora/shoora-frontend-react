@@ -23,6 +23,8 @@ import {
 import { getDatesInRange } from "../helper";
 import { getDateDisplayFormat } from "../../../../utils/calenderUtils";
 import { auth, transport } from "constants/RouteMiddlePath";
+import Download from "@mui/icons-material/Download";
+import COLORS from "../../../../constants/colors";
 
 const DrivingHistory: React.FC<any> = ({ driverId }) => {
     const classes = useStyles();
@@ -118,6 +120,29 @@ const DrivingHistory: React.FC<any> = ({ driverId }) => {
         mutateDrivingHistory({ pageNo: 1, pageSize: 10 });
     }
 
+    async function downloadBtnHndlr() {
+        try {
+            const driverCsvData = await client.get(`${transport}/driver/${driverId}/history-download/`);
+            console.log(driverCsvData)
+            const currentDate = new Date().toLocaleString("default", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            });
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
+            hiddenElement.target = '_blank';
+            hiddenElement.download = `driver-history-${currentDate}.csv`;
+            hiddenElement.click();
+        } catch (e) {
+            setSnackbar({
+                open: true,
+                variant: "error",
+                message: "Something went wrong.",
+            })
+        }
+    }
+
     const { results: historyList } = historyDetails || {};
     return (
         <>   <Snackbar
@@ -187,7 +212,16 @@ const DrivingHistory: React.FC<any> = ({ driverId }) => {
                                 <Box display="flex" alignItems="center" justifyContent="end">
                                     <Button
                                         variant="contained"
-                                        style={{ color: "#fff" }}
+                                        sx={{ mr: 1 }}
+                                        style={{ background: "#1d6f42", color: COLORS.WHITE }}
+                                        onClick={downloadBtnHndlr}
+                                        disabled={!(Array.isArray(historyList) && historyList.length > 0)}
+                                    >
+                                        <Download />
+                                    </Button>
+                                    <Button
+                                        variant="contained"
+                                        style={{ color: "#fff", whiteSpace: "nowrap" }}
                                         size="large"
                                         onClick={applyFilterHndlr}
                                     >
