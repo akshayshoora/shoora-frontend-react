@@ -224,14 +224,14 @@ export default function AddDriver() {
 
   function handleFileUploadHnlr(event: any) {
     const file = event.target.files[0];
-    if (file.size <= 50000) {
+    if (file.size <= 1000000) {
       driverImgFileRef.current = event.target.files[0];
       setDriverImgFileState(URL.createObjectURL(file));
     } else {
       setSnackbar({
         open: true,
         variant: "error",
-        message: "File size should be less than 50kb.",
+        message: "File size should be less than 1mb.",
       })
     }
 
@@ -314,7 +314,7 @@ export default function AddDriver() {
                 </Box>
               </Box>
               <Box sx={{ textAlign: "center", mt: 0.5, px: 2, fontSize: "0.9rem" }}>
-                * Maximum size 50kb allowed in PNG or JPG or JPEG format.
+                * Maximum size 1mb allowed in PNG or JPG or JPEG format.
               </Box>
             </Box>
           </Grid>
