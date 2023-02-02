@@ -31,13 +31,14 @@ export default makeStyles({
     },
   },
   videoAlert: {
-    margin: "50px 0 0 0",
+    // margin: "50px 0 0 0",
     "& video": {
       width: "465px !important",
+      maxWidth: "100%",
       height: "300px !important",
     },
     "& .video-react": {
-      maxWidth: "initial",
+      maxWidth: "100%",
       width: "465px !important",
       height: "300px",
     },
@@ -55,11 +56,12 @@ export default makeStyles({
     background: "#eee",
     borderRadius: "10px",
     maxWidth: "100px",
+    maxHeight: "100px",
     marginRight: "15px",
     padding: "10px",
   },
   avtarDriveInfo: {
     display: "flex",
-    margin: "-25px 0 5px 0",
+    // margin: "-25px 0 5px 0",
   },
 });

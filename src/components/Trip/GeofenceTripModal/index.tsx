@@ -189,9 +189,9 @@ export function GeofenceTripModal(props: ITripModalProps) {
                                         displayEmpty
                                     >
                                         {geofenceList?.results?.map((item: any, index: any) => {
-                                            if (item.address) {
-                                                return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
-                                                    {item.address}
+                                            if (item.name) {
+                                                   return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
+                                                    {item.name}
                                                 </MenuItem>)
                                             }
                                         })}
@@ -214,9 +214,9 @@ export function GeofenceTripModal(props: ITripModalProps) {
                                         displayEmpty
                                     >
                                         {geofenceList?.results?.map((item: any, index: any) => {
-                                            if (item.address) {
+                                            if (item.name) {
                                                 return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
-                                                    {item.address}
+                                                    {item.name}
                                                 </MenuItem>)
                                             }
                                         })}

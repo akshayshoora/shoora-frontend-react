@@ -4,6 +4,8 @@ import DistanceIcon from "../assets/distance.png";
 import Trips from "../assets/trips.png";
 import DurationIcon from "../assets/time.png";
 import kilometresIcon from "../assets/speedometer.png";
+import VehicleIcon from "../assets/vehicle-w.png";
+
 
 import React from "react";
 
@@ -93,23 +95,29 @@ type ROLE_BASED_FILTERED_SUMMARY = {
 export const getRoleBasedFilteredSummary = () => {
   const data: ROLE_BASED_FILTERED_SUMMARY[] = [
     {
-      dataIndex: "total_trips",
-      label: "Trips",
-      icon: Trips,
+      dataIndex: "total_vehicles",
+      label: "Total Vehicle",
+      icon: VehicleIcon,
       value: "10",
     },
     {
       dataIndex: "total_distance",
-      label: "Distance (km)",
+      label: "Total Distance",
       icon: DistanceIcon,
       value: "50",
     },
     {
-      dataIndex: "total_duration",
-      label: "Duration (hours)",
-      icon: DurationIcon,
+      dataIndex: "average_distance",
+      label: "Average Distance",
+      icon: DistanceIcon,
       value: "15",
     },
+    // {
+    //   dataIndex: "total_duration",
+    //   label: "Duration",
+    //   icon: DurationIcon,
+    //   value: "15",
+    // },
 
     {
       dataIndex: "total_incidents",

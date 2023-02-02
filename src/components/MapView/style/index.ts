@@ -58,6 +58,12 @@ export default makeStyles({
             background: COLORS.GRADIENT,
             marginRight: "10px",
           },
+          "& .moving-vehicle": {
+            background: COLORS.SUCCESSLIGHT
+          },
+          "& .offline-vehicle": {
+            background: COLORS.DANGER
+          },
           "& .trackid": {
             marginRight: "auto",
           },

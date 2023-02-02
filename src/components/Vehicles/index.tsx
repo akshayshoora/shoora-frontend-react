@@ -23,6 +23,8 @@ import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { stringCheckForTableCell } from "utils/StringCheck";
 import { useAppContext } from "ContextAPIs/appContext";
 import VerifiedIcon from '@mui/icons-material/Verified';
+import Download from "@mui/icons-material/Download";
+import { getDateDisplayFormat } from "../../utils/calenderUtils";
 
 import {
   HeadCell,
@@ -249,6 +251,30 @@ export default function Vehicles() {
     mutateDeleteVehicle();
   }
 
+
+  async function downloadBtnHndlr() {
+    try {
+      const vehicleCsvData = await client.get(`${transport}/vehicles/download/`);
+      const currentDate = new Date().toLocaleString("default", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      var hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(vehicleCsvData.data);
+      hiddenElement.target = '_blank';
+      hiddenElement.download = `vehicle-report-${currentDate}.csv`;
+      hiddenElement.click();
+    }
+    catch (e) {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      })
+    }
+  }
+
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       <Snackbar
@@ -292,6 +318,14 @@ export default function Vehicles() {
               add vehicle
             </Button>
           ) : null}  */}
+          <Button
+            variant="contained"
+            sx={{ ml: 1 }}
+            style={{ background: "#1d6f42", color: COLORS.WHITE }}
+            onClick={downloadBtnHndlr}
+          >
+            <Download />
+          </Button>
         </Box>
       </Box>
       <Box className={classes.root}>

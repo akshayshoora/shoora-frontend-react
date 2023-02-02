@@ -256,6 +256,29 @@ export default function Driver() {
     mutateVerifyDriver(driverId);
   }
 
+  async function downloadBtnHndlr() {
+    try {
+      const driverCsvData = await client.get(`${transport}/drivers/download/`);
+      console.log(driverCsvData)
+      const currentDate = new Date().toLocaleString("default", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      var hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
+      hiddenElement.target = '_blank';
+      hiddenElement.download = `driver-report-${currentDate}.csv`;
+      hiddenElement.click();
+    } catch (e) {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      })
+    }
+  }
+
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       <Snackbar
@@ -305,7 +328,7 @@ export default function Driver() {
             variant="contained"
             sx={{ ml: 1 }}
             style={{ background: "#1d6f42", color: COLORS.WHITE }}
-            onClick={() => { }}
+            onClick={downloadBtnHndlr}
           >
             <Download />
           </Button>

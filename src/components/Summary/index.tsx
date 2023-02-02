@@ -57,12 +57,12 @@ export default function Summary() {
   return (
     <Grid
       container
-      spacing={{ xs: 2, md: 3 }}
+      spacing={{ xs: 2, md: 2 }}
       columns={{ xs: 4, sm: 8, md: 12 }}
     >
       {ROLE_BASED_FILTERED_SUMMARY.map((item) => {
         return (
-          <Grid item xs={2} sm={3} md={3} key={item.dataIndex}>
+          <Grid item xs={2} sm={4} md={3} key={item.dataIndex}>
             <Item elevation={0}>
               <Typography variant="subtitle1" fontSize={14} component="div">
                 {item.label}

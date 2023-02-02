@@ -203,7 +203,7 @@ export default function MapView() {
                                         )
                                       }
                                     >
-                                      <i className="circle"></i>
+                                      <i className={`circle ${(item.status === "moving" ? "moving-vehicle" : "offline-vehicle")}`}></i>
                                       <span className="trackid">
                                         {item.vin}
                                       </span>
