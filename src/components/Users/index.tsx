@@ -32,7 +32,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess } from "utils/FeatureCheck";
-import { auth, transport } from "constants/RouteMiddlePath";
+import { auth } from "constants/RouteMiddlePath";
 import { getUserRoles } from "utils/helpers";
 
 export default function Users() {
@@ -67,7 +67,8 @@ export default function Users() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${transport}/drivers/?ordering=driver_score&page=1&page_size=10`;
+    let getApiUrl = `${auth}/users/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 
@@ -144,35 +145,30 @@ export default function Users() {
       label: "Name",
     },
     {
-      id: "phone_number",
-      label: "Phone Number",
+      id: "email",
+      label: "Email",
+      numeric: false,
+      disablePadding: false,
+    },
+    { id: "address", label: "Address", numeric: false, disablePadding: false },
+    {
+      id: "contact_code",
+      label: "Contact Code",
       numeric: false,
       disablePadding: false,
     },
     {
-      id: "driver_score",
-      label: "Driver Score",
-      numeric: false, disablePadding: false
+      id: "contact",
+      label: "contact_number",
+      numeric: false,
+      disablePadding: false,
     },
-    // { id: "passport_number", label: "Passport Number", numeric: false, disablePadding: false },
-    // {
-    //   id: "driving_license_number",
-    //   label: "License Number",
-    //   numeric: false,
-    //   disablePadding: false,
-    // },
-    // {
-    //   id: "contact",
-    //   label: "contact_number",
-    //   numeric: false,
-    //   disablePadding: false,
-    // },
-    // {
-    //   id: "role",
-    //   label: "Roles",
-    //   numeric: false,
-    //   disablePadding: false,
-    // },
+    {
+      id: "role",
+      label: "Roles",
+      numeric: false,
+      disablePadding: false,
+    },
   ];
 
   function addUser() {
@@ -224,8 +220,8 @@ export default function Users() {
         />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Top Ten Risky Driver</Heading>
-        {/* <Box style={{ display: "flex", alignItems: "center" }}>
+        <Heading>Users</Heading>
+        <Box style={{ display: "flex", alignItems: "center" }}>
           <Box style={{ marginRight: isAdd ? 12 : 0 }}>
             <SearchBox
               onChangeFunc={handleSearchInput}
@@ -242,7 +238,7 @@ export default function Users() {
               add user
             </Button>
           ) : null}
-        </Box> */}
+        </Box>
       </Box>
       <Box className={classes.root}>
         <Table className={classes.table}>
@@ -251,14 +247,14 @@ export default function Users() {
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
-            shouldShowActionMenu={false}
+            shouldShowActionMenu={true}
           />
           <TableBody>
             {isLoading ? (
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : Array.isArray(userList?.results) && userList?.results.length ? (
+            ) : userList?.results.length ? (
               userList?.results.map((user: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
@@ -268,26 +264,26 @@ export default function Users() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{user.phone_number}</Span>
+                      <Span fontType="secondary">{user.email}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{user.driver_score || 0}</Span>
+                      <Span fontType="secondary">{user.address}</Span>
                     </TableCell>
-                    {/* <TableCell align="left">
-                      <Span fontType="secondary">{user.driving_license_number}</Span>
-                    </TableCell> */}
-                    {/* <TableCell align="left">
+                    <TableCell align="left">
+                      <Span fontType="secondary">{user.contact_code}</Span>
+                    </TableCell>
+                    <TableCell align="left">
                       <Span fontType="secondary">{user.contact_number}</Span>
-                    </TableCell> */}
-                    {/* <TableCell align="left">
+                    </TableCell>
+                    <TableCell align="left">
                       <Span fontType="secondary">
                         {getUserRoles(user.roles)}
                       </Span>
-                    </TableCell> */}
+                    </TableCell>
 
-                    {/* <TableCell align="left">
+                    <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={user.id} />
-                    </TableCell> */}
+                    </TableCell>
                   </TableRow>
                 );
               })
@@ -300,13 +296,13 @@ export default function Users() {
             )}
           </TableBody>
         </Table>
-        {/* <TableFooter
+        <TableFooter
           totalPages={Math.ceil(userList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
-        /> */}
+        />
       </Box>
     </Box>
   );
