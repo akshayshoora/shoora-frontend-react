@@ -122,7 +122,7 @@ const DrivingHistory: React.FC<any> = ({ driverId }) => {
 
     async function downloadBtnHndlr() {
         try {
-            const driverCsvData = await client.get(`${transport}/driver/${driverId}/history-download/`);
+            const driverCsvData = await client.get(`${transport}/drivers/${driverId}/history-download/`);
             console.log(driverCsvData)
             const currentDate = new Date().toLocaleString("default", {
                 day: "numeric",
