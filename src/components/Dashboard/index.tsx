@@ -7,8 +7,8 @@ import Heading from "components/commonComponent/Heading";
 import Chip from "@mui/material/Chip";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import Users from "components/Users";
-
+// import Users from "components/Users";
+import RiskyDrivers from "components/RiskyDrivers";
 import Summary from "../Summary";
 import { useAppContext } from "ContextAPIs/appContext";
 import Charts from "components/Charts";
@@ -57,7 +57,7 @@ export default function Dashboard() {
         </Grid>
       </Box>
       <Box className={classes.usrTable}>
-        <Users />
+        <RiskyDrivers />
       </Box>
     </Box>
   );
