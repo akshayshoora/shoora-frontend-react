@@ -40,8 +40,10 @@ export async function latLongToPlace(
 
 export function getUserRoles(roles: any) {
   let role = "";
-  for (let i = 0; i < roles.length; i++) {
-    role = role + roles[i].display_name + (roles.length - 1 != i ? "|" : "");
+  if (Array.isArray(roles)) {
+    for (let i = 0; i < roles.length; i++) {
+      role = role + roles[i].display_name + (roles.length - 1 != i ? "|" : "");
+    }
   }
   return role;
 }
