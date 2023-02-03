@@ -149,13 +149,18 @@ export default function Users() {
       numeric: false,
       disablePadding: false,
     },
-    { id: "passport_number", label: "Passport Number", numeric: false, disablePadding: false },
     {
-      id: "driving_license_number",
-      label: "License Number",
-      numeric: false,
-      disablePadding: false,
+      id: "driver_score",
+      label: "Driver Score",
+      numeric: false, disablePadding: false
     },
+    // { id: "passport_number", label: "Passport Number", numeric: false, disablePadding: false },
+    // {
+    //   id: "driving_license_number",
+    //   label: "License Number",
+    //   numeric: false,
+    //   disablePadding: false,
+    // },
     // {
     //   id: "contact",
     //   label: "contact_number",
@@ -266,11 +271,11 @@ export default function Users() {
                       <Span fontType="secondary">{user.phone_number}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{user.passport_number}</Span>
+                      <Span fontType="secondary">{user.driver_score || 0}</Span>
                     </TableCell>
-                    <TableCell align="left">
+                    {/* <TableCell align="left">
                       <Span fontType="secondary">{user.driving_license_number}</Span>
-                    </TableCell>
+                    </TableCell> */}
                     {/* <TableCell align="left">
                       <Span fontType="secondary">{user.contact_number}</Span>
                     </TableCell> */}
