@@ -32,7 +32,7 @@ export default function SidePanel() {
     //@ts-ignore
     const menuList: AppPaths[] = getFeatures();
 
-    return menuList.map((menuItem) => {
+    return menuList.map((menuItem, index) => {
       const isActive = selectedView.includes(menuItem);
       return (
         <Box
@@ -40,6 +40,7 @@ export default function SidePanel() {
             [classes.selectedMenuItem]: isActive,
           })}
           onClick={() => changeView(menuItem)}
+          key={`menu-${index}`}
         >
           <MenuIcons icon={menuItem} isActive={isActive} />
           <Box component={"span"} className={classes.menuLabel}>

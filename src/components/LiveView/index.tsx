@@ -25,6 +25,7 @@ import notFound from "../../assets/404.jpg";
 import VedioLogoImg from "../../assets/video-logo.png";
 import Iframe from "react-iframe";
 import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
 import { TableFooter } from "components/commonComponent/Table";
 import { getUserName } from "utils/localStorage";
 
@@ -38,7 +39,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const STATIC_TILES_COUNT = 16;
-export default function () {
+export default function LiveView () {
   const [selectStatus, setSelectStatus] = useState("all");
   const [visibleVehicleState, setVisibleVehicleState] = useState<any>([]);
   const handleChange = (event: SelectChangeEvent) => {
@@ -199,7 +200,7 @@ export default function () {
             columns={{ xs: 12, sm: 12, md: 12, lg: 12 }}
             style={{ marginTop: 24 }}
           >
-            <Grid xs={12} sm={4} md={4} lg={3} style={{ paddingLeft: 24 }}>
+            <Grid item xs={12} sm={4} md={4} lg={3} style={{ paddingLeft: 24 }}>
               <Item elevation={1}>
                 <Box className="contentMain">
                   <Box className="searchbar" style={{ padding: "20px 15px" }}>
@@ -242,53 +243,55 @@ export default function () {
                       {!isVehicleLoading && (
                         <div>
                           <Table>
-                            {Array.isArray(visibleVehicleState) && visibleVehicleState.map(
-                              (item: any, index: number) => (
-                                <TableRow>
-                                  <div
-                                    className={
-                                      item["video"] !== "online"
-                                        ? "loaddataDisable"
-                                        : "loaddata"
-                                    }
-                                    style={
-                                      selectedDevice.includes(item.device)
-                                        ? { background: "#fef8f0" }
-                                        : {}
-                                    }
-                                    onClick={() => {
-                                      handleVehicleView(
-                                        item.device,
-                                        item.status
-                                      );
-                                    }}
-                                  >
-                                    <i className={`circle ${(item.video === "online" ? "online-vehicle" : "offline-vehicle")}`}></i>
-                                    <span className="trackid">{item.vin}</span>
-                                    <span className="arrowright">
-                                      <svg
-                                        width="17"
-                                        height="15"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                          stroke={
-                                            item.video !== "online"
-                                              ? "#D3D3D3"
-                                              : "#3BB3C3"
-                                          }
-                                          stroke-width="1.5"
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                        ></path>
-                                      </svg>
-                                    </span>
-                                  </div>
-                                </TableRow>
-                              )
-                            )}
+                            <TableBody>
+                              {Array.isArray(visibleVehicleState) && visibleVehicleState.map(
+                                (item: any, index: number) => (
+                                  <TableRow key={`device-${item.id}`}>
+                                    <div
+                                      className={
+                                        item["video"] !== "online"
+                                          ? "loaddataDisable"
+                                          : "loaddata"
+                                      }
+                                      style={
+                                        selectedDevice.includes(item.device)
+                                          ? { background: "#fef8f0" }
+                                          : {}
+                                      }
+                                      onClick={() => {
+                                        handleVehicleView(
+                                          item.device,
+                                          item.status
+                                        );
+                                      }}
+                                    >
+                                      <i className={`circle ${(item.video === "online" ? "online-vehicle" : "offline-vehicle")}`}></i>
+                                      <span className="trackid">{item.vin}</span>
+                                      <span className="arrowright">
+                                        <svg
+                                          width="17"
+                                          height="15"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path
+                                            d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
+                                            stroke={
+                                              item.video !== "online"
+                                                ? "#D3D3D3"
+                                                : "#3BB3C3"
+                                            }
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          ></path>
+                                        </svg>
+                                      </span>
+                                    </div>
+                                  </TableRow>
+                                )
+                              )}
+                            </TableBody>
                           </Table>
                           <Box
                             style={{
@@ -322,12 +325,12 @@ export default function () {
                 </Box>
               </Item>
             </Grid>
-            <Grid xs={12} sm={8} md={8} lg={9} style={{ paddingLeft: 16 }}>
+            <Grid item xs={12} sm={8} md={8} lg={9} style={{ paddingLeft: 16 }}>
               <Item elevation={0}>
                 <Box className="liveViewVideo">
-                  <Grid container lg={12}>
+                  <Grid container>
                     {selectedDevice.map((item) => (
-                      <Fragment key={item}>
+                      <Fragment key={`selected-${item}`}>
                         <Grid
                           item
                           xs={12}

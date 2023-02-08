@@ -91,7 +91,7 @@ export function GeofenceDetails() {
           columns={{ xs: 12, sm: 12, md: 12, lg: 12 }}
           style={{ marginTop: 24 }}
         >
-          <Grid xs={12} sm={6} md={6} lg={5} style={{ paddingLeft: 24 }}>
+          <Grid item xs={12} sm={6} md={6} lg={5} style={{ paddingLeft: 24 }}>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Geofence Name:</Box>
               <Box
@@ -125,7 +125,7 @@ export function GeofenceDetails() {
               />
             </Box>
           </Grid>
-          <Grid xs={12} sm={6} md={6} lg={7} style={{ paddingLeft: 16 }}>
+          <Grid item xs={12} sm={6} md={6} lg={7} style={{ paddingLeft: 16 }}>
             <GeoFenceMap
               circleRadius={Number(geofenceData?.radius)}
               center={{ lat: geofenceData.latitude, lng: geofenceData.longitude }}
