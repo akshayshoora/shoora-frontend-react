@@ -255,9 +255,11 @@ export default function RiskyDrivers() {
                     />
                     <TableBody>
                         {isLoading ? (
-                            <TableCell colSpan={8}>
-                                <LoadingScreen />
-                            </TableCell>
+                            <TableRow>
+                                <TableCell colSpan={8}>
+                                    <LoadingScreen />
+                                </TableCell>
+                            </TableRow>
                         ) : Array.isArray(riskyDriversList?.results) && riskyDriversList?.results.length ? (
                             riskyDriversList?.results.map((user: any, index: number) => {
                                 return (
@@ -273,30 +275,17 @@ export default function RiskyDrivers() {
                                         <TableCell align="left">
                                             <Span fontType="secondary">{user.driver_score || 0}</Span>
                                         </TableCell>
-                                        {/* <TableCell align="left">
-                      <Span fontType="secondary">{user.driving_license_number}</Span>
-                    </TableCell> */}
-                                        {/* <TableCell align="left">
-                      <Span fontType="secondary">{user.contact_number}</Span>
-                    </TableCell> */}
-                                        {/* <TableCell align="left">
-                      <Span fontType="secondary">
-                        {getUserRoles(user.roles)}
-                      </Span>
-                    </TableCell> */}
-
-                                        {/* <TableCell align="left">
-                      <ActionMenu menu={actionMenuItems} id={user.id} />
-                    </TableCell> */}
                                     </TableRow>
                                 );
                             })
                         ) : (
-                            <TableCell colSpan={8}>
-                                <div className={classes.noDataView}>
-                                    <Span fontType="secondary">No Data Found</Span>
-                                </div>
-                            </TableCell>
+                            <TableRow>
+                                <TableCell colSpan={8}>
+                                    <div className={classes.noDataView}>
+                                        <Span fontType="secondary">No Data Found</Span>
+                                    </div>
+                                </TableCell>
+                            </TableRow>
                         )}
                     </TableBody>
                 </Table>
@@ -308,6 +297,6 @@ export default function RiskyDrivers() {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         /> */}
             </Box>
-        </Box>
+        </Box >
     );
 }

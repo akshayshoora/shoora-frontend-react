@@ -44,12 +44,12 @@ export default function Dashboard() {
           columns={{ xs: 6, sm: 8, md: 12 }}
           style={{ marginTop: 24 }}
         >
-          <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+          <Grid item xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
             <Item elevation={1}>
               <Charts />
             </Item>
           </Grid>
-          <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+          <Grid item xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
             <Item elevation={0}>
               <PieCharts />
             </Item>

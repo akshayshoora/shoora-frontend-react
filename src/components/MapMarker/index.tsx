@@ -21,9 +21,9 @@ export default function MapMarker(props: IMapTestProps) {
   useEffect(() => {
     if (props.zoomDeviceId && Array.isArray(list)) {
       const { current_location } =
-          (Array.isArray(list) &&
-            list.find((item) => item.device === props.zoomDeviceId)) ||
-          {},
+        (Array.isArray(list) &&
+          list.find((item) => item.device === props.zoomDeviceId)) ||
+        {},
         { latitude, longitude } = current_location || {};
       MapRef.current.setCenter(new google.maps.LatLng(+latitude, +longitude));
       MapRef.current.setZoom(10);
@@ -40,9 +40,7 @@ export default function MapMarker(props: IMapTestProps) {
   useEffect(() => {
     if (Array.isArray(list)) {
       const loader = new Loader({
-        apiKey: `${process.env.REACT_APP_MAP_KEY}`,
-        version: "weekly",
-        libraries: ["places"],
+        apiKey: `${process.env.REACT_APP_MAP_KEY}`
       });
 
       loader.load().then(() => {
