@@ -443,6 +443,23 @@ export default function AddDriver() {
               }
             />
           </Grid>
+          <Grid item xs={4}>
+            <Typography
+              fontSize={16}
+              style={{ fontWeight: 200, marginBottom: 8 }}
+            >
+              Date Of Birth
+            </Typography>
+            <TextField
+              // id="date"
+              type="date"
+              sx={{ width: "100%" }}
+              size="small"
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Grid>
           {/* <Grid item xs={4}>
             {driverId && <TextInput
               label="Driver Score"

@@ -259,7 +259,6 @@ export default function Driver() {
   async function downloadBtnHndlr() {
     try {
       const driverCsvData = await client.get(`${transport}/drivers/download/`);
-      console.log(driverCsvData)
       const currentDate = new Date().toLocaleString("default", {
         day: "numeric",
         month: "long",
