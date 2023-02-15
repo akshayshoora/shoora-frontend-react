@@ -28,7 +28,7 @@ export default makeStyles({
       boxShadow: "0px 0px 8px rgb(0 0 0 / 10%)",
       borderRadius: "12px",
       marginBottom: "25px",
-      padding: "20px",
+      // padding: "20px",
       position: "relative",
       "& h3": {
         marginTop: "0px",
@@ -40,23 +40,25 @@ export default makeStyles({
       },
       "& p": {
         fontSize: "14px",
-        marginBottom: "30px",
+        marginBottom: "0px",
       },
       "& .btnWrapper": {
-        position: "absolute",
-        left: "0",
-        right: "0",
-        background: "#fff",
+        // position: "absolute",
+        // left: "0",
+        // right: "0",
+        // background: "#fff",
         padding: "15px 20px",
         borderTop: "1px solid #ECEBF1",
         justifyContent: "center",
-        display: "none",
+        display: "flex",
         bottom: "0",
         textAlign: "center",
+        opacity: 0.8,
         "& .gbtn": {
           textTransform: "capitalize",
           borderRadius: "50px",
-          width: "60%",
+          // width: "60%",
+          whiteSpace: "nowrap",
           "& span": {
             display: "none",
           },
@@ -64,7 +66,7 @@ export default makeStyles({
       },
       "&:hover": {
         "& .btnWrapper": {
-          display: "flex",
+          opacity: 1
         },
       },
     },

@@ -27,82 +27,59 @@ const style = {
     boxShadow: 24,
 };
 
-interface IDriverModal {
+interface IVehicleModal {
     closeModalHndlr: any;
     showSnackbarCallback: any;
 }
 
-const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
-    const [driverReportState, setDriverReportState] = useState({
-        driver_id: "0",
+const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) => {
+    const [geofenceReportState, setGeofenceReportState] = useState({
+        startAddress: "0",
         startDate: "",
         endDate: "",
-        emails: "",
+        endAddress: "0",
     });
     const classes = useStyles();
-    const { data: driverList, isLoading } = useQuery(
-        ["drivers"],
-        () => getDrivers(),
-        { refetchOnWindowFocus: false }
+    const { data: geofenceList, isLoading } = useQuery(
+        ["geofences"], () => getGeofences()
     );
 
-    async function getDrivers() {
-        let getApiUrl = `${transport}/drivers/`;
+    async function getGeofences() {
+        let getApiUrl = `${transport}/geofences/`;
+
         const response = await client.get(getApiUrl);
         return response.data;
     }
 
-    function closeModalHndlr() {
-
-    }
     function onChangeHndlr(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
-        setDriverReportState(prevState => ({ ...prevState, [name]: value }));
+        setGeofenceReportState(prevState => ({ ...prevState, [name]: value }));
     }
 
-    const drivingHistoryMutation = useMutation(generateDriverReportApiCall, {
+    const vehicleReportMutation = useMutation(generateVehicleReportApiCall, {
         onSuccess: (responseData) => {
             const { data } = responseData || {};
-            props.showSnackbarCallback("success", data || "Driver report sended successfully.", true);
+            props.showSnackbarCallback("success", data || "Vehicle report sended successfully.", true);
         },
         onError: () => {
-            props.showSnackbarCallback("error", "Error while sending driver report.", false);
+            props.showSnackbarCallback("error", "Error while sending vehicle report.", false);
         }
     });
-    async function generateDriverReportApiCall() {
-        const { startDate, endDate, driver_id, emails } = driverReportState,
-            isoUntilDate = endDate ? new Date(endDate).toISOString() : "",
-            isoSinceDate = startDate ? new Date(startDate).toISOString() : "",
-            params: any = {
-                startDate: isoSinceDate, endDate: isoUntilDate, driver_id, emails
-            }
-        const response = await client.get(`${monitor}/trips/download`, { params });
-        return response.data;
+    async function generateVehicleReportApiCall() {
+        // const { startDate, endDate, startAddress, endAddress } = geofenceReportState,
+        //     isoUntilDate = endDate ? new Date(endDate).toISOString() : "",
+        //     isoSinceDate = startDate ? new Date(startDate).toISOString() : "",
+        //     params: any = {
+        //         startDate: isoSinceDate, endDate: isoUntilDate, startAddress, endAddress
+        //     }
+        // const response = await client.get(`${monitor}/trips/download`, { params });
+        // return response.data;
+        return Promise.reject("");
     }
-    const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = drivingHistoryMutation;
+    const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
 
     function generateReportHndlr() {
         mutateDrivingHistory();
-    }
-
-    async function downloadBtnHndlr() {
-        try {
-            const { driver_id, startDate, endDate } = driverReportState;
-            const driverCsvData = await client.get(`${transport}/drivers/${driver_id}/history-download/`);
-            const currentDate = new Date().toLocaleString("default", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-            });
-            var hiddenElement = document.createElement('a');
-            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
-            hiddenElement.target = '_blank';
-            hiddenElement.download = `driver-history-${currentDate}.csv`;
-            hiddenElement.click();
-            props.showSnackbarCallback("success", "Driver duty hours report downloaded successfully.", true);
-        } catch (e) {
-            props.showSnackbarCallback("error", "Error while downloading report.", false);
-        }
     }
 
     return (
@@ -113,7 +90,7 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                 variant="h6"
                 component="h2"
             >
-                Driver Duty Hours Report
+                Trip Between Geofence
                 <i onClick={props.closeModalHndlr}>
                     <svg
                         width="24"
@@ -174,26 +151,52 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                     <CircularProgress />
                 </Box>}
                 <Grid container columnSpacing={3}>
-                    <Grid item xs={12} style={{ marginBottom: 24 }}>
+                    <Grid item xs={6} style={{ marginBottom: 24 }}>
                         <Typography
                             fontSize={16}
                             style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
                         >
-                            Driver
+                            Start Address
                         </Typography>
                         <TextField
                             sx={{ width: "100%" }}
                             select
-                            id="driver_id"
-                            name="driver_id"
-                            value={driverReportState.driver_id}
+                            id="startAddress"
+                            name="startAddress"
+                            value={geofenceReportState.startAddress}
                             onChange={onChangeHndlr}
                             size="small"
                         >
                             <MenuItem selected={true} style={{ fontSize: 14 }} value="0">
                                 Select
                             </MenuItem>
-                            {driverList?.results?.map((item: any, index: any) => {
+                            {geofenceList?.results?.map((item: any, index: any) => {
+                                return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
+                                    {item.name}
+                                </MenuItem>)
+                            })}
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={6} style={{ marginBottom: 24 }}>
+                        <Typography
+                            fontSize={16}
+                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                        >
+                            Start Address
+                        </Typography>
+                        <TextField
+                            sx={{ width: "100%" }}
+                            select
+                            id="endAddress"
+                            name="endAddress"
+                            value={geofenceReportState.endAddress}
+                            onChange={onChangeHndlr}
+                            size="small"
+                        >
+                            <MenuItem selected={true} style={{ fontSize: 14 }} value="0">
+                                Select
+                            </MenuItem>
+                            {geofenceList?.results?.map((item: any, index: any) => {
                                 return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
                                     {item.name}
                                 </MenuItem>)
@@ -216,7 +219,7 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={driverReportState.startDate}
+                            value={geofenceReportState.startDate}
                             onChange={onChangeHndlr}
                         />
                     </Grid>
@@ -236,7 +239,7 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={driverReportState.endDate}
+                            value={geofenceReportState.endDate}
                             onChange={onChangeHndlr}
                         />
                     </Grid>
@@ -249,9 +252,9 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                                 className="gbtn"
                                 variant="contained"
                                 style={{ color: COLORS.WHITE }}
-                                onClick={downloadBtnHndlr}
+                                onClick={generateReportHndlr}
                             >
-                                Download Now
+                                Generate Report
                             </Button>
                         </Box>
                     </Grid>
@@ -262,5 +265,5 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
     )
 })
 
-export default DriverDutyHoursModal;
+export default TripBetweenGeofenceModal;
 
