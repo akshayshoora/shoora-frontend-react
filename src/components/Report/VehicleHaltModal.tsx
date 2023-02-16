@@ -6,10 +6,12 @@ import TextInput from "components/commonComponent/TextInput";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import COLORS from "constants/colors";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
+import Autocomplete from '@mui/material/Autocomplete';
+
 // API Call
 import client from "serverCommunication/client";
 import { useMutation, useQuery } from "react-query";
@@ -31,7 +33,23 @@ interface IVehicleModal {
     closeModalHndlr: any;
     showSnackbarCallback: any;
 }
+const top100Films = [
+    { test: 'The Shawshank Redemption', yeartest: 1994 },
+    { test: 'The Godfather', yeartest: 1972 },
+];
 
+const CustomPaper = (props: any) => {
+    console.log(props);
+    const refData = useRef<any>(null);
+    useEffect(() => {
+        console.log({ refData });
+        if (refData.current) {
+            console.log("REf data mouted", refData);
+            console.log(refData?.current?.height);
+        }
+    }, [refData.current]);
+    return <div ref={refData} elevation={8} {...props}></div>;
+};
 const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
     const [vehicleReportState, setVehicleReportState] = useState({
         vehicle_id: "0",
@@ -47,7 +65,7 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
     );
 
     async function getVehicles() {
-        let getApiUrl = `${transport}/vehicles/`;
+        let getApiUrl = `${transport}/vehicles/?page=1&page_size=500`;
         const response = await client.get(getApiUrl);
         return response.data;
     }
@@ -68,12 +86,14 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
     });
     async function generateVehicleReportApiCall() {
         const { since, until, vehicle_id, emails } = vehicleReportState,
-            isoUntilDate = until ? new Date(until).toISOString() : "",
-            isoSinceDate = since ? new Date(since).toISOString() : "",
+            isoSinceDate = until ? new Date(since).toISOString() : "",
+            untilDate = new Date(until);
+        untilDate.setDate(untilDate.getDate() + 1);
+        const isoUntilDate = until ? untilDate.toISOString() : "",
             params: any = {
                 since: isoSinceDate, until: isoUntilDate, vehicle_id, emails
             }
-        const response = await client.get(`${monitor}/trips/download`, { params });
+        const response = await client.get(`${monitor}/trips/download-haults`, { params });
         return response.data;
     }
     const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
@@ -82,6 +102,14 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
         mutateDrivingHistory();
     }
 
+    function onSelectVehicleHndlr(event: any, selectedValue: any) {
+        const { id: vehicle_id } = selectedValue || {};
+        if (vehicle_id) {
+            setVehicleReportState(prevState => ({ ...prevState, vehicle_id }));
+        }
+    }
+
+    const { results = [] } = vehicleList || {};
     return (
         <Box sx={style}>
             <Typography
@@ -158,24 +186,18 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
                         >
                             Vehicle
                         </Typography>
-                        <TextField
-                            sx={{ width: "100%" }}
-                            select
-                            id="vehicle_id"
-                            name="vehicle_id"
-                            value={vehicleReportState.vehicle_id}
-                            onChange={onChangeHndlr}
+                        <Autocomplete
                             size="small"
-                        >
-                            <MenuItem selected={true} style={{ fontSize: 14 }} value="0">
-                                Select
-                            </MenuItem>
-                            {vehicleList?.results?.map((item: any, index: any) => {
-                                return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
-                                    {item.vin}
-                                </MenuItem>)
-                            })}
-                        </TextField>
+                            id="vehicle_id"
+                            options={results}
+                            loading={isLoading}
+                            onChange={onSelectVehicleHndlr}
+                            getOptionLabel={(option) => option.vin}
+                            placeholder="Select"
+                            // onInputChange={autoCompleteHndlr}
+                            fullWidth={true}
+                            renderInput={(params) => <TextField name="vehicle_id" placeholder={"Search by vehicle"} {...params} />}
+                        />
                     </Grid>
                     <Grid item xs={6} style={{ marginBottom: 24 }}>
                         <Typography
@@ -187,7 +209,7 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
                         <TextField
                             id="since"
                             name="since"
-                            type="datetime-local"
+                            type="date"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
@@ -207,7 +229,7 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
                         <TextField
                             id="until"
                             name="until"
-                            type="datetime-local"
+                            type="date"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{
