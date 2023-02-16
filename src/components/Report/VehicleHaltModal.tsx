@@ -27,82 +27,59 @@ const style = {
     boxShadow: 24,
 };
 
-interface IDriverModal {
+interface IVehicleModal {
     closeModalHndlr: any;
     showSnackbarCallback: any;
 }
 
-const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
-    const [driverReportState, setDriverReportState] = useState({
-        driver_id: "0",
-        startDate: "",
-        endDate: "",
+const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
+    const [vehicleReportState, setVehicleReportState] = useState({
+        vehicle_id: "0",
+        since: "",
+        until: "",
         emails: "",
     });
     const classes = useStyles();
-    const { data: driverList, isLoading } = useQuery(
-        ["drivers"],
-        () => getDrivers(),
+    const { data: vehicleList, isLoading } = useQuery(
+        ["vehicle"],
+        () => getVehicles(),
         { refetchOnWindowFocus: false }
     );
 
-    async function getDrivers() {
-        let getApiUrl = `${transport}/drivers/`;
+    async function getVehicles() {
+        let getApiUrl = `${transport}/vehicles/`;
         const response = await client.get(getApiUrl);
         return response.data;
     }
 
-    function closeModalHndlr() {
-
-    }
     function onChangeHndlr(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
-        setDriverReportState(prevState => ({ ...prevState, [name]: value }));
+        setVehicleReportState(prevState => ({ ...prevState, [name]: value }));
     }
 
-    const drivingHistoryMutation = useMutation(generateDriverReportApiCall, {
+    const vehicleReportMutation = useMutation(generateVehicleReportApiCall, {
         onSuccess: (responseData) => {
             const { data } = responseData || {};
-            props.showSnackbarCallback("success", data || "Driver report sended successfully.", true);
+            props.showSnackbarCallback("success", data || "Vehicle report sended successfully.", true);
         },
         onError: () => {
-            props.showSnackbarCallback("error", "Error while sending driver report.", false);
+            props.showSnackbarCallback("error", "Error while sending vehicle report.", false);
         }
     });
-    async function generateDriverReportApiCall() {
-        const { startDate, endDate, driver_id, emails } = driverReportState,
-            isoUntilDate = endDate ? new Date(endDate).toISOString() : "",
-            isoSinceDate = startDate ? new Date(startDate).toISOString() : "",
+    async function generateVehicleReportApiCall() {
+        const { since, until, vehicle_id, emails } = vehicleReportState,
+            isoUntilDate = until ? new Date(until).toISOString() : "",
+            isoSinceDate = since ? new Date(since).toISOString() : "",
             params: any = {
-                startDate: isoSinceDate, endDate: isoUntilDate, driver_id, emails
+                since: isoSinceDate, until: isoUntilDate, vehicle_id, emails
             }
         const response = await client.get(`${monitor}/trips/download`, { params });
         return response.data;
     }
-    const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = drivingHistoryMutation;
+    const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
 
     function generateReportHndlr() {
         mutateDrivingHistory();
-    }
-
-    async function downloadBtnHndlr() {
-        try {
-            const { driver_id, startDate, endDate } = driverReportState;
-            const driverCsvData = await client.get(`${transport}/drivers/${driver_id}/history-download/`);
-            const currentDate = new Date().toLocaleString("default", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-            });
-            var hiddenElement = document.createElement('a');
-            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
-            hiddenElement.target = '_blank';
-            hiddenElement.download = `driver-history-${currentDate}.csv`;
-            hiddenElement.click();
-            props.showSnackbarCallback("success", "Driver duty hours report downloaded successfully.", true);
-        } catch (e) {
-            props.showSnackbarCallback("error", "Error while downloading report.", false);
-        }
     }
 
     return (
@@ -113,7 +90,7 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                 variant="h6"
                 component="h2"
             >
-                Driver Duty Hours Report
+                Vehicle Halt Report
                 <i onClick={props.closeModalHndlr}>
                     <svg
                         width="24"
@@ -179,23 +156,23 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                             fontSize={16}
                             style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
                         >
-                            Driver
+                            Vehicle
                         </Typography>
                         <TextField
                             sx={{ width: "100%" }}
                             select
-                            id="driver_id"
-                            name="driver_id"
-                            value={driverReportState.driver_id}
+                            id="vehicle_id"
+                            name="vehicle_id"
+                            value={vehicleReportState.vehicle_id}
                             onChange={onChangeHndlr}
                             size="small"
                         >
                             <MenuItem selected={true} style={{ fontSize: 14 }} value="0">
                                 Select
                             </MenuItem>
-                            {driverList?.results?.map((item: any, index: any) => {
+                            {vehicleList?.results?.map((item: any, index: any) => {
                                 return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
-                                    {item.name}
+                                    {item.vin}
                                 </MenuItem>)
                             })}
                         </TextField>
@@ -208,15 +185,15 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                             Start Date
                         </Typography>
                         <TextField
-                            id="startDate"
-                            name="startDate"
-                            type="date"
+                            id="since"
+                            name="since"
+                            type="datetime-local"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={driverReportState.startDate}
+                            value={vehicleReportState.since}
                             onChange={onChangeHndlr}
                         />
                     </Grid>
@@ -228,20 +205,40 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                             End Date
                         </Typography>
                         <TextField
-                            id="endDate"
-                            name="endDate"
-                            type="date"
+                            id="until"
+                            name="until"
+                            type="datetime-local"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={driverReportState.endDate}
+                            value={vehicleReportState.until}
+                            onChange={onChangeHndlr}
+                        />
+                    </Grid>
+                    <Grid item xs={12} style={{ marginBottom: 24 }}>
+                        <Typography
+                            fontSize={16}
+                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                        >
+                            Email Ids
+                        </Typography>
+                        <TextField
+                            id="emails"
+                            name="emails"
+                            type="text"
+                            sx={{ width: "100%" }}
+                            size="small"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={vehicleReportState.emails}
                             onChange={onChangeHndlr}
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <Box sx={{ mt: 1.5 }} style={{ display: "flex", justifyContent: "end" }}>
+                        <Box style={{ display: "flex", justifyContent: "end" }}>
                             <Button className="cBtn" onClick={props.closeModalHndlr}>
                                 Cancel
                             </Button>
@@ -249,9 +246,9 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                                 className="gbtn"
                                 variant="contained"
                                 style={{ color: COLORS.WHITE }}
-                                onClick={downloadBtnHndlr}
+                                onClick={generateReportHndlr}
                             >
-                                Download Now
+                                Generate Report
                             </Button>
                         </Box>
                     </Grid>
@@ -262,5 +259,5 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
     )
 })
 
-export default DriverDutyHoursModal;
+export default VehicleHaltModal;
 

@@ -32,11 +32,11 @@ interface IDriverModal {
     showSnackbarCallback: any;
 }
 
-const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
+const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
     const [driverReportState, setDriverReportState] = useState({
         driver_id: "0",
-        startDate: "",
-        endDate: "",
+        since: "",
+        until: "",
         emails: "",
     });
     const classes = useStyles();
@@ -70,11 +70,11 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
         }
     });
     async function generateDriverReportApiCall() {
-        const { startDate, endDate, driver_id, emails } = driverReportState,
-            isoUntilDate = endDate ? new Date(endDate).toISOString() : "",
-            isoSinceDate = startDate ? new Date(startDate).toISOString() : "",
+        const { since, until, driver_id, emails } = driverReportState,
+            isoUntilDate = until ? new Date(until).toISOString() : "",
+            isoSinceDate = since ? new Date(since).toISOString() : "",
             params: any = {
-                startDate: isoSinceDate, endDate: isoUntilDate, driver_id, emails
+                since: isoSinceDate, until: isoUntilDate, driver_id, emails
             }
         const response = await client.get(`${monitor}/trips/download`, { params });
         return response.data;
@@ -85,26 +85,6 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
         mutateDrivingHistory();
     }
 
-    async function downloadBtnHndlr() {
-        try {
-            const { driver_id, startDate, endDate } = driverReportState;
-            const driverCsvData = await client.get(`${transport}/drivers/${driver_id}/history-download/`);
-            const currentDate = new Date().toLocaleString("default", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-            });
-            var hiddenElement = document.createElement('a');
-            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
-            hiddenElement.target = '_blank';
-            hiddenElement.download = `driver-history-${currentDate}.csv`;
-            hiddenElement.click();
-            props.showSnackbarCallback("success", "Driver duty hours report downloaded successfully.", true);
-        } catch (e) {
-            props.showSnackbarCallback("error", "Error while downloading report.", false);
-        }
-    }
-
     return (
         <Box sx={style}>
             <Typography
@@ -113,7 +93,7 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                 variant="h6"
                 component="h2"
             >
-                Driver Duty Hours Report
+                Driver Trip Report
                 <i onClick={props.closeModalHndlr}>
                     <svg
                         width="24"
@@ -208,15 +188,15 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                             Start Date
                         </Typography>
                         <TextField
-                            id="startDate"
-                            name="startDate"
-                            type="date"
+                            id="since"
+                            name="since"
+                            type="datetime-local"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={driverReportState.startDate}
+                            value={driverReportState.since}
                             onChange={onChangeHndlr}
                         />
                     </Grid>
@@ -228,20 +208,40 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                             End Date
                         </Typography>
                         <TextField
-                            id="endDate"
-                            name="endDate"
-                            type="date"
+                            id="until"
+                            name="until"
+                            type="datetime-local"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={driverReportState.endDate}
+                            value={driverReportState.until}
+                            onChange={onChangeHndlr}
+                        />
+                    </Grid>
+                    <Grid item xs={12} style={{ marginBottom: 24 }}>
+                        <Typography
+                            fontSize={16}
+                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                        >
+                            Email Ids
+                        </Typography>
+                        <TextField
+                            id="emails"
+                            name="emails"
+                            type="text"
+                            sx={{ width: "100%" }}
+                            size="small"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={driverReportState.emails}
                             onChange={onChangeHndlr}
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <Box sx={{ mt: 1.5 }} style={{ display: "flex", justifyContent: "end" }}>
+                        <Box style={{ display: "flex", justifyContent: "end" }}>
                             <Button className="cBtn" onClick={props.closeModalHndlr}>
                                 Cancel
                             </Button>
@@ -249,9 +249,9 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                                 className="gbtn"
                                 variant="contained"
                                 style={{ color: COLORS.WHITE }}
-                                onClick={downloadBtnHndlr}
+                                onClick={generateReportHndlr}
                             >
-                                Download Now
+                                Generate Report
                             </Button>
                         </Box>
                     </Grid>
@@ -262,5 +262,5 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
     )
 })
 
-export default DriverDutyHoursModal;
+export default DriverTripModal;
 

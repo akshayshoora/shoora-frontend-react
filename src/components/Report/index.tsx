@@ -23,23 +23,40 @@ import style from "./style";
 import { text } from "stream/consumers";
 import TextInput from "components/commonComponent/TextInput";
 
+import { auth, transport } from "constants/RouteMiddlePath";
+import client from "serverCommunication/client";
 //Modal
 import VehicleReportModal from "./VehicleReportModal";
 import DriverReportModal from "./DriverReportModal";
 import DriverDutyHoursModal from "./DriverDutyHoursModal";
+import VehicleHaltModal from "./VehicleHaltModal";
+import DriverTripModal from "./DriverTripModal";
+import VehicleTripModal from "./VehicleTripModal";
+import TripBetweenGeofenceModal from "./TripBetweenGeofenceModal";
 
 function getActiveModalComponent(modalId: string) {
   switch (modalId) {
-    case "vehicle-report":
-      return VehicleReportModal;
-    case "driver-report":
-      return DriverReportModal;
+    case "vehicle-halt-report":
+      return VehicleHaltModal;
+    case "driver-trip-report":
+      return DriverTripModal;
+    case "vehicle-trip-report":
+      return VehicleTripModal;
     case "driver-duty-hours":
       return DriverDutyHoursModal;
+    case "trip-between-geofence":
+      return TripBetweenGeofenceModal;
     default:
       return null;
   }
 }
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: "#fff",
+  ...theme.typography.body2,
+  color: theme.palette.text.secondary,
+  position: "relative",
+  boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
+}));
 type ISnackbarVariant = "success" | "error" | "info";
 export default function Report() {
   const [searchText, setSearchText] = useState("");
@@ -68,14 +85,6 @@ export default function Report() {
     border: "1px solid #000",
     boxShadow: 24,
   };
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "#fff",
-    ...theme.typography.body2,
-    color: theme.palette.text.secondary,
-    position: "relative",
-    boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
-  }));
 
   const [open, setOpen] = useState(false);
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -124,6 +133,50 @@ export default function Report() {
     return null;
   }, [modalState.activeModalId, closeModalHndlr, showSnackbarCallback]);
 
+  async function vehicleReportMasterHndlr() {
+    try {
+      const vehicleCsvData = await client.get(`${transport}/vehicles/download/`);
+      const currentDate = new Date().toLocaleString("default", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      var hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(vehicleCsvData.data);
+      hiddenElement.target = '_blank';
+      hiddenElement.download = `vehicle-report-${currentDate}.csv`;
+      hiddenElement.click();
+    }
+    catch (e) {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      })
+    }
+  }
+  async function driverReportMasterHndlr() {
+    try {
+      const driverCsvData = await client.get(`${transport}/drivers/download/`);
+      const currentDate = new Date().toLocaleString("default", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+      var hiddenElement = document.createElement('a');
+      hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
+      hiddenElement.target = '_blank';
+      hiddenElement.download = `driver-report-${currentDate}.csv`;
+      hiddenElement.click();
+    } catch (e) {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      })
+    }
+  }
+
   return (
     <>
       <Snackbar
@@ -161,16 +214,13 @@ export default function Report() {
               >
                 <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                   <Box className="reportBox">
-                    <h3>Vehicle Report</h3>
-                    <p>
-                      Event Report provides us you with the list of events of the
-                      vehicle throughout the specified date range set by you.
-                    </p>
-                    <p>Last Generated on: </p>
-                    <h4>
-                      Report not generated <br />
-                      yet
-                    </h4>
+                    <Box sx={{ padding: "20px" }}>
+                      <h3>Vehicle Halt Report</h3>
+                      <p>
+                        Vehicle halt report captures the stappages of a vehicle over a particular duration and the location of the stoppage.
+                      </p>
+                      <p>Last Generated on: </p>
+                    </Box>
 
                     <div className="btnWrapper">
                       <Button
@@ -178,7 +228,7 @@ export default function Report() {
                         variant="contained"
                         style={{ color: COLORS.WHITE }}
                         onClick={handleOpen}
-                        data-id="vehicle-report"
+                        data-id="vehicle-halt-report"
                       >
                         <AddIcon /> Generate Report
                       </Button>
@@ -187,24 +237,21 @@ export default function Report() {
                 </Grid>
                 <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                   <Box className="reportBox">
-                    <h3>Driver Report</h3>
-                    <p>
-                      Event Report provides us you with the list of events of the
-                      vehicle throughout the specified date range set by you.
-                    </p>
-                    <p>Last Generated on: </p>
-                    <h4>
-                      Report not generated <br />
-                      yet
-                    </h4>
+                    <Box sx={{ padding: "20px" }}>
+                      <h3>Driver Trip Report</h3>
+                      <p>
+                        Driver trip report captures the runnings of a driver from point A to point B with the count of incidents and distance travelled.
+                      </p>
+                      <p>Last Generated on: </p>
+                    </Box>
 
                     <div className="btnWrapper">
                       <Button
                         className="gbtn"
                         variant="contained"
                         style={{ color: COLORS.WHITE }}
-                        data-id="driver-report"
                         onClick={handleOpen}
+                        data-id="driver-trip-report"
                       >
                         <AddIcon /> Generate Report
                       </Button>
@@ -213,16 +260,59 @@ export default function Report() {
                 </Grid>
                 <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                   <Box className="reportBox">
-                    <h3>Driver Duty Hours Report</h3>
-                    <p>
-                      Event Report provides us you with the list of events of the
-                      vehicle throughout the specified date range set by you.
-                    </p>
-                    <p>Last Generated on: </p>
-                    <h4>
-                      Report not generated <br />
-                      yet
-                    </h4>
+                    <Box sx={{ padding: "20px" }}>
+                      <h3>Vehicle Trip Report</h3>
+                      <p>
+                        Vehicle trip report captures the runnings of a vehicle from point A to point B with the count of incidents and distance travelled.
+                      </p>
+                      <p>Last Generated on: </p>
+                    </Box>
+
+                    <div className="btnWrapper">
+                      <Button
+                        className="gbtn"
+                        variant="contained"
+                        style={{ color: COLORS.WHITE }}
+                        onClick={handleOpen}
+                        data-id="vehicle-trip-report"
+                      >
+                        <AddIcon /> Generate Report
+                      </Button>
+                    </div>
+                  </Box>
+                </Grid>
+                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+                  <Box className="reportBox">
+                    <Box sx={{ padding: "20px" }}>
+                      <h3>Driver Report Master</h3>
+                      <p>
+                        Master data of all drivers with their overall score and driving/duty hours for today and yesterday
+                      </p>
+                      <p>Last Generated on: </p>
+                    </Box>
+
+                    <div className="btnWrapper">
+                      <Button
+                        className="gbtn"
+                        variant="contained"
+                        style={{ color: COLORS.WHITE }}
+                        onClick={driverReportMasterHndlr}
+                        data-id="driver-report-master"
+                      >
+                        <AddIcon /> Download Now
+                      </Button>
+                    </div>
+                  </Box>
+                </Grid>
+                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+                  <Box className="reportBox">
+                    <Box sx={{ padding: "20px" }}>
+                      <h3>Driver Duty Hour Report</h3>
+                      <p>
+                        Driving and Duty hours for a particular driver for n number of historic days
+                      </p>
+                      <p>Last Generated on: </p>
+                    </Box>
 
                     <div className="btnWrapper">
                       <Button
@@ -239,41 +329,36 @@ export default function Report() {
                 </Grid>
                 <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                   <Box className="reportBox">
-                    <h3>Trip Report</h3>
-                    <p>
-                      Event Report provides us you with the list of events of the
-                      vehicle throughout the specified date range set by you.
-                    </p>
-                    <p>Last Generated on: </p>
-                    <h4>
-                      Report not generated <br />
-                      yet
-                    </h4>
+                    <Box sx={{ padding: "20px" }}>
+                      <h3>Vehicle Report Master</h3>
+                      <p>
+                        Master data of all vehicles
+                      </p>
+                      <p>Last Generated on: </p>
+                    </Box>
 
                     <div className="btnWrapper">
                       <Button
                         className="gbtn"
                         variant="contained"
                         style={{ color: COLORS.WHITE }}
-                        onClick={handleOpen}
+                        onClick={vehicleReportMasterHndlr}
+                        data-id="vehicle-report-master"
                       >
-                        <AddIcon /> Generate Report
+                        <AddIcon /> Download Now
                       </Button>
                     </div>
                   </Box>
                 </Grid>
                 <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
                   <Box className="reportBox">
-                    <h3>Trip Report</h3>
-                    <p>
-                      Event Report provides us you with the list of events of the
-                      vehicle throughout the specified date range set by you.
-                    </p>
-                    <p>Last Generated on: </p>
-                    <h4>
-                      Report not generated <br />
-                      yet
-                    </h4>
+                    <Box sx={{ padding: "20px" }}>
+                      <h3>Trip Between Geofence</h3>
+                      <p>
+                        No of trips concluded by all vehicles between two points of interest
+                      </p>
+                      <p>Last Generated on: </p>
+                    </Box>
 
                     <div className="btnWrapper">
                       <Button
@@ -281,37 +366,14 @@ export default function Report() {
                         variant="contained"
                         style={{ color: COLORS.WHITE }}
                         onClick={handleOpen}
+                        data-id="trip-between-geofence"
                       >
                         <AddIcon /> Generate Report
                       </Button>
                     </div>
                   </Box>
                 </Grid>
-                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-                  <Box className="reportBox">
-                    <h3>Trip Report</h3>
-                    <p>
-                      Event Report provides us you with the list of events of the
-                      vehicle throughout the specified date range set by you.
-                    </p>
-                    <p>Last Generated on: </p>
-                    <h4>
-                      Report not generated <br />
-                      yet
-                    </h4>
 
-                    <div className="btnWrapper">
-                      <Button
-                        className="gbtn"
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={handleOpen}
-                      >
-                        <AddIcon /> Generate Report
-                      </Button>
-                    </div>
-                  </Box>
-                </Grid>
               </Grid>
             </Box>
           </Box>
@@ -331,120 +393,3 @@ export default function Report() {
     </>
   );
 }
-
-
-{/* <Box sx={style}>
-  <Typography
-    id="modal-modal-title"
-    className={classes.alertHead}
-    variant="h6"
-    component="h2"
-  >
-    Event Report
-    <i onClick={handleClose}>
-      <svg
-        width="24"
-        height="25"
-        viewBox="0 0 24 25"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g opacity="0.9" filter="url(#filter0_d_2762_100820)">
-          <path
-            d="M18 6L6 18M6 6L18 18"
-            stroke="#fff"
-            stroke-linecap="square"
-          />
-        </g>
-        <defs>
-          <filter
-            id="filter0_d_2762_100820"
-            x="-4"
-            y="-2"
-            width="32"
-            height="32"
-            filterUnits="userSpaceOnUse"
-            color-interpolation-filters="sRGB"
-          >
-            <feFlood flood-opacity="0" result="BackgroundImageFix" />
-            <feColorMatrix
-              in="SourceAlpha"
-              type="matrix"
-              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
-              result="hardAlpha"
-            />
-            <feOffset dy="2" />
-            <feGaussianBlur stdDeviation="2" />
-            <feComposite in2="hardAlpha" operator="out" />
-            <feColorMatrix
-              type="matrix"
-              values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-            />
-            <feBlend
-              mode="normal"
-              in2="BackgroundImageFix"
-              result="effect1_dropShadow_2762_100820"
-            />
-            <feBlend
-              mode="normal"
-              in="SourceGraphic"
-              in2="effect1_dropShadow_2762_100820"
-              result="shape"
-            />
-          </filter>
-        </defs>
-      </svg>
-    </i>
-  </Typography>
-  <Box className={classes.reportContent}>
-    <Grid style={{ marginBottom: 24 }}>
-      <TextInput
-        label="Enter Report Name (Optional)"
-        placeholder=""
-        value=""
-        isRequired={false}
-        onChange={(value) => handleFormUser()}
-      />
-      <small>You can give this report a custom name</small>
-    </Grid>
-    <Grid style={{ marginBottom: 24 }} className={classes.reportDate}>
-      <TextField
-        id="datetime-local1"
-        type="datetime-local"
-        defaultValue="2023-01-02T09:30"
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <TextField
-        id="datetime-local2"
-        type="datetime-local"
-        defaultValue="2023-02-02T10:30"
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-    </Grid>
-    <Grid style={{ marginBottom: 24 }}>
-      <TextInput
-        label="Enter Email Address"
-        placeholder=""
-        value=""
-        isRequired={false}
-        onChange={(value) => handleFormUser()}
-      />
-    </Grid>
-    <Box>
-      <Button className="cBtn" onClick={handleClose}>
-        Cancel
-      </Button>
-      <Button
-        className="gbtn"
-        variant="contained"
-        style={{ color: COLORS.WHITE }}
-      >
-        Generate Report
-      </Button>
-    </Box>
-  </Box>
-</Box> */}
