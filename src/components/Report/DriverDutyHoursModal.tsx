@@ -10,6 +10,8 @@ import React, { useState } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
+import Autocomplete from '@mui/material/Autocomplete';
+
 // API Call
 import client from "serverCommunication/client";
 import { useMutation, useQuery } from "react-query";
@@ -37,7 +39,6 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
         driver_id: "0",
         startDate: "",
         endDate: "",
-        emails: "",
     });
     const classes = useStyles();
     const { data: driverList, isLoading } = useQuery(
@@ -47,7 +48,7 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
     );
 
     async function getDrivers() {
-        let getApiUrl = `${transport}/drivers/`;
+        let getApiUrl = `${transport}/drivers/?page=1&page_size=500`;
         const response = await client.get(getApiUrl);
         return response.data;
     }
@@ -70,12 +71,15 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
         }
     });
     async function generateDriverReportApiCall() {
-        const { startDate, endDate, driver_id, emails } = driverReportState,
-            isoUntilDate = endDate ? new Date(endDate).toISOString() : "",
-            isoSinceDate = startDate ? new Date(startDate).toISOString() : "",
+        const { startDate, endDate, driver_id } = driverReportState,
+            isoStartData = endDate ? new Date(startDate).toISOString() : "",
+            untilDate = new Date(endDate);
+        untilDate.setDate(untilDate.getDate() + 1);
+        const isoEndDate = endDate ? untilDate.toISOString() : "",
             params: any = {
-                startDate: isoSinceDate, endDate: isoUntilDate, driver_id, emails
+                startDate: isoStartData, endDate: isoEndDate, driver_id
             }
+        console.log({ params });
         const response = await client.get(`${monitor}/trips/download`, { params });
         return response.data;
     }
@@ -87,8 +91,11 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
 
     async function downloadBtnHndlr() {
         try {
-            const { driver_id, startDate, endDate } = driverReportState;
-            const driverCsvData = await client.get(`${transport}/drivers/${driver_id}/history-download/`);
+            const { driver_id, startDate, endDate } = driverReportState,
+                params: any = {
+                    startDate, endDate
+                }
+            const driverCsvData = await client.get(`${transport}/drivers/${driver_id}/history-download/`, { params });
             const currentDate = new Date().toLocaleString("default", {
                 day: "numeric",
                 month: "long",
@@ -104,6 +111,14 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
             props.showSnackbarCallback("error", "Error while downloading report.", false);
         }
     }
+
+    function onSelectVehicleHndlr(event: any, selectedValue: any) {
+        const { id: driver_id } = selectedValue || {};
+        if (driver_id) {
+            setDriverReportState(prevState => ({ ...prevState, driver_id }));
+        }
+    }
+    const { results = [] } = driverList || {};
 
     return (
         <Box sx={style}>
@@ -181,7 +196,23 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                         >
                             Driver
                         </Typography>
-                        <TextField
+                        <Autocomplete
+                            size="small"
+                            id="driver_id"
+                            options={results}
+                            loading={isLoading}
+                            onChange={onSelectVehicleHndlr}
+                            getOptionLabel={(option) => option.name}
+                            placeholder="Select"
+                            fullWidth={true}
+                            renderOption={(props, option) => (
+                                <Box component="li" {...props} key={option.id}>
+                                    {option.name} - {option.vin}
+                                </Box>
+                            )}
+                            renderInput={(params) => <TextField name="driver_id" placeholder={"Search by driver name"} {...params} />}
+                        />
+                        {/* <TextField
                             sx={{ width: "100%" }}
                             select
                             id="driver_id"
@@ -198,7 +229,7 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
                                     {item.name}
                                 </MenuItem>)
                             })}
-                        </TextField>
+                        </TextField> */}
                     </Grid>
                     <Grid item xs={6} style={{ marginBottom: 24 }}>
                         <Typography

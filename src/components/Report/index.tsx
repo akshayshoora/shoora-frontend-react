@@ -105,7 +105,10 @@ export default function Report() {
     return;
   }
 
-  const closeModalHndlr = useCallback(() => {
+  const closeModalHndlr = useCallback((event?: any, reason?: any) => {
+    if (reason === "backdropClick") {
+      return;
+    }
     setActiveModalState({
       showModal: false,
       activeModalId: ""
@@ -175,6 +178,11 @@ export default function Report() {
         message: "Something went wrong.",
       })
     }
+  }
+
+  function onBackdropHndlr(event: any) {
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   return (
@@ -286,7 +294,7 @@ export default function Report() {
                     <Box sx={{ padding: "20px" }}>
                       <h3>Driver Report Master</h3>
                       <p>
-                        Master data of all drivers with their overall score and driving/duty hours for today and yesterday
+                        Master data of all drivers in the organisation with their overall score and driving/duty hours for today and yesterday.
                       </p>
                       <p>Last Generated on: </p>
                     </Box>
@@ -332,7 +340,7 @@ export default function Report() {
                     <Box sx={{ padding: "20px" }}>
                       <h3>Vehicle Report Master</h3>
                       <p>
-                        Master data of all vehicles
+                        Master data of all vehicles capturing all critical information including data from Parivahan
                       </p>
                       <p>Last Generated on: </p>
                     </Box>

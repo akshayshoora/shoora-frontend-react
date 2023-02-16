@@ -10,6 +10,8 @@ import React, { useState } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
+import Autocomplete from '@mui/material/Autocomplete';
+
 // API Call
 import client from "serverCommunication/client";
 import { useMutation, useQuery } from "react-query";
@@ -47,7 +49,7 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
     );
 
     async function getDrivers() {
-        let getApiUrl = `${transport}/drivers/`;
+        let getApiUrl = `${transport}/drivers/?page=1&page_size=500`;
         const response = await client.get(getApiUrl);
         return response.data;
     }
@@ -71,12 +73,14 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
     });
     async function generateDriverReportApiCall() {
         const { since, until, driver_id, emails } = driverReportState,
-            isoUntilDate = until ? new Date(until).toISOString() : "",
-            isoSinceDate = since ? new Date(since).toISOString() : "",
+            isoSinceDate = until ? new Date(since).toISOString() : "",
+            untilDate = new Date(until);
+        untilDate.setDate(untilDate.getDate() + 1);
+        const isoUntilDate = until ? untilDate.toISOString() : "",
             params: any = {
                 since: isoSinceDate, until: isoUntilDate, driver_id, emails
             }
-        const response = await client.get(`${monitor}/trips/download`, { params });
+        const response = await client.get(`${monitor}/trips/download-haults`, { params });
         return response.data;
     }
     const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = drivingHistoryMutation;
@@ -84,7 +88,13 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
     function generateReportHndlr() {
         mutateDrivingHistory();
     }
-
+    function onSelectVehicleHndlr(event: any, selectedValue: any) {
+        const { id: driver_id } = selectedValue || {};
+        if (driver_id) {
+            setDriverReportState(prevState => ({ ...prevState, driver_id }));
+        }
+    }
+    const { results = [] } = driverList || {};
     return (
         <Box sx={style}>
             <Typography
@@ -161,7 +171,7 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
                         >
                             Driver
                         </Typography>
-                        <TextField
+                        {/* <TextField
                             sx={{ width: "100%" }}
                             select
                             id="driver_id"
@@ -178,7 +188,22 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
                                     {item.name}
                                 </MenuItem>)
                             })}
-                        </TextField>
+                        </TextField> */}
+                        <Autocomplete
+                            size="small"
+                            id="driver_id"
+                            options={results}
+                            loading={isLoading}
+                            onChange={onSelectVehicleHndlr}
+                            getOptionLabel={(option) => option.name}
+                            fullWidth={true}
+                            renderOption={(props, option) => (
+                                <Box component="li" {...props} key={option.id}>
+                                    {option.name} - {option.vin}
+                                </Box>
+                            )}
+                            renderInput={(params) => <TextField name="driver_id" placeholder={"Search by driver name"} {...params} />}
+                        />
                     </Grid>
                     <Grid item xs={6} style={{ marginBottom: 24 }}>
                         <Typography
@@ -190,7 +215,7 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
                         <TextField
                             id="since"
                             name="since"
-                            type="datetime-local"
+                            type="date"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
@@ -210,7 +235,7 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
                         <TextField
                             id="until"
                             name="until"
-                            type="datetime-local"
+                            type="date"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{
