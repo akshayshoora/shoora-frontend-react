@@ -42,6 +42,7 @@ import { useEffect } from "react";
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+//Trip Page
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
   const [triptId, setTripId] = React.useState<string>("false");
@@ -292,15 +293,15 @@ export default function Trip() {
               placeholder="Search Trips"
             />
           </Box>
-          {!appliedDistanceFilter && <Button
+          {/* {!appliedDistanceFilter && <Button
             variant="contained"
             style={{ color: COLORS.WHITE }}
             onClick={handleBetweenTripModal}
           >
             <MyLocationIcon sx={{ marginRight: 0.5 }} />
             Trip Between Geofence
-          </Button>}
-          {appliedDistanceFilter && <Button
+          </Button>} */}
+          {/* {appliedDistanceFilter && <Button
             variant="contained"
             // style={{ color: COLORS.WHITE }}
             onClick={handleClearGeofenceFilter}
@@ -308,7 +309,7 @@ export default function Trip() {
           >
             <CancelIcon sx={{ marginRight: 0.5 }} />
             Clear Geofence Filter
-          </Button>}
+          </Button>} */}
         </Box>
       </Box>
       <Box className={classes.root}>
