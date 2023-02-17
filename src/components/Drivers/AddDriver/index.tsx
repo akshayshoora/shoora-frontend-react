@@ -131,12 +131,22 @@ export default function AddDriver() {
       }, 2000);
     },
 
-    onError: () =>
+    onError: (error: any) => {
+      let errorMessage: any = {};
+      if (error?.response?.data) {
+        const errorObj = error?.response?.data;
+        Object.keys(errorObj).forEach((errorInfo: any) => {
+          if (Array.isArray(errorObj[errorInfo]))
+            errorMessage[errorInfo] = errorObj[errorInfo][0];
+        })
+        setValidationState(errorMessage);
+      }
       setSnackbar({
         open: true,
         variant: "error",
         message: "Something went wrong.",
-      }),
+      })
+    },
   });
 
   const { isLoading: loadingUserInfo } = useQuery(
