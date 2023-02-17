@@ -74,7 +74,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
             params: any = {
                 since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress
             }
-        const response = await client.get(`${transport}/geofence-trips`, { params });
+        const response = await client.get(`${transport}/geofence-trips/download/`, { params });
         return response.data;
     }
     const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
