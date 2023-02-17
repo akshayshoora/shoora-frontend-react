@@ -10,6 +10,7 @@ import {
   Snackbar,
   TextField,
   Typography,
+  FormHelperText
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useEffect, useState, useRef } from "react";
@@ -40,6 +41,7 @@ interface INewDriver {
   driving_license_validity: string | null;
   organization: string | null;
   vehicle_id: string | null;
+  dob: string | null;
 }
 
 function setInitialDriverData(driverData?: any): INewDriver {
@@ -53,6 +55,7 @@ function setInitialDriverData(driverData?: any): INewDriver {
     // driver_score: driverData?.driver_score || "",
     organization: driverData?.organization || "",
     vehicle_id: driverData?.vehicle_id || "",
+    dob: driverData?.dob || "",
   })
 }
 
@@ -63,9 +66,10 @@ export default function AddDriver() {
   );
   const [driverImgFileState, setDriverImgFileState] = useState<any>("");
   const driverImgFileRef = useRef<any>(null);
+  const [validationState, setValidationState] = useState<any>(null);
 
   async function getVehicle() {
-    let getApiUrl = `${transport}/vehicles/`;
+    let getApiUrl = `${transport}/vehicles/?page=1&page_size=200`;
 
     const response = await client.get(getApiUrl);
 
@@ -97,7 +101,16 @@ export default function AddDriver() {
         navigate(`/${AppPaths.DRIVERS}`);
       }, 2000);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      let errorMessage: any = {};
+      if (error?.response?.data) {
+        const errorObj = error?.response?.data;
+        Object.keys(errorObj).forEach((errorInfo: any) => {
+          if (Array.isArray(errorObj[errorInfo]))
+            errorMessage[errorInfo] = errorObj[errorInfo][0];
+        })
+        setValidationState(errorMessage);
+      }
       setSnackbar({
         open: true,
         variant: "error",
@@ -153,6 +166,7 @@ export default function AddDriver() {
     value: string | boolean | number | []
   ) {
     setDriver({ ...drivers, [key]: value });
+    setValidationState((prevState: any) => ({ ...prevState, [key]: "" }));
   }
 
   function addDriver(user: INewDriver) {
@@ -328,6 +342,7 @@ export default function AddDriver() {
                   value={drivers.name}
                   isRequired={true}
                   onChange={(value) => handleFormDriver("name", value)}
+                  errorMessage={validationState?.name}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -338,9 +353,10 @@ export default function AddDriver() {
                   value={drivers.phone_number}
                   isRequired={false}
                   onChange={(value) => handleFormDriver("phone_number", value)}
+                  errorMessage={validationState?.phone_number}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} style={{ marginBottom: 24 }}>
                 <Typography
                   fontSize={16}
                   style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
@@ -349,9 +365,10 @@ export default function AddDriver() {
                 </Typography>
                 <Select
                   fullWidth
-                  id="demo-simple-select"
+                  id="vehicle_id"
                   value={drivers.vehicle_id}
                   onChange={(e: any) => handleFormDriver("vehicle_id", e.target.value)}
+                  error={!!validationState?.vehicle_id}
                   size="small"
                   displayEmpty
                 >
@@ -365,13 +382,14 @@ export default function AddDriver() {
                   ) : vehicleList?.results?.length ? (
                     vehicleList?.results?.map((item: any, index: any) => (
                       <MenuItem style={{ fontSize: 14 }} value={item.id}>
-                        {item.vehicle_type}
+                        {item.vin}
                       </MenuItem>
                     ))
                   ) : (
                     <MenuItem>Nothing to Select</MenuItem>
                   )}
                 </Select>
+                {validationState?.vehicle_id && <FormHelperText sx={{ marginLeft: "14px", marginRight: "14px" }} error={true}>{validationState.vehicle_id}</FormHelperText>}
               </Grid>
               <Grid item xs={6}>
                 <TextInput
@@ -381,6 +399,7 @@ export default function AddDriver() {
                   value={drivers.passport_number}
                   isRequired={false}
                   onChange={(value) => handleFormDriver("passport_number", value)}
+                  errorMessage={validationState?.passport_number}
                 />
               </Grid>
 
@@ -408,6 +427,8 @@ export default function AddDriver() {
               onChange={(e: any) =>
                 handleFormDriver("passport_validity", e.target.value)
               }
+              error={!!validationState?.passport_validity}
+              helperText={validationState?.passport_validity}
             />
           </Grid>
           <Grid item xs={4}>
@@ -420,6 +441,8 @@ export default function AddDriver() {
               onChange={(value) =>
                 handleFormDriver("driving_license_number", value)
               }
+              errorMessage={validationState?.driving_license_number}
+
             />
           </Grid>
           <Grid item xs={4}>
@@ -441,6 +464,8 @@ export default function AddDriver() {
               onChange={(e: any) =>
                 handleFormDriver("driving_license_validity", e.target.value)
               }
+              error={validationState?.driving_license_validity}
+              helperText={validationState?.driving_license_validity}
             />
           </Grid>
           <Grid item xs={4}>
@@ -452,12 +477,19 @@ export default function AddDriver() {
             </Typography>
             <TextField
               // id="date"
+              id="dob"
               type="date"
               sx={{ width: "100%" }}
               size="small"
               InputLabelProps={{
                 shrink: true,
               }}
+              value={drivers.dob}
+              onChange={(e: any) =>
+                handleFormDriver("dob", e.target.value)
+              }
+              error={!!validationState?.dob}
+              helperText={validationState?.dob}
             />
           </Grid>
           {/* <Grid item xs={4}>
