@@ -77,7 +77,7 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
             params: any = {
                 since: isoSinceDate, until: isoUntilDate, vehicle_id, emails
             }
-        const response = await client.get(`${monitor}/trips/download-reports`, { params });
+        const response = await client.get(`${monitor}/trips/download`, { params });
         return response.data;
     }
     const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;

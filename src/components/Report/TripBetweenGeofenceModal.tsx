@@ -45,7 +45,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
     );
 
     async function getGeofences() {
-        let getApiUrl = `${transport}/geofences/`;
+        let getApiUrl = `${transport}/geofences/?page=1&page_size=200`;
 
         const response = await client.get(getApiUrl);
         return response.data;
@@ -66,15 +66,16 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         }
     });
     async function generateVehicleReportApiCall() {
-        // const { startDate, endDate, startAddress, endAddress } = geofenceReportState,
-        //     isoUntilDate = endDate ? new Date(endDate).toISOString() : "",
-        //     isoSinceDate = startDate ? new Date(startDate).toISOString() : "",
-        //     params: any = {
-        //         startDate: isoSinceDate, endDate: isoUntilDate, startAddress, endAddress
-        //     }
-        // const response = await client.get(`${monitor}/trips/download`, { params });
-        // return response.data;
-        return Promise.reject("");
+        const { startDate, endDate, startAddress, endAddress } = geofenceReportState,
+            isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
+            endDateUpdated = new Date(endDate);
+        endDateUpdated.setDate(endDateUpdated.getDate() + 1);
+        const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
+            params: any = {
+                since: isoSinceDate, until: isoUntilDate, startAddress, endAddress
+            }
+        const response = await client.get(`${monitor}/trips/download`, { params });
+        return response.data;
     }
     const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
 

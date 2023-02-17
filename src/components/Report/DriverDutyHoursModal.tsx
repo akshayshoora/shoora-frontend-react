@@ -93,7 +93,7 @@ const DriverDutyHoursModal = React.forwardRef((props: IDriverModal, ref) => {
         try {
             const { driver_id, startDate, endDate } = driverReportState,
                 params: any = {
-                    startDate, endDate
+                    since: startDate, until: endDate
                 }
             const driverCsvData = await client.get(`${transport}/drivers/${driver_id}/history-download/`, { params });
             const currentDate = new Date().toLocaleString("default", {
