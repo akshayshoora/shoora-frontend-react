@@ -42,6 +42,7 @@ import { useEffect } from "react";
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+//Trip Page
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
   const [triptId, setTripId] = React.useState<string>("false");
