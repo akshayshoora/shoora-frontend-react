@@ -59,10 +59,10 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
     const vehicleReportMutation = useMutation(generateVehicleReportApiCall, {
         onSuccess: (responseData) => {
             const { data } = responseData || {};
-            props.showSnackbarCallback("success", data || "Vehicle report sended successfully.", true);
+            props.showSnackbarCallback("success", data || "Geofence trip report sended successfully.", true);
         },
         onError: () => {
-            props.showSnackbarCallback("error", "Error while sending vehicle report.", false);
+            props.showSnackbarCallback("error", "Error while sending geofence trip report.", false);
         }
     });
     async function generateVehicleReportApiCall() {
@@ -72,9 +72,9 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         endDateUpdated.setDate(endDateUpdated.getDate() + 1);
         const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
             params: any = {
-                since: isoSinceDate, until: isoUntilDate, startAddress, endAddress
+                since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress
             }
-        const response = await client.get(`${monitor}/trips/download`, { params });
+        const response = await client.get(`${transport}/geofence-trips`, { params });
         return response.data;
     }
     const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
