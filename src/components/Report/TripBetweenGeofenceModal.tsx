@@ -38,6 +38,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         startDate: "",
         endDate: "",
         endAddress: "0",
+        emails: ""
     });
     const classes = useStyles();
     const { data: geofenceList, isLoading } = useQuery(
@@ -66,15 +67,16 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         }
     });
     async function generateVehicleReportApiCall() {
-        const { startDate, endDate, startAddress, endAddress } = geofenceReportState,
+        const { startDate, endDate, startAddress, endAddress, emails } = geofenceReportState,
             isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
             endDateUpdated = new Date(endDate);
         endDateUpdated.setDate(endDateUpdated.getDate() + 1);
         const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
             params: any = {
-                since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress
+                since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
+                emails
             }
-        const response = await client.get(`${transport}/geofence-trips/download/`, { params });
+        const response = await client.get(`${transport}/geofence-trips-download`, { params });
         return response.data;
     }
     const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
@@ -241,6 +243,26 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                                 shrink: true,
                             }}
                             value={geofenceReportState.endDate}
+                            onChange={onChangeHndlr}
+                        />
+                    </Grid>
+                    <Grid item xs={12} style={{ marginBottom: 24 }}>
+                        <Typography
+                            fontSize={16}
+                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                        >
+                            Email Ids
+                        </Typography>
+                        <TextField
+                            id="emails"
+                            name="emails"
+                            type="text"
+                            sx={{ width: "100%" }}
+                            size="small"
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            value={geofenceReportState.emails}
                             onChange={onChangeHndlr}
                         />
                     </Grid>
