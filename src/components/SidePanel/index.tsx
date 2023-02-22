@@ -31,9 +31,10 @@ export default function SidePanel() {
   function renderMenu() {
     //@ts-ignore
     const menuList: AppPaths[] = getFeatures();
-
+    const routePathKeys = selectedView.split("/");
     return menuList.map((menuItem, index) => {
-      const isActive = selectedView.includes(menuItem);
+      const isActive = routePathKeys.indexOf(menuItem) >= 0;
+      // const isActive = selectedView.includes(menuItem);
       return (
         <Box
           className={classNames(classes.menuItem, {
