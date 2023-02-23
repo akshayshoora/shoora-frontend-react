@@ -122,7 +122,12 @@ const DrivingHistory: React.FC<any> = ({ driverId }) => {
 
     async function downloadBtnHndlr() {
         try {
-            const driverCsvData = await client.get(`${transport}/drivers/${driverId}/history-download/`);
+            const { startDate, endDate } = filterState,
+                params: any = {
+                    since: startDate, until: endDate
+                }
+            const driverCsvData =
+                await client.get(`${transport}/drivers/${driverId}/history-download/`, { params });
             const currentDate = new Date().toLocaleString("default", {
                 day: "numeric",
                 month: "long",
@@ -172,11 +177,11 @@ const DrivingHistory: React.FC<any> = ({ driverId }) => {
                                         Start Date
                                     </Typography>
                                     <TextField
+                                        size="small"
                                         id="startDate"
                                         name="startDate"
                                         type="date"
                                         sx={{ width: "100%" }}
-                                        size="medium"
                                         InputLabelProps={{
                                             shrink: true,
                                         }}
@@ -197,7 +202,7 @@ const DrivingHistory: React.FC<any> = ({ driverId }) => {
                                         id="endDate"
                                         name="endDate"
                                         type="date"
-                                        size="medium"
+                                        size="small"
                                         sx={{ width: "100%" }}
                                         InputLabelProps={{
                                             shrink: true,
@@ -209,7 +214,7 @@ const DrivingHistory: React.FC<any> = ({ driverId }) => {
                             </Grid>
                             <Grid item xs={4}>
                                 <Box display="flex" alignItems="center" justifyContent="end">
-                                    <Button
+                                    {(Array.isArray(historyList) && historyList.length > 0) && <Button
                                         variant="contained"
                                         sx={{ mr: 1 }}
                                         style={{ background: "#1d6f42", color: COLORS.WHITE }}
@@ -217,7 +222,7 @@ const DrivingHistory: React.FC<any> = ({ driverId }) => {
                                         disabled={!(Array.isArray(historyList) && historyList.length > 0)}
                                     >
                                         <Download />
-                                    </Button>
+                                    </Button>}
                                     <Button
                                         variant="contained"
                                         style={{ color: "#fff", whiteSpace: "nowrap" }}

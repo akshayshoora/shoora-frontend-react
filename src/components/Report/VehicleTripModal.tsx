@@ -161,10 +161,10 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
                     <CircularProgress />
                 </Box>}
                 <Grid container columnSpacing={3}>
-                    <Grid item xs={12} style={{ marginBottom: 24 }}>
+                    <Grid item xs={12} style={{ marginBottom: 16 }}>
                         <Typography
                             fontSize={16}
-                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                            style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
                         >
                             Vehicle
                         </Typography>
@@ -199,10 +199,10 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
                             })}
                         </TextField> */}
                     </Grid>
-                    <Grid item xs={6} style={{ marginBottom: 24 }}>
+                    <Grid item xs={6} style={{ marginBottom: 16 }}>
                         <Typography
                             fontSize={16}
-                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                            style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
                         >
                             Start Date
                         </Typography>
@@ -219,10 +219,10 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
                             onChange={onChangeHndlr}
                         />
                     </Grid>
-                    <Grid item xs={6} style={{ marginBottom: 24 }}>
+                    <Grid item xs={6} style={{ marginBottom: 16 }}>
                         <Typography
                             fontSize={16}
-                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                            style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
                         >
                             End Date
                         </Typography>
@@ -239,10 +239,10 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
                             onChange={onChangeHndlr}
                         />
                     </Grid>
-                    <Grid item xs={12} style={{ marginBottom: 24 }}>
+                    <Grid item xs={12} style={{ marginBottom: 16 }}>
                         <Typography
                             fontSize={16}
-                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                            style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
                         >
                             Email Ids
                         </Typography>
@@ -259,7 +259,7 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
                             onChange={onChangeHndlr}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} style={{ marginTop: 8 }}>
                         <Box style={{ display: "flex", justifyContent: "end" }}>
                             <Button className="cBtn" onClick={props.closeModalHndlr}>
                                 Cancel
