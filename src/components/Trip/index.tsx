@@ -12,6 +12,8 @@ import Heading from "components/commonComponent/Heading";
 import SearchBox from "components/commonComponent/SearchField";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
+import FilterListIcon from '@mui/icons-material/FilterList';
+import IconButton from '@mui/material/IconButton';
 import { useAppContext } from "ContextAPIs/appContext";
 import COLORS from "../../constants/colors";
 import {
@@ -23,6 +25,8 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
+import Badge from '@mui/material/Badge';
+import Tooltip from '@mui/material/Tooltip';
 import { useQuery, useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
@@ -32,6 +36,7 @@ import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
 import { GeofenceTripModal } from "./GeofenceTripModal";
+import TripFilterModal from "./TripFilterModal";
 import {
   getDateDisplayFormat,
   getDuration,
@@ -70,6 +75,10 @@ export default function Trip() {
   const { user } = useAppContext();
   const navigate = useNavigate();
   const [placeDataStatus, setPlaceDataStatus] = React.useState<boolean>(true);
+  const [tripFilterState, setTripFilterState] = React.useState({
+    isTripFilterModalOpen: false,
+    appliedFilterDetails: undefined,
+  });
   const classes = useStyles();
 
   // useEffect(() => {
@@ -239,6 +248,13 @@ export default function Trip() {
     mutateDeleteTrip();
   }
 
+  function applyFilterHndlr() {
+    setTripFilterState((prevState) => ({ ...prevState, isTripFilterModalOpen: true, appliedFilterDetails: undefined }))
+  }
+
+  function closeFilterModalHndlr() {
+    setTripFilterState((prevState) => ({ ...prevState, isTripFilterModalOpen: false, appliedFilterDetails: undefined }))
+  }
   const handleCloseTrip = () => setOpenTrip(false);
 
   async function renderPlaceName() {
@@ -284,6 +300,14 @@ export default function Trip() {
           id={triptId}
         />
       )}
+      {tripFilterState.isTripFilterModalOpen && (
+        <TripFilterModal
+          showFilterModal={tripFilterState.isTripFilterModalOpen}
+          closeFilterModalHndlr={closeFilterModalHndlr}
+          applyingFilterProgress={false}
+          appliedFilterDetails={tripFilterState.appliedFilterDetails}
+        />
+      )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Trips</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
@@ -310,6 +334,17 @@ export default function Trip() {
             <CancelIcon sx={{ marginRight: 0.5 }} />
             Clear Geofence Filter
           </Button>} */}
+
+          <Tooltip title="Apply Filter">
+            <IconButton onClick={applyFilterHndlr}>
+              <Badge color="success" variant="dot" invisible={false}>
+                <FilterListIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+
+
+
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -389,6 +424,6 @@ export default function Trip() {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Box>
-    </Box>
+    </Box >
   );
 }
