@@ -51,57 +51,46 @@ const Item = styled(Paper)(({ theme }) => ({
 interface ITripModalProps {
   open: boolean;
   handleClose: () => void;
-  id: string;
+  geofenceDetails: any;
+  id?: any;
 }
 
 export function TripModal(props: ITripModalProps) {
-  const { open, handleClose, id } = props;
+  const { open, handleClose, id, geofenceDetails } = props;
   const classes = useStyles();
   const navigate = useNavigate();
   const [startLoc, setStartLoc] = useState("");
   const [endLoc, setEndLoc] = useState("");
 
-  const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () => {
-    if (id) {
-      return getTripDetails(String(id));
-    }
-  });
+  // const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () => {
+  //   if (id) {
+  //     return getTripDetails(String(id));
+  //   }
+  // });
 
-  async function getTripDetails(id: string) {
-    return (await client.get(`${monitor}/trips/${id}/`)).data;
-  }
+  // async function getTripDetails(id: string) {
+  //   return (await client.get(`${monitor}/trips/${id}/`)).data;
+  // }
 
-  const renderMarkers = (map: any, maps: any) => {
-    let marker = new maps.Marker({
-      position: {
-        lat: Number(trip.end_latitude),
-        lng: Number(trip.end_longitude),
-      },
-      map,
-      title: "Hello World!",
-    });
-    return marker;
-  };
-
-  const { data: startlocation } = useQuery(["start_location", trip], () => {
-    if (trip?.start_latitude && trip?.start_longitude) {
-      return latLongToPlace(trip.start_latitude, trip.start_longitude, false)
-    }
-  })
-  const { data: endlocation } = useQuery(["end_location", trip], () => {
-    if (trip?.end_latitude && trip?.end_longitude) {
-      return latLongToPlace(trip.end_latitude, trip.end_longitude, false)
-    }
-  });
+  // const { data: startlocation } = useQuery(["start_location", trip], () => {
+  //   if (trip?.start_latitude && trip?.start_longitude) {
+  //     return latLongToPlace(trip.start_latitude, trip.start_longitude, false)
+  //   }
+  // })
+  // const { data: endlocation } = useQuery(["end_location", trip], () => {
+  //   if (trip?.end_latitude && trip?.end_longitude) {
+  //     return latLongToPlace(trip.end_latitude, trip.end_longitude, false)
+  //   }
+  // });
   const [count, setCount] = useState(0);
-  const { data: tripPath } = useQuery(["trip_path", trip], () => {
-    if (trip?.id) {
-      return getTripPath(trip?.id)
+  const { data: tripPath, isLoading } = useQuery(["trip_path", geofenceDetails], () => {
+    if (geofenceDetails?.id) {
+      return getTripPath(geofenceDetails?.id);
     }
   });
 
   async function getTripPath(id: string) {
-    return (await client.get(`${monitor}/trips/${id}/path/`)).data;
+    return (await client.get(`${monitor}/geofence-trips/${id}/path/`)).data;
   }
 
   const getMapRoute = (map: any, maps: any) => {
@@ -116,12 +105,12 @@ export function TripModal(props: ITripModalProps) {
     ).google.maps.DirectionsRenderer({ polylineOptions: polylineOptionsActual });
     directionsRenderer.setMap(map);
     const origin = {
-      lat: Number(trip.start_latitude),
-      lng: Number(trip.start_longitude),
+      lat: Number(geofenceDetails?.start_latitude),
+      lng: Number(geofenceDetails?.start_longitude),
     };
     const destination = {
-      lat: Number(trip.end_latitude),
-      lng: Number(trip.end_longitude),
+      lat: Number(geofenceDetails.end_latitude),
+      lng: Number(geofenceDetails.end_longitude),
     };
     directionsService.route({
       origin: origin,
@@ -155,7 +144,7 @@ export function TripModal(props: ITripModalProps) {
               variant="h6"
               component="h2"
             >
-              Trip Details{" "}
+              Geofence Trip Details{" "}
               <i onClick={handleClose}>
                 <svg
                   width="24"
@@ -220,49 +209,20 @@ export function TripModal(props: ITripModalProps) {
               <Grid xs={12} sm={12} md={12} style={{ paddingLeft: 24 }}>
                 <Item elevation={0}>
                   <Grid container>
-                    <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
-                      <Box className={classes.avtarDriveInfo}>
-                        <IonAvatar className={classes.avtarIcon}>
-                          <img
-                            alt="avtar icon"
-                            src="https://ionicframework.com/docs/img/demos/avatar.svg"
-                          />
-                        </IonAvatar>
-                        <ul className={classes.alertListInfo}>
-                          <li>
-                            <span>
-                              Driver Name: {trip?.driver?.name || "-"}
-                            </span>
-                          </li>
-                          <li>
-                            <span>
-                              Contact Details:{" "}
-                              {trip?.driver?.phone_number || "-"}
-                            </span>
-                          </li>
-                          <li>
-                            <span>
-                              Licence No:{" "}
-                              {trip?.driver?.driving_license_number || "-"}
-                            </span>
-                          </li>
-                        </ul>
-                      </Box>
-                    </Grid>
-                    <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+                    <Grid xs={12} sm={12} md={12} style={{ paddingLeft: 24 }}>
                       <ul className={classes.alertList}>
                         <li>
-                          <span>Start Location: {startlocation}</span>
+                          <span>Start Geofence: {geofenceDetails?.start_geofence}</span>
                         </li>
                         <li>
-                          <span>End Location: {endlocation}</span>
+                          <span>End Geofence: {geofenceDetails?.end_geofence}</span>
                         </li>
                         <li>
-                          <span>Distance: {trip.distance} km</span>
+                          <span>Distance: {geofenceDetails?.distance} km</span>
                         </li>
                         <li>
                           <span>
-                            Duration: {getDuration(trip.duration / 60)}
+                            Duration: {geofenceDetails?.duration} hrs
                           </span>
                         </li>
                       </ul>
@@ -277,8 +237,8 @@ export function TripModal(props: ITripModalProps) {
                       defaultZoom={10}
                       resetBoundsOnResize={true}
                       defaultCenter={{
-                        lat: Number(trip?.start_latitude),
-                        lng: Number(trip?.start_longitude),
+                        lat: Number(geofenceDetails?.start_latitude),
+                        lng: Number(geofenceDetails?.start_longitude),
                       }}
                       yesIWantToUseGoogleMapApiInternals={true}
                       onGoogleApiLoaded={({ map, maps }) => {
@@ -288,8 +248,8 @@ export function TripModal(props: ITripModalProps) {
                     >
                       {/* <Marker
                         key={1}
-                        lat={trip.start_latitude}
-                        lng={trip.start_longitude}
+                        lat={geofenceDetails.start_latitude}
+                        lng={geofenceDetails.start_longitude}
                       /> */}
                     </GoogleMapReact>
                   </Box>

@@ -21,8 +21,13 @@ export default makeStyles({
     margin: "-28px 0 0 0",
     marginBottom: "10px",
     fontSize: "14px",
+    listStyleType: "none",
+    display: "flex",
+    flexWrap: "wrap",
     "& li": {
       marginBottom: "10px",
+      width: "50%",
+      display: "block"
     },
   },
   videoAlert: {
