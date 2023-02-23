@@ -129,14 +129,16 @@ export default function Trip() {
   const handleChangePage = (event: unknown, newPage: number) => {
     // setPlaceDataStatus(true);
     setPage(newPage - 1);
-    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: newPage, pageSize: rowsPerPage });
+    if (appliedFilterInfoRef.current)
+      mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: newPage, pageSize: rowsPerPage });
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
     // setPlaceDataStatus(true);
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: 1, pageSize: event.target.value });
+    if (appliedFilterInfoRef.current)
+      mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: 1, pageSize: event.target.value });
   };
 
   function openTripDetails(event: React.MouseEvent<HTMLElement>, id: string) {
@@ -270,7 +272,7 @@ export default function Trip() {
 
   function applyFilterCallback(filterDetails: any) {
     appliedFilterInfoRef.current = filterDetails;
-    mutateGeofenceTripInfo(filterDetails);
+    mutateGeofenceTripInfo({ ...filterDetails, pageNo: 1, pageSize: rowsPerPage });
   }
 
   return (
