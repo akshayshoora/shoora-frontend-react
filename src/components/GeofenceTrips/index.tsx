@@ -82,7 +82,7 @@ export default function Trip() {
 
 
   const handleOpenTrip = (id: string, trip: any) => {
-    setTripId(id);
+    // setTripId(id);
     setRow(trip);
     setOpenTrip(true);
   };
@@ -159,14 +159,26 @@ export default function Trip() {
       disablePadding: false,
     },
     {
-      id: "start_ltime",
-      label: "Start Time",
+      id: "loading_in_time",
+      label: "Loading In Time",
       numeric: false,
       disablePadding: false,
     },
     {
-      id: "end_time",
-      label: "End Time",
+      id: "loading_out_time",
+      label: "Loading Out Time",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "unloading_in_time",
+      label: "Unloading In Time",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "unloading_out_time",
+      label: "Unloading Out Time",
       numeric: false,
       disablePadding: false,
     },
@@ -249,7 +261,7 @@ export default function Trip() {
       params: any = {
         since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress
       }
-    const response = await client.get(`${transport}/geofence-trips/`, { params });
+    const response = await client.get(`${monitor}/geofence-trips/`, { params });
     return response.data;
   }
   const { mutate: mutateGeofenceTripInfo, isLoading: geofenceTripLoading, data: geoFenceList } = GeofenceTripBeetweenMutation;
@@ -287,7 +299,7 @@ export default function Trip() {
           <TripModal
             open={openTrip}
             handleClose={handleCloseTrip}
-            id={triptId}
+            geofenceDetails={row}
           />
         )}
         <Box style={{ display: "flex", justifyContent: "space-between" }}>
@@ -354,20 +366,27 @@ export default function Trip() {
                   return (
                     <TableRow hover role="checkbox" tabIndex={0} key={index}>
                       <TableCell align="left">
-                        <Span fontType="secondary">{trip.vehicle_vin}</Span>
+                        <Span fontType="secondary">{trip.vin}</Span>
                       </TableCell>
                       <TableCell align="left">
                         <Span fontType="secondary">
-                          {getDateTime(trip.trip_started_at)}
+                          {getDateTime(trip?.loading_in_datetime)}
                         </Span>
                       </TableCell>
                       <TableCell align="left">
                         <Span fontType="secondary">
-                          {getDateTime(trip.trip_ended_at)}
+                          {getDateTime(trip?.loading_out_datetime)}
                         </Span>
                       </TableCell>
                       <TableCell align="left">
-                        <Span fontType="secondary">{trip?.driver?.name || "-"}</Span>
+                        <Span fontType="secondary">
+                          {getDateTime(trip?.unloading_in_datetime)}
+                        </Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Span fontType="secondary">
+                          {getDateTime(trip?.unloading_out_datetime)}
+                        </Span>
                       </TableCell>
                       <TableCell align="left">
                         <Span fontType="secondary">{trip.total_incidents}</Span>
@@ -377,7 +396,7 @@ export default function Trip() {
                       </TableCell>
                       <TableCell align="left">
                         <Span fontType="secondary">
-                          {getDuration(trip.duration / 60)}
+                          {trip?.duration} hrs
                         </Span>
                       </TableCell>
 
