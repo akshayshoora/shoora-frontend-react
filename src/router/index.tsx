@@ -25,6 +25,7 @@ import { AlertDetails } from "components/Alerts/AlertDetails";
 import AddAlert from "components/Alerts/AddAlert";
 import MapView from "components/MapView";
 import Trip from "components/Trip";
+import GeofenceTrip from "components/GeofenceTrips"
 import Report from "components/Report";
 import Finance from "components/Finance";
 import Fuel from "components/Fuel";
@@ -368,6 +369,21 @@ export default function AppRouter() {
               <>
                 <ErrorBoundary>
                   <Trip />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+      <Route
+        path={AppPaths.GEOFENCETRIPS}
+        element={
+          <ProtectedRoute
+            route={AppPaths.GEOFENCETRIPS}
+            component={
+              <>
+                <ErrorBoundary>
+                  <GeofenceTrip />
                 </ErrorBoundary>
               </>
             }

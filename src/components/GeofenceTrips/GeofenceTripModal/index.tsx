@@ -6,7 +6,7 @@ import TextInput from "components/commonComponent/TextInput";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import COLORS from "constants/colors";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -23,66 +23,73 @@ const style = {
     transform: "translate(-50%, -50%)",
     width: 500,
     bgcolor: "background.paper",
-    border: "1px solid #000",
+    // border: "1px solid #000",
     boxShadow: 24,
+    zIndex: 200,
+    borderRadius: "8px"
 };
 
-interface IVehicleModal {
+interface IGeofenceModal {
+    open: boolean,
     closeModalHndlr: any;
-    showSnackbarCallback: any;
+    showSnackbarCallback?: any;
+    isLoadingGeofenceData: any;
+    applyFilterCallback: any;
+    appliedFilterInfo: any;
 }
 
-const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) => {
-    const [geofenceReportState, setGeofenceReportState] = useState({
+export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) => {
+    const [geofenceBetweenTripState, setGeofenceBetweenTripState] = useState({
         startAddress: "0",
+        startAddressDetails: undefined,
         startDate: "",
         endDate: "",
         endAddress: "0",
-        emails: ""
+        endAddressDetails: undefined
     });
     const classes = useStyles();
+
+    useEffect(() => {
+        const { open, appliedFilterInfo } = props;
+        if (open && appliedFilterInfo) {
+            setGeofenceBetweenTripState(appliedFilterInfo);
+        }
+    }, [props.open, props.appliedFilterInfo]);
     const { data: geofenceList, isLoading } = useQuery(
         ["geofences"], () => getGeofences()
     );
 
     async function getGeofences() {
         let getApiUrl = `${transport}/geofences/?page=1&page_size=200`;
-
         const response = await client.get(getApiUrl);
         return response.data;
     }
 
-    function onChangeHndlr(event: React.ChangeEvent<HTMLInputElement>) {
+    function onChangeAddressHndlr(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
-        setGeofenceReportState(prevState => ({ ...prevState, [name]: value }));
-    }
-
-    const vehicleReportMutation = useMutation(generateVehicleReportApiCall, {
-        onSuccess: (responseData) => {
-            const { data } = responseData || {};
-            props.showSnackbarCallback("success", data || "Geofence trip report sended successfully.", true);
-        },
-        onError: () => {
-            props.showSnackbarCallback("error", "Error while sending geofence trip report.", false);
+        const { id, address, name: geofenceName } = Array.isArray(geofenceList?.results) && geofenceList?.results?.find((item: any) => {
+            return item?.id === value;
+        }) || {};
+        if (name === "startAddress") {
+            setGeofenceBetweenTripState((prevState: any) => ({
+                ...prevState, [name]: value,
+                "startAddressDetails": { id, address, name: geofenceName }
+            }));
+        } else if (name === "endAddress") {
+            setGeofenceBetweenTripState((prevState: any) => ({
+                ...prevState, [name]: value,
+                "endAddressDetails": { id, address, name: geofenceName }
+            }));
         }
-    });
-    async function generateVehicleReportApiCall() {
-        const { startDate, endDate, startAddress, endAddress, emails } = geofenceReportState,
-            isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
-            endDateUpdated = new Date(endDate);
-        endDateUpdated.setDate(endDateUpdated.getDate() + 1);
-        const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
-            params: any = {
-                since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
-                emails
-            }
-        const response = await client.get(`${transport}/geofence-trips-download`, { params });
-        return response.data;
     }
-    const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
+    function onChangeDateHndlr(event: React.ChangeEvent<HTMLInputElement>) {
+        const { name, value } = event.target;
+        // console.log({ value });
+        setGeofenceBetweenTripState(prevState => ({ ...prevState, [name]: value }));
+    }
 
-    function generateReportHndlr() {
-        mutateDrivingHistory();
+    function applyFilterHndlr() {
+        props.applyFilterCallback(geofenceBetweenTripState);
     }
 
     return (
@@ -150,7 +157,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                 </i>
             </Typography>
             <Box className={classes.reportContent}>
-                {generateReportLoading && <Box className={classes.loadingDiv}>
+                {!!props.isLoadingGeofenceData && <Box className={classes.loadingDiv}>
                     <CircularProgress />
                 </Box>}
                 <Grid container columnSpacing={3}>
@@ -166,8 +173,8 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                             select
                             id="startAddress"
                             name="startAddress"
-                            value={geofenceReportState.startAddress}
-                            onChange={onChangeHndlr}
+                            value={geofenceBetweenTripState.startAddress}
+                            onChange={onChangeAddressHndlr}
                             size="small"
                         >
                             <MenuItem selected={true} style={{ fontSize: 14 }} value="0">
@@ -192,8 +199,8 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                             select
                             id="endAddress"
                             name="endAddress"
-                            value={geofenceReportState.endAddress}
-                            onChange={onChangeHndlr}
+                            value={geofenceBetweenTripState.endAddress}
+                            onChange={onChangeAddressHndlr}
                             size="small"
                         >
                             <MenuItem selected={true} style={{ fontSize: 14 }} value="0">
@@ -222,8 +229,8 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={geofenceReportState.startDate}
-                            onChange={onChangeHndlr}
+                            value={geofenceBetweenTripState.startDate}
+                            onChange={onChangeDateHndlr}
                         />
                     </Grid>
                     <Grid item xs={6} style={{ marginBottom: 24 }}>
@@ -242,28 +249,8 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            value={geofenceReportState.endDate}
-                            onChange={onChangeHndlr}
-                        />
-                    </Grid>
-                    <Grid item xs={12} style={{ marginBottom: 24 }}>
-                        <Typography
-                            fontSize={16}
-                            style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
-                        >
-                            Email Ids
-                        </Typography>
-                        <TextField
-                            id="emails"
-                            name="emails"
-                            type="text"
-                            sx={{ width: "100%" }}
-                            size="small"
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            value={geofenceReportState.emails}
-                            onChange={onChangeHndlr}
+                            value={geofenceBetweenTripState.endDate}
+                            onChange={onChangeDateHndlr}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -275,9 +262,9 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                                 className="gbtn"
                                 variant="contained"
                                 style={{ color: COLORS.WHITE }}
-                                onClick={generateReportHndlr}
+                                onClick={applyFilterHndlr}
                             >
-                                Generate Report
+                                Apply Filter
                             </Button>
                         </Box>
                     </Grid>
@@ -287,6 +274,4 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         </Box >
     )
 })
-
-export default TripBetweenGeofenceModal;
 

@@ -61,8 +61,14 @@ export default makeStyles({
           "& .moving-vehicle": {
             background: COLORS.SUCCESSLIGHT
           },
+          "& .stopped-vehicle": {
+            background: "#424242"
+          },
+          "& .idle-vehicle": {
+            background: "#ff9800"
+          },
           "& .offline-vehicle": {
-            background: COLORS.DANGER
+            background: "#bdbdbd"
           },
           "& .trackid": {
             marginRight: "auto",

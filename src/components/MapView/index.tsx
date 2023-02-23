@@ -12,6 +12,7 @@ import {
   Alert,
   TableBody,
 } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Paper from "@mui/material/Paper";
@@ -37,6 +38,35 @@ const Item = styled(Paper)(({ theme }) => ({
   boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
 }));
 
+
+function getVehicleStatusTooltipTitle(vehicleStatus: string) {
+  const statusValue = vehicleStatus?.toLowerCase() || "";
+  switch (statusValue) {
+    case "moving":
+      return "Moving";
+    case "stopped":
+      return "Stopped";
+    case "idle":
+      return "Idle";
+    default:
+      return "Offline"
+  }
+}
+
+
+function getVehicleStatusLabelClassName(vehicleStatus: string) {
+  const statusValue = vehicleStatus?.toLowerCase() || "";
+  switch (statusValue) {
+    case "moving":
+      return "moving-vehicle";
+    case "stopped":
+      return "stopped-vehicle";
+    case "idle":
+      return "idle-vehicle";
+    default:
+      return "offline-vehicle"
+  }
+}
 export default function MapView() {
   const [selectStatus, setSelectStatus] = useState("");
   const [visibleVehicleState, setVisibleVehicleState] = useState<any>([]);
@@ -203,7 +233,9 @@ export default function MapView() {
                                         )
                                       }
                                     >
-                                      <i className={`circle ${(item.status === "moving" ? "moving-vehicle" : "offline-vehicle")}`}></i>
+                                      <Tooltip title={getVehicleStatusTooltipTitle(item.status)}>
+                                        <i className={`circle ${getVehicleStatusLabelClassName(item.status)}`}></i>
+                                      </Tooltip>
                                       <span className="trackid">
                                         {item.vin}
                                       </span>
