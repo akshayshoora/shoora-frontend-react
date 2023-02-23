@@ -185,7 +185,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                             fontSize={16}
                             style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
                         >
-                            End Address
+                            Start Address
                         </Typography>
                         <TextField
                             sx={{ width: "100%" }}

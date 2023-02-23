@@ -149,19 +149,13 @@ export default function GeoFence() {
       label: "Title",
     },
     {
-      id: "geofence-type",
-      numeric: false,
-      disablePadding: true,
-      label: "Geofence Type",
-    },
-    {
       id: "address",
       label: "Address",
       numeric: false,
       disablePadding: false,
     },
 
-    // { id: "radius", label: "Radius", numeric: false, disablePadding: false },
+    { id: "radius", label: "Radius", numeric: false, disablePadding: false },
     {
       id: "created_at",
       label: "Created At",
@@ -282,10 +276,11 @@ export default function GeoFence() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{item.geofenceTypes}</Span>
-                    </TableCell>
-                    <TableCell align="left">
                       <Span fontType="secondary">{item.address}</Span>
+                    </TableCell>
+
+                    <TableCell align="left">
+                      <Span fontType="secondary">{item.radius}</Span>
                     </TableCell>
 
                     <TableCell align="left">

@@ -98,7 +98,7 @@ export function GeofenceDetails() {
                 className={classes.bodyInfo}
                 style={{ textTransform: "capitalize" }}
               >
-                {geofenceData?.name}
+                {geofenceData.name}
               </Box>
             </Box>
             {/* <Box className={classes.infoBodyWrapper}>
@@ -115,7 +115,7 @@ export function GeofenceDetails() {
             </Box> */}
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Radius</Box>
-              <Box className={classes.bodyInfo}>{geofenceData?.radius}</Box>
+              <Box className={classes.bodyInfo}>{geofenceData.radius}</Box>
             </Box>
             <Box>
               <GeoFenceModal
@@ -128,7 +128,7 @@ export function GeofenceDetails() {
           <Grid item xs={12} sm={6} md={6} lg={7} style={{ paddingLeft: 16 }}>
             <GeoFenceMap
               circleRadius={Number(geofenceData?.radius)}
-              center={{ lat: geofenceData?.latitude, lng: geofenceData?.longitude }}
+              center={{ lat: geofenceData.latitude, lng: geofenceData.longitude }}
               polyAxis={() => { }}
               type={"circle"}
               setCenter={() => { }}

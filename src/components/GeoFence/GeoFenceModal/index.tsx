@@ -1,5 +1,19 @@
-import React, { useEffect } from "react";
-import { Autocomplete, Box, Grid, TextField, Modal, Button, Paper, styled, Typography, Alert, Snackbar, SelectChangeEvent } from "@mui/material";
+import * as React from "react";
+
+import {
+  Autocomplete,
+  Box,
+  Grid,
+  TextField,
+  Modal,
+  Button,
+  Paper,
+  styled,
+  Typography,
+  Alert,
+  Snackbar,
+  SelectChangeEvent,
+} from "@mui/material";
 import useStyles from "./style";
 import { auth, transport } from "constants/RouteMiddlePath";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
@@ -138,26 +152,6 @@ export function GeoFenceModal(props: IGeofenceProps) {
     }
   }, [vehicleList]);
 
-  useEffect(() => {
-    if (selectedItem && Array.isArray(vehicleList?.results)) {
-      const { vehicles, alert_type } = selectedItem;
-      let filterArr: any[] = [];
-      const arrVehicle = vehicleList.results;
-      if (Array.isArray(vehicles)) {
-        for (let i in arrVehicle) {
-          if (vehicles.includes(arrVehicle[i]?.id)) {
-            filterArr.push({
-              label: arrVehicle[i]?.vin,
-              id: arrVehicle[i]?.id,
-              value: arrVehicle[i]?.id,
-            });
-          }
-        }
-      }
-      setGeofenceVehicleData(prevState => ({ ...prevState, vehicle_ids: filterArr, alert_type }));
-    }
-  }, [selectedItem, vehicleList]);
-
   function handleFormGeofenceVehicle(
     key: keyof NewGeofenceVehicleType,
     value:
@@ -170,7 +164,6 @@ export function GeoFenceModal(props: IGeofenceProps) {
     reason?: any, details?: any
   ) {
     const { option } = details || {};
-    console.log({ key, value });
     if (key === "vehicle_ids" && option?.value === "all") {
       const vehicleAllVehicles = [];
       if (vehicleList && Array.isArray(vehicleList.results)) {
@@ -231,14 +224,16 @@ export function GeoFenceModal(props: IGeofenceProps) {
   };
 
   const handleSubmit = () => {
-    const payload = { ...geofenceVehicleData };
-    payload.organization_id = user.organization_id;
-    payload.vehicle_ids = getVehicleId(
-      payload.vehicle_ids
+    geofenceVehicleData.organization_id = user.organization_id;
+    // geofenceVehicleData.vehicle_group_ids = getVehicleId(
+    //   geofenceVehicleData.vehicle_ids
+    // );
+    geofenceVehicleData.vehicle_ids = getVehicleId(
+      geofenceVehicleData.vehicle_ids
     );
-    payload.geofence_id = selectedItem?.id;
+    geofenceVehicleData.geofence_id = selectedItem?.id;
 
-    mutateAddGeofenceVehicle(payload);
+    mutateAddGeofenceVehicle(geofenceVehicleData);
   };
 
   const loadingMessage = isAddingGeofenceVehicle

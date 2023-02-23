@@ -80,7 +80,7 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
             params: any = {
                 since: isoSinceDate, until: isoUntilDate, driver_id, emails
             }
-        const response = await client.get(`${monitor}/trips/download`, { params });
+        const response = await client.get(`${monitor}/trips/download-haults`, { params });
         return response.data;
     }
     const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = drivingHistoryMutation;

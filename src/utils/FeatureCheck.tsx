@@ -17,7 +17,6 @@ export function CheckFeatureAccess(item: any) {
       item.toLowerCase() == "live-view" ||
       item.toLowerCase() == "map-view" ||
       item.toLowerCase() == "trip" ||
-      item.toLowerCase() == "geofence-trips" ||
       item.toLowerCase() == "report" ||
       item.toLowerCase() == "finance" ||
       item.toLowerCase() == "fuel" ||
@@ -43,14 +42,12 @@ export function getProtectedRoutes(route: any) {
 
 export function CheckRoutesAccess(item: any) {
   const { user } = useAppContext();
-  // console.log({item});
   for (let j = 0; j < user.allowed_features.length; j++) {
     if (
       item.toLowerCase() == "dashboard" ||
       item.toLowerCase() == "live-view" ||
       item.toLowerCase() == "map-view" ||
       item.toLowerCase() == "trip" ||
-      item.toLowerCase() == "geofence-trips" ||
       item.toLowerCase() == "report" ||
       item.toLowerCase() == "finance" ||
       item.toLowerCase() == "fuel" ||
