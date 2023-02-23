@@ -127,14 +127,16 @@ export default function Trip() {
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
-    setPlaceDataStatus(true);
+    // setPlaceDataStatus(true);
     setPage(newPage - 1);
+    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: newPage, pageSize: rowsPerPage });
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
-    setPlaceDataStatus(true);
+    // setPlaceDataStatus(true);
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: 1, pageSize: event.target.value });
   };
 
   function openTripDetails(event: React.MouseEvent<HTMLElement>, id: string) {
@@ -251,15 +253,15 @@ export default function Trip() {
       })
     }
   });
-  async function generateVehicleReportApiCall(tripInfo: any, paginationInfo?: any) {
-    const { startDate, endDate, startAddress, endAddress } = tripInfo || {},
-      { pageNo = 1, pageSize = 10 } = paginationInfo || {},
+  async function generateVehicleReportApiCall(tripInfo: any) {
+    const { startDate, endDate, startAddress, endAddress, pageNo = 1, pageSize = 10 } = tripInfo || {},
       isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
       endDateUpdated = new Date(endDate);
     endDateUpdated.setDate(endDateUpdated.getDate() + 1);
     const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
       params: any = {
-        since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress
+        since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
+        page: pageNo, page_size: pageSize,
       }
     const response = await client.get(`${monitor}/geofence-trips/`, { params });
     return response.data;

@@ -144,7 +144,7 @@ export function TripModal(props: ITripModalProps) {
               variant="h6"
               component="h2"
             >
-              Trip Details{" "}
+              Geofence Trip Details{" "}
               <i onClick={handleClose}>
                 <svg
                   width="24"
