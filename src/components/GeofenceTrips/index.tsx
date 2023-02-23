@@ -80,6 +80,7 @@ export default function Trip() {
   //     }
   //    },[tripList]);
 
+
   const handleOpenTrip = (id: string, trip: any) => {
     setTripId(id);
     setRow(trip);
@@ -169,13 +170,12 @@ export default function Trip() {
       numeric: false,
       disablePadding: false,
     },
-
-    {
-      id: "driver",
-      label: "Driver",
-      numeric: false,
-      disablePadding: false,
-    },
+    // {
+    //   id: "driver",
+    //   label: "Driver",
+    //   numeric: false,
+    //   disablePadding: false,
+    // },
     {
       id: "incidents",
       label: "Incidents",
@@ -229,6 +229,7 @@ export default function Trip() {
     onSuccess: (responseData) => {
       // const { data } = responseData || {};
       setBetweenTripModal(false);
+      setAppliedDistanceFilter(true);
     },
     onError: () => {
       setSnackbar({
@@ -239,7 +240,6 @@ export default function Trip() {
     }
   });
   async function generateVehicleReportApiCall(tripInfo: any, paginationInfo?: any) {
-    console.log({ tripInfo });
     const { startDate, endDate, startAddress, endAddress } = tripInfo || {},
       { pageNo = 1, pageSize = 10 } = paginationInfo || {},
       isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
@@ -247,10 +247,9 @@ export default function Trip() {
     endDateUpdated.setDate(endDateUpdated.getDate() + 1);
     const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
       params: any = {
-        since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
-        pageNo, pageSize
+        since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress
       }
-    const response = await client.get(`${transport}/geofence-trips-download`, { params });
+    const response = await client.get(`${transport}/geofence-trips/`, { params });
     return response.data;
   }
   const { mutate: mutateGeofenceTripInfo, isLoading: geofenceTripLoading, data: geoFenceList } = GeofenceTripBeetweenMutation;
@@ -300,14 +299,18 @@ export default function Trip() {
                 placeholder="Search Trips"
               />
             </Box>
-            <Button
-              variant="contained"
-              style={{ color: COLORS.WHITE }}
-              onClick={handleBetweenTripModal}
-            >
-              <FilterAltIcon sx={{ marginRight: 0.5 }} />
-              Trip Between Geofence
-            </Button>
+            <Badge color="success" variant="dot" invisible={!appliedDistanceFilter}>
+              <Button
+                variant="contained"
+                style={{ color: COLORS.WHITE }}
+                onClick={handleBetweenTripModal}
+                aria-describedby="applied-trip-details"
+              >
+                <FilterAltIcon sx={{ marginRight: 0.5 }} />
+                Trip Between Geofence
+              </Button>
+            </Badge>
+
             {/* {appliedDistanceFilter && <Button
               variant="contained"
               // style={{ color: COLORS.WHITE }}
@@ -341,10 +344,12 @@ export default function Trip() {
             />
             <TableBody>
               {geofenceTripLoading ? (
-                <TableCell colSpan={8}>
-                  <LoadingScreen />
-                </TableCell>
-              ) : geoFenceList?.results.length ? (
+                <TableRow>
+                  <TableCell colSpan={8}>
+                    <LoadingScreen />
+                  </TableCell>
+                </TableRow>
+              ) : (Array.isArray(geoFenceList?.results) && (geoFenceList?.results.length)) ? (
                 geoFenceList?.results.map((trip: any, index: number) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={0} key={index}>
@@ -391,11 +396,13 @@ export default function Trip() {
                   );
                 })
               ) : (
-                <TableCell colSpan={8}>
-                  <div className={classes.noDataView}>
-                    Try adjusting your filters between the geofence trips.
-                  </div>
-                </TableCell>
+                <TableRow>
+                  <TableCell colSpan={7}>
+                    <div className={classes.noDataView}>
+                      Try adjusting your filters between the geofence trips.
+                    </div>
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
@@ -415,9 +422,11 @@ export default function Trip() {
         aria-describedby="child-modal-description"
       >
         <GeofenceTripModal
+          open={betweenTripModal}
           closeModalHndlr={handleCloseBetweenTripModal}
           isLoadingGeofenceData={geofenceTripLoading}
           applyFilterCallback={applyFilterCallback}
+          appliedFilterInfo={appliedFilterInfoRef.current}
         />
       </Modal>
     </>

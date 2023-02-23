@@ -6,7 +6,7 @@ import TextInput from "components/commonComponent/TextInput";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import COLORS from "constants/colors";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -30,13 +30,15 @@ const style = {
 };
 
 interface IGeofenceModal {
+    open: boolean,
     closeModalHndlr: any;
     showSnackbarCallback?: any;
     isLoadingGeofenceData: any;
     applyFilterCallback: any;
+    appliedFilterInfo: any;
 }
 
-export const GeofenceTripModal = (props: IGeofenceModal) => {
+export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) => {
     const [geofenceBetweenTripState, setGeofenceBetweenTripState] = useState({
         startAddress: "0",
         startAddressDetails: undefined,
@@ -46,6 +48,13 @@ export const GeofenceTripModal = (props: IGeofenceModal) => {
         endAddressDetails: undefined
     });
     const classes = useStyles();
+
+    useEffect(() => {
+        const { open, appliedFilterInfo } = props;
+        if (open && appliedFilterInfo) {
+            setGeofenceBetweenTripState(appliedFilterInfo);
+        }
+    }, [props.open, props.appliedFilterInfo]);
     const { data: geofenceList, isLoading } = useQuery(
         ["geofences"], () => getGeofences()
     );
@@ -79,34 +88,7 @@ export const GeofenceTripModal = (props: IGeofenceModal) => {
         setGeofenceBetweenTripState(prevState => ({ ...prevState, [name]: value }));
     }
 
-    const vehicleReportMutation = useMutation(generateVehicleReportApiCall, {
-        onSuccess: (responseData) => {
-            const { data } = responseData || {};
-            props.showSnackbarCallback("success", data || "Geofence trip report sended successfully.", true);
-        },
-        onError: () => {
-            props.showSnackbarCallback("error", "Error while sending geofence trip report.", false);
-        }
-    });
-    async function generateVehicleReportApiCall() {
-        const { startDate, endDate, startAddress, endAddress } = geofenceBetweenTripState,
-            isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
-            endDateUpdated = new Date(endDate);
-        endDateUpdated.setDate(endDateUpdated.getDate() + 1);
-        const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
-            params: any = {
-                since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress
-            }
-        const response = await client.get(`${transport}/geofence-trips-download`, { params });
-        return response.data;
-    }
-    const { mutate: mutateDrivingHistory, isLoading: generateReportLoading } = vehicleReportMutation;
-
-    function generateReportHndlr() {
-        mutateDrivingHistory();
-    }
-
-    function applyFilterHndlr(){
+    function applyFilterHndlr() {
         props.applyFilterCallback(geofenceBetweenTripState);
     }
 
@@ -291,5 +273,5 @@ export const GeofenceTripModal = (props: IGeofenceModal) => {
             </Box>
         </Box >
     )
-}
+})
 
