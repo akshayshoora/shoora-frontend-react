@@ -3,12 +3,14 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
 import Chip from "@mui/material/Chip";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import { useAppContext } from "ContextAPIs/appContext";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import {
   Button,
   CircularProgress,
@@ -201,203 +203,246 @@ export default function Report() {
           {snackbar.message}
         </Alert>
       </Snackbar>
-      <Box style={{ padding: "20px 40px" }}>
-        <Box style={{ display: "flex", justifyContent: "space-between" }}>
-          <Heading>My Reports</Heading>
-        </Box>
-        <Box>
-          {/* <CircularProgress /> */}
-          <Box className={classes.searchWrapper}>
-            <Heading>Generate a New Report</Heading>
-            <SearchBox onChangeFunc={handleSearchInput} placeholder="Search" />
-          </Box>
-          <Box className={classes.allReports}>
-            <span>All Reports</span>
-            <Box className={classes.allReportView}>
-              <Grid
-                container
-                spacing={{ xs: 2, md: 3 }}
-                columns={{ xs: 6, sm: 8, md: 12 }}
-                style={{ marginTop: 24 }}
-              >
-                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-                  <Box className="reportBox">
-                    <Box sx={{ padding: "20px" }}>
-                      <h3>Vehicle Halt Report</h3>
-                      <p>
-                        Vehicle halt report captures the stappages of a vehicle over a particular duration and the location of the stoppage.
-                      </p>
-                      <p>Last Generated on: </p>
-                    </Box>
-
-                    <div className="btnWrapper">
-                      <Button
-                        className="gbtn"
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={handleOpen}
-                        data-id="vehicle-halt-report"
-                      >
-                        <AddIcon /> Generate Report
-                      </Button>
-                    </div>
-                  </Box>
-                </Grid>
-                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-                  <Box className="reportBox">
-                    <Box sx={{ padding: "20px" }}>
-                      <h3>Driver Trip Report</h3>
-                      <p>
-                        Driver trip report captures the runnings of a driver from point A to point B with the count of incidents and distance travelled.
-                      </p>
-                      <p>Last Generated on: </p>
-                    </Box>
-
-                    <div className="btnWrapper">
-                      <Button
-                        className="gbtn"
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={handleOpen}
-                        data-id="driver-trip-report"
-                      >
-                        <AddIcon /> Generate Report
-                      </Button>
-                    </div>
-                  </Box>
-                </Grid>
-                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-                  <Box className="reportBox">
-                    <Box sx={{ padding: "20px" }}>
-                      <h3>Vehicle Trip Report</h3>
-                      <p>
-                        Vehicle trip report captures the runnings of a vehicle from point A to point B with the count of incidents and distance travelled.
-                      </p>
-                      <p>Last Generated on: </p>
-                    </Box>
-
-                    <div className="btnWrapper">
-                      <Button
-                        className="gbtn"
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={handleOpen}
-                        data-id="vehicle-trip-report"
-                      >
-                        <AddIcon /> Generate Report
-                      </Button>
-                    </div>
-                  </Box>
-                </Grid>
-                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-                  <Box className="reportBox">
-                    <Box sx={{ padding: "20px" }}>
-                      <h3>Driver Report Master</h3>
-                      <p>
-                        Master data of all drivers in the organisation with their overall score and driving/duty hours for today and yesterday.
-                      </p>
-                      <p>Last Generated on: </p>
-                    </Box>
-
-                    <div className="btnWrapper">
-                      <Button
-                        className="gbtn"
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={driverReportMasterHndlr}
-                        data-id="driver-report-master"
-                      >
-                        <AddIcon /> Download Now
-                      </Button>
-                    </div>
-                  </Box>
-                </Grid>
-                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-                  <Box className="reportBox">
-                    <Box sx={{ padding: "20px" }}>
-                      <h3>Driver Duty Hour Report</h3>
-                      <p>
-                        Driving and Duty hours for a particular driver for n number of historic days
-                      </p>
-                      <p>Last Generated on: </p>
-                    </Box>
-
-                    <div className="btnWrapper">
-                      <Button
-                        className="gbtn"
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={handleOpen}
-                        data-id="driver-duty-hours"
-                      >
-                        <AddIcon /> Generate Report
-                      </Button>
-                    </div>
-                  </Box>
-                </Grid>
-                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-                  <Box className="reportBox">
-                    <Box sx={{ padding: "20px" }}>
-                      <h3>Vehicle Report Master</h3>
-                      <p>
-                        Master data of all vehicles capturing all critical information including data from Parivahan
-                      </p>
-                      <p>Last Generated on: </p>
-                    </Box>
-
-                    <div className="btnWrapper">
-                      <Button
-                        className="gbtn"
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={vehicleReportMasterHndlr}
-                        data-id="vehicle-report-master"
-                      >
-                        <AddIcon /> Download Now
-                      </Button>
-                    </div>
-                  </Box>
-                </Grid>
-                <Grid item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
-                  <Box className="reportBox">
-                    <Box sx={{ padding: "20px" }}>
-                      <h3>Trip Between Geofence</h3>
-                      <p>
-                        No of trips concluded by all vehicles between two points of interest
-                      </p>
-                      <p>Last Generated on: </p>
-                    </Box>
-
-                    <div className="btnWrapper">
-                      <Button
-                        className="gbtn"
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={handleOpen}
-                        data-id="trip-between-geofence"
-                      >
-                        <AddIcon /> Generate Report
-                      </Button>
-                    </div>
-                  </Box>
-                </Grid>
-
-              </Grid>
+      <Box style={{ padding: "0px 0px 20px 40px" }}>
+        <Grid container
+          columns={{ xs: 6, sm: 8, md: 12, lg: 15 }}>
+          <Grid item xs={6} md={8} lg={10} style={{ marginTop: "20px", paddingRight: "24px" }}>
+            <Box style={{ display: "flex", justifyContent: "space-between" }}>
+              <Heading>My Reports</Heading>
             </Box>
-          </Box>
-        </Box>
-        <Modal
-          open={modalState.showModal}
-          onClose={closeModalHndlr}
-          aria-labelledby="child-modal-title"
-          aria-describedby="child-modal-description"
-        >
-          {/* <VehicleReportModal /> */}
-          <>
-            {activeModalComponent}
-          </>
-        </Modal>
+            <Box>
+              {/* <CircularProgress /> */}
+              <Box className={classes.searchWrapper}>
+                <Heading>Generate a New Report</Heading>
+                <SearchBox onChangeFunc={handleSearchInput} placeholder="Search" />
+              </Box>
+              <Box className={classes.allReports}>
+                <span>All Reports</span>
+                <Box className={classes.allReportView}>
+                  <Grid
+                    container
+                    spacing={{ xs: 2, md: 3, lg: 3 }}
+                    columns={{ xs: 6, sm: 8, md: 12, lg: 12 }}
+                    style={{ marginTop: 4 }}
+                  >
+                    <Grid item xs={2} sm={6} md={6} lg={4} style={{ paddingLeft: 24 }}>
+                      <Box className="reportBox">
+                        <Box sx={{ padding: "20px" }}>
+                          <h3>Vehicle Halt Report</h3>
+                          <p>
+                            Vehicle halt report captures the stappages of a vehicle over a particular duration and the location of the stoppage.
+                          </p>
+                          <p>Last Generated on: </p>
+                        </Box>
+
+                        <div className="btnWrapper">
+                          <Button
+                            className="gbtn"
+                            variant="contained"
+                            style={{ color: COLORS.WHITE }}
+                            onClick={handleOpen}
+                            data-id="vehicle-halt-report"
+                          >
+                            <AddIcon /> Generate Report
+                          </Button>
+                        </div>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={2} sm={6} md={6} lg={4} style={{ paddingLeft: 24 }}>
+                      <Box className="reportBox">
+                        <Box sx={{ padding: "20px" }}>
+                          <h3>Driver Trip Report</h3>
+                          <p>
+                            Driver trip report captures the runnings of a driver from point A to point B with the count of incidents and distance travelled.
+                          </p>
+                          <p>Last Generated on: </p>
+                        </Box>
+
+                        <div className="btnWrapper">
+                          <Button
+                            className="gbtn"
+                            variant="contained"
+                            style={{ color: COLORS.WHITE }}
+                            onClick={handleOpen}
+                            data-id="driver-trip-report"
+                          >
+                            <AddIcon /> Generate Report
+                          </Button>
+                        </div>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={2} sm={6} md={6} lg={4} style={{ paddingLeft: 24 }}>
+                      <Box className="reportBox">
+                        <Box sx={{ padding: "20px" }}>
+                          <h3>Vehicle Trip Report</h3>
+                          <p>
+                            Vehicle trip report captures the runnings of a vehicle from point A to point B with the count of incidents and distance travelled.
+                          </p>
+                          <p>Last Generated on: </p>
+                        </Box>
+
+                        <div className="btnWrapper">
+                          <Button
+                            className="gbtn"
+                            variant="contained"
+                            style={{ color: COLORS.WHITE }}
+                            onClick={handleOpen}
+                            data-id="vehicle-trip-report"
+                          >
+                            <AddIcon /> Generate Report
+                          </Button>
+                        </div>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={2} sm={6} md={6} lg={4} style={{ paddingLeft: 24 }}>
+                      <Box className="reportBox">
+                        <Box sx={{ padding: "20px" }}>
+                          <h3>Driver Report Master</h3>
+                          <p>
+                            Master data of all drivers in the organisation with their overall score and driving/duty hours for today and yesterday.
+                          </p>
+                          <p>Last Generated on: </p>
+                        </Box>
+
+                        <div className="btnWrapper">
+                          <Button
+                            className="gbtn"
+                            variant="contained"
+                            style={{ color: COLORS.WHITE }}
+                            onClick={driverReportMasterHndlr}
+                            data-id="driver-report-master"
+                          >
+                            <AddIcon /> Download Now
+                          </Button>
+                        </div>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={2} sm={6} md={6} lg={4} style={{ paddingLeft: 24 }}>
+                      <Box className="reportBox">
+                        <Box sx={{ padding: "20px" }}>
+                          <h3>Driver Duty Hour Report</h3>
+                          <p>
+                            Driving and Duty hours for a particular driver for n number of historic days
+                          </p>
+                          <p>Last Generated on: </p>
+                        </Box>
+
+                        <div className="btnWrapper">
+                          <Button
+                            className="gbtn"
+                            variant="contained"
+                            style={{ color: COLORS.WHITE }}
+                            onClick={handleOpen}
+                            data-id="driver-duty-hours"
+                          >
+                            <AddIcon /> Generate Report
+                          </Button>
+                        </div>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={2} sm={6} md={6} lg={4} style={{ paddingLeft: 24 }}>
+                      <Box className="reportBox">
+                        <Box sx={{ padding: "20px" }}>
+                          <h3>Vehicle Report Master</h3>
+                          <p>
+                            Master data of all vehicles capturing all critical information including data from Parivahan
+                          </p>
+                          <p>Last Generated on: </p>
+                        </Box>
+
+                        <div className="btnWrapper">
+                          <Button
+                            className="gbtn"
+                            variant="contained"
+                            style={{ color: COLORS.WHITE }}
+                            onClick={vehicleReportMasterHndlr}
+                            data-id="vehicle-report-master"
+                          >
+                            <AddIcon /> Download Now
+                          </Button>
+                        </div>
+                      </Box>
+                    </Grid>
+                    <Grid item xs={2} sm={6} md={6} lg={4} style={{ paddingLeft: 24 }}>
+                      <Box className="reportBox">
+                        <Box sx={{ padding: "20px" }}>
+                          <h3>Trip Between Geofence</h3>
+                          <p>
+                            No of trips concluded by all vehicles between two points of interest
+                          </p>
+                          <p>Last Generated on: </p>
+                        </Box>
+
+                        <div className="btnWrapper">
+                          <Button
+                            className="gbtn"
+                            variant="contained"
+                            style={{ color: COLORS.WHITE }}
+                            onClick={handleOpen}
+                            data-id="trip-between-geofence"
+                          >
+                            <AddIcon /> Generate Report
+                          </Button>
+                        </div>
+                      </Box>
+                    </Grid>
+
+                  </Grid>
+                </Box>
+              </Box>
+            </Box>
+          </Grid>
+          <Grid item xs={6} md={4} lg={5} className={classes.generatedReportContainer}>
+            <Box>
+              <Box className={classes.recentReportHeader}>
+                <Heading>Recently Generated Reports</Heading>
+              </Box>
+              {[1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((item, index) => (
+                <React.Fragment key={`item-${index}`}>
+                  <Box className={classes.recentReportCard}>
+                    <Box className="header">
+                      <Typography variant="h3">Driver Trip Report</Typography>
+                      <Box className="header-action">
+                        <IconButton size="small" aria-label="download">
+                          <ArrowDownwardIcon />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                    <Box className="recentBodyContainer">
+                      <Box sx={{ mb: 2 }} className="generatedDate">
+                        <Box component="span" className="label-light">Generated on: </Box>
+                        <Box component="span" className="label-dark">22-10-2023 08:00 PM</Box>
+                      </Box>
+                      <Box sx={{ mb: 0.5 }} className="label-dark">Date Range:</Box>
+                      <Box className="dateRangeContainer">
+                        <Box className="generatedDate">
+                          <Box component="span" className="label-light">From: </Box>
+                          <Box component="span" className="label-dark">22-10-2023 08:00 PM</Box>
+                        </Box>
+                        <Box className="generatedDate">
+                          <Box component="span" className="label-light">To: </Box>
+                          <Box component="span" className="label-dark">22-10-2023 08:00 PM</Box>
+                        </Box>
+                      </Box>
+                    </Box></Box>
+                </React.Fragment>
+              ))}
+            </Box>
+          </Grid>
+        </Grid>
+
       </Box>
+      <Modal
+        open={modalState.showModal}
+        onClose={closeModalHndlr}
+        aria-labelledby="child-modal-title"
+        aria-describedby="child-modal-description"
+      >
+        {/* <VehicleReportModal /> */}
+        <>
+          {activeModalComponent}
+        </>
+      </Modal>
     </>
   );
 }

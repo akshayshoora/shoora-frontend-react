@@ -162,12 +162,12 @@ export default function GeoFence() {
     },
 
     // { id: "radius", label: "Radius", numeric: false, disablePadding: false },
-    {
-      id: "created_at",
-      label: "Created At",
-      numeric: false,
-      disablePadding: false,
-    },
+    // {
+    //   id: "created_at",
+    //   label: "Created At",
+    //   numeric: false,
+    //   disablePadding: false,
+    // },
     {
       id: "assignVehicle",
       label: "Assign Vehicle",
@@ -288,11 +288,11 @@ export default function GeoFence() {
                       <Span fontType="secondary">{item.address}</Span>
                     </TableCell>
 
-                    <TableCell align="left">
+                    {/* <TableCell align="left">
                       <Span fontType="secondary">
                         {item.created_at ? item.created_at : "-"}
                       </Span>
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="left">
                       <Button
                         variant="contained"

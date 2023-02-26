@@ -4,6 +4,9 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import Badge from '@mui/material/Badge';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import TableRow from "@mui/material/TableRow";
@@ -23,7 +26,7 @@ import {
   HeadCell,
   Order,
   TableFooter,
-  TableHeader,
+  TableHeader, TableHeaderGeofence, TableHeaderUpdated
 } from "components/commonComponent/Table";
 import ActionMenu, {
   MenuType,
@@ -74,11 +77,9 @@ export default function Trip() {
   const appliedFilterInfoRef = React.useRef<any>(undefined);
   const classes = useStyles();
 
-  // useEffect(() => {
-  //     if(tripList){
-  //       renderPlaceName();
-  //     }
-  //    },[tripList]);
+  useEffect(() => {
+    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: page + 1, pageSize: rowsPerPage });
+  }, []);
 
 
   const handleOpenTrip = (id: string, trip: any) => {
@@ -129,16 +130,16 @@ export default function Trip() {
   const handleChangePage = (event: unknown, newPage: number) => {
     // setPlaceDataStatus(true);
     setPage(newPage - 1);
-    if (appliedFilterInfoRef.current)
-      mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: newPage, pageSize: rowsPerPage });
+    // if (appliedFilterInfoRef.current)
+    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: newPage, pageSize: rowsPerPage });
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
     // setPlaceDataStatus(true);
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    if (appliedFilterInfoRef.current)
-      mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: 1, pageSize: event.target.value });
+    // if (appliedFilterInfoRef.current)
+    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: 1, pageSize: event.target.value });
   };
 
   function openTripDetails(event: React.MouseEvent<HTMLElement>, id: string) {
@@ -155,36 +156,43 @@ export default function Trip() {
     },
   ];
 
-  const headCells: readonly HeadCell[] = [
+  const headCells: any = [
     {
       id: "Vehicle Number",
       label: "vin",
       numeric: false,
       disablePadding: false,
+      rowSpan: 2
     },
     {
-      id: "loading_in_time",
-      label: "Loading In Time",
+      id: "start_point",
+      label: "Start Point",
       numeric: false,
       disablePadding: false,
+      rowSpan: 2
+    },
+    {
+      id: "end_point",
+      label: "End Point",
+      numeric: false,
+      disablePadding: false,
+      rowSpan: 2
     },
     {
       id: "loading_out_time",
-      label: "Loading Out Time",
+      label: "Loading",
       numeric: false,
       disablePadding: false,
-    },
-    {
-      id: "unloading_in_time",
-      label: "Unloading In Time",
-      numeric: false,
-      disablePadding: false,
+      alignment: "center",
+      colSpan: 2
     },
     {
       id: "unloading_out_time",
-      label: "Unloading Out Time",
+      label: "Unloading",
       numeric: false,
       disablePadding: false,
+      alignment: "center",
+      colSpan: 2
     },
     // {
     //   id: "driver",
@@ -197,18 +205,21 @@ export default function Trip() {
       label: "Incidents",
       numeric: false,
       disablePadding: false,
+      rowSpan: 2
     },
     {
       id: "distance",
       label: "Distance",
       numeric: false,
       disablePadding: false,
+      rowSpan: 2
     },
     {
       id: "duration",
       label: "Duration",
       numeric: false,
       disablePadding: false,
+      rowSpan: 2
     },
   ];
 
@@ -257,10 +268,10 @@ export default function Trip() {
   });
   async function generateVehicleReportApiCall(tripInfo: any) {
     const { startDate, endDate, startAddress, endAddress, pageNo = 1, pageSize = 10 } = tripInfo || {},
-      isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
+      isoSinceDate = endDate ? new Date(startDate).toISOString() : undefined,
       endDateUpdated = new Date(endDate);
     endDateUpdated.setDate(endDateUpdated.getDate() + 1);
-    const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
+    const isoUntilDate = endDate ? endDateUpdated.toISOString() : undefined,
       params: any = {
         since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
         page: pageNo, page_size: pageSize,
@@ -315,7 +326,7 @@ export default function Trip() {
                 placeholder="Search Trips"
               />
             </Box>
-            <Badge color="success" variant="dot" invisible={!appliedDistanceFilter}>
+            {/* <Badge color="success" variant="dot" invisible={!appliedDistanceFilter}>
               <Button
                 variant="contained"
                 style={{ color: COLORS.WHITE }}
@@ -325,7 +336,15 @@ export default function Trip() {
                 <FilterAltIcon sx={{ marginRight: 0.5 }} />
                 Trip Between Geofence
               </Button>
-            </Badge>
+            </Badge> */}
+            <Tooltip title="Apply Filter">
+              <IconButton onClick={handleBetweenTripModal}>
+                <Badge color="success" variant="dot" invisible={!appliedFilterInfoRef.current}>
+                  <FilterListIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+
 
             {/* {appliedDistanceFilter && <Button
               variant="contained"
@@ -351,7 +370,7 @@ export default function Trip() {
         </Box>
         <Box className={classes.root}>
           <Table className={classes.table}>
-            <TableHeader
+            <TableHeaderGeofence
               headings={headCells}
               order={order}
               orderBy={orderBy}
@@ -370,7 +389,13 @@ export default function Trip() {
                   return (
                     <TableRow hover role="checkbox" tabIndex={0} key={index}>
                       <TableCell align="left">
-                        <Span fontType="secondary">{trip.vin}</Span>
+                        <Span fontType="secondary">{trip?.vin}</Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Span fontType="secondary">{trip?.start_geofence}</Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Span fontType="secondary">{trip?.end_geofence}</Span>
                       </TableCell>
                       <TableCell align="left">
                         <Span fontType="secondary">
@@ -420,7 +445,7 @@ export default function Trip() {
                 })
               ) : (
                 <TableRow>
-                  <TableCell colSpan={7}>
+                  <TableCell colSpan={11}>
                     <div className={classes.noDataView}>
                       Try adjusting your filters between the geofence trips.
                     </div>

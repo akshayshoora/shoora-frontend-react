@@ -112,4 +112,53 @@ export default makeStyles({
       boxSizing: "border-box",
     },
   },
+  generatedReportContainer: {
+    backgroundColor: "#f3f3f9",
+    padding: "20px 20px",
+    overflow: "auto",
+    height: "100vh",
+    position: "sticky",
+    top: 0
+  },
+  recentReportHeader: {
+    marginBottom: "16px",
+    "& span": {
+      fontSize: "18px !important",
+    },
+  },
+  recentReportCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: "8px",
+    padding: "12px 12px",
+    marginBottom: "12px",
+    boxShadow: "0px 0px 8px rgb(0 0 0 / 10%)",
+    "& .header": {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      "& h3": {
+        marginTop: "0px",
+        fontSize: "16px",
+        fontWeight: "700",
+      },
+      "& .header-action": {
+
+      }
+    },
+    "& .recentBodyContainer": {
+      "& .label-light": {
+        color: "#6c757d",
+        fontSize: "14px",
+      },
+      "& .label-dark": {
+        color: "#261f5a",
+        fontSize: "14px",
+        // fontWeight: "bold"
+      },
+    },
+    "& .dateRangeContainer": {
+      display: "flex",
+      justifyContent: "space-between"
+    }
+  }
 });
