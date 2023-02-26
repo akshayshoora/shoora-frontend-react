@@ -40,11 +40,11 @@ interface IGeofenceModal {
 
 export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) => {
     const [geofenceBetweenTripState, setGeofenceBetweenTripState] = useState({
-        startAddress: "0",
+        startAddress: "",
         startAddressDetails: undefined,
         startDate: "",
         endDate: "",
-        endAddress: "0",
+        endAddress: "",
         endAddressDetails: undefined
     });
     const classes = useStyles();
@@ -92,6 +92,18 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
         props.applyFilterCallback(geofenceBetweenTripState);
     }
 
+    function resetFilterHndlr() {
+        setGeofenceBetweenTripState((prevState: any) => ({
+            ...prevState, startAddress: "",
+            startAddressDetails: undefined,
+            startDate: "",
+            endDate: "",
+            endAddress: "",
+            endAddressDetails: undefined
+        }))
+        props.applyFilterCallback(null);
+    }
+
     return (
         <Box sx={style}>
             <Typography
@@ -100,7 +112,7 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
                 variant="h6"
                 component="h2"
             >
-                Trip Between Geofence
+                Filter
                 <i onClick={props.closeModalHndlr}>
                     <svg
                         width="24"
@@ -255,8 +267,11 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
                     </Grid>
                     <Grid item xs={12} style={{ marginTop: 8 }}>
                         <Box sx={{ mt: 1.5 }} style={{ display: "flex", justifyContent: "end" }}>
-                            <Button className="cBtn" onClick={props.closeModalHndlr}>
+                            {/* <Button className="cBtn" onClick={props.closeModalHndlr}>
                                 Cancel
+                            </Button> */}
+                            <Button color="secondary" className="cBtn" onClick={resetFilterHndlr}>
+                                Reset Filter And Close
                             </Button>
                             <Button
                                 className="gbtn"
