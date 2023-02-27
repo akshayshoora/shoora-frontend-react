@@ -35,6 +35,7 @@ import VehicleHaltModal from "./VehicleHaltModal";
 import DriverTripModal from "./DriverTripModal";
 import VehicleTripModal from "./VehicleTripModal";
 import TripBetweenGeofenceModal from "./TripBetweenGeofenceModal";
+import { reportList } from "./helper";
 
 function getActiveModalComponent(modalId: string) {
   switch (modalId) {
@@ -185,6 +186,35 @@ export default function Report() {
   function onBackdropHndlr(event: any) {
     event.stopPropagation();
     event.preventDefault();
+  }
+
+  async function downloadGeneratedReportHndlr(reportDetails: any) {
+    if (reportDetails) {
+      const { url, reportName, filter, requireFilter } = reportDetails;
+      try {
+        let params = { params: undefined };
+        if (requireFilter) {
+          params = { params: filter };
+        }
+        const driverCsvData = await client.get(`${transport}/drivers/download/`, params);
+        const currentDate = new Date().toLocaleString("default", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = `${reportName}-${currentDate}.csv`;
+        hiddenElement.click();
+      } catch (e) {
+        setSnackbar({
+          open: true,
+          variant: "error",
+          message: "Something went wrong.",
+        })
+      }
+    }
   }
 
   return (
@@ -397,13 +427,13 @@ export default function Report() {
               <Box className={classes.recentReportHeader}>
                 <Heading>Recently Generated Reports</Heading>
               </Box>
-              {[1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].map((item, index) => (
+              {Array.isArray(reportList) && reportList.map((item, index) => (
                 <React.Fragment key={`item-${index}`}>
                   <Box className={classes.recentReportCard}>
                     <Box className="header">
-                      <Typography variant="h3">Driver Trip Report</Typography>
+                      <Typography variant="h3">{item?.reportName}</Typography>
                       <Box className="header-action">
-                        <IconButton size="small" aria-label="download">
+                        <IconButton data-id={item?.id} onClick={() => downloadGeneratedReportHndlr(item)} size="small" aria-label="download">
                           <ArrowDownwardIcon />
                         </IconButton>
                       </Box>
@@ -411,17 +441,17 @@ export default function Report() {
                     <Box className="recentBodyContainer">
                       <Box sx={{ mb: 2 }} className="generatedDate">
                         <Box component="span" className="label-light">Generated on: </Box>
-                        <Box component="span" className="label-dark">22-10-2023 08:00 PM</Box>
+                        <Box component="span" className="label-dark">{item?.generatedOn}</Box>
                       </Box>
                       <Box sx={{ mb: 0.5 }} className="label-dark">Date Range:</Box>
                       <Box className="dateRangeContainer">
                         <Box className="generatedDate">
                           <Box component="span" className="label-light">From: </Box>
-                          <Box component="span" className="label-dark">22-10-2023 08:00 PM</Box>
+                          <Box component="span" className="label-dark">{item?.fromDate}</Box>
                         </Box>
                         <Box className="generatedDate">
                           <Box component="span" className="label-light">To: </Box>
-                          <Box component="span" className="label-dark">22-10-2023 08:00 PM</Box>
+                          <Box component="span" className="label-dark">{item?.toDate}</Box>
                         </Box>
                       </Box>
                     </Box></Box>
