@@ -196,7 +196,7 @@ export default function Report() {
         if (requireFilter) {
           params = { params: filter };
         }
-        const driverCsvData = await client.get(`${transport}/drivers/download/`, params);
+        const driverCsvData = await client.get(url, params);
         const currentDate = new Date().toLocaleString("default", {
           day: "numeric",
           month: "long",
