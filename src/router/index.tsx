@@ -35,6 +35,7 @@ import Coaching from "components/Coaching";
 import JobCard from "components/JobCard";
 import GeoFence from "components/GeoFence";
 import AddGeoFence from "components/GeoFence/AddGeoFence";
+import ThreePLAdmin from "components/ThreePLAdmin";
 import { GeofenceDetails } from "components/GeoFence/GeofenceDetails";
 
 //todo: Need to be updated
@@ -529,6 +530,19 @@ export default function AppRouter() {
             component={
               <ErrorBoundary>
                 <GeofenceDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.THREEPLADMIN}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.THREEPLADMIN}
+            component={
+              <ErrorBoundary>
+                <ThreePLAdmin />
               </ErrorBoundary>
             }
           />

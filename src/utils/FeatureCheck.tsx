@@ -25,7 +25,8 @@ export function CheckFeatureAccess(item: any) {
       item.toLowerCase() == "coaching" ||
       item.toLowerCase() == "job-card" ||
       item.toLowerCase() == "tyre" ||
-      item.toLowerCase() == "maintenance"
+      item.toLowerCase() == "maintenance" ||
+      item.toLowerCase() == "threepl-admin"
     ) {
       return true;
     } else if (
@@ -43,7 +44,6 @@ export function getProtectedRoutes(route: any) {
 
 export function CheckRoutesAccess(item: any) {
   const { user } = useAppContext();
-  // console.log({item});
   for (let j = 0; j < user.allowed_features.length; j++) {
     if (
       item.toLowerCase() == "dashboard" ||
@@ -58,12 +58,13 @@ export function CheckRoutesAccess(item: any) {
       item.toLowerCase() == "coaching" ||
       item.toLowerCase() == "job-card" ||
       item.toLowerCase() == "tyre" ||
-      item.toLowerCase() == "maintenance"
+      item.toLowerCase() == "maintenance" ||
+      item.toLowerCase() == "threepl-admin"
     ) {
       return true;
     }
 
-    if (user.allowed_features[j].feature.toLowerCase() == item.toLowerCase()) {
+    if ((user.allowed_features[j].feature.toLowerCase() == item.toLowerCase()) || (item.toLowerCase() == "threepl-admin")) {
       return true;
     }
   }

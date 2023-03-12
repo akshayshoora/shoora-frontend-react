@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select/Select";
 import Span from "components/commonComponent/Span";
+import classnames from "classnames";
 
 import useStyles from "./style";
 
@@ -28,6 +29,7 @@ interface ITableFooterProps {
   rowsPerPage: number;
   onChangeRowsPerPage: (event: SelectChangeEvent) => void;
   showRow?: boolean;
+  footerContainerClassName?: string,
 }
 
 interface ITableHeadingProps {
@@ -51,7 +53,7 @@ export function TableFooter(props: ITableFooterProps) {
   const classes = useStyles();
 
   return (
-    <Box className={classes.footer}>
+    <Box className={classnames(props.footerContainerClassName || classes.footer)}>
       <Pagination
         componentName="div"
         count={totalPages}

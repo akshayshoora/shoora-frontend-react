@@ -40,6 +40,7 @@ export const sideMenuLabel: {
   [AppPaths.MAINTENANCE]: "Maintenance",
   [AppPaths.JOBCARD]: "Job Card",
   [AppPaths.GEOFENCE]: "Geofence",
+  [AppPaths.THREEPLADMIN]: "3 PL Admin"
 };
 
 export const ALL_MENU = [
@@ -62,6 +63,7 @@ export const ALL_MENU = [
   AppPaths.COACHING,
   AppPaths.MAINTENANCE,
   AppPaths.JOBCARD,
+  AppPaths.THREEPLADMIN
 ];
 
 export const ALL_ROUTES = [
@@ -84,6 +86,7 @@ export const ALL_ROUTES = [
   AppPaths.COACHING,
   AppPaths.MAINTENANCE,
   AppPaths.JOBCARD,
+  AppPaths.THREEPLADMIN
 ];
 
 type ROLE_BASED_FILTERED_SUMMARY = {

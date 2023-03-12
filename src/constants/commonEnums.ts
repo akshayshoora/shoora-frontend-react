@@ -20,6 +20,7 @@ export enum AppPaths {
   JOBCARD = "job-card",
   FUEL = "fuel",
   GEOFENCE = "geofence",
+  THREEPLADMIN = "threepl-admin",
 }
 
 export enum SubPaths {
