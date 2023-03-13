@@ -149,11 +149,116 @@ export function AlertModal(props: IAlertModalProps) {
             </Typography>
             <Grid
               container
-              spacing={{ xs: 2, md: 3 }}
-              columns={{ xs: 6, sm: 8, md: 12 }}
-              style={{ marginTop: 24 }}
+              columnSpacing={{ xs: 2, md: 3 }}
+              rowSpacing={{ xs: 2, md: 3 }}
+              columns={{ xs: 6, md: 12 }}
+              style={{
+                marginTop: 0, marginLeft: 0,
+                maxHeight: "80vh", height: "600px", overflow: "auto",
+                width: "100%", paddingRight: "24px", paddingBottom: "24px"
+              }}
             >
-              <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+              <Grid item xs={6} md={6}>
+                <Box className={classes.avtarDriveInfo}>
+                  <IonAvatar className={classes.avtarIcon}>
+                    <img
+                      alt="avtar icon"
+                      src="https://ionicframework.com/docs/img/demos/avatar.svg"
+                    />
+                  </IonAvatar>
+                  <ul className={classes.alertListInfo}>
+                    <li>
+                      <span>
+                        Driver Name: {alert.driver ? alert.driver.name : ""}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Contact Details:{" "}
+                        {alert.driver ? alert.driver.phone_number : ""}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Licence No:{" "}
+                        {alert.driver
+                          ? alert.driver.driving_license_number
+                          : ""}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Vehicle No:{" "}
+                        {alert?.vehicle || "-"}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Alert Name:{" "}
+                        {alert.alert_name || "-"}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Created At:{" "}
+                        {getDateDisplayFormat(alert.created_at)}
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Alert Address:{" "}
+                        {alert.alert_address}
+                      </span>
+                    </li>
+                  </ul>
+                </Box>
+                {/* <ul className={classes.alertList}>
+                  <li>
+                    <span>{alert.vehicle}</span>
+                  </li>
+                  <li>
+                    <span>{alert.alert_name}</span>
+                  </li>
+
+                  <li>
+                    <span>{getDateDisplayFormat(alert.created_at)}</span>
+                  </li>
+
+                  <li>
+                    <span>{alert.alert_address}</span>
+                  </li>
+                </ul> */}
+              </Grid>
+              <Grid item xs={6} md={6}>
+                <Box className="livemap">
+                  <GoogleMapReact
+                    style={{ height: `250px` }}
+                    bootstrapURLKeys={{
+                      key: `${process.env.REACT_APP_MAP_KEY}`,
+                    }}
+                    defaultZoom={15}
+                    resetBoundsOnResize={true}
+                    defaultCenter={{
+                      lat: Number(alert.latitude),
+                      lng: Number(alert.longitude),
+                    }}
+                    onGoogleApiLoaded={({ map, maps }) =>
+                      renderMarkers(map, maps)
+                    }
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={6} md={6} style={{ paddingLeft: 24 }}>
+                <Box className={classes.videoAlert}>
+                  <Player poster="/assets/poster.png" src={alert.video_url} />
+                </Box>
+              </Grid>
+              <Grid item xs={6} md={6} style={{ paddingLeft: 24 }}>
+                {alert.video_url_2 && <Box className={classes.videoAlert}>
+                  <Player poster="/assets/poster.png" src={alert.video_url_2} />
+                </Box>}
+              </Grid>
+              {/* <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
                 <Item elevation={1}>
                   <ul className={classes.alertList}>
                     <li>
@@ -168,17 +273,11 @@ export function AlertModal(props: IAlertModalProps) {
                     </li>
 
                     <li>
-                      <span>
-                        {alert.latitude}, {alert.longitude}
-                      </span>
+                      <span>{alert.alert_address}</span>
                     </li>
                   </ul>
                   <Box className={classes.videoAlert}>
-                    <Player
-                      autoPlay
-                      poster="/assets/poster.png"
-                      src={alert.video_url}
-                    />
+                    <Player poster="/assets/poster.png" src={alert.video_url} />
                   </Box>
                 </Item>
               </Grid>
@@ -219,7 +318,7 @@ export function AlertModal(props: IAlertModalProps) {
                       bootstrapURLKeys={{
                         key: `${process.env.REACT_APP_MAP_KEY}`,
                       }}
-                      defaultZoom={10}
+                      defaultZoom={15}
                       resetBoundsOnResize={true}
                       defaultCenter={{
                         lat: Number(alert.latitude),
@@ -231,7 +330,7 @@ export function AlertModal(props: IAlertModalProps) {
                     />
                   </Box>
                 </Item>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
         )}

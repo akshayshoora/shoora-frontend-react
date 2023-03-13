@@ -74,3 +74,21 @@ export function getDuration(time: number) {
   let rminutes = Math.round(minutes);
   return rhours + "h " + rminutes + " mins";
 }
+
+export function getDurationFromSeconds(totalSeconds: number) {
+  if (totalSeconds < 60) {
+    return "1 mins";
+  }
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return hours + " h " + minutes + " mins";
+}
+
+
+export function getHoursFromSeconds(time: any) {
+  if (isNaN(time)) {
+    return time;
+  }
+  return Math.round(Number(time) / 3600).toFixed(1);
+}

@@ -1,85 +1,90 @@
-import { AppPaths,Actions } from '../constants/commonEnums';
-import {
-ALL_ROUTES,
- ALL_MENU
-} from 'constants/commonConstants';
+import { AppPaths, Actions } from "../constants/commonEnums";
+import { ALL_ROUTES, ALL_MENU } from "constants/commonConstants";
 import { useAppContext } from "ContextAPIs/appContext";
 
- let actionModes : string[] | undefined= [];
-
-
-
+let actionModes: string[] | undefined = [];
 
 export function getFeatures() {
-const result = ALL_MENU.filter(CheckFeatureAccess);
-return result
-   
-  }
+  const result = ALL_MENU.filter(CheckFeatureAccess);
+  return result;
+}
 
-  export function CheckFeatureAccess(item:any) {
-    const { user } = useAppContext();
-        for(let j=0;j<user.allowed_features.length;j++){
-            if(item.toLowerCase()=="dashboard" || item.toLowerCase()=="live-view" || item.toLowerCase()=="map-view" ||
-             item.toLowerCase()=="trip" || item.toLowerCase()=="report" ||  item.toLowerCase()=="finance" || item.toLowerCase()=="fuel" 
-             || item.toLowerCase()=="coaching" || item.toLowerCase()=="job-card" || item.toLowerCase()=="tyre" || item.toLowerCase()=="maintenance"
-             ){
-                return true
-            }
-           
-        else if(user.allowed_features[j].feature.toLowerCase()==item.toLowerCase())
-        {         
-            return true
-        
-        }
+export function CheckFeatureAccess(item: any) {
+  const { user } = useAppContext();
+  for (let j = 0; j < user.allowed_features.length; j++) {
+    if (
+      item.toLowerCase() == "dashboard" ||
+      item.toLowerCase() == "live-view" ||
+      item.toLowerCase() == "map-view" ||
+      item.toLowerCase() == "trip" ||
+      item.toLowerCase() == "geofence-trips" ||
+      item.toLowerCase() == "report" ||
+      item.toLowerCase() == "finance" ||
+      item.toLowerCase() == "fuel" ||
+      item.toLowerCase() == "geofence" ||
+      item.toLowerCase() == "coaching" ||
+      item.toLowerCase() == "job-card" ||
+      item.toLowerCase() == "tyre" ||
+      item.toLowerCase() == "maintenance"
+    ) {
+      return true;
+    } else if (
+      user.allowed_features[j].feature.toLowerCase() == item.toLowerCase()
+    ) {
+      return true;
     }
   }
+}
 
+export function getProtectedRoutes(route: any) {
+  const result = ALL_ROUTES.filter(CheckRoutesAccess);
+  return result.includes(route);
+}
 
-  export function getProtectedRoutes(route: any) {
-    const result = ALL_ROUTES.filter(CheckRoutesAccess);
-    return result.includes(route);
-       
-      }
-    
-      export function CheckRoutesAccess(item:any) {
-        const { user } = useAppContext();
-            for(let j=0;j<user.allowed_features.length;j++){
-                 if(item.toLowerCase()=="dashboard" || item.toLowerCase()=="live-view" || item.toLowerCase()=="map-view" || item.toLowerCase()=="trip" 
-                 || item.toLowerCase()=="report" ||  item.toLowerCase()=="finance" || item.toLowerCase()=="fuel" 
-                 || item.toLowerCase()=="coaching" || item.toLowerCase()=="job-card" || item.toLowerCase()=="tyre" || item.toLowerCase()=="maintenance"){
-                     return true
-                 }
-               
-             if(user.allowed_features[j].feature.toLowerCase()==item.toLowerCase())
-            {         
-                return true
-            
-            }
-        }
-      }
-
-   export function GetActionsByfeature(feature:AppPaths){
-        const { user } = useAppContext();
-        for(let i=0;i<user.allowed_features.length;i++){
-            if(user.allowed_features[i].feature.toLowerCase()==feature.toLowerCase()){
-                return user.allowed_features[i].actions
-            }
-        }
-          
-
+export function CheckRoutesAccess(item: any) {
+  const { user } = useAppContext();
+  // console.log({item});
+  for (let j = 0; j < user.allowed_features.length; j++) {
+    if (
+      item.toLowerCase() == "dashboard" ||
+      item.toLowerCase() == "live-view" ||
+      item.toLowerCase() == "map-view" ||
+      item.toLowerCase() == "trip" ||
+      item.toLowerCase() == "geofence-trips" ||
+      item.toLowerCase() == "report" ||
+      item.toLowerCase() == "finance" ||
+      item.toLowerCase() == "fuel" ||
+      item.toLowerCase() == "geofence" ||
+      item.toLowerCase() == "coaching" ||
+      item.toLowerCase() == "job-card" ||
+      item.toLowerCase() == "tyre" ||
+      item.toLowerCase() == "maintenance"
+    ) {
+      return true;
     }
 
-      export function actionAccess(feature:AppPaths,actions:Actions) {
-        actionModes =GetActionsByfeature(feature)
-        if(actionModes?.includes(actions)){
-        return true
-        }
-        else{
-            return false
-        }
-        
-      }
+    if (user.allowed_features[j].feature.toLowerCase() == item.toLowerCase()) {
+      return true;
+    }
+  }
+}
 
-     
+export function GetActionsByfeature(feature: AppPaths) {
+  const { user } = useAppContext();
+  for (let i = 0; i < user.allowed_features.length; i++) {
+    if (
+      user.allowed_features[i].feature.toLowerCase() == feature.toLowerCase()
+    ) {
+      return user.allowed_features[i].actions;
+    }
+  }
+}
 
-
+export function actionAccess(feature: AppPaths, actions: Actions) {
+  actionModes = GetActionsByfeature(feature);
+  if (actionModes?.includes(actions)) {
+    return true;
+  } else {
+    return false;
+  }
+}

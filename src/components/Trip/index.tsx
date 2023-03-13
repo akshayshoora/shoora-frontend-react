@@ -12,6 +12,8 @@ import Heading from "components/commonComponent/Heading";
 import SearchBox from "components/commonComponent/SearchField";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
+import FilterListIcon from '@mui/icons-material/FilterList';
+import IconButton from '@mui/material/IconButton';
 import { useAppContext } from "ContextAPIs/appContext";
 import COLORS from "../../constants/colors";
 import {
@@ -23,6 +25,8 @@ import {
 import ActionMenu, {
   MenuType,
 } from "components/commonComponent/Table/ActionMenu";
+import Badge from '@mui/material/Badge';
+import Tooltip from '@mui/material/Tooltip';
 import { useQuery, useMutation } from "react-query";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
@@ -31,11 +35,19 @@ import { actionAccess } from "utils/FeatureCheck";
 import { auth, monitor } from "constants/RouteMiddlePath";
 import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
-import { getDateDisplayFormat, getDuration } from "utils/calenderUtils";
+import { GeofenceTripModal } from "./GeofenceTripModal";
+import TripFilterModal from "./TripFilterModal";
+import {
+  getDateDisplayFormat,
+  getDuration,
+  getDateTime,
+} from "utils/calenderUtils";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
-import { endianness } from "os";
 import { useEffect } from "react";
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import CancelIcon from '@mui/icons-material/Cancel';
 
+//Trip Page
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
   const [triptId, setTripId] = React.useState<string>("false");
@@ -43,11 +55,13 @@ export default function Trip() {
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [appliedDistanceFilter, setAppliedDistanceFilter] = React.useState<any>(false);
   const { data: tripList, isLoading } = useQuery(
     ["trips", page, rowsPerPage, searchText],
     () => getTrips(page, rowsPerPage, searchText),
     { refetchOnWindowFocus: false }
   );
+  const [betweenTripModal, setBetweenTripModal] = React.useState<any>(false);
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
     variant: "success" | "error" | "info";
@@ -57,9 +71,14 @@ export default function Trip() {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("trip");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+  const [row, setRow] = React.useState();
   const { user } = useAppContext();
   const navigate = useNavigate();
   const [placeDataStatus, setPlaceDataStatus] = React.useState<boolean>(true);
+  const [tripFilterState, setTripFilterState] = React.useState({
+    isTripFilterModalOpen: false,
+    appliedFilterDetails: undefined,
+  });
   const classes = useStyles();
 
   // useEffect(() => {
@@ -73,19 +92,33 @@ export default function Trip() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${monitor}/trips/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${monitor}/trips/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
     const finalURL = sanitizeURL(getApiUrl);
     const response = await client.get(finalURL);
 
     return response.data;
   }
 
-  const handleOpenTrip = (id: string) => {
+  const handleOpenTrip = (id: string, trip: any) => {
     setTripId(id);
+    setRow(trip);
     setOpenTrip(true);
   };
+
+  const handleBetweenTripModal = () => {
+    setBetweenTripModal(true);
+  };
+  const handleCloseBetweenTripModal = (appliedFilter: any) => {
+    if (appliedFilter) {
+      setAppliedDistanceFilter(true);
+    }
+    setBetweenTripModal(false)
+  };
+
+  function handleClearGeofenceFilter() {
+    setAppliedDistanceFilter(false);
+  }
 
   const handleOpenDelete = (
     event: React.MouseEvent<HTMLElement>,
@@ -136,8 +169,8 @@ export default function Trip() {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "crerated_at",
-      label: "Start Date/Time",
+      id: "Vehicle Number",
+      label: "vin",
       numeric: false,
       disablePadding: false,
     },
@@ -215,6 +248,13 @@ export default function Trip() {
     mutateDeleteTrip();
   }
 
+  function applyFilterHndlr() {
+    setTripFilterState((prevState) => ({ ...prevState, isTripFilterModalOpen: true, appliedFilterDetails: undefined }))
+  }
+
+  function closeFilterModalHndlr() {
+    setTripFilterState((prevState) => ({ ...prevState, isTripFilterModalOpen: false, appliedFilterDetails: undefined }))
+  }
   const handleCloseTrip = () => setOpenTrip(false);
 
   async function renderPlaceName() {
@@ -246,8 +286,27 @@ export default function Trip() {
           label="trip"
         />
       )}
+      {betweenTripModal && (
+        <GeofenceTripModal
+          open={betweenTripModal}
+          handleClose={handleCloseBetweenTripModal}
+          id={triptId}
+        />
+      )}
       {openTrip && (
-        <TripModal open={openTrip} handleClose={handleCloseTrip} id={triptId} />
+        <TripModal
+          open={openTrip}
+          handleClose={handleCloseTrip}
+          id={triptId}
+        />
+      )}
+      {tripFilterState.isTripFilterModalOpen && (
+        <TripFilterModal
+          showFilterModal={tripFilterState.isTripFilterModalOpen}
+          closeFilterModalHndlr={closeFilterModalHndlr}
+          applyingFilterProgress={false}
+          appliedFilterDetails={tripFilterState.appliedFilterDetails}
+        />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Trips</Heading>
@@ -258,6 +317,34 @@ export default function Trip() {
               placeholder="Search Trips"
             />
           </Box>
+          {/* {!appliedDistanceFilter && <Button
+            variant="contained"
+            style={{ color: COLORS.WHITE }}
+            onClick={handleBetweenTripModal}
+          >
+            <MyLocationIcon sx={{ marginRight: 0.5 }} />
+            Trip Between Geofence
+          </Button>} */}
+          {/* {appliedDistanceFilter && <Button
+            variant="contained"
+            // style={{ color: COLORS.WHITE }}
+            onClick={handleClearGeofenceFilter}
+            style={{ backgroundColor: "#d32f2f", color: COLORS.WHITE }}
+          >
+            <CancelIcon sx={{ marginRight: 0.5 }} />
+            Clear Geofence Filter
+          </Button>} */}
+
+          <Tooltip title="Apply Filter">
+            <IconButton onClick={applyFilterHndlr}>
+              <Badge color="success" variant="dot" invisible={false}>
+                <FilterListIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+
+
+
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -279,20 +366,20 @@ export default function Trip() {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell align="left">
-                      <Span fontType="secondary">
-                        {getDateDisplayFormat(trip.created_at)}
-                      </Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{trip.start_time}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{trip.end_time}</Span>
+                      <Span fontType="secondary">{trip.vehicle_vin}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {trip.driver ? trip.driver.name : "-"}
+                        {getDateTime(trip.trip_started_at)}
                       </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {getDateTime(trip.trip_ended_at)}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">{trip?.driver?.name || "-"}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{trip.total_incidents}</Span>
@@ -311,7 +398,7 @@ export default function Trip() {
                         variant="contained"
                         style={{ color: COLORS.WHITE }}
                         onClick={() => {
-                          handleOpenTrip(trip.id);
+                          handleOpenTrip(trip.id, trip);
                         }}
                       >
                         Details
@@ -330,13 +417,13 @@ export default function Trip() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(tripList?.count / rowsPerPage)}
+          totalPages={Number(tripList?.count) ? Math.ceil(tripList?.count / rowsPerPage) : 1}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Box>
-    </Box>
+    </Box >
   );
 }

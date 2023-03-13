@@ -26,28 +26,27 @@ export default function SidePanel() {
   const { user } = useAppContext();
   const [showSupport, handleShowSupport] = useState<boolean>(false);
 
-  
-
   let selectedView = window.location.pathname;
 
   function renderMenu() {
     //@ts-ignore
     const menuList: AppPaths[] = getFeatures();
-
-
-    return menuList.map((menuItem) => {
-      const isActive = selectedView.includes(menuItem) ;
+    const routePathKeys = selectedView.split("/");
+    return menuList.map((menuItem, index) => {
+      const isActive = routePathKeys.indexOf(menuItem) >= 0;
+      // const isActive = selectedView.includes(menuItem);
       return (
         <Box
           className={classNames(classes.menuItem, {
             [classes.selectedMenuItem]: isActive,
           })}
           onClick={() => changeView(menuItem)}
+          key={`menu-${index}`}
         >
           <MenuIcons icon={menuItem} isActive={isActive} />
           <Box component={"span"} className={classes.menuLabel}>
             <Span fontType={isActive ? "primary" : "secondary"} size="small">
-            {sideMenuLabel[menuItem]}
+              {sideMenuLabel[menuItem]}
             </Span>
           </Box>
         </Box>
@@ -63,10 +62,7 @@ export default function SidePanel() {
     <Box>
       <Box className={classes.root}>
         <Box component={"span"} className={classes.logo}>
-        
-        <img src={BRAND.LOGO} alt="shoora"  width={50}/>
-        
-           
+          <img src={BRAND.LOGO} alt="shoora" width={50} />
         </Box>
         <Box className={classes.menu}>{renderMenu()}</Box>
       </Box>
@@ -81,7 +77,6 @@ export default function SidePanel() {
           </Span>
         </Typography>
       </Box> */}
-    
     </Box>
   );
 }

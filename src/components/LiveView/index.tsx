@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import {
@@ -22,24 +22,30 @@ import client from "serverCommunication/client";
 import { Button, List, ListItemText, SelectChangeEvent } from "@mui/material";
 import SerachIcon from "../../assets/search-icon.png";
 import notFound from "../../assets/404.jpg";
+import VedioLogoImg from "../../assets/video-logo.png";
 import Iframe from "react-iframe";
 import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
 import { TableFooter } from "components/commonComponent/Table";
+import { getUserName } from "utils/localStorage";
 
-export default function () {
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "#fff",
-    ...theme.typography.body2,
-    padding: theme.spacing(4, 2, 2),
-    color: theme.palette.text.secondary,
-    position: "relative",
-    boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
-  }));
-  const [selectStatus, setSelectStatus] = useState("");
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(4, 2, 2),
+  color: theme.palette.text.secondary,
+  position: "relative",
+  boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
+}));
 
+const STATIC_TILES_COUNT = 16;
+export default function LiveView () {
+  const [selectStatus, setSelectStatus] = useState("all");
+  const [visibleVehicleState, setVisibleVehicleState] = useState<any>([]);
   const handleChange = (event: SelectChangeEvent) => {
     setSelectStatus(event.target.value as string);
   };
+  const loginUserName: any = getUserName();
 
   const classes = useStyles();
   const [snackbar, setSnackbar] = useState<{
@@ -56,11 +62,12 @@ export default function () {
   const [selectedDevice, setSelectedDevice] = useState<string[]>([]);
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehiclelist", page, rowsPerPage, searchText, deviceId, selectStatus],
+    ["vehiclelist", searchText, deviceId, selectStatus],
     () => getVehicles(page, rowsPerPage, searchText, selectStatus),
     { refetchOnWindowFocus: false }
   );
   const handleChangePage = (event: unknown, newPage: number) => {
+    showTableVehicleListHnldr(newPage - 1, rowsPerPage, vehicleList?.results);
     setPage(newPage - 1);
   };
 
@@ -75,32 +82,27 @@ export default function () {
     searchText?: string,
     selectStatus?: string
   ) {
-    let getApiUrl = `${transport}/vehicles/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}&status=${selectStatus}`;
+    // let getApiUrl = `${transport}/vehicles/?page=${
+    //   pageNumber + 1
+    // }&page_size=${pageSize}&search=${searchText}&vedio=${selectStatus}`;
+    let getApiUrl = `${transport}/vehicles/?search=${searchText}&video=${selectStatus}`;
 
     const response = await client.get(getApiUrl);
-
+    showTableVehicleListHnldr(0, rowsPerPage, response?.data?.results);
+    setPage(0);
     return response.data;
   }
 
-  const handleVehicleView = (id: string) => {
+  const handleVehicleView = (id: string, status: string) => {
+    // if (status != "moving") {
+    //   setSnackbar({
+    //     open: true,
+    //     variant: "error",
+    //     message: "vehicle is not moving",
+    //   });
+    //   return;
+    // }
     let arr = [...selectedDevice];
-
-    const arrSelectedDev: any = [...vehicleList?.results];
-
-    for (let i in arrSelectedDev) {
-      if (arrSelectedDev[i]["device"] == id) {
-        if (arrSelectedDev[i]["status"] !== "moving") {
-          setSnackbar({
-            open: true,
-            variant: "error",
-            message: "vehicle is not moving",
-          });
-          return;
-        }
-      }
-    }
 
     if (arr.includes(id)) {
       arr.splice(selectedDevice.indexOf(id), 1);
@@ -131,14 +133,26 @@ export default function () {
     setVideoUrl(url);
   };
 
+  function showTableVehicleListHnldr(
+    page: any,
+    rowPerPage: any,
+    vehicleList: any
+  ) {
+    if (Array.isArray(vehicleList)) {
+      const startIndex = rowPerPage * page,
+        lastIndex = (page * rowPerPage) + rowPerPage < vehicleList.length
+          ? (page * rowPerPage) + rowPerPage : vehicleList.length;
+      setVisibleVehicleState(vehicleList.slice(startIndex, lastIndex));
+    }
+  }
+
   const renderIframe = (index: number) => {
     return (
       <>
         <Grid xs={2} sm={4} md={4} className="liveframe">
           <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${
-              selectedDevice[index] ? selectedDevice[index] : "-"
-            }&email=its@its.com&password=123456&channel=0`}
+            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
+              }&email=its@its.com&password=123456&channel=0`}
             position="relative"
             width="100%"
             id="myId"
@@ -148,9 +162,8 @@ export default function () {
         </Grid>
         <Grid xs={2} sm={4} md={4} className="liveframe">
           <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${
-              selectedDevice[index] ? selectedDevice[index] : "-"
-            }&email=its@its.com&password=123456&channel=1`}
+            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
+              }&email=its@its.com&password=123456&channel=1`}
             position="relative"
             width="100%"
             id="myId"
@@ -183,11 +196,11 @@ export default function () {
         <Box className={classes.live}>
           <Grid
             container
-            spacing={{ xs: 2, md: 3 }}
-            columns={{ xs: 6, sm: 8, md: 12 }}
+            spacing={{ xs: 2, md: 3, lg: 3 }}
+            columns={{ xs: 12, sm: 12, md: 12, lg: 12 }}
             style={{ marginTop: 24 }}
           >
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+            <Grid item xs={12} sm={4} md={4} lg={3} style={{ paddingLeft: 24 }}>
               <Item elevation={1}>
                 <Box className="contentMain">
                   <Box className="searchbar" style={{ padding: "20px 15px" }}>
@@ -220,9 +233,9 @@ export default function () {
                       label="selectFilter"
                       onChange={handleChange}
                     >
-                      <MenuItem value={""}>All</MenuItem>
+                      <MenuItem value={"all"}>All</MenuItem>
                       <MenuItem value={"online"}>Online</MenuItem>
-                      <MenuItem value={"offlne"}>Offline</MenuItem>
+                      <MenuItem value={"offline"}>Offline</MenuItem>
                     </Select>
                   </FormControl>
                   <Box className="notfound">
@@ -230,50 +243,55 @@ export default function () {
                       {!isVehicleLoading && (
                         <div>
                           <Table>
-                            {vehicleList?.results.map(
-                              (item: any, index: number) => (
-                                <TableRow>
-                                  <div
-                                    className={
-                                      item["status"] !== "moving"
-                                        ? "loaddataDisable"
-                                        : "loaddata"
-                                    }
-                                    style={
-                                      selectedDevice.includes(item.device)
-                                        ? { background: "#fef8f0" }
-                                        : {}
-                                    }
-                                    onClick={() => {
-                                      handleVehicleView(item.device);
-                                    }}
-                                  >
-                                    <i className="circle"></i>
-                                    <span className="trackid">{item.vin}</span>
-                                    <span className="arrowright">
-                                      <svg
-                                        width="17"
-                                        height="15"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                      >
-                                        <path
-                                          d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
-                                          stroke={
-                                            item.status !== "moving"
-                                              ? "#D3D3D3"
-                                              : "#3BB3C3"
-                                          }
-                                          stroke-width="1.5"
-                                          stroke-linecap="round"
-                                          stroke-linejoin="round"
-                                        ></path>
-                                      </svg>
-                                    </span>
-                                  </div>
-                                </TableRow>
-                              )
-                            )}
+                            <TableBody>
+                              {Array.isArray(visibleVehicleState) && visibleVehicleState.map(
+                                (item: any, index: number) => (
+                                  <TableRow key={`device-${item.id}`}>
+                                    <div
+                                      className={
+                                        item["video"] !== "online"
+                                          ? "loaddataDisable"
+                                          : "loaddata"
+                                      }
+                                      style={
+                                        selectedDevice.includes(item.device)
+                                          ? { background: "#fef8f0" }
+                                          : {}
+                                      }
+                                      onClick={() => {
+                                        handleVehicleView(
+                                          item.device,
+                                          item.status
+                                        );
+                                      }}
+                                    >
+                                      <i className={`circle ${(item.video === "online" ? "online-vehicle" : "offline-vehicle")}`}></i>
+                                      <span className="trackid">{item.vin}</span>
+                                      <span className="arrowright">
+                                        <svg
+                                          width="17"
+                                          height="15"
+                                          fill="none"
+                                          xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path
+                                            d="M15.75 7.726h-15M9.7 1.701l6.05 6.024L9.7 13.75"
+                                            stroke={
+                                              item.video !== "online"
+                                                ? "#D3D3D3"
+                                                : "#3BB3C3"
+                                            }
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                          ></path>
+                                        </svg>
+                                      </span>
+                                    </div>
+                                  </TableRow>
+                                )
+                              )}
+                            </TableBody>
                           </Table>
                           <Box
                             style={{
@@ -284,7 +302,7 @@ export default function () {
                           >
                             <TableFooter
                               totalPages={Math.ceil(
-                                vehicleList?.count / rowsPerPage
+                                vehicleList?.results.length / rowsPerPage
                               )}
                               currentPage={page + 1}
                               onPageChange={handleChangePage}
@@ -307,12 +325,89 @@ export default function () {
                 </Box>
               </Item>
             </Grid>
-            <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
+            <Grid item xs={12} sm={8} md={8} lg={9} style={{ paddingLeft: 16 }}>
               <Item elevation={0}>
                 <Box className="liveViewVideo">
-                  {Array(8)
-                    .fill(0)
-                    .map((item, index) => renderIframe(index))}
+                  <Grid container>
+                    {selectedDevice.map((item) => (
+                      <Fragment key={`selected-${item}`}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="liveframe"
+                          style={{ height: "238px", overflow: "hidden" }}
+                        >
+                          <Iframe
+                            url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
+                              }&email=its@its.com&password=123456&channel=0`}
+                            position="relative"
+                            width="100%"
+                            id="myId"
+                            // className="myClassname"
+                            height="300"
+                          />
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="liveframe"
+                          style={{ height: "238px", overflow: "hidden" }}
+                        >
+                          <Iframe
+                            url={`https://livefeed.shoora.com/liveview/?device=${item ? item : "-"
+                              }&email=its@its.com&password=123456&channel=1`}
+                            position="relative"
+                            width="100%"
+                            id="myId"
+                            // className="myClassname"
+                            height="300"
+                          />
+                        </Grid>
+                      </Fragment>
+                    ))}
+                    {(selectedDevice.length > 0 && loginUserName === "Solar") && <Grid
+                      item
+                      xs={12}
+                      sm={12}
+                      md={8}
+                      lg={6}
+                      className="liveframe"
+                      style={{ height: "238px", overflow: "hidden" }}
+                    >
+                      <Iframe
+                        url={`http://120.79.58.1:8088/808gps/open/player/video.html?lang=en&vehiIdno=088832552&account=masheye&password=12345678&channel=1`}
+                        position="relative"
+                        width="100%"
+                        id="myId"
+                        // className="myClassname"
+                        height="300"
+                      />
+                    </Grid>}
+                    {Array(STATIC_TILES_COUNT - ((selectedDevice.length > 0 && loginUserName === "Solar") ? 1 : 0) - selectedDevice.length * 2)
+                      .fill(0)
+                      .map((item, index) => (
+                        <Grid
+                          key={`vedio-${index}`}
+                          item
+                          xs={12}
+                          sm={6}
+                          md={4}
+                          lg={3}
+                          className="noVedioContainer"
+                        >
+                          <Box className="vedioLogoScreen">
+                            <img src={VedioLogoImg} alt="dummy-vedio-img" />
+                          </Box>
+                          <Box sx={{ mt: 1.8 }} className="dummy-title"></Box>
+                        </Grid>
+                      ))}
+                  </Grid>
                 </Box>
               </Item>
             </Grid>
@@ -322,3 +417,8 @@ export default function () {
     </Box>
   );
 }
+
+{/* <Box className="dummyBtnContainer">
+                            <Box className="dummBtn"></Box>
+                            <Box className="dummBtn"></Box>
+                          </Box> */}

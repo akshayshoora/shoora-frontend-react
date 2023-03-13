@@ -8,23 +8,24 @@ import AddUser from "components/Users/AddUser";
 import ErrorBoundary from "components/commonComponent/ErrorBoundry";
 import { UserDetails } from "components/Users/UserDetails";
 import EditProfile from "components/UserProfile";
-import Organization from 'components/Organization';
-import {OrganizationDetails} from "components/Organization/OrganizationDetails";
+import Organization from "components/Organization";
+import { OrganizationDetails } from "components/Organization/OrganizationDetails";
 import AddDevice from "components/Devices/AddDevice";
 import Devices from "components/Devices";
 import { DeviceDetails } from "components/Devices/DeviceDetails";
-import Driver from '../components/Drivers/index';
+import Driver from "../components/Drivers/index";
 import AddDriver from "components/Drivers/AddDriver";
 import Vehicles from "components/Vehicles";
 import AddVehicle from "components/Vehicles/AddVehicle";
-import {VehicleDetails} from "components/Vehicles/VehicleDetails"
-import {DriverDetails} from "../components/Drivers/DriverDetails";
+import { VehicleDetails } from "components/Vehicles/VehicleDetails";
+import { DriverDetails } from "../components/Drivers/DriverDetails";
 import LiveView from "components/LiveView";
 import Alerts from "components/Alerts";
 import { AlertDetails } from "components/Alerts/AlertDetails";
 import AddAlert from "components/Alerts/AddAlert";
 import MapView from "components/MapView";
 import Trip from "components/Trip";
+import GeofenceTrip from "components/GeofenceTrips"
 import Report from "components/Report";
 import Finance from "components/Finance";
 import Fuel from "components/Fuel";
@@ -32,7 +33,11 @@ import Tyre from "components/Tyre";
 import Maintenance from "components/Maintenance";
 import Coaching from "components/Coaching";
 import JobCard from "components/JobCard";
+import GeoFence from "components/GeoFence";
+import AddGeoFence from "components/GeoFence/AddGeoFence";
+import { GeofenceDetails } from "components/GeoFence/GeofenceDetails";
 
+//todo: Need to be updated
 export default function AppRouter() {
   return (
     <Routes>
@@ -44,9 +49,7 @@ export default function AppRouter() {
           </ErrorBoundary>
         }
       />
-     
-    
-      
+
       <Route
         path={AppPaths.DASHBOARD}
         element={
@@ -62,8 +65,7 @@ export default function AppRouter() {
           />
         }
       />
-      
-      
+
       <Route
         path={AppPaths.USERS}
         element={
@@ -95,19 +97,13 @@ export default function AppRouter() {
       <Route
         path={`${AppPaths.USERS}/${SubPaths.ADD}`}
         element={
-          <ProtectedRoute
-            route={AppPaths.USERS}
-            component={<AddUser />}
-          />
+          <ProtectedRoute route={AppPaths.USERS} component={<AddUser />} />
         }
       />
       <Route
         path={`${AppPaths.USERS}/${SubPaths.EDIT}/:id`}
         element={
-          <ProtectedRoute
-            route={AppPaths.USERS}
-            component={<AddUser />}
-          />
+          <ProtectedRoute route={AppPaths.USERS} component={<AddUser />} />
         }
       />
       <Route
@@ -119,7 +115,7 @@ export default function AppRouter() {
           />
         }
       />
-       <Route
+      <Route
         path={AppPaths.ORGANIZATIONS}
         element={
           <ProtectedRoute
@@ -135,7 +131,7 @@ export default function AppRouter() {
         }
       />
 
-    <Route
+      <Route
         path={`${AppPaths.ORGANIZATIONS}/:id`}
         element={
           <ProtectedRoute
@@ -149,7 +145,7 @@ export default function AppRouter() {
         }
       />
 
-       <Route
+      <Route
         path={AppPaths.DEVICES}
         element={
           <ProtectedRoute
@@ -180,23 +176,17 @@ export default function AppRouter() {
       <Route
         path={`${AppPaths.DEVICES}/${SubPaths.ADD}`}
         element={
-          <ProtectedRoute
-            route={AppPaths.DEVICES}
-            component={<AddDevice />}
-          />
+          <ProtectedRoute route={AppPaths.DEVICES} component={<AddDevice />} />
         }
       />
       <Route
         path={`${AppPaths.DEVICES}/${SubPaths.EDIT}/:id`}
         element={
-          <ProtectedRoute
-            route={AppPaths.DEVICES}
-            component={<AddDevice />}
-          />
+          <ProtectedRoute route={AppPaths.DEVICES} component={<AddDevice />} />
         }
       />
 
-    <Route
+      <Route
         path={AppPaths.DRIVERS}
         element={
           <ProtectedRoute
@@ -214,37 +204,31 @@ export default function AppRouter() {
       <Route
         path={`${AppPaths.DRIVERS}/${SubPaths.ADD}`}
         element={
-          <ProtectedRoute
-            route={AppPaths.DRIVERS}
-            component={<AddDriver />}
-          />
+          <ProtectedRoute route={AppPaths.DRIVERS} component={<AddDriver />} />
         }
       />
-     
-     <Route
+
+      <Route
         path={`${AppPaths.DRIVERS}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute route={AppPaths.DRIVERS} component={<AddDriver />} />
+        }
+      />
+      <Route
+        path={`${AppPaths.DRIVERS}/:id`}
         element={
           <ProtectedRoute
             route={AppPaths.DRIVERS}
-            component={<AddDriver />}
+            component={
+              <ErrorBoundary>
+                <DriverDetails />
+              </ErrorBoundary>
+            }
           />
         }
       />
-        <Route
-            path={`${AppPaths.DRIVERS}/:id`}
-            element={
-                <ProtectedRoute
-                    route={AppPaths.DRIVERS}
-                    component={
-                        <ErrorBoundary>
-                            <DriverDetails />
-                        </ErrorBoundary>
-                    }
-                />
-            }
-        />
 
-<Route
+      <Route
         path={AppPaths.VEHICLES}
         element={
           <ProtectedRoute
@@ -291,7 +275,7 @@ export default function AppRouter() {
         }
       />
 
-<Route
+      <Route
         path={AppPaths.LIVE}
         element={
           <ProtectedRoute
@@ -307,7 +291,7 @@ export default function AppRouter() {
         }
       />
 
-    <Route
+      <Route
         path={AppPaths.ALERTS}
         element={
           <ProtectedRoute
@@ -323,7 +307,7 @@ export default function AppRouter() {
         }
       />
 
-    <Route
+      <Route
         path={`${AppPaths.ALERTS}/:id`}
         element={
           <ProtectedRoute
@@ -337,16 +321,13 @@ export default function AppRouter() {
         }
       />
 
-    <Route
+      <Route
         path={`${AppPaths.ALERTS}/${SubPaths.EDIT}/:id`}
         element={
-          <ProtectedRoute
-            route={AppPaths.ALERTS}
-            component={<AddAlert />}
-          />
+          <ProtectedRoute route={AppPaths.ALERTS} component={<AddAlert />} />
         }
       />
-      
+
       <Route
         path={AppPaths.MAP}
         element={
@@ -394,8 +375,23 @@ export default function AppRouter() {
           />
         }
       />
+      <Route
+        path={AppPaths.GEOFENCETRIPS}
+        element={
+          <ProtectedRoute
+            route={AppPaths.GEOFENCETRIPS}
+            component={
+              <>
+                <ErrorBoundary>
+                  <GeofenceTrip />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
 
-     <Route
+      <Route
         path={AppPaths.FINANCE}
         element={
           <ProtectedRoute
@@ -411,7 +407,7 @@ export default function AppRouter() {
         }
       />
 
-    <Route
+      <Route
         path={AppPaths.FUEL}
         element={
           <ProtectedRoute
@@ -427,7 +423,7 @@ export default function AppRouter() {
         }
       />
 
-    <Route
+      <Route
         path={AppPaths.COACHING}
         element={
           <ProtectedRoute
@@ -443,7 +439,7 @@ export default function AppRouter() {
         }
       />
 
-   <Route
+      <Route
         path={AppPaths.MAINTENANCE}
         element={
           <ProtectedRoute
@@ -459,7 +455,7 @@ export default function AppRouter() {
         }
       />
 
-   <Route
+      <Route
         path={AppPaths.TYRE}
         element={
           <ProtectedRoute
@@ -475,7 +471,7 @@ export default function AppRouter() {
         }
       />
 
-   <Route
+      <Route
         path={AppPaths.JOBCARD}
         element={
           <ProtectedRoute
@@ -489,7 +485,55 @@ export default function AppRouter() {
             }
           />
         }
-      />   
+      />
+
+      <Route
+        path={AppPaths.GEOFENCE}
+        element={
+          <ProtectedRoute
+            route={AppPaths.GEOFENCE}
+            component={
+              <>
+                <ErrorBoundary>
+                  <GeoFence />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      />
+
+      <Route
+        path={`${AppPaths.GEOFENCE}/${SubPaths.ADD}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.GEOFENCE}
+            component={<AddGeoFence />}
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.GEOFENCE}/${SubPaths.EDIT}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.GEOFENCE}
+            component={<AddGeoFence />}
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.GEOFENCE}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.GEOFENCE}
+            component={
+              <ErrorBoundary>
+                <GeofenceDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
 
       <Route
         path={"*"}
@@ -504,7 +548,6 @@ export default function AppRouter() {
           />
         }
       />
-      
     </Routes>
   );
 }

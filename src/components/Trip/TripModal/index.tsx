@@ -61,9 +61,11 @@ export function TripModal(props: ITripModalProps) {
   const [startLoc, setStartLoc] = useState("");
   const [endLoc, setEndLoc] = useState("");
 
-  const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () =>
-    getTripDetails(String(id))
-  );
+  const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () => {
+    if (id) {
+      return getTripDetails(String(id));
+    }
+  });
 
   async function getTripDetails(id: string) {
     return (await client.get(`${monitor}/trips/${id}/`)).data;
@@ -81,27 +83,37 @@ export function TripModal(props: ITripModalProps) {
     return marker;
   };
 
-  const { data: startlocation } = useQuery(["start_location", trip], () =>
-    latLongToPlace(trip.start_latitude, trip.start_longitude, false)
-  );
-  const { data: endlocation } = useQuery(["end_location", trip], () =>
-    latLongToPlace(trip.end_latitude, trip.end_longitude, false)
-  );
-  const { data: tripPath } = useQuery(["trip_path", trip], () =>
-    getTripPath(trip.id)
-  );
+  const { data: startlocation } = useQuery(["start_location", trip], () => {
+    if (trip?.start_latitude && trip?.start_longitude) {
+      return latLongToPlace(trip.start_latitude, trip.start_longitude, false)
+    }
+  })
+  const { data: endlocation } = useQuery(["end_location", trip], () => {
+    if (trip?.end_latitude && trip?.end_longitude) {
+      return latLongToPlace(trip.end_latitude, trip.end_longitude, false)
+    }
+  });
+  const [count, setCount] = useState(0);
+  const { data: tripPath } = useQuery(["trip_path", trip], () => {
+    if (trip?.id) {
+      return getTripPath(trip?.id)
+    }
+  });
 
   async function getTripPath(id: string) {
-    return (await client.get(`${monitor}/trips/${id}/path`)).data;
+    return (await client.get(`${monitor}/trips/${id}/path/`)).data;
   }
 
   const getMapRoute = (map: any, maps: any) => {
     const directionsService = new (
       window as any
     ).google.maps.DirectionsService();
+    var polylineOptionsActual = new google.maps.Polyline({
+      strokeColor: '#54a0de',
+    });
     const directionsRenderer = new (
       window as any
-    ).google.maps.DirectionsRenderer();
+    ).google.maps.DirectionsRenderer({ polylineOptions: polylineOptionsActual });
     directionsRenderer.setMap(map);
     const origin = {
       lat: Number(trip.start_latitude),
@@ -111,22 +123,18 @@ export function TripModal(props: ITripModalProps) {
       lat: Number(trip.end_latitude),
       lng: Number(trip.end_longitude),
     };
-
-    directionsService.route(
-      {
-        origin: origin,
-        destination: destination,
-        travelMode: (window as any).google.maps.TravelMode.DRIVING,
-        waypoints: tripPath.gps_cordinate,
-      },
-      (result: any, status: any) => {
-        if (status === (window as any).google.maps.DirectionsStatus.OK) {
-          directionsRenderer.setDirections(result);
-        } else {
-          console.error(`error fetching directions ${result}`);
-        }
+    directionsService.route({
+      origin: origin,
+      destination: destination,
+      travelMode: (window as any).google.maps.TravelMode.DRIVING,
+      waypoints: tripPath?.gps_cordinate || [],
+    }, (result: any, status: any) => {
+      if (status === (window as any).google.maps.DirectionsStatus.OK) {
+        directionsRenderer.setDirections(result);
+      } else {
+        console.error(`error fetching directions ${result}`);
       }
-    );
+    });
   };
 
   return (
@@ -223,21 +231,19 @@ export function TripModal(props: ITripModalProps) {
                         <ul className={classes.alertListInfo}>
                           <li>
                             <span>
-                              Driver Name: {trip.driver ? trip.driver.name : ""}
+                              Driver Name: {trip?.driver?.name || "-"}
                             </span>
                           </li>
                           <li>
                             <span>
                               Contact Details:{" "}
-                              {trip.driver ? trip.driver.phone_number : ""}
+                              {trip?.driver?.phone_number || "-"}
                             </span>
                           </li>
                           <li>
                             <span>
                               Licence No:{" "}
-                              {trip.driver
-                                ? trip.driver.driving_license_number
-                                : ""}
+                              {trip?.driver?.driving_license_number || "-"}
                             </span>
                           </li>
                         </ul>
@@ -271,9 +277,10 @@ export function TripModal(props: ITripModalProps) {
                       defaultZoom={10}
                       resetBoundsOnResize={true}
                       defaultCenter={{
-                        lat: Number(trip.start_latitude),
-                        lng: Number(trip.start_longitude),
+                        lat: Number(trip?.start_latitude),
+                        lng: Number(trip?.start_longitude),
                       }}
+                      yesIWantToUseGoogleMapApiInternals={true}
                       onGoogleApiLoaded={({ map, maps }) => {
                         // renderMarkers(map, maps);
                         getMapRoute(map, maps);

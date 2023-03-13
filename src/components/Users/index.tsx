@@ -67,9 +67,8 @@ export default function Users() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${auth}/users/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${auth}/users/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 

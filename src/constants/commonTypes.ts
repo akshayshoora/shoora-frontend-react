@@ -1,4 +1,4 @@
-import { Users } from 'Models/userModel';
+import { Users } from "Models/userModel";
 
 export type MainAppProps = {
   user: Users;

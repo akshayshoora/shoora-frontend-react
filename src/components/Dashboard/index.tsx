@@ -7,21 +7,21 @@ import Heading from "components/commonComponent/Heading";
 import Chip from "@mui/material/Chip";
 import { experimentalStyled as styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
-import Users from "components/Users";
-
+// import Users from "components/Users";
+import RiskyDrivers from "components/RiskyDrivers";
 import Summary from "../Summary";
 import { useAppContext } from "ContextAPIs/appContext";
 import Charts from "components/Charts";
-import PieCharts from "components/PieCharts"
+import PieCharts from "components/PieCharts";
 import Iframe from "react-iframe";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
   ...theme.typography.body2,
-  padding: theme.spacing(4,2, 2),
+  padding: theme.spacing(4, 2, 2),
   color: theme.palette.text.secondary,
   position: "relative",
-  boxShadow:'0 0.75rem 1.5rem rgb(18 38 63 / 3%)',
+  boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
 }));
 
 export default function Dashboard() {
@@ -41,14 +41,15 @@ export default function Dashboard() {
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 6, sm: 8, md: 12 }} style={{ marginTop: 24 }}
+          columns={{ xs: 6, sm: 8, md: 12 }}
+          style={{ marginTop: 24 }}
         >
-          <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+          <Grid item xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
             <Item elevation={1}>
               <Charts />
             </Item>
           </Grid>
-          <Grid xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
+          <Grid item xs={2} sm={6} md={6} style={{ paddingLeft: 24 }}>
             <Item elevation={0}>
               <PieCharts />
             </Item>
@@ -56,7 +57,7 @@ export default function Dashboard() {
         </Grid>
       </Box>
       <Box className={classes.usrTable}>
-        <Users />
+        <RiskyDrivers />
       </Box>
     </Box>
   );

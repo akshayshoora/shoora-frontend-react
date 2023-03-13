@@ -26,3 +26,6 @@ img {
   src: local("Satoshi-Medium"),
     url(./assets/font/Satoshi-Medium.ttf) format("truetype");
 }
+.gmnoprint > div[role="button"] > span > div > img {
+  display: none;
+}
