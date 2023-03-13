@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  frontend-shoora:
+  frontend-rightchoice:
     image: node:14-alpine
     volumes:
       - .:/app
