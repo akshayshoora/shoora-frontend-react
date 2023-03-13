@@ -6,4 +6,4 @@ services:
       - .:/app
     command: sh -c "node --version && npm --version && cd /app && npm i && npm start"
     ports:
-      - "3001:3000"
+      - "3004:3000"
