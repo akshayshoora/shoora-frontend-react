@@ -19,6 +19,7 @@ import { useState } from "react";
 import BRAND from "BrandingConstants";
 import { getFeatures } from "utils/FeatureCheck";
 import { sideMenuLabel } from "constants/commonConstants";
+import LogoWithoutText from "../../assets/right-choice/logo_without_text.png";
 
 export default function SidePanel() {
   const classes = useStyle();
@@ -62,7 +63,7 @@ export default function SidePanel() {
     <Box>
       <Box className={classes.root}>
         <Box component={"span"} className={classes.logo}>
-          <img src={BRAND.LOGO} alt="shoora" width={50} />
+          <img src={LogoWithoutText} alt="shoora" width={55} />
         </Box>
         <Box className={classes.menu}>{renderMenu()}</Box>
       </Box>

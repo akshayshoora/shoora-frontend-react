@@ -22,6 +22,7 @@ import { USER_ID, USER_NAME } from "constants/commonConstants";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import LoginImg from "../../assets/macbook-pro.png";
+import LoginLogo from "../../assets/right-choice/right-choice-login-logo.png";
 import { auth } from "constants/RouteMiddlePath";
 
 export default function Login() {
@@ -86,7 +87,7 @@ export default function Login() {
   return (
     <Box className={classes.root}>
       <Box component={"span"}>
-        <img src={BRAND.LOGO} alt="shoora" width={100} />
+        <img src={LoginLogo} alt="right-choice-logo" style={{ width: "200px" }} />
       </Box>
       <Box className={classes.loginBoxMain}>
         <Box className={classes.loginLeft}>
@@ -100,7 +101,7 @@ export default function Login() {
               textAlign: "center",
             }}
           >
-            <Span size="large">Welcome to Shoora</Span>
+            <Span size="large">Welcome to Right Choice</Span>
           </Box>
           <Box>
             <form className={classes.loginForm} onSubmit={handleSubmit}>
