@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useState, useMemo } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import {
@@ -28,6 +28,7 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import { TableFooter } from "components/commonComponent/Table";
 import { getUserName } from "utils/localStorage";
+import RenderVideoIframe from "./RenderVideoIframe";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -39,7 +40,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const STATIC_TILES_COUNT = 16;
-export default function LiveView () {
+export default function LiveView() {
   const [selectStatus, setSelectStatus] = useState("all");
   const [visibleVehicleState, setVisibleVehicleState] = useState<any>([]);
   const handleChange = (event: SelectChangeEvent) => {
@@ -60,6 +61,8 @@ export default function LiveView () {
   const [deviceId, setDeviceId] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [selectedDevice, setSelectedDevice] = useState<string[]>([]);
+  const [selectedDeviceInfoState, setSelectedDevicesInfoState] = useState<any>([]);
+
 
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
     ["vehiclelist", searchText, deviceId, selectStatus],
@@ -93,32 +96,40 @@ export default function LiveView () {
     return response.data;
   }
 
-  const handleVehicleView = (id: string, status: string) => {
-    // if (status != "moving") {
-    //   setSnackbar({
-    //     open: true,
-    //     variant: "error",
-    //     message: "vehicle is not moving",
-    //   });
-    //   return;
-    // }
-    let arr = [...selectedDevice];
-
-    if (arr.includes(id)) {
-      arr.splice(selectedDevice.indexOf(id), 1);
+  const handleVehicleView = (vehicleInfo: any) => {
+    const { id, vin, device, live_feed_urls } = vehicleInfo,
+      updateSelectedDeviceInfo = [...selectedDeviceInfoState],
+      vehicleKeysIndex = updateSelectedDeviceInfo.findIndex(item => item.id === id);
+    if (vehicleKeysIndex >= 0) {
+      updateSelectedDeviceInfo.splice(vehicleKeysIndex, 1);
     } else {
-      if (arr.length < 8) {
-        arr = [...selectedDevice, id];
-      } else {
-        setSnackbar({
-          open: true,
-          variant: "error",
-          message: "You can not select more than 8 device",
-        });
+      if (Array.isArray(live_feed_urls) && live_feed_urls.length > 0) {
+        const visibleTileLength = updateSelectedDeviceInfo.reduce((totalTiles, arr) => {
+          const { feedUrls }: any = arr;
+          return totalTiles + (Array.isArray(feedUrls) && feedUrls.length || 0);
+        }, 0);
+        if ((visibleTileLength + live_feed_urls.length) > 16) {
+          setSnackbar({
+            open: true,
+            variant: "error",
+            message: `Cannot set more that 16 tiles
+             and the current vehicle contain ${live_feed_urls.length} feeds. Unselect the selected vehicle first.`,
+          });
+          return;
+        } else {
+          updateSelectedDeviceInfo.push({
+            id, vin, device,
+            feedUrls: live_feed_urls
+          })
+        }
       }
     }
-    setSelectedDevice(arr);
-    getLiveUrl(arr);
+    if (Array.isArray(updateSelectedDeviceInfo) && updateSelectedDeviceInfo.length > 0) {
+      setSelectedDevice(updateSelectedDeviceInfo.map(item => item.device));
+    } else {
+      setSelectedDevice([]);
+    }
+    setSelectedDevicesInfoState(updateSelectedDeviceInfo);
   };
 
   const getLiveUrl = (arr: string[]) => {
@@ -146,34 +157,13 @@ export default function LiveView () {
     }
   }
 
-  const renderIframe = (index: number) => {
-    return (
-      <>
-        <Grid xs={2} sm={4} md={4} className="liveframe">
-          <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
-              }&email=its@its.com&password=123456&channel=0`}
-            position="relative"
-            width="100%"
-            id="myId"
-            className="myClassname"
-            height="300"
-          />
-        </Grid>
-        <Grid xs={2} sm={4} md={4} className="liveframe">
-          <Iframe
-            url={`https://livefeed.shoora.com/liveview/?device=${selectedDevice[index] ? selectedDevice[index] : "-"
-              }&email=its@its.com&password=123456&channel=1`}
-            position="relative"
-            width="100%"
-            id="myId"
-            className="myClassname"
-            height="300"
-          />
-        </Grid>
-      </>
-    );
-  };
+  // const selectedVehicleIds = useMemo(() => {
+  //   if (Array.isArray(selectedDeviceInfoState) && selectedDeviceInfoState.length > 0) {
+  //     return selectedDeviceInfoState.map(item => item.device)
+  //   } else {
+  //     return [];
+  //   }
+  // }, [selectedDeviceInfoState]);
 
   return (
     <Box style={{ padding: "20px 0 0 25px" }}>
@@ -259,10 +249,7 @@ export default function LiveView () {
                                           : {}
                                       }
                                       onClick={() => {
-                                        handleVehicleView(
-                                          item.device,
-                                          item.status
-                                        );
+                                        handleVehicleView(item);
                                       }}
                                     >
                                       <i className={`circle ${(item.video === "online" ? "online-vehicle" : "offline-vehicle")}`}></i>
@@ -329,7 +316,7 @@ export default function LiveView () {
               <Item elevation={0}>
                 <Box className="liveViewVideo">
                   <Grid container>
-                    {selectedDevice.map((item) => (
+                    {/* {selectedDevice.map((item) => (
                       <Fragment key={`selected-${item}`}>
                         <Grid
                           item
@@ -370,7 +357,10 @@ export default function LiveView () {
                           />
                         </Grid>
                       </Fragment>
-                    ))}
+                    ))} */}
+                    <RenderVideoIframe
+                      selectedDeviceInfo={selectedDeviceInfoState}
+                    />
                     {(selectedDevice.length > 0 && loginUserName === "Solar") && <Grid
                       item
                       xs={12}
