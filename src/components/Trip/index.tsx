@@ -256,7 +256,10 @@ export default function Trip() {
     setTripFilterModalState(!tripFilterModalState);
   }
 
-  function closeFilterModalHndlr() {
+  function closeFilterModalHndlr(event: any, reason: any) {
+    if (reason === "backdropClick") {
+      return;
+    }
     setTripFilterModalState(false);
   }
   const handleCloseTrip = () => setOpenTrip(false);

@@ -299,7 +299,10 @@ export default function Alerts() {
   function applyFilterHndlr() {
     setAlertFilterModalState(!alertFilterModalState);
   }
-  function closeFilterModalHndlr() {
+  function closeFilterModalHndlr(event: any, reason: any) {
+    if(reason === "backdropClick"){
+      return;
+    }
     setAlertFilterModalState(false);
   }
 
