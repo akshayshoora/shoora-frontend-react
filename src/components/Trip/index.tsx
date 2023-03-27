@@ -343,7 +343,7 @@ export default function Trip() {
       )}
       {tripFilterModalState && (
         <TripFilterModal
-          showFilterModal={tripFilterModalState}
+          isOpenFilterModal={tripFilterModalState}
           closeFilterModalHndlr={closeFilterModalHndlr}
           applyingFilterProgress={isTripInfoLoading}
           appliedFilterDetails={tripFilterRef.current}

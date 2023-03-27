@@ -41,7 +41,7 @@ const tripStatus = [
 ]
 
 interface ITripFilterModal {
-    showFilterModal: any;
+    isOpenFilterModal: any;
     closeFilterModalHndlr: any;
     applyingFilterProgress: any;
     appliedFilterDetails: any;
@@ -56,6 +56,13 @@ const TripFilterModal = (props: ITripFilterModal) => {
         since: "",
         until: ""
     });
+    useEffect(() => {
+        const { isOpenFilterModal, appliedFilterDetails } = props;
+        if (isOpenFilterModal && appliedFilterDetails) {
+            setTripFilterModalState(appliedFilterDetails);
+        }
+    }, [props.isOpenFilterModal, props.appliedFilterDetails]);
+
     const classes = useStyles();
     const { data: vehicleList, isLoading: vehicleListLoading } = useQuery(
         ["vehicle"],
@@ -121,7 +128,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
 
     return (
         <Modal
-            open={props.showFilterModal}
+            open={props.isOpenFilterModal}
             onClose={props.closeFilterModalHndlr}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
