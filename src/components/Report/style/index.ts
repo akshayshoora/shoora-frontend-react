@@ -120,6 +120,15 @@ export default makeStyles({
     position: "sticky",
     top: 0
   },
+  loadingOverlayLastGeneratedReport: {
+    position: "absolute",
+    top: 0,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
   recentReportHeader: {
     marginBottom: "16px",
     "& span": {

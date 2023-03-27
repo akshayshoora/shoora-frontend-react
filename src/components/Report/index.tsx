@@ -1,8 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import Box from "@mui/material/Box";
+import { useQuery, useMutation } from "react-query";
 import Typography from "@mui/material/Typography";
 import AddIcon from "@mui/icons-material/Add";
 import Grid from "@mui/material/Grid";
+import RefreshIcon from '@mui/icons-material/Refresh';
+import Tooltip from '@mui/material/Tooltip';
 import IconButton from "@mui/material/IconButton";
 import useStyles from "./style";
 import Heading from "components/commonComponent/Heading";
@@ -25,7 +28,7 @@ import style from "./style";
 import { text } from "stream/consumers";
 import TextInput from "components/commonComponent/TextInput";
 
-import { auth, transport } from "constants/RouteMiddlePath";
+import { auth, transport, monitor } from "constants/RouteMiddlePath";
 import client from "serverCommunication/client";
 //Modal
 import VehicleReportModal from "./VehicleReportModal";
@@ -36,6 +39,9 @@ import DriverTripModal from "./DriverTripModal";
 import VehicleTripModal from "./VehicleTripModal";
 import TripBetweenGeofenceModal from "./TripBetweenGeofenceModal";
 import { reportList } from "./helper";
+
+//Utility
+import { getDateDisplayFormat } from "../../utils/calenderUtils";
 
 function getActiveModalComponent(modalId: string) {
   switch (modalId) {
@@ -90,6 +96,11 @@ export default function Report() {
   };
 
   const [open, setOpen] = useState(false);
+
+  //Component Did Mount
+  useEffect(() => {
+    mutateLastGeneratedReportAlias();
+  }, []);
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     const modalId = event.currentTarget.getAttribute("data-id");
     if (modalId) {
@@ -126,6 +137,7 @@ export default function Report() {
     });
     if (closeModal) {
       closeModalHndlr();
+      mutateLastGeneratedReportAlias();
     }
   }, []);
 
@@ -190,13 +202,11 @@ export default function Report() {
 
   async function downloadGeneratedReportHndlr(reportDetails: any) {
     if (reportDetails) {
-      const { url, reportName, filter, requireFilter } = reportDetails;
+      const { title, file_url } = reportDetails;
       try {
-        let params = { params: undefined };
-        if (requireFilter) {
-          params = { params: filter };
-        }
-        const driverCsvData = await client.get(url, params);
+        const driverCsvData = await client.get(file_url, {
+          headers: { "Cache-Control": "no-cache" }
+        });
         const currentDate = new Date().toLocaleString("default", {
           day: "numeric",
           month: "long",
@@ -205,7 +215,7 @@ export default function Report() {
         var hiddenElement = document.createElement('a');
         hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
         hiddenElement.target = '_blank';
-        hiddenElement.download = `${reportName}-${currentDate}.csv`;
+        hiddenElement.download = `${title}-${currentDate}.csv`;
         hiddenElement.click();
       } catch (e) {
         setSnackbar({
@@ -214,9 +224,58 @@ export default function Report() {
           message: "Something went wrong.",
         })
       }
+      // const { url, reportName, filter, requireFilter } = reportDetails;
+      // try {
+      //   let params = { params: undefined };
+      //   if (requireFilter) {
+      //     params = { params: filter };
+      //   }
+      //   const driverCsvData = await client.get(url, params);
+      // const currentDate = new Date().toLocaleString("default", {
+      //   day: "numeric",
+      //   month: "long",
+      //   year: "numeric",
+      // });
+      //   var hiddenElement = document.createElement('a');
+      //   hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(driverCsvData.data);
+      //   hiddenElement.target = '_blank';
+      //   hiddenElement.download = `${reportName}-${currentDate}.csv`;
+      //   hiddenElement.click();
+      // } catch (e) {
+      //   setSnackbar({
+      //     open: true,
+      //     variant: "error",
+      //     message: "Something went wrong.",
+      //   })
+      // }
     }
   }
 
+  //Last Generated Report Function
+  const lastGeneratedReportMutation = useMutation(lastGeneratedReportApiCall, {
+    onError: () => {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Error occured while showing last generated report.",
+      })
+    }
+  });
+
+  async function lastGeneratedReportApiCall() {
+    const { organization_id } = user;
+    if (organization_id) {
+      const response = await client.get(`${monitor}/downloaded-reports/?organization_id=${organization_id}`);
+      return response.data;
+    }
+  }
+
+  function refreshLastGeneratedReportHndlr() {
+    mutateLastGeneratedReportAlias();
+  }
+  const { mutate: mutateLastGeneratedReportAlias, isLoading: isLastGenerateLoading, data: lastGeneratedReportList } = lastGeneratedReportMutation;
+  // console.log({ lastGeneratedReportList });
+  const { results: reportsList } = lastGeneratedReportList || {};
   return (
     <>
       <Snackbar
@@ -426,14 +485,19 @@ export default function Report() {
             <Box>
               <Box className={classes.recentReportHeader}>
                 <Heading>Recently Generated Reports</Heading>
+                <Tooltip title="Refresh">
+                  <IconButton onClick={refreshLastGeneratedReportHndlr} aria-label="refresh" color="primary">
+                    <RefreshIcon />
+                  </IconButton>
+                </Tooltip>
               </Box>
-              {Array.isArray(reportList) && reportList.map((item, index) => (
+              {Array.isArray(reportsList) && reportsList.map((item, index) => (
                 <React.Fragment key={`item-${index}`}>
                   <Box className={classes.recentReportCard}>
                     <Box className="header">
-                      <Typography variant="h3">{item?.reportName}</Typography>
+                      <Typography variant="h3">{item?.title}</Typography>
                       <Box className="header-action">
-                        <IconButton data-id={item?.id} onClick={() => downloadGeneratedReportHndlr(item)} size="small" aria-label="download">
+                        <IconButton href={item?.file_url} data-id={item?.id} size="small" aria-label="download">
                           <ArrowDownwardIcon />
                         </IconButton>
                       </Box>
@@ -441,23 +505,28 @@ export default function Report() {
                     <Box className="recentBodyContainer">
                       <Box sx={{ mb: 2 }} className="generatedDate">
                         <Box component="span" className="label-light">Generated on: </Box>
-                        <Box component="span" className="label-dark">{item?.generatedOn}</Box>
+                        <Box component="span" className="label-dark">{getDateDisplayFormat(item?.created_at)}</Box>
                       </Box>
                       <Box sx={{ mb: 0.5 }} className="label-dark">Date Range:</Box>
                       <Box className="dateRangeContainer">
                         <Box className="generatedDate">
                           <Box component="span" className="label-light">From: </Box>
-                          <Box component="span" className="label-dark">{item?.fromDate}</Box>
+                          <Box component="span" className="label-dark">{getDateDisplayFormat(item?.start_range)}</Box>
                         </Box>
                         <Box className="generatedDate">
                           <Box component="span" className="label-light">To: </Box>
-                          <Box component="span" className="label-dark">{item?.toDate}</Box>
+                          <Box component="span" className="label-dark">{getDateDisplayFormat(item?.end_range)}</Box>
                         </Box>
                       </Box>
                     </Box></Box>
                 </React.Fragment>
               ))}
+
+
             </Box>
+            {isLastGenerateLoading && <Box className={classes.loadingOverlayLastGeneratedReport}>
+              <CircularProgress />
+            </Box>}
           </Grid>
         </Grid>
 

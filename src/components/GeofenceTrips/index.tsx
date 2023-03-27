@@ -131,7 +131,7 @@ export default function Trip() {
     // setPlaceDataStatus(true);
     setPage(newPage - 1);
     // if (appliedFilterInfoRef.current)
-    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: newPage, pageSize: rowsPerPage });
+    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, vehicle_number: searchText, pageNo: newPage, pageSize: rowsPerPage });
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
@@ -139,7 +139,7 @@ export default function Trip() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
     // if (appliedFilterInfoRef.current)
-    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, pageNo: 1, pageSize: event.target.value });
+    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, vehicle_number: searchText, pageNo: 1, pageSize: event.target.value });
   };
 
   function openTripDetails(event: React.MouseEvent<HTMLElement>, id: string) {
@@ -224,6 +224,7 @@ export default function Trip() {
   ];
 
   const handleSearchInput = (e: any) => {
+    mutateGeofenceTripInfo({ ...appliedFilterInfoRef.current, vehicle_number: e, pageNo: 1, pageSize: rowsPerPage });
     setSearchText(e);
   };
 
@@ -267,13 +268,14 @@ export default function Trip() {
     }
   });
   async function generateVehicleReportApiCall(tripInfo: any) {
-    const { startDate, endDate, startAddress, endAddress, pageNo = 1, pageSize = 10 } = tripInfo || {},
+    const { startDate, endDate, startAddress, endAddress, vehicle_number, pageNo = 1, pageSize = 10 } = tripInfo || {},
       isoSinceDate = endDate ? new Date(startDate).toISOString() : undefined,
       endDateUpdated = new Date(endDate);
     endDateUpdated.setDate(endDateUpdated.getDate() + 1);
     const isoUntilDate = endDate ? endDateUpdated.toISOString() : undefined,
       params: any = {
         since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
+        vehicle_number,
         page: pageNo, page_size: pageSize,
       }
     const response = await client.get(`${monitor}/geofence-trips/`, { params });
@@ -283,7 +285,7 @@ export default function Trip() {
 
   function applyFilterCallback(filterDetails: any) {
     appliedFilterInfoRef.current = filterDetails;
-    mutateGeofenceTripInfo({ ...filterDetails, pageNo: 1, pageSize: rowsPerPage });
+    mutateGeofenceTripInfo({ ...filterDetails, vehicle_number: searchText, pageNo: 1, pageSize: rowsPerPage });
   }
 
   return (
@@ -323,7 +325,7 @@ export default function Trip() {
             <Box style={{ marginRight: 12 }}>
               <SearchBox
                 onChangeFunc={handleSearchInput}
-                placeholder="Search Trips"
+                placeholder="Search By Vehicle Number"
               />
             </Box>
             {/* <Badge color="success" variant="dot" invisible={!appliedDistanceFilter}>
