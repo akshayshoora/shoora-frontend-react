@@ -67,15 +67,17 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         }
     });
     async function generateVehicleReportApiCall() {
-        const { startDate, endDate, startAddress, endAddress, emails } = geofenceReportState,
-            isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
-            endDateUpdated = new Date(endDate);
-        endDateUpdated.setDate(endDateUpdated.getDate() + 1);
-        const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
-            params: any = {
-                since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
-                emails
-            }
+        const { startDate, endDate, startAddress, endAddress, emails } = geofenceReportState;
+
+        //     isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
+        //     endDateUpdated = new Date(endDate);
+        // endDateUpdated.setDate(endDateUpdated.getDate() + 1);
+        // const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
+
+        const params: any = {
+            since: startDate, until: endDate, start: startAddress, end: endAddress,
+            emails
+        }
         const response = await client.get(`${transport}/geofence-trips-download`, { params });
         return response.data;
     }
@@ -216,7 +218,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                         <TextField
                             id="startDate"
                             name="startDate"
-                            type="date"
+                            type="datetime-local"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
@@ -236,7 +238,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                         <TextField
                             id="endDate"
                             name="endDate"
-                            type="date"
+                            type="datetime-local"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{

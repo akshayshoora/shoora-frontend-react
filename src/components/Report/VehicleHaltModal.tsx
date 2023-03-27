@@ -85,14 +85,14 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
         }
     });
     async function generateVehicleReportApiCall() {
-        const { since, until, vehicle_id, emails } = vehicleReportState,
-            isoSinceDate = until ? new Date(since).toISOString() : "",
-            untilDate = new Date(until);
-        untilDate.setDate(untilDate.getDate() + 1);
-        const isoUntilDate = until ? untilDate.toISOString() : "",
-            params: any = {
-                since: isoSinceDate, until: isoUntilDate, vehicle_id, emails
-            }
+        const { since, until, vehicle_id, emails } = vehicleReportState;
+        //     isoSinceDate = until ? new Date(since).toISOString() : "",
+        //     untilDate = new Date(until);
+        // untilDate.setDate(untilDate.getDate() + 1);
+        // const isoUntilDate = until ? untilDate.toISOString() : "",
+        const params: any = {
+            since, until, vehicle_id, emails
+        }
         const response = await client.get(`${monitor}/trips/download-haults`, { params });
         return response.data;
     }
@@ -209,7 +209,7 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
                         <TextField
                             id="since"
                             name="since"
-                            type="date"
+                            type="datetime-local"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
@@ -229,7 +229,7 @@ const VehicleHaltModal = React.forwardRef((props: IVehicleModal, ref) => {
                         <TextField
                             id="until"
                             name="until"
-                            type="date"
+                            type="datetime-local"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{

@@ -235,7 +235,7 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
                         <TextField
                             id="startDate"
                             name="startDate"
-                            type="date"
+                            type="datetime-local"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
@@ -255,7 +255,7 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
                         <TextField
                             id="endDate"
                             name="endDate"
-                            type="date"
+                            type="datetime-local"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{

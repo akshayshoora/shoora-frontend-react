@@ -30,13 +30,41 @@ const style = {
     boxShadow: 24,
 };
 
-const tripStatus = [
+const alertStatusList = [
     {
-        id: "progress",
-        name: "Progress"
+        id: "Forward Collision Warning",
+        name: "Forward Collision Warning"
     }, {
-        id: "completed",
-        name: "Completed"
+        id: "Lane Deviation Warning",
+        name: "Lane Deviation Warning"
+    },
+    {
+        id: "Car Close Distance Warning",
+        name: "Car Close Distance Warning"
+    },
+    {
+        id: "Pedestrian Detection Warning",
+        name: "Pedestrian Detection Warning"
+    },
+    {
+        id: "Fatigue Warning",
+        name: "Fatigue Warning"
+    },
+    {
+        id: "Mobile Phone Use Warning",
+        name: "Mobile Phone Use Warning"
+    },
+    {
+        id: "Smoking Warning",
+        name: "Smoking Warning"
+    },
+    {
+        id: "Distracted Driving Warning",
+        name: "Distracted Driving Warning"
+    },
+    {
+        id: "Face Not detected Warning",
+        name: "Face Not detected Warning"
     }
 ]
 
@@ -48,17 +76,18 @@ interface ITripFilterModal {
     applyFilterCallback: any;
 }
 
-const TripFilterModal = (props: ITripFilterModal) => {
-    const [tripFilterModalState, setTripFilterModalState] = useState({
+const AlertFilterModal = (props: ITripFilterModal) => {
+    const [alertFilterModalState, setAlertFilterModalState] = useState({
         vehicle_id: "",
         driver_id: "",
-        since: "",
-        until: ""
+        alertType: "",
+        startDate: "",
+        endDate: ""
     });
     useEffect(() => {
         const { isOpenFilterModal, appliedFilterDetails } = props;
         if (isOpenFilterModal && appliedFilterDetails) {
-            setTripFilterModalState(appliedFilterDetails);
+            setAlertFilterModalState(appliedFilterDetails);
         }
     }, [props.isOpenFilterModal, props.appliedFilterDetails]);
 
@@ -90,30 +119,30 @@ const TripFilterModal = (props: ITripFilterModal) => {
 
     function onChangeHndlr(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
-        setTripFilterModalState(prevState => ({ ...prevState, [name]: value }));
+        setAlertFilterModalState(prevState => ({ ...prevState, [name]: value }));
     }
 
     function onSelectVehicleHndlr(event: any, selectedValue: any) {
         const { id: vehicle_id } = selectedValue || {};
         if (vehicle_id) {
-            setTripFilterModalState(prevState => ({ ...prevState, vehicle_id }));
+            setAlertFilterModalState(prevState => ({ ...prevState, vehicle_id }));
         }
     }
 
     function onSelectDriverHandler(event: any, selectedValue: any) {
         const { id: driver_id } = selectedValue || {};
         if (driver_id) {
-            setTripFilterModalState(prevState => ({ ...prevState, driver_id }));
+            setAlertFilterModalState(prevState => ({ ...prevState, driver_id }));
         }
     }
 
     function resetFilterHndlr() {
-        setTripFilterModalState((prevState: any) => ({
+        setAlertFilterModalState((prevState: any) => ({
             ...prevState,
             vehicle_id: "",
             driver_id: "",
-            since: "",
-            until: ""
+            startDate: "",
+            endDate: ""
         }))
         props.applyFilterCallback(null);
     }
@@ -121,7 +150,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
 
 
     function applyFilterHndlr() {
-        props.applyFilterCallback(tripFilterModalState);
+        props.applyFilterCallback(alertFilterModalState);
     }
 
     return (
@@ -138,7 +167,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
                     variant="h6"
                     component="h2"
                 >
-                    Trip Filters
+                    Alert Filters
                     <i onClick={props.closeFilterModalHndlr}>
                         <svg
                             width="24"
@@ -211,7 +240,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 id="vehicle_id"
                                 options={vehicleList?.results || []}
                                 loading={vehicleListLoading}
-                                // value={tripFilterModalState.vehicle_id}
+                                // value={alertFilterModalState.vehicle_id}
                                 onChange={onSelectVehicleHndlr}
                                 getOptionLabel={(option) => option.vin}
                                 placeholder="Select"
@@ -243,6 +272,32 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 renderInput={(params) => <TextField name="driver_id" placeholder={"Search by driver name"} {...params} />}
                             />
                         </Grid>
+                        <Grid item xs={12} style={{ marginBottom: 16 }}>
+                            <Typography
+                                fontSize={16}
+                                style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
+                            >
+                                Alert Type
+                            </Typography>
+                            <TextField
+                                sx={{ width: "100%" }}
+                                select
+                                id="alertType"
+                                name="alertType"
+                                value={alertFilterModalState.alertType}
+                                onChange={onChangeHndlr}
+                                size="small"
+                            >
+                                <MenuItem selected={true} style={{ fontSize: 14 }} value="">
+                                    Select
+                                </MenuItem>
+                                {alertStatusList?.map((item: any, index: any) => {
+                                    return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
+                                        {item.name}
+                                    </MenuItem>)
+                                })}
+                            </TextField>
+                        </Grid>
                         <Grid item xs={6} style={{ marginBottom: 16 }}>
                             <Typography
                                 fontSize={16}
@@ -251,15 +306,15 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 Start Date
                             </Typography>
                             <TextField
-                                id="since"
-                                name="since"
+                                id="startDate"
+                                name="startDate"
                                 type="datetime-local"
                                 size="small"
                                 sx={{ width: "100%" }}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={tripFilterModalState.since}
+                                value={alertFilterModalState.startDate}
                                 onChange={onChangeHndlr}
                             />
                         </Grid>
@@ -271,15 +326,15 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 End Date
                             </Typography>
                             <TextField
-                                id="until"
-                                name="until"
+                                id="endDate"
+                                name="endDate"
                                 type="datetime-local"
                                 sx={{ width: "100%" }}
                                 size="small"
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={tripFilterModalState.until}
+                                value={alertFilterModalState.endDate}
                                 onChange={onChangeHndlr}
                             />
                         </Grid>
@@ -306,5 +361,5 @@ const TripFilterModal = (props: ITripFilterModal) => {
     )
 }
 
-export default TripFilterModal;
+export default AlertFilterModal;
 

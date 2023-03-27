@@ -1,11 +1,16 @@
-import * as React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
+import Tooltip from '@mui/material/Tooltip';
+import Badge from '@mui/material/Badge';
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import IconButton from '@mui/material/IconButton';
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import FilterListIcon from '@mui/icons-material/FilterList';
+
 import TableRow from "@mui/material/TableRow";
 import {
   SelectChangeEvent,
@@ -47,6 +52,7 @@ import { actionAccess } from "utils/FeatureCheck";
 import { auth, monitor, transport } from "constants/RouteMiddlePath";
 import { getDateTime } from "utils/calenderUtils";
 import { AlertModal } from "./AlertModal";
+import AlertFilterModal from "./AlertFilterModal";
 
 const style = {
   position: "absolute" as "absolute",
@@ -77,10 +83,11 @@ export default function Alerts() {
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: alertList, isLoading } = useQuery(
-    ["alerts", page, rowsPerPage, searchText],
-    () => getAlerts(page, rowsPerPage, searchText)
-  );
+  const alertFilterRef = React.useRef<any>(undefined);
+  // const { data: alertList, isLoading } = useQuery(
+  //   ["alerts", page, rowsPerPage, searchText],
+  //   () => getAlerts(page, rowsPerPage, searchText)
+  // );
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
     variant: "success" | "error" | "info";
@@ -92,6 +99,7 @@ export default function Alerts() {
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
   const [openAlert, setOpenAlert] = React.useState<boolean>(false);
   const [alertId, setAlertId] = React.useState<string>("false");
+  const [alertFilterModalState, setAlertFilterModalState] = React.useState(false);
   const { user } = useAppContext();
 
   const isAdd = actionAccess(AppPaths.ALERTS, Actions.ADD);
@@ -101,14 +109,17 @@ export default function Alerts() {
   const navigate = useNavigate();
 
   const classes = useStyles();
+
+  useEffect(() => {
+    mutateAlertInfo({ ...alertFilterRef.current, pageNo: page + 1, pageSize: rowsPerPage });
+  }, []);
   async function getAlerts(
     pageNumber: number,
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${monitor}/alerts/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${monitor}/alerts/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 
@@ -255,119 +266,175 @@ export default function Alerts() {
     setOpenAlert(true);
   };
 
+  //Get Alert API call
+
+  const alertMutationCallbck = useMutation(generateAlertApiCall, {
+    onSuccess: (responseData) => {
+      setAlertFilterModalState(false);
+    },
+    onError: () => {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      })
+    }
+  });
+
+  async function generateAlertApiCall(tripInfo: any) {
+    const { pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {};
+    const params: any = {
+      ...otherFilter,
+      page: pageNo, page_size: pageSize,
+    }
+    const response = await client.get(`${monitor}/alerts/`, { params });
+    return response.data;
+  }
+
+  function applyTripFilterHndlr(filterDetails: any) {
+    alertFilterRef.current = filterDetails;
+    mutateAlertInfo({ ...filterDetails, pageNo: 1, pageSize: rowsPerPage });
+  }
+
+  function applyFilterHndlr() {
+    setAlertFilterModalState(!alertFilterModalState);
+  }
+  function closeFilterModalHndlr() {
+    setAlertFilterModalState(false);
+  }
+
+  const { mutate: mutateAlertInfo, isLoading: isAlertInfoLoading, data: alertInfoResp } = alertMutationCallbck;
   return (
-    <Box style={{ padding: "20px 20px 20px 40px" }}>
-      {openDelete && (
-        <DeleteModal
-          open={openDelete}
-          handleClose={handleClose}
-          handleDelete={handleDelete}
-          label="alert"
+    <React.Fragment>
+      {alertFilterModalState && (
+        <AlertFilterModal
+          isOpenFilterModal={alertFilterModalState}
+          closeFilterModalHndlr={closeFilterModalHndlr}
+          applyingFilterProgress={isAlertInfoLoading}
+          appliedFilterDetails={alertFilterRef.current}
+          applyFilterCallback={applyTripFilterHndlr}
         />
       )}
-
-      {openAlert && (
-        <AlertModal
-          open={openAlert}
-          handleClose={handleCloseAlert}
-          id={alertId}
-        />
-      )}
-      <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Alerts</Heading>
-
-        <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: isAdd ? 12 : 0 }}>
-            <SearchBox
-              onChangeFunc={handleSearchInput}
-              placeholder="Search Alerts by Name or Id"
-            />
-          </Box>
-          {isAdd ? (
-            <Button
-              variant="contained"
-              style={{ background: COLORS.GRADIENT, color: COLORS.WHITE }}
-              onClick={addAlerts}
-            >
-              <AddIcon />
-              add alert
-            </Button>
-          ) : null}
-        </Box>
-      </Box>
-      <Box className={classes.root}>
-        <Table className={classes.table}>
-          <TableHeader
-            headings={headCells}
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-            shouldShowActionMenu={false}
+      <Box style={{ padding: "20px 20px 20px 40px" }}>
+        {openDelete && (
+          <DeleteModal
+            open={openDelete}
+            handleClose={handleClose}
+            handleDelete={handleDelete}
+            label="alert"
           />
-          <TableBody>
-            {isLoading ? (
-              <TableCell colSpan={8}>
-                <LoadingScreen />
-              </TableCell>
-            ) : alertList?.results.length ? (
-              alertList?.results.map((alert: any, index: number) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={0} key={index}>
-                    <TableCell className={classes.tableBodyCell} align="left">
-                      <Box className={classes.columnView}>
-                        <Span>{alert.alert_name}</Span>
-                      </Box>
-                    </TableCell>
+        )}
 
-                    <TableCell align="left">
-                      <Span fontType="secondary">{alert.vehicle}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">
-                        {alert.driver ? alert.driver.name : "-"}
-                      </Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">
-                        {getDateTime(alert.created_at)}
-                      </Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Button
-                        variant="contained"
-                        style={{ color: COLORS.WHITE }}
-                        onClick={() => {
-                          handleOpenAlert(alert.id);
-                        }}
-                      >
-                        Details
-                      </Button>
-                    </TableCell>
+        {openAlert && (
+          <AlertModal
+            open={openAlert}
+            handleClose={handleCloseAlert}
+            id={alertId}
+          />
+        )}
+        <Box style={{ display: "flex", justifyContent: "space-between" }}>
+          <Heading>Alerts</Heading>
 
-                    {/*                    
+          <Box style={{ display: "flex", alignItems: "center" }}>
+            <Box style={{ marginRight: isAdd ? 12 : 0 }}>
+              <SearchBox
+                onChangeFunc={handleSearchInput}
+                placeholder="Search Alerts by Name or Id"
+              />
+            </Box>
+            {isAdd ? (
+              <Button
+                variant="contained"
+                style={{ background: COLORS.GRADIENT, color: COLORS.WHITE }}
+                onClick={addAlerts}
+              >
+                <AddIcon />
+                add alert
+              </Button>
+            ) : null}
+            <Tooltip title="Apply Filter">
+              <IconButton onClick={applyFilterHndlr}>
+                <Badge color="success" variant="dot" invisible={!alertFilterRef.current}>
+                  <FilterListIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Box>
+        <Box className={classes.root}>
+          <Table className={classes.table}>
+            <TableHeader
+              headings={headCells}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              shouldShowActionMenu={false}
+            />
+            <TableBody>
+              {isAlertInfoLoading ? (
+                <TableCell colSpan={8}>
+                  <LoadingScreen />
+                </TableCell>
+              ) : alertInfoResp?.results.length ? (
+                alertInfoResp?.results.map((alert: any, index: number) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={0} key={index}>
+                      <TableCell className={classes.tableBodyCell} align="left">
+                        <Box className={classes.columnView}>
+                          <Span>{alert.alert_name}</Span>
+                        </Box>
+                      </TableCell>
+
+                      <TableCell align="left">
+                        <Span fontType="secondary">{alert.vehicle}</Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Span fontType="secondary">
+                          {alert.driver ? alert.driver.name : "-"}
+                        </Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Span fontType="secondary">
+                          {getDateTime(alert.created_at)}
+                        </Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Button
+                          variant="contained"
+                          style={{ color: COLORS.WHITE }}
+                          onClick={() => {
+                            handleOpenAlert(alert.id);
+                          }}
+                        >
+                          Details
+                        </Button>
+                      </TableCell>
+
+                      {/*                    
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={alert.id} />
                     </TableCell> */}
-                  </TableRow>
-                );
-              })
-            ) : (
-              <TableCell colSpan={8}>
-                <div className={classes.noDataView}>
-                  <Span fontType="secondary">No Data Found</Span>
-                </div>
-              </TableCell>
-            )}
-          </TableBody>
-        </Table>
-        <TableFooter
-          totalPages={Math.ceil(alertList?.count / rowsPerPage)}
-          currentPage={page + 1}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableCell colSpan={8}>
+                  <div className={classes.noDataView}>
+                    <Span fontType="secondary">No Data Found</Span>
+                  </div>
+                </TableCell>
+              )}
+            </TableBody>
+          </Table>
+          <TableFooter
+            totalPages={Math.ceil(alertInfoResp?.count / rowsPerPage)}
+            currentPage={page + 1}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Box>
       </Box>
-    </Box>
+    </React.Fragment>
   );
 }

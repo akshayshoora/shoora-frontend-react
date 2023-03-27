@@ -268,16 +268,17 @@ export default function Trip() {
     }
   });
   async function generateVehicleReportApiCall(tripInfo: any) {
-    const { startDate, endDate, startAddress, endAddress, vehicle_number, pageNo = 1, pageSize = 10 } = tripInfo || {},
-      isoSinceDate = endDate ? new Date(startDate).toISOString() : undefined,
-      endDateUpdated = new Date(endDate);
-    endDateUpdated.setDate(endDateUpdated.getDate() + 1);
-    const isoUntilDate = endDate ? endDateUpdated.toISOString() : undefined,
-      params: any = {
-        since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
-        vehicle_number,
-        page: pageNo, page_size: pageSize,
-      }
+    const { startDate, endDate, startAddress, endAddress, vehicle_number, pageNo = 1, pageSize = 10 } = tripInfo || {};
+
+    //   isoSinceDate = endDate ? new Date(startDate).toISOString() : undefined,
+    //   endDateUpdated = new Date(endDate);
+    // endDateUpdated.setDate(endDateUpdated.getDate() + 1);
+    // const isoUntilDate = endDate ? endDateUpdated.toISOString() : undefined,
+    const params: any = {
+      since: startDate, until: endDate, start: startAddress, end: endAddress,
+      vehicle_number,
+      page: pageNo, page_size: pageSize,
+    }
     const response = await client.get(`${monitor}/geofence-trips/`, { params });
     return response.data;
   }

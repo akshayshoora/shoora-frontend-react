@@ -72,14 +72,16 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
         }
     });
     async function generateDriverReportApiCall() {
-        const { since, until, driver_id, emails } = driverReportState,
-            isoSinceDate = until ? new Date(since).toISOString() : "",
-            untilDate = new Date(until);
-        untilDate.setDate(untilDate.getDate() + 1);
-        const isoUntilDate = until ? untilDate.toISOString() : "",
-            params: any = {
-                since: isoSinceDate, until: isoUntilDate, driver_id, emails
-            }
+        const { since, until, driver_id, emails } = driverReportState;
+
+        //     isoSinceDate = until ? new Date(since).toISOString() : "",
+        //     untilDate = new Date(until);
+        // untilDate.setDate(untilDate.getDate() + 1);
+        // const isoUntilDate = until ? untilDate.toISOString() : "",
+
+        const params: any = {
+            since, until, driver_id, emails
+        }
         const response = await client.get(`${monitor}/trips/download`, { params });
         return response.data;
     }
@@ -215,7 +217,7 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
                         <TextField
                             id="since"
                             name="since"
-                            type="date"
+                            type="datetime-local"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
@@ -235,7 +237,7 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
                         <TextField
                             id="until"
                             name="until"
-                            type="date"
+                            type="datetime-local"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{
