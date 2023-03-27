@@ -56,11 +56,12 @@ export default function Trip() {
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [appliedDistanceFilter, setAppliedDistanceFilter] = React.useState<any>(false);
-  const { data: tripList, isLoading } = useQuery(
-    ["trips", page, rowsPerPage, searchText],
-    () => getTrips(page, rowsPerPage, searchText),
-    { refetchOnWindowFocus: false }
-  );
+  const tripFilterRef = React.useRef<any>(undefined);
+  // const { data: tripList, isLoading } = useQuery(
+  //   ["trips", page, rowsPerPage, searchText],
+  //   () => getTrips(page, rowsPerPage, searchText),
+  //   { refetchOnWindowFocus: false }
+  // );
   const [betweenTripModal, setBetweenTripModal] = React.useState<any>(false);
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
@@ -75,11 +76,12 @@ export default function Trip() {
   const { user } = useAppContext();
   const navigate = useNavigate();
   const [placeDataStatus, setPlaceDataStatus] = React.useState<boolean>(true);
-  const [tripFilterState, setTripFilterState] = React.useState({
-    isTripFilterModalOpen: false,
-    appliedFilterDetails: undefined,
-  });
+  const [tripFilterModalState, setTripFilterModalState] = React.useState(false);
   const classes = useStyles();
+
+  useEffect(() => {
+    mutateTripInfo({ ...tripFilterRef.current, pageNo: page + 1, pageSize: rowsPerPage });
+  }, []);
 
   // useEffect(() => {
   //     if(tripList){
@@ -145,12 +147,14 @@ export default function Trip() {
   const handleChangePage = (event: unknown, newPage: number) => {
     setPlaceDataStatus(true);
     setPage(newPage - 1);
+    mutateTripInfo({ ...tripFilterRef.current, pageNo: newPage, pageSize: rowsPerPage });
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
     setPlaceDataStatus(true);
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    mutateTripInfo({ ...tripFilterRef.current, pageNo: 1, pageSize: event.target.value });
   };
 
   function openTripDetails(event: React.MouseEvent<HTMLElement>, id: string) {
@@ -249,31 +253,68 @@ export default function Trip() {
   }
 
   function applyFilterHndlr() {
-    setTripFilterState((prevState) => ({ ...prevState, isTripFilterModalOpen: true, appliedFilterDetails: undefined }))
+    setTripFilterModalState(!tripFilterModalState);
   }
 
   function closeFilterModalHndlr() {
-    setTripFilterState((prevState) => ({ ...prevState, isTripFilterModalOpen: false, appliedFilterDetails: undefined }))
+    setTripFilterModalState(false);
   }
   const handleCloseTrip = () => setOpenTrip(false);
 
-  async function renderPlaceName() {
-    for (let i = 0; i < tripList?.results.length; i++) {
-      let startPlace = await latLongToPlace(
-        tripList.results[i].start_latitude,
-        tripList.results[i].start_longitude,
-        true
-      );
-      let endPlace = await latLongToPlace(
-        tripList.results[i].end_latitude,
-        tripList.results[i].end_longitude,
-        true
-      );
-      tripList.results[i]["startPlace"] = startPlace;
-      tripList.results[i]["endPlace"] = endPlace;
-    }
+  // async function renderPlaceName() {
+  //   for (let i = 0; i < tripList?.results.length; i++) {
+  //     let startPlace = await latLongToPlace(
+  //       tripList.results[i].start_latitude,
+  //       tripList.results[i].start_longitude,
+  //       true
+  //     );
+  //     let endPlace = await latLongToPlace(
+  //       tripList.results[i].end_latitude,
+  //       tripList.results[i].end_longitude,
+  //       true
+  //     );
+  //     tripList.results[i]["startPlace"] = startPlace;
+  //     tripList.results[i]["endPlace"] = endPlace;
+  //   }
 
-    setPlaceDataStatus(false);
+  //   setPlaceDataStatus(false);
+  // }
+
+  //Get Trip API call
+
+  const tripsMutationCallback = useMutation(generateTripsApiCall, {
+    onSuccess: (responseData) => {
+      // const { data } = responseData || {};
+      setTripFilterModalState(false);
+      // setAppliedDistanceFilter(true);
+    },
+    onError: () => {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      })
+    }
+  });
+
+  async function generateTripsApiCall(tripInfo: any) {
+    const { since, until, pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {},
+      isoSinceDate = until ? new Date(since).toISOString() : undefined,
+      endDateUpdated = new Date(until);
+    endDateUpdated.setDate(endDateUpdated.getDate() + 1);
+    const isoUntilDate = until ? endDateUpdated.toISOString() : undefined,
+      params: any = {
+        ...otherFilter, since: isoSinceDate, until: isoUntilDate,
+        page: pageNo, page_size: pageSize,
+      }
+    const response = await client.get(`${monitor}/trips/`, { params });
+    return response.data;
+  }
+  const { mutate: mutateTripInfo, isLoading: isTripInfoLoading, data: tripsInfoResp } = tripsMutationCallback;
+
+  function applyTripFilterHndlr(filterDetails: any) {
+    tripFilterRef.current = filterDetails;
+    mutateTripInfo({ ...filterDetails, pageNo: 1, pageSize: rowsPerPage });
   }
 
   return (
@@ -300,12 +341,13 @@ export default function Trip() {
           id={triptId}
         />
       )}
-      {tripFilterState.isTripFilterModalOpen && (
+      {tripFilterModalState && (
         <TripFilterModal
-          showFilterModal={tripFilterState.isTripFilterModalOpen}
+          showFilterModal={tripFilterModalState}
           closeFilterModalHndlr={closeFilterModalHndlr}
-          applyingFilterProgress={false}
-          appliedFilterDetails={tripFilterState.appliedFilterDetails}
+          applyingFilterProgress={isTripInfoLoading}
+          appliedFilterDetails={tripFilterRef.current}
+          applyFilterCallback={applyTripFilterHndlr}
         />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
@@ -337,7 +379,7 @@ export default function Trip() {
 
           <Tooltip title="Apply Filter">
             <IconButton onClick={applyFilterHndlr}>
-              <Badge color="success" variant="dot" invisible={false}>
+              <Badge color="success" variant="dot" invisible={!tripFilterRef.current}>
                 <FilterListIcon />
               </Badge>
             </IconButton>
@@ -357,12 +399,12 @@ export default function Trip() {
             shouldShowActionMenu={true}
           />
           <TableBody>
-            {isLoading ? (
+            {isTripInfoLoading ? (
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : tripList?.results.length ? (
-              tripList?.results.map((trip: any, index: number) => {
+            ) : tripsInfoResp?.results.length ? (
+              tripsInfoResp?.results.map((trip: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell align="left">
@@ -417,7 +459,7 @@ export default function Trip() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Number(tripList?.count) ? Math.ceil(tripList?.count / rowsPerPage) : 1}
+          totalPages={Number(tripsInfoResp?.count) ? Math.ceil(tripsInfoResp?.count / rowsPerPage) : 1}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

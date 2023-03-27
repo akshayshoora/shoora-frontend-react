@@ -30,19 +30,31 @@ const style = {
     boxShadow: 24,
 };
 
-interface IVehicleModal {
+const tripStatus = [
+    {
+        id: "progress",
+        name: "Progress"
+    }, {
+        id: "completed",
+        name: "Completed"
+    }
+]
+
+interface ITripFilterModal {
     showFilterModal: any;
     closeFilterModalHndlr: any;
     applyingFilterProgress: any;
     appliedFilterDetails: any;
+    applyFilterCallback: any;
 }
 
-const TripFilterModal = (props: IVehicleModal) => {
-    const [vehicleReportState, setVehicleReportState] = useState({
-        vehicle_id: "0",
+const TripFilterModal = (props: ITripFilterModal) => {
+    const [tripFilterModalState, setTripFilterModalState] = useState({
+        vehicle_id: "",
+        driver_id: "",
+        status: "",
         since: "",
-        until: "",
-        emails: "",
+        until: ""
     });
     const classes = useStyles();
     const { data: vehicleList, isLoading: vehicleListLoading } = useQuery(
@@ -72,14 +84,39 @@ const TripFilterModal = (props: IVehicleModal) => {
 
     function onChangeHndlr(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
-        setVehicleReportState(prevState => ({ ...prevState, [name]: value }));
+        setTripFilterModalState(prevState => ({ ...prevState, [name]: value }));
     }
 
     function onSelectVehicleHndlr(event: any, selectedValue: any) {
         const { id: vehicle_id } = selectedValue || {};
         if (vehicle_id) {
-            setVehicleReportState(prevState => ({ ...prevState, vehicle_id }));
+            setTripFilterModalState(prevState => ({ ...prevState, vehicle_id }));
         }
+    }
+
+    function onSelectDriverHandler(event: any, selectedValue: any) {
+        const { id: driver_id } = selectedValue || {};
+        if (driver_id) {
+            setTripFilterModalState(prevState => ({ ...prevState, driver_id }));
+        }
+    }
+
+    function resetFilterHndlr() {
+        setTripFilterModalState((prevState: any) => ({
+            ...prevState,
+            vehicle_id: "",
+            driver_id: "",
+            status: "",
+            since: "",
+            until: ""
+        }))
+        props.applyFilterCallback(null);
+    }
+
+
+
+    function applyFilterHndlr() {
+        props.applyFilterCallback(tripFilterModalState);
     }
 
     return (
@@ -157,7 +194,7 @@ const TripFilterModal = (props: IVehicleModal) => {
                         <CircularProgress />
                     </Box>}
                     <Grid container columnSpacing={3}>
-                        <Grid item xs={12} style={{ marginBottom: 16 }}>
+                        <Grid item xs={6} style={{ marginBottom: 16 }}>
                             <Typography
                                 fontSize={16}
                                 style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
@@ -177,6 +214,32 @@ const TripFilterModal = (props: IVehicleModal) => {
                                 renderInput={(params) => <TextField name="vehicle_id" placeholder={"Search by vehicle"} {...params} />}
                             />
                         </Grid>
+                        <Grid item xs={6} style={{ marginBottom: 16 }}>
+                            <Typography
+                                fontSize={16}
+                                style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
+                            >
+                                Status
+                            </Typography>
+                            <TextField
+                                sx={{ width: "100%" }}
+                                select
+                                id="status"
+                                name="status"
+                                value={tripFilterModalState.status}
+                                onChange={onChangeHndlr}
+                                size="small"
+                            >
+                                <MenuItem selected={true} style={{ fontSize: 14 }} value="">
+                                    Select
+                                </MenuItem>
+                                {tripStatus?.map((item: any, index: any) => {
+                                    return (<MenuItem key={item.id} style={{ fontSize: 14 }} value={item.id}>
+                                        {item.name}
+                                    </MenuItem>)
+                                })}
+                            </TextField>
+                        </Grid>
                         <Grid item xs={12} style={{ marginBottom: 16 }}>
                             <Typography
                                 fontSize={16}
@@ -189,7 +252,7 @@ const TripFilterModal = (props: IVehicleModal) => {
                                 id="driver_id"
                                 options={driverList?.results || []}
                                 loading={driverListLoading}
-                                onChange={onSelectVehicleHndlr}
+                                onChange={onSelectDriverHandler}
                                 getOptionLabel={(option) => option.name}
                                 fullWidth={true}
                                 renderOption={(props, option) => (
@@ -216,7 +279,7 @@ const TripFilterModal = (props: IVehicleModal) => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={vehicleReportState.since}
+                                value={tripFilterModalState.since}
                                 onChange={onChangeHndlr}
                             />
                         </Grid>
@@ -236,20 +299,20 @@ const TripFilterModal = (props: IVehicleModal) => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={vehicleReportState.until}
+                                value={tripFilterModalState.until}
                                 onChange={onChangeHndlr}
                             />
                         </Grid>
                         <Grid item style={{ marginTop: 12 }} xs={12}>
                             <Box style={{ display: "flex", justifyContent: "end" }}>
-                                <Button color="secondary" className="cBtn" onClick={props.closeFilterModalHndlr}>
+                                <Button color="secondary" className="cBtn" onClick={resetFilterHndlr}>
                                     Reset Filter And Close
                                 </Button>
                                 <Button
                                     className="gbtn"
                                     variant="contained"
                                     style={{ color: COLORS.WHITE }}
-                                    onClick={() => { }}
+                                    onClick={applyFilterHndlr}
                                 >
                                     Apply Filter
                                 </Button>
