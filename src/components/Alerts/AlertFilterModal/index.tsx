@@ -80,9 +80,9 @@ const AlertFilterModal = (props: ITripFilterModal) => {
     const [alertFilterModalState, setAlertFilterModalState] = useState({
         vehicle_id: "",
         driver_id: "",
-        alertType: "",
-        startDate: "",
-        endDate: ""
+        alert_type: "",
+        since: "",
+        until: ""
     });
     useEffect(() => {
         const { isOpenFilterModal, appliedFilterDetails } = props;
@@ -141,8 +141,8 @@ const AlertFilterModal = (props: ITripFilterModal) => {
             ...prevState,
             vehicle_id: "",
             driver_id: "",
-            startDate: "",
-            endDate: ""
+            since: "",
+            until: ""
         }))
         props.applyFilterCallback(null);
     }
@@ -282,9 +282,9 @@ const AlertFilterModal = (props: ITripFilterModal) => {
                             <TextField
                                 sx={{ width: "100%" }}
                                 select
-                                id="alertType"
-                                name="alertType"
-                                value={alertFilterModalState.alertType}
+                                id="alert_type"
+                                name="alert_type"
+                                value={alertFilterModalState.alert_type}
                                 onChange={onChangeHndlr}
                                 size="small"
                             >
@@ -306,15 +306,15 @@ const AlertFilterModal = (props: ITripFilterModal) => {
                                 Start Date
                             </Typography>
                             <TextField
-                                id="startDate"
-                                name="startDate"
+                                id="since"
+                                name="since"
                                 type="datetime-local"
                                 size="small"
                                 sx={{ width: "100%" }}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={alertFilterModalState.startDate}
+                                value={alertFilterModalState.since}
                                 onChange={onChangeHndlr}
                             />
                         </Grid>
@@ -326,15 +326,15 @@ const AlertFilterModal = (props: ITripFilterModal) => {
                                 End Date
                             </Typography>
                             <TextField
-                                id="endDate"
-                                name="endDate"
+                                id="until"
+                                name="until"
                                 type="datetime-local"
                                 sx={{ width: "100%" }}
                                 size="small"
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={alertFilterModalState.endDate}
+                                value={alertFilterModalState.until}
                                 onChange={onChangeHndlr}
                             />
                         </Grid>

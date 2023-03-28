@@ -282,11 +282,11 @@ export default function Alerts() {
   });
 
   async function generateAlertApiCall(tripInfo: any) {
-    const { startDate, endDate, pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {};
-    const isoStartDate = startDate ? new Date(startDate).toISOString() : "",
-      isoEndDate = endDate ? new Date(endDate).toISOString() : "";
+    const { since, until, pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {};
+    const isoSinceDate = since ? new Date(since).toISOString() : "",
+      isoUntilDate = until ? new Date(until).toISOString() : "";
     const params: any = {
-      startDate: isoStartDate, endDate: isoEndDate, ...otherFilter,
+      since: isoSinceDate, until: isoUntilDate, ...otherFilter,
       page: pageNo, page_size: pageSize,
     }
     const response = await client.get(`${monitor}/alerts/`, { params });
