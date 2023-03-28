@@ -178,7 +178,7 @@ export function TyreClaimInfo() {
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Pattern:</Box>
-              <Box className={classes.bodyInfo}>HS518</Box>
+              <Box className={classes.bodyInfo}>HD580</Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Ply rating:</Box>
@@ -189,7 +189,7 @@ export function TyreClaimInfo() {
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Brand:</Box>
               <Box className={classes.bodyInfo}>
-                KAPSEN
+                FRONWAY
               </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
@@ -260,7 +260,7 @@ export function TyreClaimInfo() {
           <Grid xs={12} sm={12} lg={7} style={{ paddingLeft: 16 }}>
             <Box sx={{ mt: 2, mb: 3 }} component="form">
               <Box className={classes.fieldSetContainer} sx={{ pt: 2, ps: 2 }} component="fieldset">
-                <Box sx={{ fontWeight: "bold" }} component="legend">CLAIM INFO</Box>
+                <Box sx={{ fontWeight: "bold" }} component="legend">Technical Details</Box>
                 <Box className={classes.infoBodyWrapper}>
                   <Box className={classes.bodyInfoTitle}>TECHNICAL FINDING CUSTOMER (A):</Box>
                   <Box className={classes.bodyInfo}>-</Box>
@@ -285,7 +285,7 @@ export function TyreClaimInfo() {
                         fullWidth
                         size="small"
                       />
-                    ) : "-"}
+                    ) : "16"}
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
