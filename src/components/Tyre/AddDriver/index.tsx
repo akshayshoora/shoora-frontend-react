@@ -60,10 +60,10 @@ function setInitialDriverData(driverData?: any): INewDriver {
 }
 
 export default function AddDriver() {
-  const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
-    ["vehicles"],
-    () => getVehicle()
-  );
+  // const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
+  //   ["vehicles"],
+  //   () => getVehicle()
+  // );
   const [driverImgFileState, setDriverImgFileState] = useState<any>("");
   const driverImgFileRef = useRef<any>(null);
   const [validationState, setValidationState] = useState<any>(null);
@@ -159,7 +159,7 @@ export default function AddDriver() {
         const { image } = deviceDetails || {};
         setDriverImgFileState(image || "");
         const driverData = setInitialDriverData(deviceDetails);
-        setDriver((prevState:any) => ({
+        setDriver((prevState: any) => ({
           ...prevState,
           ...driverData
         }));
@@ -293,7 +293,7 @@ export default function AddDriver() {
             <ArrowBackIcon />
           </IconButton>
           <Typography fontSize={24}>
-            {!driverId ? "Add Driver" : "Edit Driver"}
+            {!driverId ? "Add Tyre Claim" : "Edit Tyre Claim"}
           </Typography>
         </Box>
       </Box>
@@ -301,134 +301,41 @@ export default function AddDriver() {
       <Box className={classes.padding_24}>
         <Grid container columnSpacing={4}>
           <Grid item xs={4}>
-            <Box sx={{
-              display: "flex", flexDirection: "column", justifyContent: "center",
-              alignItems: "center",
-              height: "100%"
-            }}>
-              <Box sx={{ position: "relative" }}>
-                <Box sx={{ position: "absolute", bottom: "5px", right: "-4px", zIndex: 1 }}>
-                  <Box component="label" htmlFor="driver-image">
-                    <Box sx={{
-                      borderRadius: "100%", p: 0.5,
-                      background: "#ecebf1",
-                      height: "24px", width: "24px", color: "#878a99",
-                      cursor: "pointer",
-                      justifyContent: "center",
-                      border: "1px solid #d4d2e0",
-                      alignItems: "center",
-                      display: "flex"
-                    }}>
-                      {/* <InsertPhotoIcon sx={{ height: "18px", width: "18px" }} /> */}
-                      <BorderColorIcon sx={{ height: "18px", width: "18px", color: "#261f5a" }} />
-                    </Box>
-                  </Box>
-                  <input name="driver-image" id="driver-image"
-                    hidden accept="image/*" onChange={handleFileUploadHnlr} type="file" />
-                </Box>
-                <Box sx={{
-                  p: 0.5, border: "1px solid #d4d2e0", borderRadius: "100%"
-                  , backgroundColor: "#ECEBF1"
-                }}>
-                  <Avatar
-                    alt="driver-image"
-                    src={driverImgFileState || DriverImage}
-                    sx={{ width: 100, height: 100 }}
-                  />
-                </Box>
-              </Box>
-              <Box sx={{ textAlign: "center", mt: 0.5, px: 2, fontSize: "0.9rem" }}>
-                * Maximum size 1mb allowed in PNG or JPG or JPEG format.
-              </Box>
-            </Box>
+            <TextInput
+              label="Size"
+              placeholder="Enter Size"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("size", value)
+              }
+            />
           </Grid>
-          <Grid item xs={8}>
-            <Grid container columnSpacing={4}>
-              <Grid item xs={6}>
-                <TextInput
-                  label="Size"
-                  placeholder="Enter Size"
-                  style={{ marginBottom: 24 }}
-                  value={drivers.name}
-                  isRequired={true}
-                  onChange={(value) => handleFormDriver("size", value)}
-                  errorMessage={validationState?.size}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextInput
-                  label="Driver Name"
-                  placeholder="Enter Driver name"
-                  style={{ marginBottom: 24 }}
-                  value={drivers.name}
-                  isRequired={true}
-                  onChange={(value) => handleFormDriver("name", value)}
-                  errorMessage={validationState?.name}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextInput
-                  label="Phone Number"
-                  placeholder="Enter Phone number"
-                  style={{ marginBottom: 24 }}
-                  value={drivers.phone_number}
-                  isRequired={false}
-                  onChange={(value) => handleFormDriver("phone_number", value)}
-                  errorMessage={validationState?.phone_number}
-                />
-              </Grid>
-              <Grid item xs={6} style={{ marginBottom: 24 }}>
-                <Typography
-                  fontSize={16}
-                  style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
-                >
-                  Vehicles
-                </Typography>
-                <Select
-                  fullWidth
-                  id="vehicle_id"
-                  value={drivers.vehicle_id}
-                  onChange={(e: any) => handleFormDriver("vehicle_id", e.target.value)}
-                  error={!!validationState?.vehicle_id}
-                  size="small"
-                  displayEmpty
-                >
-                  <MenuItem value="" disabled>
-                    Vehicles
-                  </MenuItem>
-                  {isVehicleLoading ? (
-                    <MenuItem>
-                      <CircularProgress />
-                    </MenuItem>
-                  ) : vehicleList?.results?.length ? (
-                    vehicleList?.results?.map((item: any, index: any) => (
-                      <MenuItem style={{ fontSize: 14 }} value={item.id}>
-                        {item.vin}
-                      </MenuItem>
-                    ))
-                  ) : (
-                    <MenuItem>Nothing to Select</MenuItem>
-                  )}
-                </Select>
-                {validationState?.vehicle_id && <FormHelperText sx={{ marginLeft: "14px", marginRight: "14px" }} error={true}>{validationState.vehicle_id}</FormHelperText>}
-              </Grid>
-              <Grid item xs={6}>
-                <TextInput
-                  label="Passport Number"
-                  placeholder="Enter Passport Number"
-                  style={{ marginBottom: 24 }}
-                  value={drivers.passport_number}
-                  isRequired={false}
-                  onChange={(value) => handleFormDriver("passport_number", value)}
-                  errorMessage={validationState?.passport_number}
-                />
-              </Grid>
-
-            </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="Pattern"
+              placeholder="Enter Pattern"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("size", value)
+              }
+            />
           </Grid>
-
-        </Grid>
-        <Grid container columnSpacing={4}>
+          <Grid item xs={4}>
+            <TextInput
+              label="Pattern"
+              placeholder="Enter Pattern"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("size", value)
+              }
+            />
+          </Grid>
           <Grid item xs={4}>
             <Typography
               fontSize={16}

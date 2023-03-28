@@ -11,7 +11,7 @@ import { transport } from "constants/RouteMiddlePath";
 import { driverLicenseInfo } from "./helper";
 import DrivingHistory from "./DriverHistory";
 
-export function DriverDetails() {
+export function TyreClaimInfo() {
   const classes = useStyles();
   const navigate = useNavigate();
 

@@ -114,12 +114,12 @@ export default function Driver() {
 
   function openDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
-    navigate(`/${AppPaths.DRIVERS}/${id}`);
+    navigate(`/${AppPaths.TYRE}/${id}`);
   }
 
   function editDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
-    navigate(`/${AppPaths.DRIVERS}/${SubPaths.EDIT}/${id}`);
+    navigate(`/${AppPaths.TYRE}/${SubPaths.EDIT}/${id}`);
   }
 
   const actionMenuItems: MenuType[] = [
@@ -129,18 +129,18 @@ export default function Driver() {
       onClick: openDriverDetails,
       access: true,
     },
-    {
-      label: "Edit",
-      icon: <EditOutlinedIcon />,
-      onClick: editDriverDetails,
-      access: isEdit,
-    },
-    {
-      label: "Delete",
-      icon: <DeleteOutlineOutlinedIcon />,
-      onClick: handleOpenDelete,
-      access: isDelete,
-    },
+    // {
+    //   label: "Edit",
+    //   icon: <EditOutlinedIcon />,
+    //   onClick: () => { },
+    //   access: isEdit,
+    // },
+    // {
+    //   label: "Delete",
+    //   icon: <DeleteOutlineOutlinedIcon />,
+    //   onClick: () => { },
+    //   access: isDelete,
+    // },
   ];
 
   const headCells: any = [
@@ -185,7 +185,7 @@ export default function Driver() {
   ];
 
   function addDriver() {
-    navigate(`/${AppPaths.DRIVERS}/${SubPaths.ADD}`);
+    navigate(`/${AppPaths.TYRE}/${SubPaths.ADD}`);
   }
   const handleSearchInput = (e: any) => {
     setSearchText(e);

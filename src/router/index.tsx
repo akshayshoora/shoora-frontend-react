@@ -30,6 +30,8 @@ import Report from "components/Report";
 import Finance from "components/Finance";
 import Fuel from "components/Fuel";
 import Tyre from "components/Tyre";
+import AddTyreClaim from "components/Tyre/AddDriver";
+import { TyreClaimInfo } from "components/Tyre/DriverDetails";
 import Maintenance from "components/Maintenance";
 import Coaching from "components/Coaching";
 import JobCard from "components/JobCard";
@@ -466,6 +468,26 @@ export default function AppRouter() {
                   <Tyre />
                 </ErrorBoundary>
               </>
+            }
+          />
+        }
+      />
+
+      <Route
+        path={`${AppPaths.TYRE}/${SubPaths.ADD}`}
+        element={
+          <ProtectedRoute route={AppPaths.TYRE} component={<AddTyreClaim />} />
+        }
+      />
+      <Route
+        path={`${AppPaths.TYRE}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.TYRE}
+            component={
+              <ErrorBoundary>
+                <TyreClaimInfo />
+              </ErrorBoundary>
             }
           />
         }

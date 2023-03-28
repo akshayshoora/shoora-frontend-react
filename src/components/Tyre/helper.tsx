@@ -1,5 +1,6 @@
 export const typreData = [
     {
+        id: "1",
         ucNo: "50",
         refType: "D1",
         brand: "MRF",
@@ -11,6 +12,7 @@ export const typreData = [
         status: "REJECTED"
     },
     {
+        id: "2",
         ucNo: "51",
         refType: "D2",
         brand: "MRF",
@@ -22,6 +24,7 @@ export const typreData = [
         status: "ADJUSTED"
     },
     {
+        id: "3",
         ucNo: "52",
         refType: "D3",
         brand: "MRF",
@@ -33,6 +36,7 @@ export const typreData = [
         status: "PENDING"
     },
     {
+        id: "4",
         ucNo: "53",
         refType: "D4",
         brand: "MRF",
@@ -44,6 +48,7 @@ export const typreData = [
         status: "ADJUSTED"
     },
     {
+        id: "5",
         ucNo: "54",
         refType: "D5",
         brand: "MRF",

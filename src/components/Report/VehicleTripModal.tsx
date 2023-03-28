@@ -211,7 +211,7 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
                         <TextField
                             id="since"
                             name="since"
-                            type="date"
+                            type="datetime-local"
                             size="small"
                             sx={{ width: "100%" }}
                             InputLabelProps={{
@@ -231,7 +231,7 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
                         <TextField
                             id="until"
                             name="until"
-                            type="date"
+                            type="datetime-local"
                             sx={{ width: "100%" }}
                             size="small"
                             InputLabelProps={{
