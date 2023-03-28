@@ -31,6 +31,7 @@ import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
 import DriverImage from "../../../assets/driver-img.png";
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import Dropzone from 'react-dropzone'
 
 interface INewDriver {
   name: string | null;
@@ -492,6 +493,24 @@ export default function AddDriver() {
               }
             />
           </Grid>
+          <Grid item xs={12}>
+            <Typography
+              fontSize={16}
+              style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+            >
+              Upload Photo
+            </Typography>
+            <Dropzone onDrop={(acceptedFiles: any) => console.log(acceptedFiles)}>
+              {({ getRootProps, getInputProps }) => (
+                <section className={classes.uploadFileSection}>
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <p>Drag 'n' drop some files here, or click to select files</p>
+                  </div>
+                </section>
+              )}
+            </Dropzone>
+          </Grid>
 
         </Grid>
       </Box>
@@ -505,7 +524,7 @@ export default function AddDriver() {
           className="btn btn-primary"
           variant="outlined"
           onClick={handleSubmit}
-          // disabled={isSaveButtonDisabled}
+        // disabled={isSaveButtonDisabled}
         >
           Save
         </Button>

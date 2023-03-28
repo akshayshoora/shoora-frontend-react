@@ -135,11 +135,10 @@ export function TyreClaimInfo() {
             size="medium"
             variant="outlined"
             // variant="contained"
-            sx={{ me: 1 }}
-            style={{ color: "#2e7d32", borderColor: "#2e7d32" }}
+            style={{ color: "#2e7d32", borderColor: "#2e7d32", marginRight: "10px" }}
             onClick={() => { }}
           >
-            <CancelIcon sx={{ mr: 0.5, color: "#2e7d32" }} fontSize="medium" />
+            <CancelIcon sx={{ mr: 0.5, color: "#2e7d32", me: 2, }} fontSize="medium" />
             Approved
           </Button>}
           {(roleNameState === "technical_manager" || roleNameState === "consultant") && <Button
@@ -266,9 +265,9 @@ export function TyreClaimInfo() {
                   <Box className={classes.bodyInfoTitle}>TECHNICAL FINDING CUSTOMER (A):</Box>
                   <Box className={classes.bodyInfo}>-</Box>
                 </Box>
-                <Box className={classes.infoBodyWrapper}>
+                <Box sx={{ display: "flex", alignItems: "center" }} className={classes.infoBodyWrapper}>
                   <Box className={classes.bodyInfoTitle}>TECHNICAL FINDINGS FACTORY (B):</Box>
-                  <Box sx={{ display: "flex", alignItems: "center" }} className={classes.bodyInfo}>
+                  <Box className={classes.bodyInfo}>
                     {/* Underinflation Damage */}
                     {(roleNameState === "technical_manager") ? (
                       <TextField
@@ -278,9 +277,9 @@ export function TyreClaimInfo() {
                     ) : "Underinflation Damage"}
                   </Box>
                 </Box>
-                <Box className={classes.infoBodyWrapper}>
+                <Box sx={{ display: "flex", alignItems: "center" }} className={classes.infoBodyWrapper}>
                   <Box className={classes.bodyInfoTitle}>TECHNICAL FINDINGS CONSULTANT ©:</Box>
-                  <Box sx={{ display: "flex", alignItems: "center" }} className={classes.bodyInfo}>
+                  <Box className={classes.bodyInfo}>
                     {(roleNameState === "consultant") ? (
                       <TextField
                         fullWidth

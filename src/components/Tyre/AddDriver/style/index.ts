@@ -31,13 +31,21 @@ export default makeStyles({
     marginBottom: 8,
     fontSize: 16,
   },
+  uploadFileSection: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "20px",
+    border: "1px dashed #261f5a",
+    borderRadius: "8px",
+    height: "100px",
+  },
   footerWrapper: {
     padding: "16px 24px",
     background: "#F8F8FB",
     display: "flex",
     justifyContent: "flex-end",
-    position: "fixed",
-    bottom: "0",
-    right: "0",
+    // position: "fixed",
+
   },
 });

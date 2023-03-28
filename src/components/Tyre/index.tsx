@@ -285,16 +285,14 @@ export default function Driver() {
               placeholder="Search Typre Ref"
             />
           </Box>
-          {isAdd ? (
-            <Button
-              variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR, color: COLORS.WHITE }}
-              onClick={addDriver}
-            >
-              <AddIcon />
-              Add Claim
-            </Button>
-          ) : null}
+          <Button
+            variant="contained"
+            style={{ background: COLORS.PRIMARY_COLOR, color: COLORS.WHITE, marginLeft: "10px" }}
+            onClick={addDriver}
+          >
+            <AddIcon />
+            Add Claim
+          </Button>
         </Box>
       </Box>
       <Box className={classes.root}>
