@@ -18,7 +18,7 @@ export default makeStyles({
     marginRight: "16px !important",
   },
   bodyContent: {
-    padding: 24,
+    padding: "24px 24px 0px 24px",
   },
   infoBodyWrapper: {
     display: "flex",

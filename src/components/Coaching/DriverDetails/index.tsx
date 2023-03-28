@@ -16,7 +16,7 @@ import ImageListItem from '@mui/material/ImageListItem';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useAppContext } from "ContextAPIs/appContext";
-
+import PerformanceTable from "../PerformanceTable";
 //Images
 import Tyre1 from "../../../assets/tyre/tyre1.png";
 import Tyre2 from "../../../assets/tyre/tyre2.png";
@@ -116,41 +116,10 @@ export function TyrePerfomanceInfo() {
             <ArrowBackIcon />
           </IconButton>
           <Typography fontSize={24} style={{ textTransform: "capitalize" }}>
-            Tyre Claim Details
+            Tyre Performance Details
           </Typography>
         </Box>
         <Box>
-          {(roleNameState === "service_manager") && <Button
-            size="medium"
-            variant="outlined"
-            color="primary"
-            // variant="contained"
-            // style={{ background: "#2e7d32" }}
-            onClick={() => { }}
-          >
-            <VerifiedIcon sx={{ mr: 0.5 }} fontSize="medium" />
-            Verify
-          </Button>}
-          {(roleNameState === "technical_manager" || roleNameState === "consultant") && <Button
-            size="medium"
-            variant="outlined"
-            // variant="contained"
-            style={{ color: "#2e7d32", borderColor: "#2e7d32", marginRight: "10px" }}
-            onClick={() => { }}
-          >
-            <CancelIcon sx={{ mr: 0.5, color: "#2e7d32", me: 2, }} fontSize="medium" />
-            Approved
-          </Button>}
-          {(roleNameState === "technical_manager" || roleNameState === "consultant") && <Button
-            size="medium"
-            variant="outlined"
-            // variant="contained"
-            style={{ color: "#d32f2f", borderColor: "#d32f2f" }}
-            onClick={() => { }}
-          >
-            <CancelIcon sx={{ mr: 0.5, color: "#d32f2f" }} fontSize="medium" />
-            Reject
-          </Button>}
           {/* <Button
             variant="outlined"
             onClick={() => { }}
@@ -168,45 +137,63 @@ export function TyrePerfomanceInfo() {
         >
           <Grid xs={12} sm={12} lg={5} style={{ paddingLeft: 24 }}>
             <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Size:</Box>
+              <Box className={classes.bodyInfoTitle}>Fleet Name :</Box>
               <Box
                 className={classes.bodyInfo}
                 style={{ textTransform: "capitalize" }}
               >
-                12.00R24
+                -
+              </Box>
+            </Box>
+            <Box className={classes.infoBodyWrapper}>
+              <Box className={classes.bodyInfoTitle}>Country:</Box>
+              <Box className={classes.bodyInfo}>UAE</Box>
+            </Box>
+            <Box className={classes.infoBodyWrapper}>
+              <Box className={classes.bodyInfoTitle}>Customer type:</Box>
+              <Box className={classes.bodyInfo}>
+
+              </Box>
+            </Box>
+            <Box className={classes.infoBodyWrapper}>
+              <Box className={classes.bodyInfoTitle}>Size:</Box>
+              <Box className={classes.bodyInfo}>
+                385/65R22.5
               </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Pattern:</Box>
-              <Box className={classes.bodyInfo}>HD580</Box>
+              <Box className={classes.bodyInfo}>
+                18
+              </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Ply rating:</Box>
               <Box className={classes.bodyInfo}>
-                20PR 160 / 157K
+                SSR1
               </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Brand:</Box>
-              <Box className={classes.bodyInfo}>
-                FRONWAY
-              </Box>
+              <Box className={classes.bodyInfo}>MRF</Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Serial Number:</Box>
               <Box className={classes.bodyInfo}>
-                D2201B00078
+                -
               </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>DOT code:</Box>
               <Box className={classes.bodyInfo}>
-                OIJHDNVYP0222
+                -
               </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Month / week code:</Box>
-              <Box className={classes.bodyInfo}>222</Box>
+              <Box className={classes.bodyInfoTitle}>Month/week code:</Box>
+              <Box className={classes.bodyInfo}>
+
+              </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Invoice number:</Box>
@@ -215,143 +202,90 @@ export function TyrePerfomanceInfo() {
               </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Remaining NSD - mm:</Box>
+              <Box className={classes.bodyInfoTitle}>Original NSD :</Box>
               <Box className={classes.bodyInfo}>
-                11.36
+                16
               </Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Original NSD:</Box>
+              <Box className={classes.bodyInfoTitle}>Odometer at fitment:</Box>
               <Box className={classes.bodyInfo}>
-                15.5
-              </Box>
-            </Box>
-            <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>% NSD remaining:</Box>
-              <Box className={classes.bodyInfo}>
-                73.29 %
-              </Box>
-            </Box>
-            <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>FOB price	:</Box>
-              <Box className={classes.bodyInfo}>
-                152
-              </Box>
-            </Box>
-            <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Claim Amount:</Box>
-              <Box className={classes.bodyInfo}>
-                $111.40
-              </Box>
-            </Box>
-            <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Technical Finding:</Box>
-              <Box className={classes.bodyInfo}>
-                BEAD TURNUP CRACKING
-              </Box>
-            </Box>
-            <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Remarks if any:</Box>
-              <Box className={classes.bodyInfo}>
-                NA
+                5,00,000
               </Box>
             </Box>
           </Grid>
           <Grid xs={12} sm={12} lg={7} style={{ paddingLeft: 16 }}>
             <Box sx={{ mt: 2, mb: 3 }} component="form">
               <Box className={classes.fieldSetContainer} sx={{ pt: 2, ps: 2 }} component="fieldset">
-                <Box sx={{ fontWeight: "bold" }} component="legend">Technical Details</Box>
+                <Box sx={{ fontWeight: "bold" }} component="legend">Performance Details</Box>
                 <Box className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>TECHNICAL FINDING CUSTOMER (A):</Box>
-                  <Box className={classes.bodyInfo}>-</Box>
+                  <Box className={classes.bodyInfoTitle}>Test:</Box>
+                  <Box className={classes.bodyInfo}>UM1</Box>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center" }} className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>TECHNICAL FINDINGS FACTORY (B):</Box>
+                  <Box className={classes.bodyInfoTitle}>Test Start Date:</Box>
                   <Box className={classes.bodyInfo}>
-                    {/* Underinflation Damage */}
-                    {(roleNameState === "technical_manager") ? (
-                      <TextField
-                        fullWidth
-                        size="small"
-                      />
-                    ) : "Underinflation Damage"}
+                    23-Jan-23
                   </Box>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center" }} className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>TECHNICAL FINDINGS CONSULTANT ©:</Box>
+                  <Box className={classes.bodyInfoTitle}>Test End Date:</Box>
                   <Box className={classes.bodyInfo}>
-                    {(roleNameState === "consultant") ? (
-                      <TextField
-                        fullWidth
-                        size="small"
-                      />
-                    ) : "16"}
+                    23-Mar-23
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>N.S.D (LEFT) (mm):</Box>
+                  <Box className={classes.bodyInfoTitle}>Vehicle:</Box>
                   <Box className={classes.bodyInfo}>
-                    7.5
+
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>WEAR (LEFT) (%):</Box>
+                  <Box className={classes.bodyInfoTitle}>No of axles on Vehicle:</Box>
                   <Box className={classes.bodyInfo}>
-                    46.88
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>FOB (USD$):</Box>
+                  <Box className={classes.bodyInfoTitle}>Pay Load:</Box>
                   <Box className={classes.bodyInfo}>
-                    32
+
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>C&F (USD$):</Box>
+                  <Box className={classes.bodyInfoTitle}>Gross Load:</Box>
                   <Box className={classes.bodyInfo}>
-                    34.40
+
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>LANDED VALUE (USD$):</Box>
+                  <Box className={classes.bodyInfoTitle}>No Of Wheels/Vehicle Configuration :</Box>
                   <Box className={classes.bodyInfo}>
                     51.94
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
-                  <Box className={classes.bodyInfoTitle}>CLAIM VALUE (USD$):</Box>
+                  <Box className={classes.bodyInfoTitle}>Cargo Carried :</Box>
                   <Box className={classes.bodyInfo}>
-                    24.35
                   </Box>
                 </Box>
-                {(roleNameState === "service_manager" || roleNameState === "consultant") && <Box sx={{ display: "flex", justifyContent: "center" }}>
-                  <Button
-                    id="submit"
-                    className="btn btn-primary"
-                    variant="outlined"
-                    onClick={() => { }}
-                  >
-                    Save
-                  </Button>
-                </Box>}
+                <Box className={classes.infoBodyWrapper}>
+                  <Box className={classes.bodyInfoTitle}>Mine type :</Box>
+                  <Box className={classes.bodyInfo}>
+                    Iron, Coal, Limestone etc
+                  </Box>
+                </Box>
+                <Box className={classes.infoBodyWrapper}>
+                  <Box className={classes.bodyInfoTitle}>Reason of removal :</Box>
+                  <Box className={classes.bodyInfo}>
+                  </Box>
+                </Box>
               </Box>
             </Box>
-            <Typography fontSize={18} style={{ textTransform: "capitalize", fontWeight: "bold" }}>
-              Tyre Images
-            </Typography>
-            <ImageList sx={{ width: "100%", height: "auto" }} cols={4} rowHeight={200}>
-              {tyresList.map((item: any) => (
-                <ImageListItem key={item.id}>
-                  <img
-                    src={item.src}
-                    alt={item.title}
-                    loading="lazy"
-                  />
-                </ImageListItem>
-              ))}
-            </ImageList>
           </Grid>
         </Grid>
+      </Box>
+      <Box sx={{ px: 3, mb: 3 }}>
+        <PerformanceTable />
       </Box>
     </Box>
   );

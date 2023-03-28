@@ -441,7 +441,22 @@ export default function AppRouter() {
           />
         }
       />
-      
+
+      <Route
+        path={`${AppPaths.COACHING}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.TYRE}
+            component={
+              <ErrorBoundary>
+                <TyrePerfomanceInfo />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+
+
 
       <Route
         path={AppPaths.MAINTENANCE}
