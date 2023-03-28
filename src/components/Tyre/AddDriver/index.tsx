@@ -149,23 +149,23 @@ export default function AddDriver() {
     },
   });
 
-  const { isLoading: loadingUserInfo } = useQuery(
-    ["driver_details", driverId],
-    () => getDriverDetails(String(driverId)),
-    {
-      enabled: Boolean(driverId),
-      refetchOnWindowFocus: false,
-      onSuccess: (deviceDetails) => {
-        const { image } = deviceDetails || {};
-        setDriverImgFileState(image || "");
-        const driverData = setInitialDriverData(deviceDetails);
-        setDriver((prevState: any) => ({
-          ...prevState,
-          ...driverData
-        }));
-      },
-    }
-  );
+  // const { isLoading: loadingUserInfo } = useQuery(
+  //   ["driver_details", driverId],
+  //   () => getDriverDetails(String(driverId)),
+  //   {
+  //     enabled: Boolean(driverId),
+  //     refetchOnWindowFocus: false,
+  //     onSuccess: (deviceDetails) => {
+  //       const { image } = deviceDetails || {};
+  //       setDriverImgFileState(image || "");
+  //       const driverData = setInitialDriverData(deviceDetails);
+  //       setDriver((prevState: any) => ({
+  //         ...prevState,
+  //         ...driverData
+  //       }));
+  //     },
+  //   }
+  // );
 
   function backToProperties() {
     navigate(-1);
@@ -226,9 +226,9 @@ export default function AddDriver() {
     mutateAddDriver(drivers);
   }
 
-  if (driverId && loadingUserInfo && !drivers) {
-    return <LoadingScreen />;
-  }
+  // if (driverId && loadingUserInfo && !drivers) {
+  //   return <LoadingScreen />;
+  // }
 
   async function getDriverDetails(id: string) {
     return (await client.get(`${transport}/drivers/${id}/`)).data;
@@ -278,10 +278,10 @@ export default function AddDriver() {
         </Alert>
       </Snackbar>
 
-      <PageLoading
+      {/* <PageLoading
         open={isAddingDriver || updatingDriver}
         loadingMessage={loadingMessage}
-      />
+      /> */}
 
       <Box className={classes.headingWrapper}>
         <Box className={classes.headingContent}>
@@ -320,117 +320,179 @@ export default function AddDriver() {
               value={drivers.size}
               isRequired={false}
               onChange={(value) =>
-                handleFormDriver("size", value)
+                handleFormDriver("pattern", value)
               }
             />
           </Grid>
           <Grid item xs={4}>
             <TextInput
-              label="Pattern"
-              placeholder="Enter Pattern"
+              label="Ply rating"
+              placeholder="Enter Ply Rating"
               style={{ marginBottom: 24 }}
               value={drivers.size}
               isRequired={false}
               onChange={(value) =>
-                handleFormDriver("size", value)
+                handleFormDriver("plyRating", value)
               }
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Typography
-              fontSize={16}
-              style={{ fontWeight: 200, marginBottom: 8 }}
-            >
-              Passport Validity
-            </Typography>
-            <TextField
-              id="date"
-              type="date"
-              sx={{ width: "100%" }}
-              size="small"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={drivers.passport_validity}
-              onChange={(e: any) =>
-                handleFormDriver("passport_validity", e.target.value)
-              }
-              error={!!validationState?.passport_validity}
-              helperText={validationState?.passport_validity}
             />
           </Grid>
           <Grid item xs={4}>
             <TextInput
-              label="Driving Lincense Number"
-              placeholder="Enter Driving Lincense Number"
+              label="Brand"
+              placeholder="Enter Brand"
               style={{ marginBottom: 24 }}
-              value={drivers.driving_license_number}
+              value={drivers.size}
               isRequired={false}
               onChange={(value) =>
-                handleFormDriver("driving_license_number", value)
+                handleFormDriver("brand", value)
               }
-              errorMessage={validationState?.driving_license_number}
-
             />
           </Grid>
           <Grid item xs={4}>
-            <Typography
-              fontSize={16}
-              style={{ fontWeight: 200, marginBottom: 8 }}
-            >
-              Driving License Validity
-            </Typography>
-            <TextField
-              id="date"
-              type="date"
-              sx={{ width: "100%" }}
-              size="small"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={drivers.driving_license_validity}
-              onChange={(e: any) =>
-                handleFormDriver("driving_license_validity", e.target.value)
-              }
-              error={validationState?.driving_license_validity}
-              helperText={validationState?.driving_license_validity}
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <Typography
-              fontSize={16}
-              style={{ fontWeight: 200, marginBottom: 8 }}
-            >
-              Date Of Birth
-            </Typography>
-            <TextField
-              // id="date"
-              id="dob"
-              type="date"
-              sx={{ width: "100%" }}
-              size="small"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              value={drivers.dob}
-              onChange={(e: any) =>
-                handleFormDriver("dob", e.target.value)
-              }
-              error={!!validationState?.dob}
-              helperText={validationState?.dob}
-            />
-          </Grid>
-          {/* <Grid item xs={4}>
-            {driverId && <TextInput
-              label="Driver Score"
-              placeholder="Driver Score"
+            <TextInput
+              label="Serial Number"
+              placeholder="Enter Serial Number"
               style={{ marginBottom: 24 }}
-              value={drivers.driver_score}
+              value={drivers.size}
               isRequired={false}
-              disabled={true}
-              onChange={(value) => handleFormDriver("driver_score", value)}
-            />}
-          </Grid> */}
+              onChange={(value) =>
+                handleFormDriver("serialNumber", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="DOT Code"
+              placeholder="Enter Dot Code"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("dotCode", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="DOT Code"
+              placeholder="Enter Dot Code"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("dotCode", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="Month/Week Code"
+              placeholder="Enter Month/Week Code"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("monthWeekCode", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="Invoice number"
+              placeholder="Enter Invoice number"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("invoiceNumber", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="Remaining NSD- mm"
+              placeholder="Enter Remaining NSD- mm"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("remainingNSD", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="Original NSD"
+              placeholder="Enter Original NSD"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("originalNSD", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="% NSD remaining"
+              placeholder="Enter % NSD remaining"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("nsdRemaining", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="FOB price"
+              placeholder="Enter FOB price"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("fobPrice", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="Claim Amount"
+              placeholder="Enter Claim Amount"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("claimAmount", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="Technical Finding"
+              placeholder="Enter Technical Finding"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("technicalFinding", value)
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextInput
+              label="Remarks if any"
+              placeholder="Enter Remarks if any"
+              style={{ marginBottom: 24 }}
+              value={drivers.size}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("remarks", value)
+              }
+            />
+          </Grid>
+
         </Grid>
       </Box>
 
@@ -440,9 +502,10 @@ export default function AddDriver() {
         </Button>
         <Button
           id="submit"
-          variant={isSaveButtonDisabled ? "outlined" : "contained"}
+          className="btn btn-primary"
+          variant="outlined"
           onClick={handleSubmit}
-          disabled={isSaveButtonDisabled}
+          // disabled={isSaveButtonDisabled}
         >
           Save
         </Button>
