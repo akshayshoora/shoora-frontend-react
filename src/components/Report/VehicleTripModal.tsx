@@ -70,13 +70,14 @@ const VehicleTripModal = React.forwardRef((props: IVehicleModal, ref) => {
     });
     async function generateVehicleReportApiCall() {
         const { since, until, vehicle_id, emails } = vehicleReportState;
-
+        const isSinceDate = since ? new Date(since).toISOString() : "",
+            isoUntilDate = until ? new Date(until).toISOString() : "";
         //     isoSinceDate = until ? new Date(since).toISOString() : "",
         //     untilDate = new Date(until);
         // untilDate.setDate(untilDate.getDate() + 1);
         // const isoUntilDate = until ? untilDate.toISOString() : "",
         const params: any = {
-            since, until, vehicle_id, emails
+            since: isSinceDate, until: isoUntilDate, vehicle_id, emails
         }
         const response = await client.get(`${monitor}/trips/download`, { params });
         return response.data;

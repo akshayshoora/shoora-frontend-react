@@ -68,6 +68,8 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
     });
     async function generateVehicleReportApiCall() {
         const { startDate, endDate, startAddress, endAddress, emails } = geofenceReportState;
+        const isoSinceDate = startDate ? new Date(startDate).toISOString() : "",
+            isoUntilDate = endDate ? new Date(endDate).toISOString() : "";
 
         //     isoSinceDate = endDate ? new Date(startDate).toISOString() : "",
         //     endDateUpdated = new Date(endDate);
@@ -75,7 +77,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         // const isoUntilDate = endDate ? endDateUpdated.toISOString() : "",
 
         const params: any = {
-            since: startDate, until: endDate, start: startAddress, end: endAddress,
+            since: isoSinceDate, until: isoUntilDate, start: startAddress, end: endAddress,
             emails
         }
         const response = await client.get(`${transport}/geofence-trips-download`, { params });

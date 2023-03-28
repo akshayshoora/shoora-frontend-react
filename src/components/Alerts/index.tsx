@@ -282,9 +282,11 @@ export default function Alerts() {
   });
 
   async function generateAlertApiCall(tripInfo: any) {
-    const { pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {};
+    const { startDate, endDate, pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {};
+    const isoStartDate = startDate ? new Date(startDate).toISOString() : "",
+      isoEndDate = endDate ? new Date(endDate).toISOString() : "";
     const params: any = {
-      ...otherFilter,
+      startDate: isoStartDate, endDate: isoEndDate, ...otherFilter,
       page: pageNo, page_size: pageSize,
     }
     const response = await client.get(`${monitor}/alerts/`, { params });
@@ -300,7 +302,7 @@ export default function Alerts() {
     setAlertFilterModalState(!alertFilterModalState);
   }
   function closeFilterModalHndlr(event: any, reason: any) {
-    if(reason === "backdropClick"){
+    if (reason === "backdropClick") {
       return;
     }
     setAlertFilterModalState(false);

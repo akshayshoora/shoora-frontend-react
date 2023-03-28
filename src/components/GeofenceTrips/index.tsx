@@ -269,13 +269,14 @@ export default function Trip() {
   });
   async function generateVehicleReportApiCall(tripInfo: any) {
     const { startDate, endDate, startAddress, endAddress, vehicle_number, pageNo = 1, pageSize = 10 } = tripInfo || {};
-
+    const isoStartDate = since ? new Date(startDate).toISOString() : "",
+      isoEndDate = until ? new Date(endDate).toISOString() : "";
     //   isoSinceDate = endDate ? new Date(startDate).toISOString() : undefined,
     //   endDateUpdated = new Date(endDate);
     // endDateUpdated.setDate(endDateUpdated.getDate() + 1);
     // const isoUntilDate = endDate ? endDateUpdated.toISOString() : undefined,
     const params: any = {
-      since: startDate, until: endDate, start: startAddress, end: endAddress,
+      since: isoStartDate, until: isoEndDate, start: startAddress, end: endAddress,
       vehicle_number,
       page: pageNo, page_size: pageSize,
     }

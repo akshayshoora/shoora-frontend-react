@@ -302,12 +302,14 @@ export default function Trip() {
 
   async function generateTripsApiCall(tripInfo: any) {
     const { since, until, pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {};
+    const isSinceDate = since ? new Date(since).toISOString() : "",
+      isoUntilDate = until ? new Date(until).toISOString() : "";
     // isoSinceDate = until ? new Date(since).toISOString() : undefined,
     //   endDateUpdated = new Date(until);
     // endDateUpdated.setDate(endDateUpdated.getDate() + 1);
     // const isoUntilDate = until ? endDateUpdated.toISOString() : undefined,
     const params: any = {
-      ...otherFilter, since, until,
+      ...otherFilter, since: isSinceDate, until: isoUntilDate,
       page: pageNo, page_size: pageSize,
     }
     const response = await client.get(`${monitor}/trips/`, { params });

@@ -73,14 +73,15 @@ const DriverTripModal = React.forwardRef((props: IDriverModal, ref) => {
     });
     async function generateDriverReportApiCall() {
         const { since, until, driver_id, emails } = driverReportState;
-
+        const isSinceDate = since ? new Date(since).toISOString() : "",
+            isoUntilDate = until ? new Date(until).toISOString() : "";
         //     isoSinceDate = until ? new Date(since).toISOString() : "",
         //     untilDate = new Date(until);
         // untilDate.setDate(untilDate.getDate() + 1);
         // const isoUntilDate = until ? untilDate.toISOString() : "",
 
         const params: any = {
-            since, until, driver_id, emails
+            since: isSinceDate, until: isoUntilDate, driver_id, emails
         }
         const response = await client.get(`${monitor}/trips/download`, { params });
         return response.data;
