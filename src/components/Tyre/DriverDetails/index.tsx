@@ -1,4 +1,5 @@
-import { Box, Button, IconButton, Typography, Grid } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, Button, IconButton, Typography, Grid, TextField } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 import useStyles from "./style";
@@ -13,6 +14,9 @@ import DrivingHistory from "./DriverHistory";
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import CancelIcon from '@mui/icons-material/Cancel';
+import { useAppContext } from "ContextAPIs/appContext";
+
 //Images
 import Tyre1 from "../../../assets/tyre/tyre1.png";
 import Tyre2 from "../../../assets/tyre/tyre2.png";
@@ -61,9 +65,13 @@ const tyresList = [
     title: "Tyre 7"
   }
 ]
+
+const userRoles = ["service_manager", "technical_manager", "consultant"];
 export function TyreClaimInfo() {
   const classes = useStyles();
   const navigate = useNavigate();
+  const [roleNameState, setRoleNameState] = useState("");
+  const { user } = useAppContext();
 
   const { id } = useParams();
 
@@ -72,6 +80,18 @@ export function TyreClaimInfo() {
   //   () => getDriverDetails(String(id))
   // );
 
+  useEffect(() => {
+    if (user) {
+      const { roles } = user;
+      if (Array.isArray(roles)) {
+        const roleDetails = roles.find((item: any) => userRoles.includes(item.name));
+        if (roleDetails) {
+          const { name } = roleDetails;
+          setRoleNameState(name);
+        }
+      }
+    }
+  }, [user]);
   async function getDriverDetails(id: string) {
     return (await client.get(`${transport}/drivers/${id}/`)).data;
   }
@@ -100,7 +120,7 @@ export function TyreClaimInfo() {
           </Typography>
         </Box>
         <Box>
-          <Button
+          {(roleNameState === "service_manager") && <Button
             size="medium"
             variant="outlined"
             color="primary"
@@ -110,7 +130,28 @@ export function TyreClaimInfo() {
           >
             <VerifiedIcon sx={{ mr: 0.5 }} fontSize="medium" />
             Verify
-          </Button>
+          </Button>}
+          {(roleNameState === "technical_manager" || roleNameState === "consultant") && <Button
+            size="medium"
+            variant="outlined"
+            // variant="contained"
+            sx={{ me: 1 }}
+            style={{ color: "#2e7d32", borderColor: "#2e7d32" }}
+            onClick={() => { }}
+          >
+            <CancelIcon sx={{ mr: 0.5, color: "#2e7d32" }} fontSize="medium" />
+            Approved
+          </Button>}
+          {(roleNameState === "technical_manager" || roleNameState === "consultant") && <Button
+            size="medium"
+            variant="outlined"
+            // variant="contained"
+            style={{ color: "#d32f2f", borderColor: "#d32f2f" }}
+            onClick={() => { }}
+          >
+            <CancelIcon sx={{ mr: 0.5, color: "#d32f2f" }} fontSize="medium" />
+            Reject
+          </Button>}
           {/* <Button
             variant="outlined"
             onClick={() => { }}
@@ -228,13 +269,24 @@ export function TyreClaimInfo() {
                 <Box className={classes.infoBodyWrapper}>
                   <Box className={classes.bodyInfoTitle}>TECHNICAL FINDINGS FACTORY (B):</Box>
                   <Box className={classes.bodyInfo}>
-                    Underinflation Damage
+                    {/* Underinflation Damage */}
+                    {(roleNameState === "service_manager") ? (
+                      <TextField
+                        fullWidth
+                        size="small"
+                      />
+                    ) : "Underinflation Damage"}
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
                   <Box className={classes.bodyInfoTitle}>TECHNICAL FINDINGS CONSULTANT ©:</Box>
                   <Box className={classes.bodyInfo}>
-                    16
+                    {(roleNameState === "consultant") ? (
+                      <TextField
+                        fullWidth
+                        size="small"
+                      />
+                    ) : "16"}
                   </Box>
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
@@ -273,6 +325,16 @@ export function TyreClaimInfo() {
                     24.35
                   </Box>
                 </Box>
+                {(roleNameState === "service_manager" || roleNameState === "consultant") && <Box sx={{ display: "flex", justifyContent: "center" }}>
+                  <Button
+                    id="submit"
+                    className="btn btn-primary"
+                    variant="outlined"
+                    onClick={() => { }}
+                  >
+                    Save
+                  </Button>
+                </Box>}
               </Box>
             </Box>
             <Typography fontSize={18} style={{ textTransform: "capitalize", fontWeight: "bold" }}>
