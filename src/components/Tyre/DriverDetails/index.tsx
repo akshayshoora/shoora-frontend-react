@@ -268,9 +268,9 @@ export function TyreClaimInfo() {
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
                   <Box className={classes.bodyInfoTitle}>TECHNICAL FINDINGS FACTORY (B):</Box>
-                  <Box className={classes.bodyInfo}>
+                  <Box sx={{ display: "flex", alignItems: "center" }} className={classes.bodyInfo}>
                     {/* Underinflation Damage */}
-                    {(roleNameState === "service_manager") ? (
+                    {(roleNameState === "technical_manager") ? (
                       <TextField
                         fullWidth
                         size="small"
@@ -280,7 +280,7 @@ export function TyreClaimInfo() {
                 </Box>
                 <Box className={classes.infoBodyWrapper}>
                   <Box className={classes.bodyInfoTitle}>TECHNICAL FINDINGS CONSULTANT ©:</Box>
-                  <Box className={classes.bodyInfo}>
+                  <Box sx={{ display: "flex", alignItems: "center" }} className={classes.bodyInfo}>
                     {(roleNameState === "consultant") ? (
                       <TextField
                         fullWidth
