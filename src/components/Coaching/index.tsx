@@ -29,7 +29,7 @@ import {
   HeadCell,
   Order,
   TableFooter,
-  TableHeaderTyre,
+  TableHeader,
 } from "components/commonComponent/Table";
 import ActionMenu, {
   MenuType,
@@ -114,7 +114,7 @@ export default function Driver() {
 
   function openDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
-    navigate(`/${AppPaths.TYRE}/${id}`);
+    navigate(`/${AppPaths.COACHING}/${id}`);
   }
 
   function editDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
@@ -142,45 +142,78 @@ export default function Driver() {
     //   access: isDelete,
     // },
   ];
-
   const headCells: any = [
     {
-      id: "customer_tyre_ref",
+      id: "city",
       numeric: false,
       disablePadding: true,
       alignment: "center",
-      label: "CUSTOMER TYRE REF",
-      colSpan: 1
+      label: "City",
     },
     {
-      id: "mrf_tyre_ref",
-      label: "MRF TYRE REF",
+      id: "fleet_name",
+      label: "Fleet Name",
       numeric: false,
       disablePadding: false,
       rowSpan: 2
     },
     {
-      id: "tyre",
-      label: "Tyre",
+      id: "tyreSize",
+      label: "Tyre Size",
       numeric: false,
       disablePadding: false,
       alignment: "center",
-      colSpan: 5
     },
     {
-      id: "tyre_serial_number",
-      label: "TYRE Serial No",
+      id: "pr",
+      label: "Pr",
       numeric: false,
       disablePadding: false,
       alignment: "center",
-      rowSpan: 2,
     },
     {
-      id: "status",
-      label: "Status",
+      id: "pattern",
+      label: "Pattern",
       numeric: false,
       disablePadding: false,
-      rowSpan: 2
+    },
+    {
+      id: "brand",
+      label: "Brand",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "testStartDate",
+      label: "Test Start Date",
+      numeric: false,
+      disablePadding: false,
+    }, {
+      id: "testEndDate",
+      label: "Test End Date",
+      numeric: false,
+      disablePadding: false,
+    }
+    , {
+      id: "nsdOnFinish",
+      label: "NSD on finish",
+      numeric: false,
+      disablePadding: false,
+    }, {
+      id: "reasonOfTyreRemoval",
+      label: "Reason of tyre removal",
+      numeric: false,
+      disablePadding: false,
+    }, {
+      id: "projectTyreLife",
+      label: "Projected/tyre Life",
+      numeric: false,
+      disablePadding: false,
+    }, {
+      id: "actualLife",
+      label: "Actual Life",
+      numeric: false,
+      disablePadding: false,
     }
   ];
 
@@ -277,7 +310,7 @@ export default function Driver() {
         />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Tyre Claims</Heading>
+        <Heading>Tyre Performance</Heading>
         <Box style={{ display: "flex", alignItems: "center" }}>
           <Box style={{ marginRight: isAdd ? 12 : 0 }}>
             <SearchBox
@@ -285,19 +318,11 @@ export default function Driver() {
               placeholder="Search Typre Ref"
             />
           </Box>
-          <Button
-            variant="contained"
-            style={{ background: COLORS.PRIMARY_COLOR, color: COLORS.WHITE, marginLeft: "10px" }}
-            onClick={addDriver}
-          >
-            <AddIcon />
-            Add Claim
-          </Button>
         </Box>
       </Box>
       <Box className={classes.root}>
         <Table className={classes.table}>
-          <TableHeaderTyre
+          <TableHeader
             headings={headCells}
             order={order}
             orderBy={orderBy}
@@ -315,47 +340,59 @@ export default function Driver() {
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="center">
                       <Box className={classes.columnView}>
-                        <Span>{tyre.ucNo}</Span>
+                        <Span>{tyre.city}</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{tyre.refType}</Span>
+                      <Span fontType="secondary">{tyre.fleet_name}</Span>
                     </TableCell>
-                    {/* <TableCell align="center">
-                      <Span fontType="secondary">{tyre.passport_number}</Span>
-                    </TableCell> */}
 
                     <TableCell align="center">
                       <Span fontType="secondary">
-                        {tyre?.brand}
+                        {tyre?.tyreSize}
                       </Span>
                     </TableCell>
                     <TableCell align="center">
-                      <Span fontType="secondary"> {tyre?.size}</Span>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Span fontType="secondary">
-                        {tyre?.pr}
-                      </Span>
+                      <Span fontType="secondary"> {tyre?.pr}</Span>
                     </TableCell>
                     <TableCell align="center">
                       <Span fontType="secondary">
                         {tyre?.pattern}
                       </Span>
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="center">
                       <Span fontType="secondary">
-                        {tyre?.setType}
+                        {tyre?.brand}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {tyre?.tyreSerialNo}
+                        {tyre?.testStartDate}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {tyre?.status}
+                        {tyre?.testEndDate}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {tyre?.nsdOnFinish}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {tyre?.reasonOfTyreRemoval}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {tyre?.projectTyreLife}
+                      </Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span fontType="secondary">
+                        {tyre?.actualLife}
                       </Span>
                     </TableCell>
                     <TableCell align="left">

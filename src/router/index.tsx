@@ -34,6 +34,7 @@ import AddTyreClaim from "components/Tyre/AddDriver";
 import { TyreClaimInfo } from "components/Tyre/DriverDetails";
 import Maintenance from "components/Maintenance";
 import Coaching from "components/Coaching";
+import { TyrePerfomanceInfo } from "components/Coaching/DriverDetails";
 import JobCard from "components/JobCard";
 import GeoFence from "components/GeoFence";
 import AddGeoFence from "components/GeoFence/AddGeoFence";
@@ -440,6 +441,7 @@ export default function AppRouter() {
           />
         }
       />
+      
 
       <Route
         path={AppPaths.MAINTENANCE}

@@ -67,7 +67,7 @@ const tyresList = [
 ]
 
 const userRoles = ["service_manager", "technical_manager", "consultant"];
-export function TyreClaimInfo() {
+export function TyrePerfomanceInfo() {
   const classes = useStyles();
   const navigate = useNavigate();
   const [roleNameState, setRoleNameState] = useState("");
