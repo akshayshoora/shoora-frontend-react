@@ -9,7 +9,9 @@ import COLORS from "constants/colors";
 import React, { useState } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import Autocomplete from '@mui/material/Autocomplete';
 import CircularProgress from "@mui/material/CircularProgress";
+
 // API Call
 import client from "serverCommunication/client";
 import { useMutation, useQuery } from "react-query";
@@ -89,6 +91,21 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         mutateDrivingHistory();
     }
 
+
+    function onSelectStartGeofenceHandler(event: any, selectedValue: any) {
+        const { id: startAddress } = selectedValue || {};
+        if (startAddress) {
+            setGeofenceReportState(prevState => ({ ...prevState, startAddress }));
+        }
+    }
+
+    function onSelectEndGeofenceHandler(event: any, selectedValue: any) {
+        const { id: endAddress } = selectedValue || {};
+        if (endAddress) {
+            setGeofenceReportState(prevState => ({ ...prevState, endAddress }));
+        }
+    }
+
     return (
         <Box sx={style}>
             <Typography
@@ -165,7 +182,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                         >
                             Start Address
                         </Typography>
-                        <TextField
+                        {/* <TextField
                             sx={{ width: "100%" }}
                             select
                             id="startAddress"
@@ -182,7 +199,19 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                                     {item.name}
                                 </MenuItem>)
                             })}
-                        </TextField>
+                        </TextField> */}
+                        <Autocomplete
+                            size="small"
+                            id="startAddress"
+                            options={geofenceList?.results || []}
+                            loading={isLoading}
+                            onChange={onSelectStartGeofenceHandler}
+                            getOptionLabel={(option: any) => option.name}
+                            placeholder="Select"
+                            // onInputChange={autoCompleteHndlr}
+                            fullWidth={true}
+                            renderInput={(params) => <TextField name="startAddress" placeholder={"Search..."} {...params} />}
+                        />
                     </Grid>
                     <Grid item xs={6} style={{ marginBottom: 16 }}>
                         <Typography
@@ -191,7 +220,7 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                         >
                             End Address
                         </Typography>
-                        <TextField
+                        {/* <TextField
                             sx={{ width: "100%" }}
                             select
                             id="endAddress"
@@ -208,7 +237,19 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                                     {item.name}
                                 </MenuItem>)
                             })}
-                        </TextField>
+                        </TextField> */}
+                        <Autocomplete
+                            size="small"
+                            id="endAddress"
+                            options={geofenceList?.results || []}
+                            loading={isLoading}
+                            onChange={onSelectEndGeofenceHandler}
+                            getOptionLabel={(option: any) => option.name}
+                            placeholder="Select"
+                            // onInputChange={autoCompleteHndlr}
+                            fullWidth={true}
+                            renderInput={(params) => <TextField name="endAddress" placeholder={"Search..."} {...params} />}
+                        />
                     </Grid>
                     <Grid item xs={6} style={{ marginBottom: 16 }}>
                         <Typography
