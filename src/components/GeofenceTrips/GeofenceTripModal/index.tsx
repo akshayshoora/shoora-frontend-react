@@ -10,6 +10,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
+import Autocomplete from '@mui/material/Autocomplete';
+
 // API Call
 import client from "serverCommunication/client";
 import { useMutation, useQuery } from "react-query";
@@ -38,14 +40,19 @@ interface IGeofenceModal {
     appliedFilterInfo: any;
 }
 
+const initalSelectedAddressDetails: any = {
+    id: "",
+    name: ""
+}
+
 export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) => {
     const [geofenceBetweenTripState, setGeofenceBetweenTripState] = useState({
         startAddress: "",
-        startAddressDetails: undefined,
+        startAddressDetails: null,
         startDate: "",
         endDate: "",
         endAddress: "",
-        endAddressDetails: undefined
+        endAddressDetails: null
     });
     const classes = useStyles();
 
@@ -66,19 +73,38 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
     }
 
     function onChangeAddressHndlr(event: React.ChangeEvent<HTMLInputElement>) {
-        const { name, value } = event.target;
-        const { id, address, name: geofenceName } = Array.isArray(geofenceList?.results) && geofenceList?.results?.find((item: any) => {
-            return item?.id === value;
-        }) || {};
-        if (name === "startAddress") {
+        // const { name, value } = event.target;
+        // const { id, address, name: geofenceName } = Array.isArray(geofenceList?.results) && geofenceList?.results?.find((item: any) => {
+        //     return item?.id === value;
+        // }) || {};
+        // if (name === "startAddress") {
+        // setGeofenceBetweenTripState((prevState: any) => ({
+        //     ...prevState, [name]: value,
+        //     startAddressDetails: { id, address, name: geofenceName }
+        // }));
+        // } else if (name === "endAddress") {
+        //     setGeofenceBetweenTripState((prevState: any) => ({
+        //         ...prevState, [name]: value,
+        //         endAddressDetails: { id, address, name: geofenceName }
+        //     }));
+        // }
+    }
+    function onSelectStartGeofenceHandler(event: any, selectedValue: any) {
+        const { id: startAddressId } = selectedValue || {};
+        console.log(selectedValue);
+        if (startAddressId) {
             setGeofenceBetweenTripState((prevState: any) => ({
-                ...prevState, [name]: value,
-                "startAddressDetails": { id, address, name: geofenceName }
+                ...prevState, startAddress: startAddressId,
+                startAddressDetails: selectedValue
             }));
-        } else if (name === "endAddress") {
+        }
+    }
+    function onSelectEndGeofenceHandler(event: any, selectedValue: any) {
+        const { id: endAddressId } = selectedValue || {};
+        if (endAddressId) {
             setGeofenceBetweenTripState((prevState: any) => ({
-                ...prevState, [name]: value,
-                "endAddressDetails": { id, address, name: geofenceName }
+                ...prevState, endAddress: endAddressId,
+                endAddressDetails: selectedValue
             }));
         }
     }
@@ -95,11 +121,11 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
     function resetFilterHndlr() {
         setGeofenceBetweenTripState((prevState: any) => ({
             ...prevState, startAddress: "",
-            startAddressDetails: undefined,
+            startAddressDetails: null,
             startDate: "",
             endDate: "",
             endAddress: "",
-            endAddressDetails: undefined
+            endAddressDetails: null
         }))
         props.applyFilterCallback(null);
     }
@@ -180,7 +206,20 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
                         >
                             Start Address
                         </Typography>
-                        <TextField
+                        <Autocomplete
+                            size="small"
+                            id="startAddress"
+                            options={geofenceList?.results || []}
+                            loading={isLoading}
+                            value={geofenceBetweenTripState.startAddressDetails}
+                            onChange={onSelectStartGeofenceHandler}
+                            getOptionLabel={(option: any) => option.name}
+                            placeholder="Select"
+                            // onInputChange={autoCompleteHndlr}
+                            fullWidth={true}
+                            renderInput={(params) => <TextField name="startAddress" placeholder={"Search..."} {...params} />}
+                        />
+                        {/* <TextField
                             sx={{ width: "100%" }}
                             select
                             id="startAddress"
@@ -197,7 +236,7 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
                                     {item.name}
                                 </MenuItem>)
                             })}
-                        </TextField>
+                        </TextField> */}
                     </Grid>
                     <Grid item xs={12} style={{ marginBottom: 16 }}>
                         <Typography
@@ -206,7 +245,7 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
                         >
                             End Address
                         </Typography>
-                        <TextField
+                        {/* <TextField
                             sx={{ width: "100%" }}
                             select
                             id="endAddress"
@@ -223,7 +262,20 @@ export const GeofenceTripModal = React.forwardRef((props: IGeofenceModal, ref) =
                                     {item.name}
                                 </MenuItem>)
                             })}
-                        </TextField>
+                        </TextField> */}
+                        <Autocomplete
+                            size="small"
+                            id="endAddress"
+                            options={geofenceList?.results || []}
+                            loading={isLoading}
+                            value={geofenceBetweenTripState.endAddressDetails}
+                            onChange={onSelectEndGeofenceHandler}
+                            getOptionLabel={(option: any) => option.name}
+                            placeholder="Select"
+                            // onInputChange={autoCompleteHndlr}
+                            fullWidth={true}
+                            renderInput={(params) => <TextField name="endAddress" placeholder={"Search..."} {...params} />}
+                        />
                     </Grid>
                     <Grid item xs={6} style={{ marginBottom: 16 }}>
                         <Typography

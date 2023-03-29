@@ -51,7 +51,9 @@ interface ITripFilterModal {
 const TripFilterModal = (props: ITripFilterModal) => {
     const [tripFilterModalState, setTripFilterModalState] = useState({
         vehicle_id: "",
+        vehicle_details: null,
         driver_id: "",
+        driver_details: null,
         since: "",
         until: ""
     });
@@ -96,14 +98,20 @@ const TripFilterModal = (props: ITripFilterModal) => {
     function onSelectVehicleHndlr(event: any, selectedValue: any) {
         const { id: vehicle_id } = selectedValue || {};
         if (vehicle_id) {
-            setTripFilterModalState(prevState => ({ ...prevState, vehicle_id }));
+            setTripFilterModalState(prevState => ({
+                ...prevState, vehicle_id,
+                vehicle_details: selectedValue
+            }));
         }
     }
 
     function onSelectDriverHandler(event: any, selectedValue: any) {
         const { id: driver_id } = selectedValue || {};
         if (driver_id) {
-            setTripFilterModalState(prevState => ({ ...prevState, driver_id }));
+            setTripFilterModalState(prevState => ({
+                ...prevState, driver_id,
+                driver_details: selectedValue
+            }));
         }
     }
 
@@ -111,15 +119,14 @@ const TripFilterModal = (props: ITripFilterModal) => {
         setTripFilterModalState((prevState: any) => ({
             ...prevState,
             vehicle_id: "",
+            vehicle_details: null,
             driver_id: "",
+            driver_details: null,
             since: "",
             until: ""
         }))
         props.applyFilterCallback(null);
     }
-
-
-
     function applyFilterHndlr() {
         props.applyFilterCallback(tripFilterModalState);
     }
@@ -211,9 +218,9 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 id="vehicle_id"
                                 options={vehicleList?.results || []}
                                 loading={vehicleListLoading}
-                                // value={tripFilterModalState.vehicle_id}
+                                value={tripFilterModalState.vehicle_details}
                                 onChange={onSelectVehicleHndlr}
-                                getOptionLabel={(option) => option.vin}
+                                getOptionLabel={(option:any) => option?.vin}
                                 placeholder="Select"
                                 // onInputChange={autoCompleteHndlr}
                                 fullWidth={true}
@@ -232,10 +239,11 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 id="driver_id"
                                 options={driverList?.results || []}
                                 loading={driverListLoading}
+                                value={tripFilterModalState.driver_details}
                                 onChange={onSelectDriverHandler}
-                                getOptionLabel={(option) => option.name}
+                                getOptionLabel={(option:any) => option?.name}
                                 fullWidth={true}
-                                renderOption={(props, option) => (
+                                renderOption={(props, option:any) => (
                                     <Box component="li" {...props} key={option.id}>
                                         {option.name} - {option.vin}
                                     </Box>

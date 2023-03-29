@@ -282,7 +282,7 @@ export default function Alerts() {
   });
 
   async function generateAlertApiCall(tripInfo: any) {
-    const { since, until, pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {};
+    const { since, until, vehicle_details, driver_details, pageNo = 1, pageSize = 10, ...otherFilter } = tripInfo || {};
     const isoSinceDate = since ? new Date(since).toISOString() : "",
       isoUntilDate = until ? new Date(until).toISOString() : "";
     const params: any = {
