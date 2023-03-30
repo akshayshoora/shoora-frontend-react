@@ -43,13 +43,20 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
         emails: ""
     });
     const classes = useStyles();
-    const { data: geofenceList, isLoading } = useQuery(
-        ["geofences"], () => getGeofences()
+    const { data: loadGeofenceList, isLoading: isLoadGeofenceLoading } = useQuery(
+        ["loadingGeofences"], () => getLoadGeofencesApiCall()
     );
-
-    async function getGeofences() {
-        let getApiUrl = `${transport}/geofences/?page=1&page_size=200`;
-
+    async function getLoadGeofencesApiCall() {
+        let getApiUrl = `${transport}/geofences/?page=1&page_size=200&geofence_type=loading`;
+        const response = await client.get(getApiUrl);
+        return response.data;
+    }
+    
+    const { data: unLoadGeofenceList, isLoading: isUnloadGeofenceLoading } = useQuery(
+        ["unloadingGeofences"], () => getUnloadGeofencesApiCall()
+    );
+    async function getUnloadGeofencesApiCall() {
+        let getApiUrl = `${transport}/geofences/?page=1&page_size=200&geofence_type=unloading`;
         const response = await client.get(getApiUrl);
         return response.data;
     }
@@ -203,8 +210,8 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                         <Autocomplete
                             size="small"
                             id="startAddress"
-                            options={geofenceList?.results || []}
-                            loading={isLoading}
+                            options={loadGeofenceList?.results || []}
+                            loading={isLoadGeofenceLoading}
                             onChange={onSelectStartGeofenceHandler}
                             getOptionLabel={(option: any) => option.name}
                             placeholder="Select"
@@ -241,8 +248,8 @@ const TripBetweenGeofenceModal = React.forwardRef((props: IVehicleModal, ref) =>
                         <Autocomplete
                             size="small"
                             id="endAddress"
-                            options={geofenceList?.results || []}
-                            loading={isLoading}
+                            options={unLoadGeofenceList?.results || []}
+                            loading={isUnloadGeofenceLoading}
                             onChange={onSelectEndGeofenceHandler}
                             getOptionLabel={(option: any) => option.name}
                             placeholder="Select"
