@@ -150,11 +150,13 @@ export default function Alerts() {
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage - 1);
+    mutateAlertInfo({ ...alertFilterRef.current, pageNo: newPage, pageSize: rowsPerPage });
   };
 
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+    mutateAlertInfo({ ...alertFilterRef.current, pageNo: 1, pageSize: event.target.value });
   };
 
   function openAlertDetails(event: React.MouseEvent<HTMLElement>, id: string) {
