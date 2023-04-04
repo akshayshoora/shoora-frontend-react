@@ -33,6 +33,8 @@ import { AppPaths, SubPaths, Actions } from "../../constants/commonEnums";
 import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess } from "utils/FeatureCheck";
 import { transport } from "constants/RouteMiddlePath";
+//Helper
+import { DeviceList } from "./helper";
 
 export default function Devices() {
   const [searchText, setSearchText] = React.useState("");
@@ -60,9 +62,8 @@ export default function Devices() {
     pageSize: number,
     searchText?: string
   ) {
-    let getApiUrl = `${transport}/devices/?page=${
-      pageNumber + 1
-    }&page_size=${pageSize}&search=${searchText}`;
+    let getApiUrl = `${transport}/devices/?page=${pageNumber + 1
+      }&page_size=${pageSize}&search=${searchText}`;
 
     const response = await client.get(getApiUrl);
 
@@ -106,13 +107,14 @@ export default function Devices() {
   }
 
   const actionMenuItems: MenuType[] = [
-    {
-      label: "More Info",
-      icon: <InfoOutlinedIcon />,
-      onClick: openDeviceDetails,
-      access: true,
-    },
-    // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editDeviceDetails,access:isEdit },
+    // {
+    //   label: "More Info",
+    //   icon: <InfoOutlinedIcon />,
+    //   onClick: openDeviceDetails,
+    //   access: true,
+    // },
+    { label: "Edit", icon: <EditOutlinedIcon />, onClick: editDeviceDetails, access: true },
+    // { label: "Add", icon: <AddIcon />, onClick: editDeviceDetails, access: isAdd },
     // {
     //   label: "Delete",
     //   icon: <DeleteOutlineOutlinedIcon />,
@@ -123,29 +125,17 @@ export default function Devices() {
 
   const headCells: readonly HeadCell[] = [
     {
-      id: "device_type",
+      id: "device",
       numeric: false,
       disablePadding: true,
-      label: "Device Type",
+      label: "Device",
     },
     {
-      id: "organization",
-      label: "Organization",
+      id: "sim_number",
+      label: "Sim Number",
       numeric: false,
       disablePadding: false,
-    },
-    {
-      id: "is_assigned_to_vehicle",
-      label: "Assigned to Vehicle",
-      numeric: false,
-      disablePadding: false,
-    },
-    {
-      id: "activation_date",
-      label: "Activation Date",
-      numeric: false,
-      disablePadding: false,
-    },
+    }
   ];
 
   function addDevice() {
@@ -172,16 +162,14 @@ export default function Devices() {
               placeholder="Search Device by Name or Id"
             />
           </Box>
-          {/* {isAdd ? (
-            <Button
-              variant="contained"
-              style={{ background: COLORS.PRIMARY_COLOR, color:COLORS.WHITE }}
-              onClick={addDevice}
-            >
-              <AddIcon />
-              add device
-            </Button>
-          ) : null}  */}
+          <Button
+            variant="contained"
+            style={{ background: COLORS.PRIMARY_COLOR, color: COLORS.WHITE }}
+            onClick={addDevice}
+          >
+            <AddIcon />
+            add device
+          </Button>
         </Box>
       </Box>
       <Box className={classes.root}>
@@ -194,31 +182,22 @@ export default function Devices() {
             shouldShowActionMenu={true}
           />
           <TableBody>
-            {isLoading ? (
+            {("1" !== "1") ? (
               <TableCell colSpan={8}>
                 <LoadingScreen />
               </TableCell>
-            ) : deviceList?.results.length ? (
-              deviceList?.results.map((device: any, index: number) => {
+            ) : DeviceList?.length ? (
+              DeviceList?.map((device: any, index: number) => {
                 return (
                   <TableRow hover role="checkbox" tabIndex={0} key={index}>
                     <TableCell className={classes.tableBodyCell} align="left">
                       <Box className={classes.columnView}>
-                        <Span>{device.device_type}</Span>
+                        <Span>{device.name}</Span>
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{device.organization}</Span>
+                      <Span fontType="secondary">{device.simNumber}</Span>
                     </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">
-                        {device.is_assigned_to_vehicle.toString()}
-                      </Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{device.activation_date}</Span>
-                    </TableCell>
-
                     <TableCell align="left">
                       <ActionMenu menu={actionMenuItems} id={device.id} />
                     </TableCell>

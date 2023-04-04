@@ -138,9 +138,9 @@ export default function AddDevice() {
     mutateAddDevice(devices);
   }
 
-  if (deviceId && loadingUserInfo && !devices.device_type) {
-    return <LoadingScreen />;
-  }
+  // if (deviceId && loadingUserInfo && !devices.device_type) {
+  //   return <LoadingScreen />;
+  // }
 
   async function getDeviceDetails(id: string) {
     return (await client.get(`/devices/${id}/`)).data;
@@ -156,8 +156,8 @@ export default function AddDevice() {
   const loadingMessage = isAddingDevice
     ? "Adding Device..."
     : updatingDevice
-    ? "Updating Device..."
-    : "";
+      ? "Updating Device..."
+      : "";
 
   return (
     <Box className={classes.positionRelative}>
@@ -217,7 +217,7 @@ export default function AddDevice() {
               onChange={(value) => handleFormDevice("device_type", value)}
             />
           </Grid>
-          <Grid item xs={4}>
+          {/* <Grid item xs={4}>
             <TextInput
               label="Organization"
               placeholder="Enter Organization"
@@ -226,7 +226,7 @@ export default function AddDevice() {
               isRequired={true}
               onChange={(value) => handleFormDevice("organization", value)}
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={4}>
             <TextInput
@@ -238,8 +238,6 @@ export default function AddDevice() {
               onChange={(value) => handleFormDevice("sim_number", value)}
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={4}>
           <Grid item xs={4}>
             <TextInput
               label="IMEI Number"
@@ -250,8 +248,20 @@ export default function AddDevice() {
               onChange={(value) => handleFormDevice("imei_number", value)}
             />
           </Grid>
-          <Grid item xs={4}>
-            {/* <TextInput
+        </Grid>
+        <Grid container spacing={4}>
+          {/* <Grid item xs={4}>
+            <TextInput
+              label="IMEI Number"
+              placeholder="Enter IMEI Number"
+              style={{ marginBottom: 24 }}
+              value={devices.imei_number}
+              isRequired={false}
+              onChange={(value) => handleFormDevice("imei_number", value)}
+            />
+          </Grid> */}
+          {/* <Grid item xs={4}>
+            <TextInput
                             label="Assigned to Vehicle"
                             placeholder="Enter Vehicle"
                             style={{ marginBottom: 24 }}
@@ -259,7 +269,7 @@ export default function AddDevice() {
                             isRequired={false}
                             onChange={(value) => handleFormDevice("is_assigned_to_vehicle", value)}
                             
-                        /> */}
+                        />
             <Typography style={{ fontWeight: 200, marginBottom: 8 }}>
               Assigned to Vehicle
             </Typography>
@@ -273,7 +283,7 @@ export default function AddDevice() {
                 handleFormDevice("is_assigned_to_vehicle", value)
               }
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Box>
 
@@ -285,7 +295,7 @@ export default function AddDevice() {
           id="submit"
           variant={isSaveButtonDisabled ? "outlined" : "contained"}
           onClick={handleSubmit}
-          disabled={isSaveButtonDisabled}
+          // disabled={isSaveButtonDisabled}
         >
           Save
         </Button>
