@@ -402,7 +402,7 @@ export default function Alerts() {
                       </TableCell>
                       <TableCell align="left">
                         <Span fontType="secondary">
-                          {getDateTime(alert.created_at)}
+                          {getDateTime(alert.src_tm)}
                         </Span>
                       </TableCell>
                       <TableCell align="left">
