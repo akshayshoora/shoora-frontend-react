@@ -25,7 +25,7 @@ const RenderVideoIframe = (props: any) => {
     return (
         <>
             {Array.isArray(renderVedioIframe) &&
-                renderVedioIframe.map(item => (
+                renderVedioIframe.map((item:any, index) => (
                     <Grid
                         item
                         xs={12}
@@ -40,7 +40,7 @@ const RenderVideoIframe = (props: any) => {
                             url={item.vedioUrl}
                             position="relative"
                             width="100%"
-                            id="myId"
+                            id={`iframe-${item?.device}-${index}`}
                             // className="myClassname"
                             height="300"
                         />

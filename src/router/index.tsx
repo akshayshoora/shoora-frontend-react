@@ -39,6 +39,8 @@ import JobCard from "components/JobCard";
 import GeoFence from "components/GeoFence";
 import AddGeoFence from "components/GeoFence/AddGeoFence";
 import { GeofenceDetails } from "components/GeoFence/GeofenceDetails";
+import PrivacyPolicy from "components/PrivacyPolicy";
+import TermsConditions from "components/TermsAndCondition";
 
 //todo: Need to be updated
 export default function AppRouter() {
@@ -49,6 +51,24 @@ export default function AppRouter() {
         element={
           <ErrorBoundary>
             <Login />
+          </ErrorBoundary>
+        }
+      />
+
+      <Route
+        path={AppPaths.PRIVACY_POLICY}
+        element={
+          <ErrorBoundary>
+            <PrivacyPolicy />
+          </ErrorBoundary>
+        }
+      />
+
+      <Route
+        path={AppPaths.TERMS_CONDITIONS}
+        element={
+          <ErrorBoundary>
+            <TermsConditions />
           </ErrorBoundary>
         }
       />

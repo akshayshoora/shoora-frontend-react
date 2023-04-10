@@ -20,6 +20,8 @@ export enum AppPaths {
   JOBCARD = "job-card",
   FUEL = "fuel",
   GEOFENCE = "geofence",
+  PRIVACY_POLICY = "privacy-policy",
+  TERMS_CONDITIONS = "terms-and-condition",
 }
 
 export enum SubPaths {
