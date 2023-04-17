@@ -58,4 +58,17 @@ export default makeStyles({
       marginBottom: 12,
     },
   },
+  imgContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    flexWrap: "wrap"
+  },
+  inspectionImg: {
+    border: "1px solid rgba(224, 224, 224, 1)",
+    borderRadius: "4px",
+    objectFit: "contain",
+    height: "150px",
+    width: "48%",
+    marginBottom: "8px"
+  }
 });

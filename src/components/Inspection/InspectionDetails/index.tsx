@@ -152,21 +152,20 @@ export function InspectionDetails() {
                                 {inspectionDetails?.inspected_by}
                             </Box>
                         </Box>
-                        <Typography fontSize={18} style={{ textTransform: "capitalize", fontWeight: "bold" }}>
+                        <Typography fontSize={18} sx={{ mb: 1 }} style={{ textTransform: "capitalize", fontWeight: "bold" }}>
                             Inspection Images
                         </Typography>
-                        <ImageList sx={{ width: "100%", height: "auto" }} cols={2} rowHeight={100}>
+                        <Box className={classes.imgContainer} sx={{ width: "100%", height: "auto" }}>
                             {Array.isArray(inspectionDetails?.inspection_images)
                                 && inspectionDetails?.inspection_images.map((item: any) => (
-                                    <ImageListItem key={item.id}>
-                                        <img
-                                            src={item}
-                                            alt={item.title}
-                                            loading="lazy"
-                                        />
-                                    </ImageListItem>
+                                    <img
+                                        className={classes.inspectionImg}
+                                        src={item}
+                                        alt={item.title}
+                                        loading="lazy"
+                                    />
                                 ))}
-                        </ImageList>
+                        </Box>
                     </Grid>
                     <Grid xs={12} sm={12} lg={8} style={{ paddingLeft: 16 }}>
                         <InspectionChecklist inspectionId={id} />
