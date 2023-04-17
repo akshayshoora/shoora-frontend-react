@@ -147,9 +147,9 @@ export function InspectionDetails() {
                             </Box>
                         </Box>
                         <Box className={classes.infoBodyWrapper}>
-                            <Box className={classes.bodyInfoTitle}>Inspection By:</Box>
+                            <Box className={classes.bodyInfoTitle}>Inspected By:</Box>
                             <Box className={classes.bodyInfo}>
-                                {inspectionDetails?.transporter}
+                                {inspectionDetails?.inspected_by}
                             </Box>
                         </Box>
                         <Typography fontSize={18} style={{ textTransform: "capitalize", fontWeight: "bold" }}>

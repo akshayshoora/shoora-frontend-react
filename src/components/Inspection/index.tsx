@@ -44,8 +44,6 @@ import { auth, transport } from "constants/RouteMiddlePath";
 //Helper
 import { typreData } from "./helper";
 import {
-    getDateDisplayFormat,
-    getDuration,
     getDateTime,
 } from "utils/calenderUtils";
 
