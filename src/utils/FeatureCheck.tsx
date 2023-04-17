@@ -25,11 +25,12 @@ export function CheckFeatureAccess(item: any) {
       item.toLowerCase() == "coaching" ||
       item.toLowerCase() == "job-card" ||
       item.toLowerCase() == "tyre" ||
-      item.toLowerCase() == "maintenance"
+      item.toLowerCase() == "maintenance" ||
+      item.toLowerCase() == "inspection"
     ) {
       return true;
     } else if (
-      user.allowed_features[j].feature.toLowerCase() == item.toLowerCase()
+      user.allowed_features[j].feature.toLowerCase() == item.toLowerCase() || item.toLowerCase() == "inspection"
     ) {
       return true;
     }
@@ -58,12 +59,13 @@ export function CheckRoutesAccess(item: any) {
       item.toLowerCase() == "coaching" ||
       item.toLowerCase() == "job-card" ||
       item.toLowerCase() == "tyre" ||
-      item.toLowerCase() == "maintenance"
+      item.toLowerCase() == "maintenance" ||
+      item.toLowerCase() == "inspection"
     ) {
       return true;
     }
 
-    if (user.allowed_features[j].feature.toLowerCase() == item.toLowerCase()) {
+    if (user.allowed_features[j].feature.toLowerCase() == item.toLowerCase() || item.toLowerCase() == "inspection") {
       return true;
     }
   }

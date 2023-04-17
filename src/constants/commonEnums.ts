@@ -22,6 +22,7 @@ export enum AppPaths {
   GEOFENCE = "geofence",
   PRIVACY_POLICY = "privacy-policy",
   TERMS_CONDITIONS = "terms-and-condition",
+  INSPECTION = "inspection"
 }
 
 export enum SubPaths {

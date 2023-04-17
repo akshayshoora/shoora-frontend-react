@@ -41,6 +41,8 @@ import AddGeoFence from "components/GeoFence/AddGeoFence";
 import { GeofenceDetails } from "components/GeoFence/GeofenceDetails";
 import PrivacyPolicy from "components/PrivacyPolicy";
 import TermsConditions from "components/TermsAndCondition";
+import Inspection from "components/Inspection";
+import { InspectionDetails } from "components/Inspection/InspectionDetails";
 
 //todo: Need to be updated
 export default function AppRouter() {
@@ -588,6 +590,34 @@ export default function AppRouter() {
             component={
               <ErrorBoundary>
                 <GeofenceDetails />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+
+      <Route
+        path={`${AppPaths.INSPECTION}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.INSPECTION}
+            component={
+              <ErrorBoundary>
+                <Inspection />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+
+      <Route
+        path={`${AppPaths.INSPECTION}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.INSPECTION}
+            component={
+              <ErrorBoundary>
+                <InspectionDetails />
               </ErrorBoundary>
             }
           />
