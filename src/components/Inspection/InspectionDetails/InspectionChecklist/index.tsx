@@ -9,11 +9,13 @@ import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import Span from "components/commonComponent/Span";
-
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from "@mui/material/IconButton";
 import client from "serverCommunication/client";
 import TableRow from "@mui/material/TableRow";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import useStyles from "./style";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import {
     HeadCell,
     Order,
@@ -24,6 +26,7 @@ import { getDatesInRange } from "../helper";
 import { getDateDisplayFormat } from "../../../../utils/calenderUtils";
 import { auth, transport } from "constants/RouteMiddlePath";
 import Download from "@mui/icons-material/Download";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import COLORS from "../../../../constants/colors";
 //Icons
 import DoneIcon from '@mui/icons-material/Done';
@@ -99,8 +102,30 @@ const InspectionChecklist: React.FC<any> = ({ inspectionId }) => {
         setOrderBy(drivers);
     };
 
-
-    console.log({ inspectionCheckList });
+    async function downloadBtnHndlr(event: any) {
+        try {
+            const vehicleCsvData: any = await client.get(`${transport}/vehicle-inspections/${inspectionId}/inspection-download/`,
+                { responseType: 'blob' });
+            const currentDate = new Date().toLocaleString("default", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            });
+            const url = window.URL.createObjectURL(new Blob([(vehicleCsvData.data)]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `inspection-report-${currentDate}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+        }
+        catch (e) {
+            setSnackbar({
+                open: true,
+                variant: "error",
+                message: "Something went wrong.",
+            })
+        }
+    }
     const { inspection_status } = inspectionCheckList || {};
     return (
         <>   <Snackbar
@@ -120,7 +145,24 @@ const InspectionChecklist: React.FC<any> = ({ inspectionId }) => {
             <Box component="form" >
                 <Box sx={{ pt: 0, pb: 2.5 }} className={classes.fieldSetContainer} component="fieldset">
                     <Box sx={{ fontWeight: "bold" }} component="legend">Inspection Checklist</Box>
-                    <Box sx={{ mt: 2 }}>
+                    <Box sx={{ display: "flex", justifyContent: "end", mt: 1 }}>
+                        <Tooltip title="Download Pdf">
+                            <IconButton
+                                // variant="contained"
+                                size="small"
+                                sx={{ ml: 1 }}
+                                style={{ background: "#1d6f42", color: COLORS.WHITE }}
+                                onClick={downloadBtnHndlr}
+                            >
+                                <PictureAsPdfIcon />
+                            </IconButton>
+                            {/* <IconButton size="small" aria-label="download">
+                                <ArrowDownwardIcon />
+                            </IconButton> */}
+                        </Tooltip>
+
+                    </Box>
+                    <Box sx={{ mt: 1 }}>
                         <Table className={classes.table}>
                             <TableHeader
                                 headings={headCells}

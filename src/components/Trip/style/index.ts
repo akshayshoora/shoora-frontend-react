@@ -109,10 +109,12 @@ export default makeStyles({
   marginLeft_4: {
     marginLeft: 4,
   },
-  actionMenu: {
-    "& ul": {
-      padding: 0,
-    },
+  incidentDetails: {
+    padding: "0 !important",
+    minWidth: "0 !important",
+    "&:hover": {
+      backgroundColor: "transparent !important"
+    }
   },
   popover: {
     minWidth: 260,

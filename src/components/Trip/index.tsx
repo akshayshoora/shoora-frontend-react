@@ -37,6 +37,7 @@ import { AlertModal } from "components/Alerts/AlertModal";
 import { TripModal } from "./TripModal";
 import { GeofenceTripModal } from "./GeofenceTripModal";
 import TripFilterModal from "./TripFilterModal";
+import TripIncidentModal from "./TripIncidentModal";
 import {
   getDateDisplayFormat,
   getDuration,
@@ -63,6 +64,10 @@ export default function Trip() {
   //   { refetchOnWindowFocus: false }
   // );
   const [betweenTripModal, setBetweenTripModal] = React.useState<any>(false);
+  const [tripAlertModalState, setTripAlertModalState] = React.useState<any>({
+    showModal: false,
+    tripInfo: undefined
+  });
   const [snackbar, setSnackbar] = React.useState<{
     open: boolean;
     variant: "success" | "error" | "info";
@@ -322,6 +327,34 @@ export default function Trip() {
     mutateTripInfo({ ...filterDetails, pageNo: 1, pageSize: rowsPerPage });
   }
 
+
+  //Trip Alert Modal 
+
+  function getTripIncidentHndlr(event: React.MouseEvent<HTMLButtonElement>) {
+    const { currentTarget } = event,
+      tripId = currentTarget.getAttribute("data-id"),
+      { results } = tripsInfoResp;
+    if (tripId) {
+      const tripInfo = results.find((item: any) => item.id === tripId);
+      if (tripInfo) {
+        setTripAlertModalState({
+          showModal: true,
+          tripInfo
+        });
+      }
+    }
+  }
+
+  function closeTripAlertModalHndlr(event: any, reason: any) {
+    if (reason === "backdropClick") {
+      return;
+    }
+    setTripAlertModalState({
+      showModal: false,
+      tripInfo: undefined
+    });
+  }
+
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && (
@@ -353,6 +386,13 @@ export default function Trip() {
           applyingFilterProgress={isTripInfoLoading}
           appliedFilterDetails={tripFilterRef.current}
           applyFilterCallback={applyTripFilterHndlr}
+        />
+      )}
+      {tripAlertModalState.showModal && (
+        <TripIncidentModal
+          isOpenFilterModal={tripAlertModalState.showModal}
+          closeModalHndlr={closeTripAlertModalHndlr}
+          tripInfo={tripAlertModalState.tripInfo}
         />
       )}
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
@@ -429,7 +469,15 @@ export default function Trip() {
                       <Span fontType="secondary">{trip?.driver?.name || "-"}</Span>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{trip.total_incidents}</Span>
+                      {
+                        trip.total_incidents > 0 ?
+                          (<Button data-id={trip.id} className={classes.incidentDetails}
+                            onClick={getTripIncidentHndlr}
+                            variant="text">
+                            <Span fontType="secondary">{trip.total_incidents}</Span>
+                          </Button>) :
+                          <Span fontType="secondary">{trip.total_incidents}</Span>
+                      }
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{trip.distance} km</Span>

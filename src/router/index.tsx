@@ -25,6 +25,8 @@ import { AlertDetails } from "components/Alerts/AlertDetails";
 import AddAlert from "components/Alerts/AddAlert";
 import MapView from "components/MapView";
 import Trip from "components/Trip";
+import TripIncident from "components/Trip/TripIncidentModal";
+
 import GeofenceTrip from "components/GeofenceTrips"
 import Report from "components/Report";
 import Finance from "components/Finance";
@@ -400,6 +402,23 @@ export default function AppRouter() {
           />
         }
       />
+{/* 
+      <Route
+        path={`${AppPaths.TRIP}/alert/:tripId`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.TRIP}
+            component={
+              <>
+                <ErrorBoundary>
+                  <TripIncident />
+                </ErrorBoundary>
+              </>
+            }
+          />
+        }
+      /> */}
+
       <Route
         path={AppPaths.GEOFENCETRIPS}
         element={
