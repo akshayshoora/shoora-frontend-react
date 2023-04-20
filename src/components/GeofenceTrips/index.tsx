@@ -50,6 +50,68 @@ import { useEffect } from "react";
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CancelIcon from '@mui/icons-material/Cancel';
 
+
+
+function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
+  return (
+    <>
+      <TableRow hover role="checkbox" tabIndex={0}>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.vin}</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.start_geofence}</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.end_geofence}</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {getDateTime(tripInfo?.loading_in_datetime)}
+          </Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {getDateTime(tripInfo?.loading_out_datetime)}
+          </Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {getDateTime(tripInfo?.unloading_in_datetime)}
+          </Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {getDateTime(tripInfo?.unloading_out_datetime)}
+          </Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.total_incidents}</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.distance} km</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {tripInfo?.duration} hrs
+          </Span>
+        </TableCell>
+
+        <TableCell align="left">
+          <Button
+            variant="contained"
+            style={{ color: COLORS.WHITE }}
+            onClick={() => {
+              handleOpenTrip(tripInfo?.id, tripInfo);
+            }}
+          >
+            Details
+          </Button>
+        </TableCell>
+      </TableRow>
+    </>
+  )
+}
 //Trip Page
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
@@ -391,60 +453,67 @@ export default function Trip() {
               ) : (Array.isArray(geoFenceList?.results) && (geoFenceList?.results.length)) ? (
                 geoFenceList?.results.map((trip: any, index: number) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={0} key={index}>
-                      <TableCell align="left">
-                        <Span fontType="secondary">{trip?.vin}</Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">{trip?.start_geofence}</Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">{trip?.end_geofence}</Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">
-                          {getDateTime(trip?.loading_in_datetime)}
-                        </Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">
-                          {getDateTime(trip?.loading_out_datetime)}
-                        </Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">
-                          {getDateTime(trip?.unloading_in_datetime)}
-                        </Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">
-                          {getDateTime(trip?.unloading_out_datetime)}
-                        </Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">{trip.total_incidents}</Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">{trip.distance} km</Span>
-                      </TableCell>
-                      <TableCell align="left">
-                        <Span fontType="secondary">
-                          {trip?.duration} hrs
-                        </Span>
-                      </TableCell>
+                    <React.Fragment>
+                      <GeofenceTripRow
+                        key={index}
+                        tripInfo={trip}
+                        handleOpenTrip={handleOpenTrip}
+                      />
+                      {/* // <TableRow hover role="checkbox" tabIndex={0} key={index}>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">{trip?.vin}</Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">{trip?.start_geofence}</Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">{trip?.end_geofence}</Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">
+                    //       {getDateTime(trip?.loading_in_datetime)}
+                    //     </Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">
+                    //       {getDateTime(trip?.loading_out_datetime)}
+                    //     </Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">
+                    //       {getDateTime(trip?.unloading_in_datetime)}
+                    //     </Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">
+                    //       {getDateTime(trip?.unloading_out_datetime)}
+                    //     </Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">{trip.total_incidents}</Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">{trip.distance} km</Span>
+                    //   </TableCell>
+                    //   <TableCell align="left">
+                    //     <Span fontType="secondary">
+                    //       {trip?.duration} hrs
+                    //     </Span>
+                    //   </TableCell>
 
-                      <TableCell align="left">
-                        <Button
-                          variant="contained"
-                          style={{ color: COLORS.WHITE }}
-                          onClick={() => {
-                            handleOpenTrip(trip.id, trip);
-                          }}
-                        >
-                          Details
-                        </Button>
-                      </TableCell>
-                    </TableRow>
+                    //   <TableCell align="left">
+                    //     <Button
+                    //       variant="contained"
+                    //       style={{ color: COLORS.WHITE }}
+                    //       onClick={() => {
+                    //         handleOpenTrip(trip.id, trip);
+                    //       }}
+                    //     >
+                    //       Details
+                    //     </Button>
+                    //   </TableCell>
+                    // </TableRow> */}
+                    </React.Fragment>
                   );
                 })
               ) : (

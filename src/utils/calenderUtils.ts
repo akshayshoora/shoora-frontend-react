@@ -1,3 +1,6 @@
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
 export function getGreeting(): string {
   const day = new Date();
   const hr = day.getHours();
@@ -61,6 +64,30 @@ export const getDateTime = (dateTime: string | null): string => {
     minute: "numeric",
     hour12: true,
   });
+  return `${time}, ${date}`;
+};
+
+function tConvert(time: any) {
+  // Check correct time format and split into components
+
+  return time.join(''); // return adjusted time or original string
+}
+
+export const getDateTimeUTC = (dateTime: string | null): string => {
+  if (!dateTime) {
+    return "-";
+  }
+  const dateObject = new Date(dateTime);
+  var month = dateObject.getUTCMonth();
+  var day = dateObject.getUTCDate();
+  var year = dateObject.getUTCFullYear();
+  const date: any = `${monthNames[month]} ${day}, ${year}`;
+
+  const utcTimeHour = dateObject.getUTCHours();
+  const utcTimeMinutes = dateObject.getUTCMinutes();
+  const hours = (utcTimeHour % 12) || 12;
+  var AmOrPm = utcTimeHour >= 12 ? 'PM' : 'AM';
+  var time = hours + ":" + (utcTimeMinutes < 10 ? `0${utcTimeMinutes}` : utcTimeMinutes) + " " + AmOrPm;
   return `${time}, ${date}`;
 };
 

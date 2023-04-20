@@ -280,7 +280,8 @@ export function TripModal(props: ITripModalProps) {
                         lat: Number(trip?.start_latitude),
                         lng: Number(trip?.start_longitude),
                       }}
-                      yesIWantToUseGoogleMapApiInternals={true}
+                      options={{ streetViewControl: true, mapTypeControl: true }}
+                      yesIWantToUseGoogleMapApiInternals={false}
                       onGoogleApiLoaded={({ map, maps }) => {
                         // renderMarkers(map, maps);
                         getMapRoute(map, maps);

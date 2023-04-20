@@ -41,6 +41,7 @@ import TripIncidentModal from "./TripIncidentModal";
 import {
   getDateDisplayFormat,
   getDuration,
+  getDateTimeUTC,
   getDateTime,
 } from "utils/calenderUtils";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
@@ -457,12 +458,12 @@ export default function Trip() {
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {getDateTime(trip.trip_started_at)}
+                        {getDateTimeUTC(trip.trip_started_at)}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">
-                        {getDateTime(trip.trip_ended_at)}
+                        {getDateTimeUTC(trip.trip_ended_at)}
                       </Span>
                     </TableCell>
                     <TableCell align="left">
