@@ -105,10 +105,24 @@ export function TripModal(props: ITripModalProps) {
   }
 
   const getMapRoute = (map: any, maps: any) => {
+    const { gps_cordinates } = tripPath || {};
+    const pathArray = [];
+    const testPathArray = [];
+    if (Array.isArray(gps_cordinates)) {
+      for (let i = 0; i < gps_cordinates.length; i++) {
+        pathArray.push(new google.maps.LatLng(Number(gps_cordinates[i][0]), Number(gps_cordinates[i][1])))
+        testPathArray.push({
+          lat: Number(gps_cordinates[i][0]),
+          lng: Number(gps_cordinates[i][1])
+        });
+      }
+    }
+    console.log(testPathArray);
     const directionsService = new (
       window as any
     ).google.maps.DirectionsService();
     var polylineOptionsActual = new google.maps.Polyline({
+      path: pathArray,
       strokeColor: '#54a0de',
     });
     const directionsRenderer = new (
@@ -123,18 +137,30 @@ export function TripModal(props: ITripModalProps) {
       lat: Number(trip.end_latitude),
       lng: Number(trip.end_longitude),
     };
-    directionsService.route({
-      origin: origin,
-      destination: destination,
-      travelMode: (window as any).google.maps.TravelMode.DRIVING,
-      waypoints: tripPath?.gps_cordinate || [],
-    }, (result: any, status: any) => {
-      if (status === (window as any).google.maps.DirectionsStatus.OK) {
-        directionsRenderer.setDirections(result);
-      } else {
-        console.error(`error fetching directions ${result}`);
-      }
+    polylineOptionsActual.setMap(map);
+    new google.maps.Marker({
+      position: origin,
+      map,
+      label: { color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'A' }
     });
+    new google.maps.Marker({
+      position: destination,
+      map,
+      label: { color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'B' }
+    });
+    // directionsService.route({
+    //   origin: origin,
+    //   destination: destination,
+    //   travelMode: (window as any).google.maps.TravelMode.DRIVING,
+    //   // // optimizeWaypoints: true,
+    //   // waypoints: pathArray,
+    // }, (result: any, status: any) => {
+    //   if (status === (window as any).google.maps.DirectionsStatus.OK) {
+    //     directionsRenderer.setDirections(result);
+    //   } else {
+    //     console.error(`error fetching directions ${result}`);
+    //   }
+    // });
   };
 
   return (
@@ -270,12 +296,14 @@ export function TripModal(props: ITripModalProps) {
                   </Grid>
                   <Box className="livemap">
                     <GoogleMapReact
+                      key={new Date().getTime()}
                       bootstrapURLKeys={{
                         key: `${process.env.REACT_APP_MAP_KEY}`,
                       }}
                       style={{ height: `300px` }}
                       defaultZoom={10}
                       resetBoundsOnResize={true}
+                      // 37.4419, -122.1419
                       defaultCenter={{
                         lat: Number(trip?.start_latitude),
                         lng: Number(trip?.start_longitude),

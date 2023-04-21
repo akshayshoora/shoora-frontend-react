@@ -152,6 +152,12 @@ export function InspectionDetails() {
                                 {inspectionDetails?.inspected_by}
                             </Box>
                         </Box>
+                        <Box className={classes.infoBodyWrapper}>
+                            <Box className={classes.bodyInfoTitle}>Transporter:</Box>
+                            <Box className={classes.bodyInfo}>
+                                {inspectionDetails?.transporter}
+                            </Box>
+                        </Box>
                         <Typography fontSize={18} sx={{ mb: 1 }} style={{ textTransform: "capitalize", fontWeight: "bold" }}>
                             Inspection Images
                         </Typography>
