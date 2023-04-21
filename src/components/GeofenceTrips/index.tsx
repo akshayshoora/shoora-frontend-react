@@ -60,7 +60,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
   return (
     <>
       <TableRow hover role="checkbox" tabIndex={0}>
-        <TableCell align="left">
+        {/* <TableCell align="left">
           <Tooltip title="Return Trip">
             <IconButton
               aria-label="expand row"
@@ -70,7 +70,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
               {showReturnState ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </Tooltip>
-        </TableCell>
+        </TableCell> */}
         <TableCell align="left">
           <Span fontType="secondary">{tripInfo?.vin}</Span>
         </TableCell>
@@ -126,7 +126,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
       </TableRow>
 
 
-      {showReturnState && <TableRow style={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}>
+      {false && <TableRow style={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}>
         <TableCell align="left">
           <Span fontType="secondary"></Span>
         </TableCell>
@@ -297,13 +297,13 @@ export default function Trip() {
   ];
 
   const headCells: any = [
-    {
-      id: "Arrow Icon",
-      label: "-",
-      numeric: false,
-      disablePadding: false,
-      rowSpan: 2
-    },
+    // {
+    //   id: "Arrow Icon",
+    //   label: "-",
+    //   numeric: false,
+    //   disablePadding: false,
+    //   rowSpan: 2
+    // },
     {
       id: "Vehicle Number",
       label: "vin",

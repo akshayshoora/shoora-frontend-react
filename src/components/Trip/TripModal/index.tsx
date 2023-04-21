@@ -117,7 +117,6 @@ export function TripModal(props: ITripModalProps) {
         });
       }
     }
-    console.log(testPathArray);
     const directionsService = new (
       window as any
     ).google.maps.DirectionsService();
