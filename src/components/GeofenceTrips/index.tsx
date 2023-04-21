@@ -1,10 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
+import TableHead from "@mui/material/TableHead";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import Badge from '@mui/material/Badge';
 import Tooltip from '@mui/material/Tooltip';
+import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -49,13 +51,26 @@ import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import { useEffect } from "react";
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CancelIcon from '@mui/icons-material/Cancel';
-
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 
 function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
+  const [showReturnState, setShowReturnState] = React.useState(false);
   return (
     <>
       <TableRow hover role="checkbox" tabIndex={0}>
+        <TableCell align="left">
+          <Tooltip title="Return Trip">
+            <IconButton
+              aria-label="expand row"
+              size="small"
+              onClick={() => setShowReturnState(!showReturnState)}
+            >
+              {showReturnState ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            </IconButton>
+          </Tooltip>
+        </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">{tripInfo?.vin}</Span>
         </TableCell>
@@ -109,6 +124,69 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
           </Button>
         </TableCell>
       </TableRow>
+
+
+      {showReturnState && <TableRow style={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}>
+        <TableCell align="left">
+          <Span fontType="secondary"></Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.vin}</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.start_geofence}</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.end_geofence}</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {getDateTime(tripInfo?.loading_in_datetime)}
+          </Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {getDateTime(tripInfo?.loading_out_datetime)}
+          </Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {getDateTime(tripInfo?.unloading_in_datetime)}
+          </Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {getDateTime(tripInfo?.unloading_out_datetime)}
+          </Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.total_incidents}</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">{tripInfo?.distance} km</Span>
+        </TableCell>
+        <TableCell align="left">
+          <Span fontType="secondary">
+            {tripInfo?.duration} hrs
+          </Span>
+        </TableCell>
+
+        <TableCell align="left">
+          <Button
+            variant="outlined"
+            style={{ color: COLORS.PRIMARY_COLOR, whiteSpace: "nowrap" }}
+            onClick={() => {
+              handleOpenTrip(tripInfo?.id, tripInfo);
+            }}
+          >
+            R Details
+          </Button>
+        </TableCell>
+
+      </TableRow>}
+
+
+
     </>
   )
 }
@@ -219,6 +297,13 @@ export default function Trip() {
   ];
 
   const headCells: any = [
+    {
+      id: "Arrow Icon",
+      label: "-",
+      numeric: false,
+      disablePadding: false,
+      rowSpan: 2
+    },
     {
       id: "Vehicle Number",
       label: "vin",
