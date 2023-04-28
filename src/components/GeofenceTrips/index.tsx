@@ -45,7 +45,7 @@ import { GeofenceTripModal } from "./GeofenceTripModal";
 import {
   getDateDisplayFormat,
   getDuration,
-  getDateTime,
+  getDateTime, getDateTimeUTC
 } from "utils/calenderUtils";
 import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import { useEffect } from "react";
@@ -83,22 +83,22 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(tripInfo?.loading_in_datetime)}
+            {getDateTimeUTC(tripInfo?.loading_in_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(tripInfo?.loading_out_datetime)}
+            {getDateTimeUTC(tripInfo?.loading_out_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(tripInfo?.unloading_in_datetime)}
+            {getDateTimeUTC(tripInfo?.unloading_in_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(tripInfo?.unloading_out_datetime)}
+            {getDateTimeUTC(tripInfo?.unloading_out_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
@@ -142,22 +142,22 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(return_geofence_trip?.loading_in_datetime)}
+            {getDateTimeUTC(return_geofence_trip?.loading_in_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(return_geofence_trip?.loading_out_datetime)}
+            {getDateTimeUTC(return_geofence_trip?.loading_out_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(return_geofence_trip?.unloading_in_datetime)}
+            {getDateTimeUTC(return_geofence_trip?.unloading_in_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(return_geofence_trip?.unloading_out_datetime)}
+            {getDateTimeUTC(return_geofence_trip?.unloading_out_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
