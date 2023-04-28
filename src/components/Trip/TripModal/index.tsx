@@ -112,7 +112,7 @@ export function TripModal(props: ITripModalProps) {
     const { gps_cordinates } = tripPath || {};
     const pathArray = [];
     const testPathArray = [];
-    console.log("I am rendered already");
+    // console.log("I am rendered already");
     if (Array.isArray(gps_cordinates)) {
       for (let i = 0; i < gps_cordinates.length; i++) {
         pathArray.push(new google.maps.LatLng(Number(gps_cordinates[i][0]), Number(gps_cordinates[i][1])))
@@ -305,7 +305,7 @@ export function TripModal(props: ITripModalProps) {
                   </Box>
                   <Box className="livemap">
                     <GoogleMapReact
-                      // key={new Date().getTime()}
+                      key={new Date().getTime()}
                       bootstrapURLKeys={{
                         key: `${process.env.REACT_APP_MAP_KEY}`,
                       }}
@@ -318,22 +318,22 @@ export function TripModal(props: ITripModalProps) {
                         lng: Number(trip?.start_longitude),
                       }}
                       options={{ streetViewControl: true, mapTypeControl: true }}
-                    // yesIWantToUseGoogleMapApiInternals={false}
-                    // onGoogleApiLoaded={({ map, maps }) => {
-                    //   // renderMarkers(map, maps);
-                    //   getMapRoute(map, maps);
-                    // }}
+                      yesIWantToUseGoogleMapApiInternals={false}
+                      onGoogleApiLoaded={({ map, maps }) => {
+                        // renderMarkers(map, maps);
+                        getMapRoute(map, maps);
+                      }}
                     >
                       {/* <Marker
                         key={1}
                         lat={trip.start_latitude}
                         lng={trip.start_longitude}
                       /> */}
-                      <AnyReactComponent
+                      {/* <AnyReactComponent
                         lat={22.974601}
                         lng={72.56228}
                         text="My Marker"
-                      />
+                      /> */}
                     </GoogleMapReact>
                   </Box>
                 </Item>

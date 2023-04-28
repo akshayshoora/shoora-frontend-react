@@ -211,7 +211,7 @@ export default function MapView() {
                       <MenuItem value={"offline"}>Offline</MenuItem>
                     </Select>
                   </FormControl>
-                  <Box className={classes.hoverCardContainer}>
+                  {/* <Box className={classes.hoverCardContainer}>
                     <Box className={classes.hoverCard}>
                       <Box className={classes.vehicleNumberInfo}>HR432432</Box>
                       <Box sx={{ display: "flex", mb: 0.3 }}>
@@ -230,10 +230,6 @@ export default function MapView() {
                       <Box sx={{ display: "flex", mb: 0.3 }}>
                         <Box className={classes.hoverCardLabel} sx={{ fontWeight: "bold", mr: 0.5 }}>Time: </Box>
                         <Box>03H 30M</Box>
-                        {/* <LockClock />03H 30M
-                        <span>|</span>
-                        <span>300KM</span>
-                        <span>Speed: 400KM</span> */}
                       </Box>
                       <Box sx={{ display: "flex", mb: 0.3 }}>
                         <Box className={classes.hoverCardLabel} sx={{ fontWeight: "bold", mr: 0.5 }}>Address: </Box>
@@ -243,7 +239,7 @@ export default function MapView() {
                       </Box>
 
                     </Box>
-                  </Box>
+                  </Box> */}
                   <Box className="notfound">
                     <div className="contendata">
                       {!isVehicleLoading && (

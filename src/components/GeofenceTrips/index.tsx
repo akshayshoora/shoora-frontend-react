@@ -56,11 +56,12 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 
 function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
-  const [showReturnState, setShowReturnState] = React.useState(false);
+  const [showReturnState, setShowReturnState] = React.useState(false),
+    { return_geofence_trip } = tripInfo || {};
   return (
     <>
       <TableRow hover role="checkbox" tabIndex={0}>
-        {/* <TableCell align="left">
+        <TableCell align="left">
           <Tooltip title="Return Trip">
             <IconButton
               aria-label="expand row"
@@ -70,7 +71,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
               {showReturnState ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </Tooltip>
-        </TableCell> */}
+        </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">{tripInfo?.vin}</Span>
         </TableCell>
@@ -126,48 +127,48 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
       </TableRow>
 
 
-      {false && <TableRow style={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}>
+      {showReturnState && <TableRow style={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}>
         <TableCell align="left">
           <Span fontType="secondary"></Span>
         </TableCell>
         <TableCell align="left">
-          <Span fontType="secondary">{tripInfo?.vin}</Span>
+          <Span fontType="secondary">{return_geofence_trip?.vin}</Span>
         </TableCell>
         <TableCell align="left">
-          <Span fontType="secondary">{tripInfo?.start_geofence}</Span>
+          <Span fontType="secondary">{return_geofence_trip?.start_geofence}</Span>
         </TableCell>
         <TableCell align="left">
-          <Span fontType="secondary">{tripInfo?.end_geofence}</Span>
+          <Span fontType="secondary">{return_geofence_trip?.end_geofence}</Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(tripInfo?.loading_in_datetime)}
+            {getDateTime(return_geofence_trip?.loading_in_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(tripInfo?.loading_out_datetime)}
+            {getDateTime(return_geofence_trip?.loading_out_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(tripInfo?.unloading_in_datetime)}
+            {getDateTime(return_geofence_trip?.unloading_in_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {getDateTime(tripInfo?.unloading_out_datetime)}
+            {getDateTime(return_geofence_trip?.unloading_out_datetime)}
           </Span>
         </TableCell>
         <TableCell align="left">
-          <Span fontType="secondary">{tripInfo?.total_incidents}</Span>
+          <Span fontType="secondary">{return_geofence_trip?.total_incidents}</Span>
         </TableCell>
         <TableCell align="left">
-          <Span fontType="secondary">{tripInfo?.distance} km</Span>
+          <Span fontType="secondary">{return_geofence_trip?.distance} km</Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
-            {tripInfo?.duration} hrs
+            {return_geofence_trip?.duration} hrs
           </Span>
         </TableCell>
 
@@ -176,7 +177,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
             variant="outlined"
             style={{ color: COLORS.PRIMARY_COLOR, whiteSpace: "nowrap" }}
             onClick={() => {
-              handleOpenTrip(tripInfo?.id, tripInfo);
+              handleOpenTrip(return_geofence_trip?.id, return_geofence_trip);
             }}
           >
             R Details
@@ -297,13 +298,13 @@ export default function Trip() {
   ];
 
   const headCells: any = [
-    // {
-    //   id: "Arrow Icon",
-    //   label: "-",
-    //   numeric: false,
-    //   disablePadding: false,
-    //   rowSpan: 2
-    // },
+    {
+      id: "Arrow Icon",
+      label: "-",
+      numeric: false,
+      disablePadding: false,
+      rowSpan: 2
+    },
     {
       id: "Vehicle Number",
       label: "vin",
