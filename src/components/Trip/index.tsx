@@ -356,6 +356,7 @@ export default function Trip() {
     });
   }
 
+  const { vehicle_id: filterVehicleId } = tripFilterRef.current || {};
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && (
@@ -435,6 +436,32 @@ export default function Trip() {
 
         </Box>
       </Box>
+      {filterVehicleId && <Box className={classes.vehicleInfoWrapper}>
+        <Box sx={{ mr: 4 }}>
+          <Box className={classes.vehicleInfoLabel} component="span">
+            Vehicle Id:
+          </Box>
+          <Box className={classes.vehicleInfoValue} component="span">
+            HR3434343
+          </Box>
+        </Box>
+        <Box sx={{ mr: 4 }}>
+          <Box className={classes.vehicleInfoLabel} component="span">
+            Total Distance:
+          </Box>
+          <Box className={classes.vehicleInfoValue} component="span">
+            33 KM
+          </Box>
+        </Box>
+        <Box sx={{ mr: 4 }}>
+          <Box className={classes.vehicleInfoLabel} component="span">
+            Total Incident:
+          </Box>
+          <Box className={classes.vehicleInfoValue} component="span">
+            10
+          </Box>
+        </Box>
+      </Box>}
       <Box className={classes.root}>
         <Table className={classes.table}>
           <TableHeader

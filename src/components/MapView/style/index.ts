@@ -83,6 +83,25 @@ export default makeStyles({
       },
     },
   },
+  hoverCardContainer: {
+    padding: "0 15px"
+  },
+  hoverCard: {
+    boxShadow: "0px 0px 8px rgb(0 0 0 / 10%)",
+    borderRadius: "12px",
+    padding: "12px",
+    marginBottom: "25px",
+  },
+  vehicleNumberInfo: {
+    fontSize: "16px",
+    fontWeight: "Bold",
+    color: COLORS.PRIMARY_FONT,
+    marginBottom: 2.5
+  },
+  hoverCardLabel: {
+    fontSize: "12px",
+    color: COLORS.SECONDARY_FONT,
+  },
   mapdropdown: {
     position: "absolute",
     top: "10px",

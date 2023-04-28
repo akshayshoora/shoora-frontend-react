@@ -2,8 +2,25 @@ import { makeStyles } from "@mui/styles";
 import COLORS from "../../../constants/colors";
 
 export default makeStyles({
+  vehicleInfoWrapper: {
+    display: "flex",
+    marginBottom: 0,
+    marginTop: 8
+  },
+  vehicleInfoLabel: {
+    fontSize: 16,
+    fontWeight: 500,
+    // minWidth: 172,
+    color: COLORS.SECONDARY_FONT,
+    marginRight: 6,
+  },
+  vehicleInfoValue: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: COLORS.PRIMARY_FONT,
+  },
   root: {
-    marginTop: 16,
+    marginTop: 12,
   },
   tableHeading: {
     "&.MuiTableCell-root": {

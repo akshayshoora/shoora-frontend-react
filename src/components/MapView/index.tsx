@@ -28,6 +28,7 @@ import notFound from "../../assets/404.jpg";
 import Table from "@mui/material/Table";
 import { TableFooter } from "components/commonComponent/Table";
 import MapMarker from "components/MapMarker";
+import { LockClock } from "@mui/icons-material";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -210,6 +211,39 @@ export default function MapView() {
                       <MenuItem value={"offline"}>Offline</MenuItem>
                     </Select>
                   </FormControl>
+                  <Box className={classes.hoverCardContainer}>
+                    <Box className={classes.hoverCard}>
+                      <Box className={classes.vehicleNumberInfo}>HR432432</Box>
+                      <Box sx={{ display: "flex", mb: 0.3 }}>
+                        <Box className={classes.hoverCardLabel} sx={{ fontWeight: "bold", mr: 0.5 }}>Driver: </Box>
+                        <Box>Driver Name</Box>
+                      </Box>
+                      <Box sx={{ display: "flex", mb: 0.3 }}>
+                        <Box className={classes.hoverCardLabel} sx={{ fontWeight: "bold", mr: 0.5 }}>Status: </Box>
+                        <Box>
+                          <Tooltip title={"Active"}>
+                            <i className={`circle moving-vehicle`}></i>
+                          </Tooltip>
+                          Moving
+                        </Box>
+                      </Box>
+                      <Box sx={{ display: "flex", mb: 0.3 }}>
+                        <Box className={classes.hoverCardLabel} sx={{ fontWeight: "bold", mr: 0.5 }}>Time: </Box>
+                        <Box>03H 30M</Box>
+                        {/* <LockClock />03H 30M
+                        <span>|</span>
+                        <span>300KM</span>
+                        <span>Speed: 400KM</span> */}
+                      </Box>
+                      <Box sx={{ display: "flex", mb: 0.3 }}>
+                        <Box className={classes.hoverCardLabel} sx={{ fontWeight: "bold", mr: 0.5 }}>Address: </Box>
+                        <Box>
+                          This is the address details
+                        </Box>
+                      </Box>
+
+                    </Box>
+                  </Box>
                   <Box className="notfound">
                     <div className="contendata">
                       {!isVehicleLoading && (

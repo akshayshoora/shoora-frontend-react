@@ -20,6 +20,7 @@ import { getDateTime, getDuration } from "utils/calenderUtils";
 import { Player } from "video-react";
 import { IonAvatar } from "@ionic/react";
 import GoogleMapReact from "google-map-react";
+
 import { latLongToPlace } from "utils/helpers";
 import { useEffect, useState } from "react";
 import Marker from "components/Map/Marker";
@@ -53,6 +54,9 @@ interface ITripModalProps {
   handleClose: () => void;
   id: string;
 }
+
+
+const AnyReactComponent: any = ({ text }: any) => <div>{text}</div>;
 
 export function TripModal(props: ITripModalProps) {
   const { open, handleClose, id } = props;
@@ -108,6 +112,7 @@ export function TripModal(props: ITripModalProps) {
     const { gps_cordinates } = tripPath || {};
     const pathArray = [];
     const testPathArray = [];
+    console.log("I am rendered already");
     if (Array.isArray(gps_cordinates)) {
       for (let i = 0; i < gps_cordinates.length; i++) {
         pathArray.push(new google.maps.LatLng(Number(gps_cordinates[i][0]), Number(gps_cordinates[i][1])))
@@ -161,6 +166,8 @@ export function TripModal(props: ITripModalProps) {
     //   }
     // });
   };
+  console.log({ tripPath });
+
 
   return (
     <Box>
@@ -293,9 +300,12 @@ export function TripModal(props: ITripModalProps) {
                       </ul>
                     </Grid>
                   </Grid>
+                  <Box>
+                    {Number(trip?.start_latitude)} {Number(trip?.start_longitude)}
+                  </Box>
                   <Box className="livemap">
                     <GoogleMapReact
-                      key={new Date().getTime()}
+                      // key={new Date().getTime()}
                       bootstrapURLKeys={{
                         key: `${process.env.REACT_APP_MAP_KEY}`,
                       }}
@@ -308,17 +318,22 @@ export function TripModal(props: ITripModalProps) {
                         lng: Number(trip?.start_longitude),
                       }}
                       options={{ streetViewControl: true, mapTypeControl: true }}
-                      yesIWantToUseGoogleMapApiInternals={false}
-                      onGoogleApiLoaded={({ map, maps }) => {
-                        // renderMarkers(map, maps);
-                        getMapRoute(map, maps);
-                      }}
+                    // yesIWantToUseGoogleMapApiInternals={false}
+                    // onGoogleApiLoaded={({ map, maps }) => {
+                    //   // renderMarkers(map, maps);
+                    //   getMapRoute(map, maps);
+                    // }}
                     >
                       {/* <Marker
                         key={1}
                         lat={trip.start_latitude}
                         lng={trip.start_longitude}
                       /> */}
+                      <AnyReactComponent
+                        lat={22.974601}
+                        lng={72.56228}
+                        text="My Marker"
+                      />
                     </GoogleMapReact>
                   </Box>
                 </Item>
