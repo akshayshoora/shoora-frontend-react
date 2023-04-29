@@ -8,10 +8,14 @@ import "video-react/dist/video-react.css";
 import AdminRoot from "components/AdminRoot";
 import { LoadScript } from "@react-google-maps/api";
 
+const libraries = ["drawing", "places"];
+
 const queryClient = new QueryClient();
 ReactDOM.render(
   <React.StrictMode>
-    <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_KEY || ""}>
+    <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_KEY || ""}
+    // libraries={libraries}
+    >
       <QueryClientProvider client={queryClient}>
 
         <AdminRoot />

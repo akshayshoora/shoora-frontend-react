@@ -7,12 +7,12 @@ import {
 } from "@react-google-maps/api";
 import React, { useState } from "react";
 
-const libraries = ["drawing", "places"];
+// const libraries = ["drawing", "places"];
 
 const GeoFenceMap = (props) => {
   const { polyAxis, type, center, setCenter, circleRadius, setLat, setLng } =
     props;
-  const onLoad = (drawingManager) => {};
+  const onLoad = (drawingManager) => { };
 
   const options = {
     strokeColor: "#FF0000",
@@ -59,44 +59,43 @@ const GeoFenceMap = (props) => {
     <>
       <h2>Map view</h2>
 
-      <LoadScript
+      {/* <LoadScript
         googleMapsApiKey={process.env.REACT_APP_MAP_KEY}
-        libraries={libraries}
+      > */}
+      <GoogleMap
+        onClick={handleClickedMap}
+        mapContainerStyle={{
+          height: "calc(100vh - 260px)",
+          width: "100%",
+        }}
+        center={center}
+        zoom={12}
+        bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_KEY }}
       >
-        <GoogleMap
-          onClick={handleClickedMap}
-          mapContainerStyle={{
-            height: "calc(100vh - 260px)",
-            width: "100%",
-          }}
-          center={center}
-          zoom={12}
-          bootstrapURLKeys={{ key: process.env.REACT_APP_MAP_KEY }}
-        >
-          {type == "polygon" ? (
-            <DrawingManager
-              style={{ display: "none" }}
-              onLoad={onLoad}
-              onPolygonComplete={onPolygonComplete}
-              drawingMode={"polygon"}
-              onCircleComplete={onCircleComplete}
-              editable
-              draggable
-            />
-          ) : (
-            <Circle
-              // optional
-              onLoad={onLoad}
-              // optional
-              // onUnmount={onUnmount}
-              center={center}
-              // required
-              radius={Number(circleRadius) ? Number(circleRadius) : 0}
-              options={options}
-            />
-          )}
-        </GoogleMap>
-      </LoadScript>
+        {type == "polygon" ? (
+          <DrawingManager
+            style={{ display: "none" }}
+            onLoad={onLoad}
+            onPolygonComplete={onPolygonComplete}
+            drawingMode={"polygon"}
+            onCircleComplete={onCircleComplete}
+            editable
+            draggable
+          />
+        ) : (
+          <Circle
+            // optional
+            onLoad={onLoad}
+            // optional
+            // onUnmount={onUnmount}
+            center={center}
+            // required
+            radius={Number(circleRadius) ? Number(circleRadius) : 0}
+            options={options}
+          />
+        )}
+      </GoogleMap>
+      {/* </LoadScript> */}
     </>
   );
 };
