@@ -20,10 +20,10 @@ import { getDateTime, getDuration } from "utils/calenderUtils";
 import { Player } from "video-react";
 import { IonAvatar } from "@ionic/react";
 import GoogleMapReact from "google-map-react";
-
+import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 import { latLongToPlace } from "utils/helpers";
 import { useEffect, useState } from "react";
-import Marker from "components/Map/Marker";
+// import Marker from "components/Map/Marker";
 
 const style = {
   position: "absolute" as "absolute",
@@ -64,6 +64,7 @@ export function TripModal(props: ITripModalProps) {
   const navigate = useNavigate();
   const [startLoc, setStartLoc] = useState("");
   const [endLoc, setEndLoc] = useState("");
+  const [validPathState, setValidPathState] = useState<any>([]);
 
   const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () => {
     if (id) {
@@ -107,6 +108,24 @@ export function TripModal(props: ITripModalProps) {
   async function getTripPath(id: string) {
     return (await client.get(`${monitor}/trips/${id}/path/`)).data;
   }
+
+  useEffect(() => {
+    const { gps_cordinates } = tripPath || {};
+    if (tripPath) {
+      if (Array.isArray(gps_cordinates)) {
+        const validPathArray: any = [];
+        if (Array.isArray(gps_cordinates)) {
+          for (let i = 0; i < gps_cordinates.length; i++) {
+            validPathArray.push({
+              lat: Number(gps_cordinates[i][0]),
+              lng: Number(gps_cordinates[i][1])
+            });
+          }
+        }
+        setValidPathState(validPathArray);
+      }
+    }
+  }, [tripPath]);
 
   const getMapRoute = (map: any, maps: any) => {
     const { gps_cordinates } = tripPath || {};
@@ -166,8 +185,6 @@ export function TripModal(props: ITripModalProps) {
     //   }
     // });
   };
-  console.log({ tripPath });
-
 
   return (
     <Box>
@@ -300,11 +317,57 @@ export function TripModal(props: ITripModalProps) {
                       </ul>
                     </Grid>
                   </Grid>
-                  <Box>
-                    {Number(trip?.start_latitude)} {Number(trip?.start_longitude)}
-                  </Box>
+                  {trip?.is_corrupt && <Box sx={{ fontSize: "14px", color: "#ef5350" }}>
+                    Note: Some of the data points are not proper.
+                  </Box>}
                   <Box className="livemap">
-                    <GoogleMapReact
+                    <GoogleMap
+                      options={{
+                        center: {
+                          lat: Number(trip?.start_latitude),
+                          lng: Number(trip?.start_longitude),
+                        },
+                        streetViewControl: true,
+                        mapTypeControl: true,
+                        zoom: 10,
+                        maxZoom: 18
+                      }}
+                      mapContainerStyle={{
+                        height: "300px"
+                      }}
+                      onLoad={() => { console.log("*********MAP LOADED SUCCESSFULLy.***********") }}
+                    >
+                      {
+                        // ...Your map components
+                      }
+                      <Marker
+                        position={{
+                          lat: Number(trip?.start_latitude),
+                          lng: Number(trip?.start_longitude)
+                        }}
+                        // icon={{
+                        //   path: google.maps.SymbolPath.CIRCLE,
+                        //   scale: 7,
+                        // }}
+                        title={trip?.start_geofence}
+                        label={{ color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'A' }}
+                      />
+                      <Marker
+                        position={{
+                          lat: Number(trip?.end_latitude),
+                          lng: Number(trip?.end_longitude)
+                        }}
+                        title={trip?.end_geofence}
+                        label={{ color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'B' }}
+                      />
+                      <Polyline
+                        path={validPathState}
+                        options={{
+                          strokeColor: "#54a0de"
+                        }}
+                      />
+                    </GoogleMap>
+                    {/* <GoogleMapReact
                       key={new Date().getTime()}
                       bootstrapURLKeys={{
                         key: `${process.env.REACT_APP_MAP_KEY}`,
@@ -324,24 +387,25 @@ export function TripModal(props: ITripModalProps) {
                         getMapRoute(map, maps);
                       }}
                     >
-                      {/* <Marker
+                      <Marker
                         key={1}
                         lat={trip.start_latitude}
                         lng={trip.start_longitude}
-                      /> */}
-                      {/* <AnyReactComponent
+                      /> 
+                  <AnyReactComponent
                         lat={22.974601}
                         lng={72.56228}
                         text="My Marker"
-                      /> */}
-                    </GoogleMapReact>
+                      /> 
+                  </GoogleMapReact> */}
                   </Box>
                 </Item>
               </Grid>
             </Grid>
           </Box>
-        )}
-      </Modal>
-    </Box>
+        )
+        }
+      </Modal >
+    </Box >
   );
 }

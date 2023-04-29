@@ -127,64 +127,74 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
       </TableRow>
 
 
-      {showReturnState && <TableRow style={{ backgroundColor: "rgba(0, 0, 0, 0.04)" }}>
-        <TableCell align="left">
-          <Span fontType="secondary"></Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">{return_geofence_trip?.vin}</Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">{return_geofence_trip?.start_geofence}</Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">{return_geofence_trip?.end_geofence}</Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">
-            {getDateTimeUTC(return_geofence_trip?.loading_in_datetime)}
-          </Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">
-            {getDateTimeUTC(return_geofence_trip?.loading_out_datetime)}
-          </Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">
-            {getDateTimeUTC(return_geofence_trip?.unloading_in_datetime)}
-          </Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">
-            {getDateTimeUTC(return_geofence_trip?.unloading_out_datetime)}
-          </Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">{return_geofence_trip?.total_incidents}</Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">{return_geofence_trip?.distance} km</Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">
-            {return_geofence_trip?.duration} hrs
-          </Span>
-        </TableCell>
+      {showReturnState &&
+        <>{tripInfo?.in_progress ?
+          <TableRow style={{ backgroundColor: "rgba(150, 138, 182, 0.2)", marginBottom: "10px" }}>
+            <TableCell colSpan={12} align="center">
+              <Box
+                component="span"
+                sx={{ fontSize: "18px", color: "#746E97" }}
+              >Trip is in progress.</Box>
+            </TableCell>
+          </TableRow>
+          : <TableRow style={{ backgroundColor: "rgba(150, 138, 182, 0.2)" }}>
+            <TableCell align="left">
+              <Span fontType="secondary"></Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">{return_geofence_trip?.vin}</Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">{return_geofence_trip?.start_geofence}</Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">{return_geofence_trip?.end_geofence}</Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">
+                {getDateTimeUTC(return_geofence_trip?.loading_in_datetime)}
+              </Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">
+                {getDateTimeUTC(return_geofence_trip?.loading_out_datetime)}
+              </Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">
+                {getDateTimeUTC(return_geofence_trip?.unloading_in_datetime)}
+              </Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">
+                {getDateTimeUTC(return_geofence_trip?.unloading_out_datetime)}
+              </Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">{return_geofence_trip?.total_incidents}</Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">{return_geofence_trip?.distance} km</Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">
+                {return_geofence_trip?.duration} hrs
+              </Span>
+            </TableCell>
 
-        <TableCell align="left">
-          <Button
-            variant="outlined"
-            style={{ color: COLORS.PRIMARY_COLOR, whiteSpace: "nowrap" }}
-            onClick={() => {
-              handleOpenTrip(return_geofence_trip?.id, return_geofence_trip);
-            }}
-          >
-            R Details
-          </Button>
-        </TableCell>
+            <TableCell align="left">
+              <Button
+                variant="outlined"
+                style={{ color: COLORS.PRIMARY_COLOR, whiteSpace: "nowrap" }}
+                onClick={() => {
+                  handleOpenTrip(return_geofence_trip?.id, return_geofence_trip);
+                }}
+              >
+                R Details
+              </Button>
+            </TableCell>
 
-      </TableRow>}
+          </TableRow>}</>}
 
 
 
@@ -192,6 +202,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
   )
 }
 //Trip Page
+//Trip page Jenkis
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
   const [triptId, setTripId] = React.useState<string>("false");

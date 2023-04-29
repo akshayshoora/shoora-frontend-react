@@ -19,7 +19,7 @@ export default makeStyles({
     padding: "0",
     overflow: "hidden",
     margin: "-28px 0 0 0",
-    marginBottom: "10px",
+    // marginBottom: "10px",
     fontSize: "14px",
     listStyleType: "none",
     display: "flex",
@@ -62,4 +62,20 @@ export default makeStyles({
     display: "flex",
     margin: "-25px 0 5px 0",
   },
+  livemap: {
+    position: "relative",
+    marginTop: "8px"
+  },
+  loadingDiv: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    backgroundColor: "rgb(236, 235, 241, 0.3)",
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+    zIndex: 1000
+  }
 });
