@@ -21,8 +21,9 @@ import { Player } from "video-react";
 import { IonAvatar } from "@ionic/react";
 import GoogleMapReact from "google-map-react";
 import { latLongToPlace } from "utils/helpers";
-import { useEffect, useState } from "react";
-import Marker from "components/Map/Marker";
+import React, { useEffect, useState } from "react";
+// import Marker from "components/Map/Marker";
+import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 
 const style = {
   position: "absolute" as "absolute",
@@ -61,6 +62,8 @@ export function TripModal(props: ITripModalProps) {
   const navigate = useNavigate();
   const [startLoc, setStartLoc] = useState("");
   const [endLoc, setEndLoc] = useState("");
+  const [validPathState, setValidPathState] = useState<any>([]);
+  const [corruptPathState, setCorruptPathState] = useState<any>([]);
 
   // const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () => {
   //   if (id) {
@@ -149,6 +152,41 @@ export function TripModal(props: ITripModalProps) {
     //   }
     // });
   };
+
+  useEffect(() => {
+    const { gps_cordinates } = tripPath || {},
+      { valid_data, corrupt_path } = gps_cordinates || {};
+    if (tripPath) {
+      if (Array.isArray(valid_data)) {
+        const validPathArray: any = [];
+        if (Array.isArray(valid_data)) {
+          for (let i = 0; i < valid_data.length; i++) {
+            validPathArray.push({
+              lat: Number(valid_data[i][0]),
+              lng: Number(valid_data[i][1])
+            });
+          }
+        }
+        setValidPathState(validPathArray);
+      }
+      if (Array.isArray(corrupt_path)) {
+        const corruptPathArray: any = [];
+        for (let i = 0; i < corrupt_path.length; i++) {
+          if (Array.isArray(corrupt_path[i]) && corrupt_path[i].length > 0) {
+            const pathArray = [];
+            for (let j = 0; j < corrupt_path[i].length; j++) {
+              pathArray.push({
+                lat: Number(corrupt_path[i][j][0]),
+                lng: Number(corrupt_path[i][j][1])
+              });
+            }
+            corruptPathArray.push(pathArray);
+          }
+        }
+        setCorruptPathState(corruptPathArray);
+      }
+    }
+  }, [tripPath]);
 
   return (
     <Box>
@@ -253,7 +291,7 @@ export function TripModal(props: ITripModalProps) {
                     </Grid>
                   </Grid>
                   <Box className="livemap">
-                    <GoogleMapReact
+                    {/* <GoogleMapReact
                       key={new Date().getTime()}
                       bootstrapURLKeys={{
                         key: `${process.env.REACT_APP_MAP_KEY}`,
@@ -267,23 +305,89 @@ export function TripModal(props: ITripModalProps) {
                       }}
                       yesIWantToUseGoogleMapApiInternals={true}
                       onGoogleApiLoaded={({ map, maps }) => {
-                        // renderMarkers(map, maps);
                         getMapRoute(map, maps);
                       }}
                     >
-                      {/* <Marker
-                        key={1}
-                        lat={geofenceDetails.start_latitude}
-                        lng={geofenceDetails.start_longitude}
-                      /> */}
                     </GoogleMapReact>
+ */}
+
+                    {/* <LoadScript
+                      googleMapsApiKey={process.env.REACT_APP_MAP_KEY || ""}
+                    > */}
+                    <GoogleMap
+                      options={{
+                        center: {
+                          lat: Number(geofenceDetails?.start_latitude),
+                          lng: Number(geofenceDetails?.start_longitude),
+                        },
+                        streetViewControl: true,
+                        mapTypeControl: true,
+                        zoom: 10,
+                      }}
+                      mapContainerStyle={{
+                        height: "300px"
+                      }}
+                      onLoad={() => { console.log("*********MAP LOADED SUCCESSFULLy.***********") }}
+                    >
+                      {
+                        // ...Your map components
+                      }
+                      <Marker
+                        position={{
+                          lat: Number(geofenceDetails?.start_latitude),
+                          lng: Number(geofenceDetails?.start_longitude)
+                        }}
+                        title={geofenceDetails?.start_geofence}
+                        label={{ color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'A' }}
+                      />
+                      <Marker
+                        position={{
+                          lat: Number(geofenceDetails?.end_latitude),
+                          lng: Number(geofenceDetails?.end_longitude)
+                        }}
+                        // icon={{
+                        //   // path: "M 0,0 C -2,-20 -10,-22 -10,-30 A 10,10 0 1,1 10,-30 C 10,-22 2,-20 0,0 z",
+                        //   icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                        //   fillColor: "yellow",
+                        //   fillOpacity: 1,
+                        //   strokeColor: '#000',
+                        //   strokeWeight: 1,
+                        //   scale: 1
+                        // }}
+                        // icon='https://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                        title={geofenceDetails?.end_geofence}
+                        label={{ color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'B' }}
+                      />
+                      <Polyline
+                        path={validPathState}
+                        options={{
+                          strokeColor: "#54a0de"
+                        }}
+                      />
+                      {
+                        Array.isArray(corruptPathState) && corruptPathState.length > 0 &&
+                        corruptPathState.map((item, index) => (
+                          <React.Fragment key={`courrupt-path-${index}`}>
+                            <Polyline
+                              path={item}
+                              options={{
+                                strokeColor: "#ff9800"
+                              }}
+                            />
+                          </React.Fragment>
+                        ))
+                      }
+
+                    </GoogleMap>
+                    {/* </LoadScript> */}
                   </Box>
                 </Item>
               </Grid>
             </Grid>
           </Box>
-        )}
-      </Modal>
-    </Box>
+        )
+        }
+      </Modal >
+    </Box >
   );
 }

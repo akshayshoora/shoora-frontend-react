@@ -4,15 +4,19 @@ import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import "./index.css";
-import "video-react/dist/video-react.css"; 
+import "video-react/dist/video-react.css";
 import AdminRoot from "components/AdminRoot";
+import { LoadScript } from "@react-google-maps/api";
 
 const queryClient = new QueryClient();
 ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <AdminRoot />
-    </QueryClientProvider>
+    <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_KEY || ""}>
+      <QueryClientProvider client={queryClient}>
+
+        <AdminRoot />
+      </QueryClientProvider>
+    </LoadScript>
   </React.StrictMode>,
   document.getElementById("root")
 );
