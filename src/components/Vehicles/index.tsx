@@ -276,7 +276,7 @@ export default function Vehicles() {
   }
 
   return (
-    <Box style={{ padding: "20px 20px 20px 40px" }}>
+    <Box style={{ padding: "80px 20px 20px 40px" }}>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

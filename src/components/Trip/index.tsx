@@ -323,7 +323,7 @@ export default function Trip() {
   }
 
   return (
-    <Box style={{ padding: "20px 20px 20px 40px" }}>
+    <Box style={{ padding: "80px 20px 20px 40px" }}>
       {openDelete && (
         <DeleteModal
           open={openDelete}

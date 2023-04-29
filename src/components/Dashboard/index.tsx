@@ -29,7 +29,7 @@ export default function Dashboard() {
   const { user } = useAppContext();
 
   return (
-    <Box style={{ padding: "20px 40px" }}>
+    <Box style={{ padding: "80px 40px" }}>
       <Box style={{ display: "flex", justifyContent: "space-between" }}>
         <Heading>Dashboard</Heading>
       </Box>

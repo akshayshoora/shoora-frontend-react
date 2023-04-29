@@ -36,6 +36,7 @@ function Header() {
   const navigate = useNavigate();
 
   return (
+    <header style={{ position: "fixed", top: 0, zIndex: 1,  backgroundColor: "#fff" }}>
     <Box className={classes.root}>
       {/* <Button onClick = {()=>{}}> Partner </Button>  */}
       <Box className={classes.userBar}>
@@ -58,6 +59,7 @@ function Header() {
         <UserMenu />
       </Box>
     </Box>
+    </header>
   );
 }
 

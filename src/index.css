@@ -2,7 +2,7 @@ body {
   font-family: Satoshi;
   margin: 0;
   color: #261f5a;
-  background: #f8f8fb;
+  background: #f2f2f5;
 }
 img {
   max-width: 100%;
@@ -28,4 +28,33 @@ img {
 }
 .gmnoprint > div[role="button"] > span > div > img {
   display: none;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  z-index: 999;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+nav {
+  float: right;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+nav ul li:first-child {
+  margin-left: 0;
 }

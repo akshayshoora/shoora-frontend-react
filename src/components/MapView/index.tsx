@@ -146,7 +146,7 @@ export default function MapView() {
   }
 
   return (
-    <Box style={{ padding: "20px 0 0 25px" }}>
+    <Box style={{ padding: "80px 0 0 25px" }}>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}

@@ -33,7 +33,7 @@ export function AlertDetails() {
   }
 
   return (
-    <Box>
+    <Box style={{ padding: "80px 20px 20px 40px" }}>
       <Box className={classes.headingWrapper}>
         <Box className={classes.headingContent}>
           <IconButton
