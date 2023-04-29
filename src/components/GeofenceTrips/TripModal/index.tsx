@@ -22,6 +22,7 @@ import { IonAvatar } from "@ionic/react";
 import GoogleMapReact from "google-map-react";
 import { latLongToPlace } from "utils/helpers";
 import React, { useEffect, useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 // import Marker from "components/Map/Marker";
 import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 import RoomIcon from '@mui/icons-material/Room';
@@ -197,10 +198,8 @@ export function TripModal(props: ITripModalProps) {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        {isLoading ? (
-          <LoadingScreen />
-        ) : (
-          <Box sx={style}>
+        <>
+          < Box sx={style}>
             <Typography
               id="modal-modal-title"
               className={classes.alertHead}
@@ -267,13 +266,16 @@ export function TripModal(props: ITripModalProps) {
               container
               spacing={{ xs: 2, md: 3 }}
               columns={{ xs: 6, sm: 8, md: 12 }}
-              style={{ marginTop: 24 }}
+              style={{ marginTop: 8 }}
             >
               <Grid xs={12} sm={12} md={12} style={{ paddingLeft: 24 }}>
                 <Item elevation={0}>
                   <Grid container>
-                    <Grid xs={12} sm={12} md={12} style={{ paddingLeft: 24 }}>
+                    <Grid xs={12} sm={12} md={12}>
                       <ul className={classes.alertList}>
+                        <li>
+                          <span>Vehicle Number: {geofenceDetails?.vin}</span>
+                        </li>
                         <li>
                           <span>Start Geofence: {geofenceDetails?.start_geofence}</span>
                         </li>
@@ -291,7 +293,13 @@ export function TripModal(props: ITripModalProps) {
                       </ul>
                     </Grid>
                   </Grid>
-                  <Box className="livemap">
+                  {geofenceDetails?.is_corrupt && <Box sx={{ fontSize: "14px", color: "#ef5350" }}>
+                    Note: Some of the data points are not proper.
+                  </Box>}
+                  <Box className={classes.livemap}>
+                    {isLoading && <Box className={classes.loadingDiv}>
+                      <CircularProgress />
+                    </Box>}
                     {/* <GoogleMapReact
                       key={new Date().getTime()}
                       bootstrapURLKeys={{
@@ -324,6 +332,7 @@ export function TripModal(props: ITripModalProps) {
                         streetViewControl: true,
                         mapTypeControl: true,
                         zoom: 10,
+                        maxZoom: 18
                       }}
                       mapContainerStyle={{
                         height: "300px"
@@ -390,9 +399,8 @@ export function TripModal(props: ITripModalProps) {
               </Grid>
             </Grid>
           </Box>
-        )
-        }
-      </Modal >
+        </>
+      </Modal>
     </Box >
   );
 }
