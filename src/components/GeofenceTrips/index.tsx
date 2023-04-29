@@ -192,6 +192,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
   )
 }
 //Trip Page
+//Trip page for jenkins
 export default function Trip() {
   const [openTrip, setOpenTrip] = React.useState<boolean>(false);
   const [triptId, setTripId] = React.useState<string>("false");
