@@ -128,7 +128,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
 
 
       {showReturnState &&
-        <>{tripInfo?.in_progress ?
+        <>{return_geofence_trip?.in_progress ?
           <TableRow style={{ backgroundColor: "rgba(150, 138, 182, 0.2)", marginBottom: "10px" }}>
             <TableCell colSpan={12} align="center">
               <Box

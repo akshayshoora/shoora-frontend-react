@@ -332,7 +332,7 @@ export function TripModal(props: ITripModalProps) {
                         streetViewControl: true,
                         mapTypeControl: true,
                         zoom: 10,
-                        maxZoom: 18
+                        maxZoom: 16
                       }}
                       mapContainerStyle={{
                         height: "300px"
