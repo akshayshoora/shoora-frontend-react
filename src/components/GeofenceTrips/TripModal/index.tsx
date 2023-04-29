@@ -24,6 +24,7 @@ import { latLongToPlace } from "utils/helpers";
 import React, { useEffect, useState } from "react";
 // import Marker from "components/Map/Marker";
 import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
+import RoomIcon from '@mui/icons-material/Room';
 
 const style = {
   position: "absolute" as "absolute",
@@ -337,6 +338,10 @@ export function TripModal(props: ITripModalProps) {
                           lat: Number(geofenceDetails?.start_latitude),
                           lng: Number(geofenceDetails?.start_longitude)
                         }}
+                        // icon={{
+                        //   path: google.maps.SymbolPath.CIRCLE,
+                        //   scale: 7,
+                        // }}
                         title={geofenceDetails?.start_geofence}
                         label={{ color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'A' }}
                       />
@@ -371,7 +376,7 @@ export function TripModal(props: ITripModalProps) {
                             <Polyline
                               path={item}
                               options={{
-                                strokeColor: "#ff9800"
+                                strokeColor: "#ef5350"
                               }}
                             />
                           </React.Fragment>
