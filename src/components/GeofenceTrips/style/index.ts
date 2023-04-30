@@ -2,8 +2,10 @@ import { makeStyles } from "@mui/styles";
 import COLORS from "../../../constants/colors";
 
 export default makeStyles({
-  root: {
+  tableRoot: {
     marginTop: 16,
+    overflowX: "auto",
+    overflowY: "hidden"
   },
   tableHeading: {
     "&.MuiTableCell-root": {
@@ -144,5 +146,5 @@ export default makeStyles({
   },
   applyFilterText: {
     textTransform: "none"
-  }
+  },
 });

@@ -104,7 +104,7 @@ export function getDuration(time: number) {
 
 export function getDurationFromSeconds(totalSeconds: number) {
   if (totalSeconds < 60) {
-    return "1 mins";
+    return "0 mins";
   }
   const totalMinutes = Math.floor(totalSeconds / 60);
   const hours = Math.floor(totalMinutes / 60);

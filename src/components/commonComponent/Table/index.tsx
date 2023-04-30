@@ -11,6 +11,7 @@ import classnames from "classnames";
 import Span from "components/commonComponent/Span";
 
 import useStyles from "./style";
+import classNames from "classnames";
 
 export type Order = "asc" | "desc";
 
@@ -20,6 +21,7 @@ export interface HeadCell {
   label: string;
   numeric: boolean;
   alignment?: "right" | "left" | "center";
+  headerClassName?: string;
 }
 
 interface ITableFooterProps {
@@ -164,7 +166,7 @@ export function TableHeader(props: ITableHeadingProps) {
             align={cell.alignment ? cell.alignment : "left"}
             padding={"none"}
             sortDirection={orderBy === cell.id ? order : false}
-            className={classes.tableHeading}
+            className={classnames(classes.tableHeading)}
             style={{ paddingRight: 20 }}
           >
             {/* Commenting To prevent Ordering Symbol */}
@@ -173,7 +175,7 @@ export function TableHeader(props: ITableHeadingProps) {
             direction={orderBy === headCell.id ? order : "asc"}
             onClick={createSortHandler(headCell.id)}
           > */}
-            <Span fontType="secondary" size="small">
+            <Span fontType="secondary" size="small" containerClassName={classNames(cell.headerClassName || "")}>
               {cell.label}
             </Span>
             {/* </TableSortLabel> */}

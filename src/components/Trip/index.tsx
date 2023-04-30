@@ -40,7 +40,7 @@ import TripFilterModal from "./TripFilterModal";
 import TripIncidentModal from "./TripIncidentModal";
 import {
   getDateDisplayFormat,
-  getDuration,
+  getDuration, getDurationFromSeconds,
   getDateTimeUTC,
   getDateTime,
 } from "utils/calenderUtils";
@@ -323,9 +323,35 @@ export default function Trip() {
   }
   const { mutate: mutateTripInfo, isLoading: isTripInfoLoading, data: tripsInfoResp } = tripsMutationCallback;
 
+  //Trip Summary api call
+  const tripSummaryMutationCallbck = useMutation(tripSummaryApiCall, {
+    onError: () => {
+      setSnackbar({
+        open: true,
+        variant: "error",
+        message: "Something went wrong.",
+      })
+    }
+  });
+
+  async function tripSummaryApiCall(tripInfo: any) {
+    const { since, until, vehicle_id } = tripInfo || {};
+    const isSinceDate = since ? new Date(since).toISOString() : "",
+      isoUntilDate = until ? new Date(until).toISOString() : "";
+    const params: any = {
+      vehicle_id, since: isSinceDate, until: isoUntilDate
+    }
+    const response = await client.get(`${monitor}/trip-summary/`, { params });
+    return response.data;
+  }
+  const { mutate: mutateTripSummaryInfo, isLoading: isTripSummaryLoading, data: tripSummaryResp } = tripSummaryMutationCallbck;
+
   function applyTripFilterHndlr(filterDetails: any) {
     tripFilterRef.current = filterDetails;
     mutateTripInfo({ ...filterDetails, pageNo: 1, pageSize: rowsPerPage });
+    if (filterDetails?.vehicle_id) {
+      mutateTripSummaryInfo(filterDetails);
+    }
   }
 
 
@@ -356,7 +382,10 @@ export default function Trip() {
     });
   }
 
-  const { vehicle_id: filterVehicleId } = tripFilterRef.current || {};
+  const { vehicle_id: filterVehicleId, vehicle_details } = tripFilterRef.current || {},
+    { vin: filterVehicleNumber } = vehicle_details || {};
+
+  console.log({ tripsInfoResp });
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && (
@@ -437,28 +466,36 @@ export default function Trip() {
         </Box>
       </Box>
       {filterVehicleId && <Box className={classes.vehicleInfoWrapper}>
-        <Box sx={{ mr: 4 }}>
+        <Box className={classes.vehicleInfoContainer}>
           <Box className={classes.vehicleInfoLabel} component="span">
-            Vehicle Id:
+            Vehicle No:
           </Box>
           <Box className={classes.vehicleInfoValue} component="span">
-            HR3434343
+            {filterVehicleNumber}
           </Box>
         </Box>
-        <Box sx={{ mr: 4 }}>
+        <Box className={classes.vehicleInfoContainer}>
           <Box className={classes.vehicleInfoLabel} component="span">
             Total Distance:
           </Box>
           <Box className={classes.vehicleInfoValue} component="span">
-            33 KM
+            {tripSummaryResp?.total_distance || "0"} KM
           </Box>
         </Box>
-        <Box sx={{ mr: 4 }}>
+        <Box className={classes.vehicleInfoContainer}>
+          <Box className={classes.vehicleInfoLabel} component="span">
+            Total Duration:
+          </Box>
+          <Box className={classes.vehicleInfoValue} component="span">
+            {getDurationFromSeconds(tripSummaryResp?.total_duration)}
+          </Box>
+        </Box>
+        <Box className={classes.vehicleInfoContainer}>
           <Box className={classes.vehicleInfoLabel} component="span">
             Total Incident:
           </Box>
           <Box className={classes.vehicleInfoValue} component="span">
-            10
+            {tripSummaryResp?.total_incidents || 0}
           </Box>
         </Box>
       </Box>}

@@ -9,6 +9,7 @@ interface ISpanProps {
   fontType?: "primary" | "secondary";
   size?: "extra-small" | "small" | "medium" | "large";
   fontWeight?: number | string;
+  containerClassName?: string;
 }
 
 /**
@@ -44,7 +45,7 @@ function Span(props: ISpanProps) {
   return (
     <Typography
       component="span"
-      className={classNames(getSizeClass(), getFontTypeClass(), classes.root)}
+      className={classNames(getSizeClass(), getFontTypeClass(), classes.root, props.containerClassName)}
       style={{ fontWeight: props.fontWeight }}
     >
       {props.children}

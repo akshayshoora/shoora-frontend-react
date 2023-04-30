@@ -4,6 +4,9 @@ import COLORS from "../../../../constants/colors";
 export default makeStyles({
   root: {
     textTransform: "capitalize",
+    "&.textNoWrap": {
+      whiteSpace: "nowrap"
+    }
   },
   font_12: {
     fontSize: "12px !important",

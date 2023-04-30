@@ -166,7 +166,7 @@ function AdminRoot() {
                         <Header />
                       </Box>
                       <ErrorBoundary>
-                        <Box>{getAppBody()}</Box>
+                        <Box className={classes.pageContent}>{getAppBody()}</Box>
                       </ErrorBoundary>
                     </Box>
                   </ErrorBoundary>

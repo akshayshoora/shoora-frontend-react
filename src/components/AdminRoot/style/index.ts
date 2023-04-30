@@ -36,10 +36,19 @@ export default makeStyles({
   },
   mainContent: {
     marginLeft: "100px",
+    width: "calc(100% - 100px)",
+    overFlow: "hidden"
   },
   header: {
     borderBottom: `1px solid ${COLORS.BORDER_GREY}`,
     background: `${COLORS.WHITE}`,
+    position: "fixed",
+    width: "calc(100% - 100px)",
+    top: 0,
+    zIndex: 1,
+  },
+  pageContent: {
+    paddingTop: "60px"
   },
   bodyContainer: {
     padding: "24px",

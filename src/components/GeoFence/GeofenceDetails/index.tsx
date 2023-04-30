@@ -101,10 +101,10 @@ export function GeofenceDetails() {
                 {geofenceData?.name}
               </Box>
             </Box>
-            {/* <Box className={classes.infoBodyWrapper}>
-              <Box className={classes.bodyInfoTitle}>Geofence ID:</Box>
-              <Box className={classes.bodyInfo}>{geofenceData.id}</Box>
-            </Box> */}
+            <Box className={classes.infoBodyWrapper}>
+              <Box className={classes.bodyInfoTitle}>Geofence Type:</Box>
+              <Box className={classes.bodyInfo}>-</Box>
+            </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Address:</Box>
               <Box className={classes.bodyInfo}>{address || "-"}</Box>

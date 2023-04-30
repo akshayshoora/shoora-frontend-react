@@ -76,10 +76,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
           <Span fontType="secondary">{tripInfo?.vin}</Span>
         </TableCell>
         <TableCell align="left">
-          <Span fontType="secondary">{tripInfo?.start_geofence}</Span>
-        </TableCell>
-        <TableCell align="left">
-          <Span fontType="secondary">{tripInfo?.end_geofence}</Span>
+          <Span fontType="secondary" containerClassName="width-40">{tripInfo?.start_geofence}</Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
@@ -90,6 +87,9 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
           <Span fontType="secondary">
             {getDateTimeUTC(tripInfo?.loading_out_datetime)}
           </Span>
+        </TableCell>
+        <TableCell align="left" >
+          <Span fontType="secondary">{tripInfo?.end_geofence}</Span>
         </TableCell>
         <TableCell align="left">
           <Span fontType="secondary">
@@ -129,7 +129,9 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
 
       {showReturnState &&
         <>{return_geofence_trip?.in_progress ?
-          <TableRow style={{ backgroundColor: "rgba(150, 138, 182, 0.2)", marginBottom: "10px" }}>
+          <TableRow style={{
+            backgroundColor: "rgba(150, 138, 182, 0.15)"
+          }}>
             <TableCell colSpan={12} align="center">
               <Box
                 component="span"
@@ -137,7 +139,9 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
               >Trip is in progress.</Box>
             </TableCell>
           </TableRow>
-          : <TableRow style={{ backgroundColor: "rgba(150, 138, 182, 0.2)" }}>
+          : <TableRow
+            style={{ backgroundColor: "rgba(150, 138, 182, 0.15)" }}
+          >
             <TableCell align="left">
               <Span fontType="secondary"></Span>
             </TableCell>
@@ -148,9 +152,6 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
               <Span fontType="secondary">{return_geofence_trip?.start_geofence}</Span>
             </TableCell>
             <TableCell align="left">
-              <Span fontType="secondary">{return_geofence_trip?.end_geofence}</Span>
-            </TableCell>
-            <TableCell align="left">
               <Span fontType="secondary">
                 {getDateTimeUTC(return_geofence_trip?.loading_in_datetime)}
               </Span>
@@ -159,6 +160,9 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
               <Span fontType="secondary">
                 {getDateTimeUTC(return_geofence_trip?.loading_out_datetime)}
               </Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">{return_geofence_trip?.end_geofence}</Span>
             </TableCell>
             <TableCell align="left">
               <Span fontType="secondary">
@@ -195,9 +199,6 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
             </TableCell>
 
           </TableRow>}</>}
-
-
-
     </>
   )
 }
@@ -314,45 +315,60 @@ export default function Trip() {
       label: "-",
       numeric: false,
       disablePadding: false,
-      rowSpan: 2
     },
     {
       id: "Vehicle Number",
       label: "vin",
       numeric: false,
       disablePadding: false,
-      rowSpan: 2
     },
     {
       id: "start_point",
       label: "Start Point",
       numeric: false,
       disablePadding: false,
-      rowSpan: 2
+    },
+    {
+      id: "in_time",
+      label: "In Time",
+      numeric: false,
+      disablePadding: false,
+      headerClassName: "textNoWrap"
+    },
+    {
+      id: "out_time",
+      label: "Out Time",
+      numeric: false,
+      disablePadding: false,
+      headerClassName: "textNoWrap"
     },
     {
       id: "end_point",
       label: "End Point",
       numeric: false,
       disablePadding: false,
-      rowSpan: 2
     },
     {
-      id: "loading_out_time",
-      label: "Loading",
+      id: "in_time",
+      label: "In Time",
       numeric: false,
       disablePadding: false,
-      alignment: "center",
-      colSpan: 2
+      headerClassName: "textNoWrap"
     },
     {
-      id: "unloading_out_time",
-      label: "Unloading",
+      id: "out_time",
+      label: "Out Time",
       numeric: false,
       disablePadding: false,
-      alignment: "center",
-      colSpan: 2
+      headerClassName: "textNoWrap"
     },
+    // {
+    //   id: "unloading_out_time",
+    //   label: "Unloading",
+    //   numeric: false,
+    //   disablePadding: false,
+    //   alignment: "center",
+    // },
     // {
     //   id: "driver",
     //   label: "Driver",
@@ -364,21 +380,18 @@ export default function Trip() {
       label: "Incidents",
       numeric: false,
       disablePadding: false,
-      rowSpan: 2
     },
     {
       id: "distance",
       label: "Distance",
       numeric: false,
       disablePadding: false,
-      rowSpan: 2
     },
     {
       id: "duration",
       label: "Duration",
       numeric: false,
       disablePadding: false,
-      rowSpan: 2
     },
   ];
 
@@ -531,9 +544,9 @@ export default function Trip() {
 
           </Box>
         </Box>
-        <Box className={classes.root}>
+        <Box className={classes.tableRoot}>
           <Table className={classes.table}>
-            <TableHeaderGeofence
+            <TableHeader
               headings={headCells}
               order={order}
               orderBy={orderBy}
@@ -624,6 +637,8 @@ export default function Trip() {
               )}
             </TableBody>
           </Table>
+        </Box>
+        <Box>
           <TableFooter
             totalPages={Number(geoFenceList?.count) ? Math.ceil(geoFenceList?.count / rowsPerPage) : 1}
             currentPage={page + 1}
@@ -650,3 +665,78 @@ export default function Trip() {
     </>
   );
 }
+
+
+// const headCells: any = [
+//   {
+//     id: "Arrow Icon",
+//     label: "-",
+//     numeric: false,
+//     disablePadding: false,
+//     rowSpan: 2
+//   },
+//   {
+//     id: "Vehicle Number",
+//     label: "vin",
+//     numeric: false,
+//     disablePadding: false,
+//     rowSpan: 2
+//   },
+//   {
+//     id: "start_point",
+//     label: "Start Point",
+//     numeric: false,
+//     disablePadding: false,
+//     rowSpan: 2
+//   },
+//   {
+//     id: "end_point",
+//     label: "End Point",
+//     numeric: false,
+//     disablePadding: false,
+//     rowSpan: 2
+//   },
+//   {
+//     id: "loading_out_time",
+//     label: "Loading",
+//     numeric: false,
+//     disablePadding: false,
+//     alignment: "center",
+//     colSpan: 2
+//   },
+//   {
+//     id: "unloading_out_time",
+//     label: "Unloading",
+//     numeric: false,
+//     disablePadding: false,
+//     alignment: "center",
+//     colSpan: 2
+//   },
+//   // {
+//   //   id: "driver",
+//   //   label: "Driver",
+//   //   numeric: false,
+//   //   disablePadding: false,
+//   // },
+//   {
+//     id: "incidents",
+//     label: "Incidents",
+//     numeric: false,
+//     disablePadding: false,
+//     rowSpan: 2
+//   },
+//   {
+//     id: "distance",
+//     label: "Distance",
+//     numeric: false,
+//     disablePadding: false,
+//     rowSpan: 2
+//   },
+//   {
+//     id: "duration",
+//     label: "Duration",
+//     numeric: false,
+//     disablePadding: false,
+//     rowSpan: 2
+//   },
+// ];

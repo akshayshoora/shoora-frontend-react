@@ -58,7 +58,7 @@ export default makeStyles({
     },
   },
   geoFenceLeft: {
-    margin: "20px 0 0 0",
+    margin: "8px 0 0 0",
     background: "white",
     padding: "15px",
     borderRadius: "4px",

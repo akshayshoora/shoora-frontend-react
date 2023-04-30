@@ -265,7 +265,7 @@ export function GeoFenceModal(props: IGeofenceProps) {
         open={isAddingGeofenceVehicle}
         loadingMessage={loadingMessage}
       />
-      {isLoading ? (
+      {/* {isLoading ? (
         <LoadingScreen />
       ) : (
         <Box >
@@ -334,7 +334,7 @@ export function GeoFenceModal(props: IGeofenceProps) {
           </Box>
 
         </Box>
-      )}
+      )} */}
     </Box>
   );
 }

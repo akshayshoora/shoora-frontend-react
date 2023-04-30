@@ -57,7 +57,7 @@ const GeoFenceMap = (props) => {
   };
   return (
     <>
-      <h2>Map view</h2>
+      <h2 style={{ marginTop: "0" }}>Map view</h2>
 
       {/* <LoadScript
         googleMapsApiKey={process.env.REACT_APP_MAP_KEY}

@@ -7,16 +7,23 @@ export default makeStyles({
     marginBottom: 0,
     marginTop: 8
   },
+  vehicleInfoContainer: {
+    padding: "4px 8px",
+    borderRadius: "4px",
+    border: "1px solid rgba(224, 224, 224, 1)",
+    marginRight: "5px",
+    backgroundColor: "#ffffff"
+  },
   vehicleInfoLabel: {
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 14,
+    // fontWeight: 500,
     // minWidth: 172,
     color: COLORS.SECONDARY_FONT,
     marginRight: 6,
   },
   vehicleInfoValue: {
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 14,
+    // fontWeight: 900,
     color: COLORS.PRIMARY_FONT,
   },
   root: {

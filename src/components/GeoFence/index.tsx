@@ -299,7 +299,7 @@ export default function GeoFence() {
                         style={{ color: COLORS.WHITE }}
                         onClick={(event: React.MouseEvent<HTMLButtonElement>) => openGeofenceDetails(event, item.id)}
                       >
-                        Add Vehicle
+                        View Details
                       </Button>
                     </TableCell>
                     {/* <TableCell align="left">
