@@ -153,19 +153,6 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
             </TableCell>
             <TableCell align="left">
               <Span fontType="secondary">
-                {getDateTimeUTC(return_geofence_trip?.loading_in_datetime)}
-              </Span>
-            </TableCell>
-            <TableCell align="left">
-              <Span fontType="secondary">
-                {getDateTimeUTC(return_geofence_trip?.loading_out_datetime)}
-              </Span>
-            </TableCell>
-            <TableCell align="left">
-              <Span fontType="secondary">{return_geofence_trip?.end_geofence}</Span>
-            </TableCell>
-            <TableCell align="left">
-              <Span fontType="secondary">
                 {getDateTimeUTC(return_geofence_trip?.unloading_in_datetime)}
               </Span>
             </TableCell>
@@ -174,6 +161,21 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
                 {getDateTimeUTC(return_geofence_trip?.unloading_out_datetime)}
               </Span>
             </TableCell>
+           
+            <TableCell align="left">
+              <Span fontType="secondary">{return_geofence_trip?.end_geofence}</Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">
+                {getDateTimeUTC(return_geofence_trip?.loading_in_datetime)}
+              </Span>
+            </TableCell>
+            <TableCell align="left">
+              <Span fontType="secondary">
+                {getDateTimeUTC(return_geofence_trip?.loading_out_datetime)}
+              </Span>
+            </TableCell>
+
             <TableCell align="left">
               <Span fontType="secondary">{return_geofence_trip?.total_incidents}</Span>
             </TableCell>

@@ -402,7 +402,7 @@ export default function AppRouter() {
           />
         }
       />
-{/* 
+      {/* 
       <Route
         path={`${AppPaths.TRIP}/alert/:tripId`}
         element={
@@ -468,10 +468,10 @@ export default function AppRouter() {
       />
 
       <Route
-        path={AppPaths.COACHING}
+        path={AppPaths.TYREPERFORMANCE}
         element={
           <ProtectedRoute
-            route={AppPaths.COACHING}
+            route={AppPaths.TYREPERFORMANCE}
             component={
               <>
                 <ErrorBoundary>
@@ -484,10 +484,10 @@ export default function AppRouter() {
       />
 
       <Route
-        path={`${AppPaths.COACHING}/:id`}
+        path={`${AppPaths.TYREPERFORMANCE}/:id`}
         element={
           <ProtectedRoute
-            route={AppPaths.TYRE}
+            route={AppPaths.TYREPERFORMANCE}
             component={
               <ErrorBoundary>
                 <TyrePerfomanceInfo />
