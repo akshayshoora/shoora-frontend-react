@@ -64,6 +64,8 @@ export default function MenuIcons(props: IMenuProps) {
       return <GeoFenceIcon isActive={isActive} />;
     case AppPaths.GEOFENCETRIPS:
       return <TripIcon isActive={isActive} />;
+    case AppPaths.LOCKDEVICE:
+      return <VehicleIcon isActive={isActive} />;
     default:
       return <DashboardIcon isActive={isActive} />;
   }

@@ -44,6 +44,7 @@ import { GeofenceDetails } from "components/GeoFence/GeofenceDetails";
 import PrivacyPolicy from "components/PrivacyPolicy";
 import TermsConditions from "components/TermsAndCondition";
 import Inspection from "components/Inspection";
+import DeviceLocks from "components/DeviceLocks";
 import { InspectionDetails } from "components/Inspection/InspectionDetails";
 
 //todo: Need to be updated
@@ -642,6 +643,21 @@ export default function AppRouter() {
           />
         }
       />
+
+      <Route
+        path={`${AppPaths.LOCKDEVICE}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.LOCKDEVICE}
+            component={
+              <ErrorBoundary>
+                <DeviceLocks />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+
 
       <Route
         path={"*"}

@@ -13,6 +13,7 @@ export enum AppPaths {
   REPORT = "report",
   TRIP = "trip",
   GEOFENCETRIPS = "geofence-trips",
+  LOCKDEVICE = "lock-device",
   TYRE = "tyre",
   TYREPERFORMANCE = "tyre-performance",
   FINANCE = "finance",

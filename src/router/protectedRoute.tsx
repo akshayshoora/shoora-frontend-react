@@ -18,7 +18,6 @@ function ProtectedRoute(props: IProtectedTour) {
 
   //@ts-ignore
   const routeAccessible = getProtectedRoutes(route);
-
   const isAuthenticated = Boolean(token && userId);
 
   return isAuthenticated ? (
