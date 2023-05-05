@@ -222,8 +222,9 @@ export default function DeviceLocks() {
             setSnackbar({
                 open: true,
                 variant: "success",
-                message: "Vehicle locked successfully.",
+                message: "Vehicle un-locked successfully.",
             });
+            mutateDeviceLockInfo({ pageNo: page + 1, pageSize: rowsPerPage });
         },
         onError: () =>
             setSnackbar({
@@ -240,16 +241,18 @@ export default function DeviceLocks() {
         return client.delete(`${transport}/drivers/${deleteId}`);
     }
 
-    function vehicleDeviceLocks(driverId: any): any {
-        return client.get(`${transport}/drivers/${driverId}/verify/`);
+    function vehicleDeviceLocks(deviceId: any): any {
+        return client.get(`${transport}/locks/${deviceId}/unlock`);
     }
 
     function handleDelete() {
         mutateDeleteUser();
     }
 
-    function verifyDriverHndlr(deviceId: any) {
-        mutateUnlockDevice(deviceId);
+    function verifyDriverHndlr(info: any) {
+        const { id } = info;
+        if (id)
+            mutateUnlockDevice(id);
     }
 
     function codeInputHnldr() {
@@ -259,8 +262,6 @@ export default function DeviceLocks() {
     function closeHndlr() {
         setTripFilterModalState(false);
     }
-
-    console.log({ tripFilterModalState });
     return (
         <Box style={{ padding: "20px 20px 20px 40px" }}>
             <Snackbar
@@ -320,12 +321,12 @@ export default function DeviceLocks() {
                         shouldShowActionMenu={false}
                     />
                     <TableBody>
-                        {false ? (
+                        {isInspectionLoading ? (
                             <TableCell colSpan={8}>
                                 <LoadingScreen />
                             </TableCell>
-                        ) : (Array.isArray(deviceLocksData?.results) && (deviceLocksData?.results.length)) ? (
-                            deviceLocksData?.results.map((info: any, index: number) => {
+                        ) : (Array.isArray(inspectionResp?.results) && (inspectionResp?.results.length)) ? (
+                            inspectionResp?.results.map((info: any, index: number) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={0} key={index}>
                                         <TableCell className={classes.tableBodyCell}>
