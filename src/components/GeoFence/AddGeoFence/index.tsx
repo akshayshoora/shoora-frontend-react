@@ -40,7 +40,7 @@ class NewGeofenceType {
   "name": string = "";
   "latitude": number;
   "longitude": number;
-  "radius": string | number;
+  "radius": string | number = 1000;
   "organization_id": string;
   "branch_id": string;
 }
@@ -294,6 +294,28 @@ export default function AddGeoFence() {
                     isRequired={false}
                     onChange={(value) => handleFormGeofence("radius", value)}
                   />
+                  <Typography
+                    fontSize={16}
+                    style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+                  >
+                    Geofence Types
+                  </Typography>
+                  <Select
+                    fullWidth
+                    id="vehicle_id"
+                    size="small"
+                    displayEmpty
+                    style={{ marginBottom: 14, width: "100%", border: "1px solid #0000003b" }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    {[{ id: "loading", name: "Loading" }, { id: "un-loading", name: "Un-Loading" }].map((item: any, index: any) => (
+                      <MenuItem style={{ fontSize: 14 }} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                   <Typography
                     fontSize={16}
                     style={{

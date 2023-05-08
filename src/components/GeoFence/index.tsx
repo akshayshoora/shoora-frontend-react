@@ -296,7 +296,7 @@ export default function GeoFence() {
                     <TableCell align="left">
                       <Button
                         variant="contained"
-                        style={{ color: COLORS.WHITE }}
+                        style={{ color: COLORS.WHITE, whiteSpace:"nowrap" }}
                         onClick={(event: React.MouseEvent<HTMLButtonElement>) => openGeofenceDetails(event, item.id)}
                       >
                         View Details

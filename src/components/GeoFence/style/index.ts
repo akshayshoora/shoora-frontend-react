@@ -8,6 +8,7 @@ export default makeStyles({
   tableHeading: {
     "&.MuiTableCell-root": {
       padding: "12px 0 12px 16px",
+      whiteSpace: "nowrap"
     },
   },
   table: {
@@ -16,6 +17,9 @@ export default makeStyles({
       "& .MuiTableHead-root": {
         background: COLORS.BORDER_GREY,
       },
+    },
+    "& .MuiTableCell-head": {
+      whiteSpace: "nowrap"
     },
     border: "1px solid #e0e0e0",
     borderRadius: 4,
