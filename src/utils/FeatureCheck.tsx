@@ -19,18 +19,20 @@ export function CheckFeatureAccess(item: any) {
       item.toLowerCase() == "trip" ||
       item.toLowerCase() == "geofence-trips" ||
       item.toLowerCase() == "report" ||
-      item.toLowerCase() == "finance" ||
-      item.toLowerCase() == "fuel" ||
+      // item.toLowerCase() == "finance" ||
+      // item.toLowerCase() == "fuel" ||
       item.toLowerCase() == "geofence" ||
-      item.toLowerCase() == "coaching" ||
-      item.toLowerCase() == "job-card" ||
+      item.toLowerCase() == "lock-device" ||
+      // item.toLowerCase() == "coaching" ||
+      // item.toLowerCase() == "job-card" ||
       item.toLowerCase() == "tyre" ||
-      item.toLowerCase() == "maintenance" ||
+      item.toLowerCase() == "tyre-performance" ||
+      // item.toLowerCase() == "maintenance" ||
       item.toLowerCase() == "inspection"
     ) {
       return true;
     } else if (
-      user.allowed_features[j].feature.toLowerCase() == item.toLowerCase() || item.toLowerCase() == "inspection"
+      user.allowed_features[j].feature.toLowerCase() == item.toLowerCase()
     ) {
       return true;
     }
@@ -54,18 +56,20 @@ export function CheckRoutesAccess(item: any) {
       item.toLowerCase() == "geofence-trips" ||
       item.toLowerCase() == "report" ||
       item.toLowerCase() == "finance" ||
-      item.toLowerCase() == "fuel" ||
+      // item.toLowerCase() == "fuel" ||
       item.toLowerCase() == "geofence" ||
-      item.toLowerCase() == "coaching" ||
-      item.toLowerCase() == "job-card" ||
+      item.toLowerCase() == "lock-device" ||
+      // item.toLowerCase() == "coaching" ||
+      // item.toLowerCase() == "job-card" ||
       item.toLowerCase() == "tyre" ||
-      item.toLowerCase() == "maintenance" ||
+      item.toLowerCase() == "tyre-performance" ||
+      // item.toLowerCase() == "maintenance" ||
       item.toLowerCase() == "inspection"
     ) {
       return true;
     }
 
-    if (user.allowed_features[j].feature.toLowerCase() == item.toLowerCase() || item.toLowerCase() == "inspection") {
+    if (user.allowed_features[j].feature.toLowerCase() == item.toLowerCase()) {
       return true;
     }
   }

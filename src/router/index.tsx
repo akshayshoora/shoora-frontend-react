@@ -44,6 +44,7 @@ import { GeofenceDetails } from "components/GeoFence/GeofenceDetails";
 import PrivacyPolicy from "components/PrivacyPolicy";
 import TermsConditions from "components/TermsAndCondition";
 import Inspection from "components/Inspection";
+import DeviceLocks from "components/DeviceLocks";
 import { InspectionDetails } from "components/Inspection/InspectionDetails";
 
 //todo: Need to be updated
@@ -402,7 +403,7 @@ export default function AppRouter() {
           />
         }
       />
-{/* 
+      {/* 
       <Route
         path={`${AppPaths.TRIP}/alert/:tripId`}
         element={
@@ -468,10 +469,10 @@ export default function AppRouter() {
       />
 
       <Route
-        path={AppPaths.COACHING}
+        path={AppPaths.TYREPERFORMANCE}
         element={
           <ProtectedRoute
-            route={AppPaths.COACHING}
+            route={AppPaths.TYREPERFORMANCE}
             component={
               <>
                 <ErrorBoundary>
@@ -484,10 +485,10 @@ export default function AppRouter() {
       />
 
       <Route
-        path={`${AppPaths.COACHING}/:id`}
+        path={`${AppPaths.TYREPERFORMANCE}/:id`}
         element={
           <ProtectedRoute
-            route={AppPaths.TYRE}
+            route={AppPaths.TYREPERFORMANCE}
             component={
               <ErrorBoundary>
                 <TyrePerfomanceInfo />
@@ -642,6 +643,21 @@ export default function AppRouter() {
           />
         }
       />
+
+      <Route
+        path={`${AppPaths.LOCKDEVICE}`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.LOCKDEVICE}
+            component={
+              <ErrorBoundary>
+                <DeviceLocks />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+
 
       <Route
         path={"*"}

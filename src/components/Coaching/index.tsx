@@ -114,7 +114,7 @@ export default function Driver() {
 
   function openDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
     event.stopPropagation();
-    navigate(`/${AppPaths.COACHING}/${id}`);
+    navigate(`/${AppPaths.TYREPERFORMANCE}/${id}`);
   }
 
   function editDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
