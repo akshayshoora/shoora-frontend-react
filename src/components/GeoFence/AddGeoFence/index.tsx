@@ -42,6 +42,7 @@ class NewGeofenceType {
   "longitude": number;
   "radius": string | number = 1000;
   "organization_id": string;
+  "geofence_type_id": string;
   "branch_id": string;
 }
 
@@ -61,6 +62,17 @@ export default function AddGeoFence() {
   const navigate = useNavigate();
   const classes = useStyles();
   const { id: geofenceId } = useParams();
+
+  const { data: geofenceTypesList, isLoading: isGeofencetypeLoading } = useQuery(
+    ["geofence-types"],
+    () => getGeofenceTypeApiCall()
+  );
+
+  async function getGeofenceTypeApiCall() {
+    let getApiUrl = `${transport}/geofence-types`;
+    const response = await client.get(getApiUrl);
+    return response.data;
+  }
 
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -189,7 +201,6 @@ export default function AddGeoFence() {
 
   const isSaveButtonDisabled = !geofenceData.name || !geofenceData.radius;
 
-  // console.log({ sdfs: Number(geofenceData?.radius), center, polyAxis, geofenceType, setCenter, setLat, setLng });
   return (
     <Box className={classes.positionRelative}>
       <Snackbar
@@ -208,7 +219,7 @@ export default function AddGeoFence() {
       </Snackbar>
 
       <PageLoading
-        open={isAddingGeofence || isUpdatingGeofence}
+        open={isAddingGeofence || isUpdatingGeofence || isGeofencetypeLoading}
         loadingMessage={loadingMessage}
       />
 
@@ -302,15 +313,17 @@ export default function AddGeoFence() {
                   </Typography>
                   <Select
                     fullWidth
-                    id="vehicle_id"
+                    id="geofence_type_id"
                     size="small"
                     displayEmpty
+                    defaultValue={""}
+                    onChange={(e: any) => handleFormGeofence("geofence_type_id", e.target.value)}
                     style={{ marginBottom: 14, width: "100%", border: "1px solid #0000003b" }}
                   >
                     <MenuItem value="" disabled>
                       Select
                     </MenuItem>
-                    {[{ id: "loading", name: "Loading" }, { id: "un-loading", name: "Un-Loading" }].map((item: any, index: any) => (
+                    {(Array.isArray(geofenceTypesList?.results)) && geofenceTypesList?.results?.map((item: any, index: any) => (
                       <MenuItem style={{ fontSize: 14 }} value={item.id}>
                         {item.name}
                       </MenuItem>

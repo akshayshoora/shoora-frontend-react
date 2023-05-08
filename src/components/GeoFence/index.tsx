@@ -282,7 +282,7 @@ export default function GeoFence() {
                       </Box>
                     </TableCell>
                     <TableCell align="left">
-                      <Span fontType="secondary">{item.geofenceTypes}</Span>
+                      <Span fontType="secondary">{item?.geofence_type?.name}</Span>
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{item.address}</Span>

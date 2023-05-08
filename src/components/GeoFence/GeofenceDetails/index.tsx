@@ -103,7 +103,7 @@ export function GeofenceDetails() {
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Geofence Type:</Box>
-              <Box className={classes.bodyInfo}>-</Box>
+              <Box className={classes.bodyInfo}>{geofenceData?.geofence_type?.name}</Box>
             </Box>
             <Box className={classes.infoBodyWrapper}>
               <Box className={classes.bodyInfoTitle}>Address:</Box>
