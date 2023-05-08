@@ -74,6 +74,8 @@ export function InspectionDetails() {
     const classes = useStyles();
     const navigate = useNavigate();
     const [roleNameState, setRoleNameState] = useState("");
+    const [isImageOpen, setIsImageOpen] = useState(false);
+    const [clickedImage, setClickedImage] = useState("");
     const { user } = useAppContext();
 
     const { id } = useParams();
@@ -87,6 +89,10 @@ export function InspectionDetails() {
             return (await client.get(`${transport}/vehicle-inspections/${id}/`)).data;
         }
     }
+    const handleImageClick = (item: any) => {
+        setClickedImage(item);
+        setIsImageOpen(!isImageOpen);
+      };
 
     function GoToBack() {
         navigate(-1);
@@ -169,15 +175,28 @@ export function InspectionDetails() {
                                         src={item}
                                         alt={item.title}
                                         loading="lazy"
+                                        onClick={() => handleImageClick(item)}
                                     />
                                 ))}
+
                         </Box>
+                        {isImageOpen && (
+                           <div className={classes.popup}  onClick={handleImageClick}>
+                               <div >
+                             <img src={clickedImage} className={isImageOpen ? classes.popupImage : classes.clicked} />
+                             <button className={classes.popupCloseButton}>Close</button>
+                                 </div>
+                                   </div>
+                                   )}
+                        
                     </Grid>
                     <Grid xs={12} sm={12} lg={8} style={{ paddingLeft: 16 }}>
                         <InspectionChecklist inspectionId={id} />
                     </Grid>
                 </Grid>
+                
             </Box>
+            
         </Box>
     );
 }

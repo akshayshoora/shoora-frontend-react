@@ -70,5 +70,48 @@ export default makeStyles({
     height: "150px",
     width: "48%",
     marginBottom: "8px"
+  },
+  clicked: {
+    width: "100%",
+    position: "absolute",
+    margin:"auto",
+    left:"100px",
+    height: "100%"
+  },
+  popup: {
+    position: "fixed",
+    zIndex: 1,
+    paddingTop: "100px",
+    justifyContent:"center",
+    //right: "auto",
+    top: 0,
+    width: "80%",
+    height: "80%",
+    overflow: "auto",
+    backgroundColor: "rgba(0,0,0,0.9)",
+  },
+  popupImage: {
+    
+    display: "block",
+    margin: "auto",
+    width: "80%",
+    height: "50%",
+    objectFit:"contain",
+    
+  },
+  popupCloseButton: {
+    position: "absolute",
+    top: "15px",
+    right: "15px",
+    color: "#fff",
+    fontSize: "20px",
+    fontWeight: "bold",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    "&:hover": {
+      color: "#ccc",
+    },
   }
+
 });
