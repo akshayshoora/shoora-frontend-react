@@ -1,5 +1,6 @@
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import { InputAdornment } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import useStyles from "./style";
 import TextInput from "components/commonComponent/TextInput";
@@ -12,7 +13,8 @@ import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
 import Autocomplete from '@mui/material/Autocomplete';
 import Modal from "@mui/material/Modal";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 // API Call
 import client from "serverCommunication/client";
 import { useMutation, useQuery } from "react-query";
@@ -48,11 +50,10 @@ interface ITripFilterModal {
     applyFilterCallback: any;
 }
 
-const EnterCodeModal = (props: any) => {
-
+const PasswordModal = (props: any) => {
     const classes = useStyles();
     const [showPassword, setShowPassword] = useState(false);
-    const [userCodeState, setUserCodeState] = useState("");
+    const [userPasswordState, setUserPasswordState] = useState("");
 
 
     const unlockDeviceMutation = useMutation(unlockDeviceApiCall, {
@@ -78,7 +79,7 @@ const EnterCodeModal = (props: any) => {
     const { mutate: mutateUnlockDevice, isLoading: inProgressDeviceUnlock } = unlockDeviceMutation;
 
     function submitHanlder() {
-        mutateUnlockDevice(userCodeState);
+        mutateUnlockDevice(userPasswordState);
     }
 
     return (
@@ -95,7 +96,7 @@ const EnterCodeModal = (props: any) => {
                     variant="h6"
                     component="h2"
                 >
-                    Enter Code
+                    Authorize To Unlock
                     <i onClick={props.closeHndlr}>
                         <svg
                             width="24"
@@ -152,19 +153,43 @@ const EnterCodeModal = (props: any) => {
                     </i>
                 </Typography>
                 <Box className={classes.reportContent}>
-                    {props.applyingFilterProgress && <Box className={classes.loadingDiv}>
+                    {inProgressDeviceUnlock && <Box className={classes.loadingDiv}>
                         <CircularProgress />
                     </Box>}
                     <Grid container columnSpacing={3}>
-                        <Grid item xs={12} style={{ marginBottom: 16 }}>
-
-                            <TextInput
-                                label="Enter Code"
-                                placeholder=""
-                                style={{ marginBottom: 12 }}
-                                isRequired={true}
-                                value={userCodeState}
-                                onChange={(e: any) => { setUserCodeState(e.target.value) }}
+                        <Grid item xs={12} style={{ marginBottom: 24 }}>
+                            <Typography
+                                fontSize={16}
+                                style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
+                            >
+                                Enter Password
+                            </Typography>
+                            <TextField
+                                id="emails"
+                                name="emails"
+                                type={showPassword ? "text" : "password"}
+                                sx={{ width: "100%" }}
+                                size="small"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                value={userPasswordState}
+                                onChange={(e: any) => setUserPasswordState(e.target.value)}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment
+                                            position="end"
+                                            style={{ cursor: "pointer" }}
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? (
+                                                <VisibilityOffIcon />
+                                            ) : (
+                                                <VisibilityIcon />
+                                            )}
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
                         </Grid>
                         <Grid item style={{ marginTop: 0 }} xs={12}>
@@ -173,7 +198,7 @@ const EnterCodeModal = (props: any) => {
                                     className="gbtn"
                                     variant="contained"
                                     style={{ color: COLORS.WHITE }}
-                                    onClick={props.closeHndlr}
+                                    onClick={submitHanlder}
                                 >
                                     Submit
                                 </Button>
@@ -187,5 +212,5 @@ const EnterCodeModal = (props: any) => {
     )
 }
 
-export default EnterCodeModal;
+export default PasswordModal;
 

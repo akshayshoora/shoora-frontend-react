@@ -73,11 +73,24 @@ const TripIncidentModal = (props: ITripFilterModal) => {
 
     useEffect(() => {
         if (props.tripInfo) {
-            const { trip_ended_at, trip_started_at, vehicle_vin, vehicle_id } = props.tripInfo,
-                filterDetails = {
-                    vehicle_id, since: trip_started_at,
-                    until: trip_ended_at
-                };
+            const { trip_ended_at, trip_started_at, vehicle_vin, vehicle_id } = props.tripInfo;
+            let tripStartedAtDate = new Date(trip_started_at);
+            tripStartedAtDate.setHours(tripStartedAtDate.getHours() - 5);
+            tripStartedAtDate.setMinutes(tripStartedAtDate.getMinutes() - 30);
+
+            let tripEndAtDate = new Date(trip_ended_at);
+            tripEndAtDate.setHours(tripEndAtDate.getHours() - 5);
+            tripEndAtDate.setMinutes(tripEndAtDate.getMinutes() - 30);
+
+            const filterDetails = {
+                vehicle_id,
+                since: new Date(tripStartedAtDate).toISOString(),
+                until: new Date(tripEndAtDate).toISOString()
+            };
+
+            // console.log(new Date(trip_started_at));
+            // console.log(new Date(trip_started_at).toISOString());
+            // console.log(new Date(trip_started_at).toUTCString());
             setTripFilterState(filterDetails);
             mutateTripIncidentInfo({ ...filterDetails, pageNo: page + 1, pageSize: rowsPerPage });
         }

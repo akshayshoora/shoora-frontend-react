@@ -22,7 +22,7 @@ export function CheckFeatureAccess(item: any) {
       // item.toLowerCase() == "finance" ||
       // item.toLowerCase() == "fuel" ||
       item.toLowerCase() == "geofence" ||
-      // item.toLowerCase() == "lock-device" ||
+      item.toLowerCase() == "lock-device" ||
       // item.toLowerCase() == "coaching" ||
       // item.toLowerCase() == "job-card" ||
       // item.toLowerCase() == "tyre" ||

@@ -18,6 +18,8 @@ import CoachingIcon from "./CoachingIcon";
 import MaintenanceIcon from "./MaintenanceIcon";
 import JobCardIcon from "./JobCardIcon";
 import GeoFenceIcon from "./GeoFenceIcon";
+import LockIcon from "./LockIcon";
+
 
 interface IMenuProps extends ISideBarIconProps {
   icon: AppPaths;
@@ -65,7 +67,7 @@ export default function MenuIcons(props: IMenuProps) {
     case AppPaths.GEOFENCETRIPS:
       return <TripIcon isActive={isActive} />;
     case AppPaths.LOCKDEVICE:
-      return <VehicleIcon isActive={isActive} />;
+      return <LockIcon isActive={isActive} />;
     default:
       return <DashboardIcon isActive={isActive} />;
   }

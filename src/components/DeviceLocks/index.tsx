@@ -10,11 +10,9 @@ import TableCell from "@mui/material/TableCell";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import VerifiedIcon from '@mui/icons-material/Verified';
-
 import TableRow from "@mui/material/TableRow";
 import { SelectChangeEvent, Button } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -51,6 +49,8 @@ import {
     getDateTime,
 } from "utils/calenderUtils";
 import EnterCodeModal from "./EnterCodeModal";
+import PasswordModal from "./PasswordModal";
+
 
 export default function DeviceLocks() {
     const [deleteId, setDeleteId] = React.useState<string>("");
@@ -58,6 +58,11 @@ export default function DeviceLocks() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [tripFilterModalState, setTripFilterModalState] = React.useState(false);
+    const [passwordModalState, setPasswordModalState] = React.useState({
+        showModal: false,
+        deviceInfo: undefined
+    });
+    const [deviceLocksListState, setDeviceLocksListState] = React.useState<any>([]);
     // const { data: inspectionRespOld, isLoading } = useQuery(
     //     ["inspections"], getInspectionApiCallOld
     // );
@@ -133,8 +138,8 @@ export default function DeviceLocks() {
 
     const actionMenuItems: MenuType[] = [
         {
-            label: "More Info",
-            icon: <InfoOutlinedIcon />,
+            label: "Unlock history",
+            icon: <LockOpenIcon />,
             onClick: openInspectionDetails,
             access: true,
         }
@@ -249,10 +254,15 @@ export default function DeviceLocks() {
         mutateDeleteUser();
     }
 
-    function verifyDriverHndlr(info: any) {
+    function unlockDeviceModalHndlr(info: any) {
         const { id } = info;
-        if (id)
-            mutateUnlockDevice(id);
+        if (id) {
+            // mutateUnlockDevice(id);
+            setPasswordModalState({
+                showModal: true,
+                deviceInfo: info
+            })
+        }
     }
 
     function codeInputHnldr() {
@@ -262,6 +272,42 @@ export default function DeviceLocks() {
     function closeHndlr() {
         setTripFilterModalState(false);
     }
+    function closePasswordModalHndlr() {
+        setPasswordModalState({
+            showModal: false,
+            deviceInfo: undefined
+        });
+    }
+
+    useEffect(() => {
+        const { results } = inspectionResp || {};
+        if (Array.isArray(results)) {
+            setDeviceLocksListState(results);
+        }
+    }, [inspectionResp]);
+
+    const showPasswordSnackbarCallback = React.useCallback((type: any, message: string, closeModal: boolean, selectedDeviceId: string) => {
+        setSnackbar({
+            open: true,
+            variant: type,
+            message,
+        });
+        if (closeModal) {
+            closePasswordModalHndlr();
+            if (selectedDeviceId) {
+                const updatedDeviceLocksListState = [...deviceLocksListState],
+                    indexOfDevice = deviceLocksListState.findIndex((item: any) => item.id == selectedDeviceId);
+                if (indexOfDevice > -1) {
+                    const deviceInfo = { ...deviceLocksListState[indexOfDevice] };
+                    deviceInfo.lock_status = "Operation in progress.";
+                    updatedDeviceLocksListState.splice(indexOfDevice, 1, deviceInfo);
+                    setDeviceLocksListState(updatedDeviceLocksListState);
+                }
+
+            }
+        }
+    }, [deviceLocksListState]);
+
     return (
         <Box style={{ padding: "20px 20px 20px 40px" }}>
             <Snackbar
@@ -282,6 +328,14 @@ export default function DeviceLocks() {
                 tripFilterModalState && <EnterCodeModal
                     isOpenFilterModal={tripFilterModalState}
                     closeHndlr={closeHndlr}
+                />
+            }
+            {
+                passwordModalState.showModal && <PasswordModal
+                    isOpenFilterModal={passwordModalState.showModal}
+                    closeHndlr={closePasswordModalHndlr}
+                    showSnackbarCallback={showPasswordSnackbarCallback}
+                    deviceInfo={passwordModalState.deviceInfo}
                 />
             }
             {openDelete && (
@@ -318,15 +372,15 @@ export default function DeviceLocks() {
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        shouldShowActionMenu={false}
+                        shouldShowActionMenu={true}
                     />
                     <TableBody>
                         {isInspectionLoading ? (
                             <TableCell colSpan={8}>
                                 <LoadingScreen />
                             </TableCell>
-                        ) : (Array.isArray(inspectionResp?.results) && (inspectionResp?.results.length)) ? (
-                            inspectionResp?.results.map((info: any, index: number) => {
+                        ) : (Array.isArray(deviceLocksListState) && (deviceLocksListState.length)) ? (
+                            deviceLocksListState.map((info: any, index: number) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={0} key={index}>
                                         <TableCell className={classes.tableBodyCell}>
@@ -342,18 +396,18 @@ export default function DeviceLocks() {
                                             >Show Address</Button>
                                         </TableCell>
                                         <TableCell>
-                                            {(info?.lock_status === "locked") ? <Button
+                                            {(info?.lock_status !== "locked") ? <Button
                                                 size="small"
                                                 variant="outlined"
                                                 color="primary"
                                                 // variant="contained"
                                                 // style={{ background: "#2e7d32" }}
-                                                onClick={() => verifyDriverHndlr(info)}
+                                                onClick={() => unlockDeviceModalHndlr(info)}
                                             >
                                                 <LockOpenIcon sx={{ mr: 0.5 }} fontSize="small" />
                                                 Unlock
                                             </Button> : <Span fontType="secondary">
-                                                Unlocked
+                                                {info?.lock_status}
                                             </Span>}
 
                                         </TableCell>
@@ -364,17 +418,9 @@ export default function DeviceLocks() {
                                                 </IconButton>
                                             </Tooltip>
                                         </TableCell>
-                                        {/* <TableCell>
-                                            <Span fontType="secondary"> {info?.total_vehicle_score || "-"}</Span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Span fontType="secondary">
-                                                {info?.total_penalty_amount || "-"}
-                                            </Span>
-                                        </TableCell>
                                         <TableCell>
                                             <ActionMenu menu={actionMenuItems} id={info?.id} />
-                                        </TableCell> */}
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })

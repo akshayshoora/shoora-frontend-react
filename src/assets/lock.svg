@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="51" height="63" viewBox="0 0 51 63">
+  <g id="Group_36897" data-name="Group 36897" transform="translate(13686.5 -2395.5)">
+    <g id="lock" transform="translate(-13693 2395)">
+      <path id="Path_20081" data-name="Path 20081" d="M44,23V14A12,12,0,0,0,32,2h0A12,12,0,0,0,20,14v9" fill="none" stroke="#7a4700" stroke-linecap="square" stroke-miterlimit="10" stroke-width="3"/>
+      <path id="Path_20082" data-name="Path 20082" d="M51,62H13a5,5,0,0,1-5-5V33a5,5,0,0,1,5-5H51a5,5,0,0,1,5,5V57a5,5,0,0,1-5,5Z" fill="none" stroke="#7a4700" stroke-linecap="square" stroke-miterlimit="10" stroke-width="3"/>
+      <line id="Line_785" data-name="Line 785" y2="6" transform="translate(32 48)" fill="none" stroke="#7a4700" stroke-linecap="square" stroke-miterlimit="10" stroke-width="3"/>
+      <circle id="Ellipse_3601" data-name="Ellipse 3601" cx="6" cy="6" r="6" transform="translate(26 36)" fill="none" stroke="#7a4700" stroke-linecap="square" stroke-miterlimit="10" stroke-width="3"/>
+    </g>
+  </g>
+</svg>
