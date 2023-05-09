@@ -4,6 +4,13 @@ import {
     Snackbar,
 } from "@mui/material";
 import * as React from "react";
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
+import TripFilterModal from "./InspectionFilters";
+import Trip from "components/Trip";
+import FilterListIcon from '@mui/icons-material/FilterList';
+import {  monitor } from "constants/RouteMiddlePath";
 import Box from "@mui/material/Box";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -49,6 +56,7 @@ import {
 
 export default function Inspection() {
     const [deleteId, setDeleteId] = React.useState<string>("");
+    const [openTrip, setOpenTrip] = React.useState<boolean>(false);
     const [searchText, setSearchText] = React.useState("");
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -63,6 +71,7 @@ export default function Inspection() {
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("drivers");
     const [openDelete, setOpenDelete] = React.useState<boolean>(false);
+    const [tripFilterModalState, setTripFilterModalState] = React.useState(false);
     const { user } = useAppContext();
 
     const isAdd = actionAccess(AppPaths.DRIVERS, Actions.ADD);
@@ -70,6 +79,7 @@ export default function Inspection() {
     const isDelete = actionAccess(AppPaths.DRIVERS, Actions.DELETE);
 
     const navigate = useNavigate();
+    const tripFilterRef = React.useRef<any>(undefined);
 
     const classes = useStyles();
 
@@ -124,6 +134,16 @@ export default function Inspection() {
         event.stopPropagation();
         navigate(`/${AppPaths.TYRE}/${SubPaths.EDIT}/${id}`);
     }
+    function applyFilterHndlr() {
+        setTripFilterModalState(!tripFilterModalState);
+      }
+      function closeFilterModalHndlr(event: any, reason: any) {
+        if (reason === "backdropClick") {
+          return;
+        }
+        setTripFilterModalState(false);
+      }
+      const handleCloseTrip = () => setOpenTrip(false);
 
     const actionMenuItems: MenuType[] = [
         {
@@ -133,6 +153,7 @@ export default function Inspection() {
             access: true,
         }
     ];
+    
 
     //Api Call For Insepction Details
     const inspectionDetailsMutation = useMutation(getInspectionApiCall, {
@@ -153,6 +174,16 @@ export default function Inspection() {
         return response.data;
     }
     const { mutate: mutateInspectionInfo, isLoading: isInspectionLoading, data: inspectionResp } = inspectionDetailsMutation;
+    
+    
+    
+    function applyTripFilterHndlr(filterDetails: any) {
+        tripFilterRef.current = filterDetails;
+        mutateInspectionInfo({ ...filterDetails, pageNo: 1, pageSize: rowsPerPage });
+        if (filterDetails?.vehicle_id) {
+          mutateInspectionInfo(filterDetails);
+        }
+      }
     const headCells: any = [
         {
             id: "vehicle_no",
@@ -289,6 +320,15 @@ export default function Inspection() {
                     handleDelete={handleDelete}
                 />
             )}
+            {tripFilterModalState && (
+        <TripFilterModal
+          isOpenFilterModal={tripFilterModalState}
+          closeFilterModalHndlr={closeFilterModalHndlr}
+          applyingFilterProgress={isInspectionLoading}
+          appliedFilterDetails={tripFilterRef.current}
+          applyFilterCallback={applyTripFilterHndlr}
+        />
+      )}
             <Box style={{ display: "flex", justifyContent: "space-between" }}>
                 <Heading>Inspection</Heading>
                 <Box style={{ display: "flex", alignItems: "center" }}>
@@ -306,8 +346,16 @@ export default function Inspection() {
                         <AddIcon />
                         Add Claim
                     </Button> */}
+                    <Tooltip title="Apply Filter">
+            <IconButton onClick={applyFilterHndlr}>
+              <Badge color="success" variant="dot" invisible={!tripFilterRef.current}>
+                <FilterListIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
                 </Box>
             </Box>
+            
             <Box className={classes.root}>
                 <Table className={classes.table}>
                     <TableHeader
