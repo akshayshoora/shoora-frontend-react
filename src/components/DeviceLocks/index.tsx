@@ -447,7 +447,7 @@ export default function DeviceLocks() {
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell>
-                                            <ActionMenu menu={actionMenuItems} id={info?.id} />
+                                            <ActionMenu menu={actionMenuItems} id={info?.lock_device_id} />
                                         </TableCell>
                                     </TableRow>
                                 );
