@@ -348,6 +348,14 @@ export default function DeviceLocks() {
         mutateShowAddress(deviceId);
     }
 
+    function closeCopyAlertHndlr() {
+        setShowCopyAlertState({
+            showAlert: false,
+            unlockCode: undefined,
+            vehicle: undefined
+        })
+    }
+
     return (
         <Box style={{ padding: "20px 20px 20px 40px" }}>
             <Snackbar
@@ -400,8 +408,9 @@ export default function DeviceLocks() {
                 </Box>
             </Box>
             {showCopyAlertState.showAlert && <Box style={{ marginTop: 12 }}>
-                <Alert severity="success" onClose={() => { }}>
-                    Use code to {showCopyAlertState?.unlockCode} to unlock this device Vehicle {showCopyAlertState?.vehicle}.
+                <Alert severity="success" onClose={closeCopyAlertHndlr}>
+                    <span style={{ fontSize: "16px" }}>Use code to {showCopyAlertState?.unlockCode} to unlock the device on Vehicle {showCopyAlertState?.vehicle}.
+                    </span>
                 </Alert>
             </Box>}
             <Box className={classes.root}>

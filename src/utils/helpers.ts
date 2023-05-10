@@ -14,6 +14,7 @@ export async function latLongToPlace(
     axios
       .get(URL)
       .then(function (response) {
+        console.log({ response });
         if (shortName) {
           resolve(
             response.data.results[0].address_components[1]?.long_name
