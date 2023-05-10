@@ -62,16 +62,20 @@ const PasswordModal = (props: any) => {
             const { id } = props.deviceInfo || {};
             props.showSnackbarCallback("success", "Device unlocked successfully.", true, id);
         },
-        onError: () => {
-            const { id } = props.deviceInfo || {};
-            props.showSnackbarCallback("error", "Error while unlocking device.", false, id);
+        onError: (error: any) => {
+            const { detail } = error?.response?.data || {};
+            if (detail) {
+                props.showSnackbarCallback("error", detail, false, undefined);
+            } else {
+                props.showSnackbarCallback("error", "Error while unlocking device.", false, undefined);
+            }
         }
     });
     async function unlockDeviceApiCall(password: any) {
         const { id } = props.deviceInfo || {};
         if (id) {
-            const payload = { password, deviceId: id };
-            const response = await client.post(`${monitor}/trips/download-haults`, payload);
+            const payload = { password };
+            const response = await client.post(`${transport}/locks/${id}/unlock/`, payload);
             return response.data;
         }
 

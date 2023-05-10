@@ -45,6 +45,7 @@ import PrivacyPolicy from "components/PrivacyPolicy";
 import TermsConditions from "components/TermsAndCondition";
 import Inspection from "components/Inspection";
 import DeviceLocks from "components/DeviceLocks";
+import DeviceUnlockHistory from "components/DeviceUnlockHistory";
 import { InspectionDetails } from "components/Inspection/InspectionDetails";
 
 //todo: Need to be updated
@@ -652,6 +653,19 @@ export default function AppRouter() {
             component={
               <ErrorBoundary>
                 <DeviceLocks />
+              </ErrorBoundary>
+            }
+          />
+        }
+      />
+      <Route
+        path={`${AppPaths.LOCKDEVICE}/:id`}
+        element={
+          <ProtectedRoute
+            route={AppPaths.LOCKDEVICE}
+            component={
+              <ErrorBoundary>
+                <DeviceUnlockHistory />
               </ErrorBoundary>
             }
           />

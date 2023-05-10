@@ -49,13 +49,10 @@ interface ITripFilterModal {
 }
 
 const EnterCodeModal = (props: any) => {
-
     const classes = useStyles();
-    const [showPassword, setShowPassword] = useState(false);
     const [userCodeState, setUserCodeState] = useState("");
 
-
-    const unlockDeviceMutation = useMutation(unlockDeviceApiCall, {
+    const unlockDeviceWithCodeMutation = useMutation(unlockDeviceWithCodeApiCall, {
         onSuccess: () => {
             //Hanlder DEvice Error
             const { id } = props.deviceInfo || {};
@@ -66,19 +63,32 @@ const EnterCodeModal = (props: any) => {
             props.showSnackbarCallback("error", "Error while unlocking device.", false, id);
         }
     });
-    async function unlockDeviceApiCall(password: any) {
+    async function unlockDeviceWithCodeApiCall(code: any) {
         const { id } = props.deviceInfo || {};
         if (id) {
-            const payload = { password, deviceId: id };
-            const response = await client.post(`${monitor}/trips/download-haults`, payload);
+            const codeArray = code.split("-");
+            const payload = {
+                day: codeArray[0],
+                month: codeArray[1],
+                hr: codeArray[2]
+            };
+            const response = await client.post(`${transport}/locks/${id}/passcode/`, payload);
             return response.data;
         }
-
     }
-    const { mutate: mutateUnlockDevice, isLoading: inProgressDeviceUnlock } = unlockDeviceMutation;
+    const { mutate: mutateUnlockDeviceWithCode, isLoading: inProgressDeviceUnlock } = unlockDeviceWithCodeMutation;
 
     function submitHanlder() {
-        mutateUnlockDevice(userCodeState);
+        mutateUnlockDeviceWithCode(userCodeState);
+    }
+
+    function onChangeCodeHndlr(event: any) {
+        const { value } = event.target;
+        let updatedValue = value;
+        if (updatedValue.length === 2 || updatedValue.length === 5) {
+            updatedValue = updatedValue + "-";
+        }
+        setUserCodeState(updatedValue);
     }
 
     return (
@@ -95,7 +105,7 @@ const EnterCodeModal = (props: any) => {
                     variant="h6"
                     component="h2"
                 >
-                    Enter Code
+                    Enter Code To Unlock
                     <i onClick={props.closeHndlr}>
                         <svg
                             width="24"
@@ -152,19 +162,31 @@ const EnterCodeModal = (props: any) => {
                     </i>
                 </Typography>
                 <Box className={classes.reportContent}>
-                    {props.applyingFilterProgress && <Box className={classes.loadingDiv}>
+                    {inProgressDeviceUnlock && <Box className={classes.loadingDiv}>
                         <CircularProgress />
                     </Box>}
                     <Grid container columnSpacing={3}>
                         <Grid item xs={12} style={{ marginBottom: 16 }}>
 
-                            <TextInput
-                                label="Enter Code"
-                                placeholder=""
-                                style={{ marginBottom: 12 }}
-                                isRequired={true}
+                            <Typography
+                                fontSize={16}
+                                style={{ fontWeight: 200, marginBottom: 8, marginRight: 2 }}
+                            >
+                                Enter Code
+                            </Typography>
+                            <TextField
+                                id="unlock-code"
+                                name=""
+                                type={"text"}
+                                sx={{ width: "100%" }}
+                                size="small"
+                                helperText="Code format eg. 22-22-22"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                inputProps={{ maxLength: 8 }}
                                 value={userCodeState}
-                                onChange={(e: any) => { setUserCodeState(e.target.value) }}
+                                onChange={onChangeCodeHndlr}
                             />
                         </Grid>
                         <Grid item style={{ marginTop: 0 }} xs={12}>
@@ -173,7 +195,7 @@ const EnterCodeModal = (props: any) => {
                                     className="gbtn"
                                     variant="contained"
                                     style={{ color: COLORS.WHITE }}
-                                    onClick={props.closeHndlr}
+                                    onClick={submitHanlder}
                                 >
                                     Submit
                                 </Button>

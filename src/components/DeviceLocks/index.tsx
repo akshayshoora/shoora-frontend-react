@@ -50,6 +50,7 @@ import {
 } from "utils/calenderUtils";
 import EnterCodeModal from "./EnterCodeModal";
 import PasswordModal from "./PasswordModal";
+import { latLongToPlace, sanitizeURL } from "utils/helpers";
 
 
 export default function DeviceLocks() {
@@ -57,7 +58,10 @@ export default function DeviceLocks() {
     const [searchText, setSearchText] = React.useState("");
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [tripFilterModalState, setTripFilterModalState] = React.useState(false);
+    const [tripFilterModalState, setTripFilterModalState] = React.useState({
+        showModal: false,
+        deviceInfo: undefined
+    });
     const [passwordModalState, setPasswordModalState] = React.useState({
         showModal: false,
         deviceInfo: undefined
@@ -126,21 +130,21 @@ export default function DeviceLocks() {
         mutateDeviceLockInfo({ pageNo: 1, pageSize: event.target.value });
     };
 
-    function openInspectionDetails(event: React.MouseEvent<HTMLElement>, id: string) {
+    function unlockHistoryDetails(event: React.MouseEvent<HTMLElement>, id: string) {
         event.stopPropagation();
-        navigate(`/${AppPaths.INSPECTION}/${id}`);
+        navigate(`/${AppPaths.LOCKDEVICE}/${id}`);
     }
 
     function editDriverDetails(event: React.MouseEvent<HTMLElement>, id: string) {
         event.stopPropagation();
-        navigate(`/${AppPaths.TYRE}/${SubPaths.EDIT}/${id}`);
+        navigate(`/${AppPaths.TYRE}/${id}`);
     }
 
     const actionMenuItems: MenuType[] = [
         {
             label: "Unlock history",
             icon: <LockOpenIcon />,
-            onClick: openInspectionDetails,
+            onClick: unlockHistoryDetails,
             access: true,
         }
     ];
@@ -201,59 +205,6 @@ export default function DeviceLocks() {
         setSearchText(e);
     };
 
-    const deleteUserMutation = useMutation(deleteUser, {
-        onSuccess: () => {
-            handleClose();
-            setSnackbar({
-                open: true,
-                variant: "success",
-                message: "Driver deleted.",
-            });
-            setTimeout(() => {
-                navigate(`/${AppPaths.DRIVERS}`);
-            }, 1000);
-        },
-
-        onError: () =>
-            setSnackbar({
-                open: true,
-                variant: "error",
-                message: "Something went wrong.",
-            }),
-    });
-
-    const verifyDriverMutation = useMutation(vehicleDeviceLocks, {
-        onSuccess: (data: any, context: any) => {
-            setSnackbar({
-                open: true,
-                variant: "success",
-                message: "Vehicle un-locked successfully.",
-            });
-            mutateDeviceLockInfo({ pageNo: page + 1, pageSize: rowsPerPage });
-        },
-        onError: () =>
-            setSnackbar({
-                open: true,
-                variant: "error",
-                message: "Something went wrong.",
-            }),
-    });
-
-    const { mutate: mutateDeleteUser } = deleteUserMutation;
-    const { mutate: mutateUnlockDevice } = verifyDriverMutation;
-
-    function deleteUser() {
-        return client.delete(`${transport}/drivers/${deleteId}`);
-    }
-
-    function vehicleDeviceLocks(deviceId: any): any {
-        return client.get(`${transport}/locks/${deviceId}/unlock`);
-    }
-
-    function handleDelete() {
-        mutateDeleteUser();
-    }
-
     function unlockDeviceModalHndlr(info: any) {
         const { id } = info;
         if (id) {
@@ -264,13 +215,21 @@ export default function DeviceLocks() {
             })
         }
     }
-
-    function codeInputHnldr() {
-        setTripFilterModalState(true);
+    function unlockDeviceWithCodeBtnHnldr(info: any) {
+        const { id } = info;
+        if (id) {
+            setTripFilterModalState({
+                showModal: true,
+                deviceInfo: info,
+            });
+        }
     }
 
-    function closeHndlr() {
-        setTripFilterModalState(false);
+    function closeEnterCodeModalHndlr() {
+        setTripFilterModalState({
+            showModal: false,
+            deviceInfo: undefined,
+        });
     }
     function closePasswordModalHndlr() {
         setPasswordModalState({
@@ -302,11 +261,81 @@ export default function DeviceLocks() {
                     deviceInfo.lock_status = "Operation in progress.";
                     updatedDeviceLocksListState.splice(indexOfDevice, 1, deviceInfo);
                     setDeviceLocksListState(updatedDeviceLocksListState);
+                    setTimeout(() => {
+                        setPage(0);
+                        setRowsPerPage(10);
+                        mutateDeviceLockInfo({ pageNo: 1, pageSize: 10 });
+                    }, 1500);
                 }
 
             }
         }
     }, [deviceLocksListState]);
+
+    const showEnterCodeSnackbarCallback = React.useCallback((type: any, message: string, closeModal: boolean, selectedDeviceId: string) => {
+        setSnackbar({
+            open: true,
+            variant: type,
+            message,
+        });
+        if (closeModal) {
+            closeEnterCodeModalHndlr();
+            if (selectedDeviceId) {
+                const updatedDeviceLocksListState = [...deviceLocksListState],
+                    indexOfDevice = deviceLocksListState.findIndex((item: any) => item.id == selectedDeviceId);
+                if (indexOfDevice > -1) {
+                    const deviceInfo = { ...deviceLocksListState[indexOfDevice] };
+                    deviceInfo.lock_status = "Operation in progress.";
+                    updatedDeviceLocksListState.splice(indexOfDevice, 1, deviceInfo);
+                    setDeviceLocksListState(updatedDeviceLocksListState);
+                    setTimeout(() => {
+                        setPage(0);
+                        setRowsPerPage(10);
+                        mutateDeviceLockInfo({ pageNo: 1, pageSize: 10 });
+                    }, 2000);
+                }
+            }
+        }
+    }, [deviceLocksListState]);
+
+    //Show Address Mutation
+    const showAddressMutation = useMutation(showAddressApiCall, {
+        onSuccess: async (data: any, context: any) => {
+            const { data: addressResponse } = data;
+            if (data) {
+                let address = await latLongToPlace(
+                    addressResponse?.latitude,
+                    addressResponse?.longitude,
+                    false
+                );
+                const updatedDeviceLocksListState = [...deviceLocksListState],
+                    indexOfDevice = deviceLocksListState.findIndex((item: any) => item.id == context);
+                if (indexOfDevice > -1) {
+                    const deviceInfo = { ...deviceLocksListState[indexOfDevice] };
+                    deviceInfo.addressDetails = address;
+                    updatedDeviceLocksListState.splice(indexOfDevice, 1, deviceInfo);
+                    setDeviceLocksListState(updatedDeviceLocksListState);
+                }
+            }
+        },
+        onError: () =>
+            setSnackbar({
+                open: true,
+                variant: "error",
+                message: "Something went wrong.",
+            }),
+    });
+
+    const { mutate: mutateShowAddress, isLoading: isLoadingShowAddress } = showAddressMutation;
+
+    function showAddressApiCall(deviceId: any): any {
+        const response = client.get(`${transport}/locks/${deviceId}/address/`);
+        return response;
+    }
+
+    function showAddressHndlr(deviceId: any) {
+        mutateShowAddress(deviceId);
+    }
 
     return (
         <Box style={{ padding: "20px 20px 20px 40px" }}>
@@ -325,9 +354,11 @@ export default function DeviceLocks() {
                 </Alert>
             </Snackbar>
             {
-                tripFilterModalState && <EnterCodeModal
-                    isOpenFilterModal={tripFilterModalState}
-                    closeHndlr={closeHndlr}
+                tripFilterModalState.showModal && <EnterCodeModal
+                    isOpenFilterModal={tripFilterModalState.showModal}
+                    closeHndlr={closeEnterCodeModalHndlr}
+                    showSnackbarCallback={showEnterCodeSnackbarCallback}
+                    deviceInfo={tripFilterModalState.deviceInfo}
                 />
             }
             {
@@ -338,14 +369,6 @@ export default function DeviceLocks() {
                     deviceInfo={passwordModalState.deviceInfo}
                 />
             }
-            {openDelete && (
-                <DeleteModal
-                    open={openDelete}
-                    handleClose={handleClose}
-                    label="driver"
-                    handleDelete={handleDelete}
-                />
-            )}
             <Box style={{ display: "flex", justifyContent: "space-between" }}>
                 <Heading>Lock Device</Heading>
                 <Box style={{ display: "flex", alignItems: "center" }}>
@@ -375,7 +398,7 @@ export default function DeviceLocks() {
                         shouldShowActionMenu={true}
                     />
                     <TableBody>
-                        {isInspectionLoading ? (
+                        {(isInspectionLoading || isLoadingShowAddress) ? (
                             <TableCell colSpan={8}>
                                 <LoadingScreen />
                             </TableCell>
@@ -389,14 +412,19 @@ export default function DeviceLocks() {
                                             </Box>
                                         </TableCell>
                                         <TableCell align="left">
-                                            <Button
-                                                size="small"
-                                                variant="text"
-                                                style={{ fontWeight: "bold" }}
-                                            >Show Address</Button>
+                                            {
+                                                info?.addressDetails ? <Span>{info.addressDetails}</Span> :
+                                                    <Button
+                                                        size="small"
+                                                        variant="text"
+                                                        style={{ fontWeight: "bold" }}
+                                                        onClick={() => showAddressHndlr(info?.id)}
+                                                    >Show Address</Button>
+                                            }
+
                                         </TableCell>
                                         <TableCell>
-                                            {(info?.lock_status !== "locked") ? <Button
+                                            {(info?.lock_status === "Unlocked") ? <Button
                                                 size="small"
                                                 variant="outlined"
                                                 color="primary"
@@ -413,7 +441,7 @@ export default function DeviceLocks() {
                                         </TableCell>
                                         <TableCell>
                                             <Tooltip title="Keypad Unlock">
-                                                <IconButton onClick={codeInputHnldr}>
+                                                <IconButton onClick={() => unlockDeviceWithCodeBtnHnldr(info)}>
                                                     <KeyboardIcon />
                                                 </IconButton>
                                             </Tooltip>

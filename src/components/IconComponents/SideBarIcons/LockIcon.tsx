@@ -1,5 +1,5 @@
 import { ISideBarIconProps } from "./interfaces";
-import LockIcons from "../../../assets/lock.svg";
+import LockIcons from "../../../assets/lock.png";
 import useStyles from "./style";
 
 const LockIcon = (props: ISideBarIconProps) => {
