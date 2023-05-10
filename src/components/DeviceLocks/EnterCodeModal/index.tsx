@@ -53,14 +53,12 @@ const EnterCodeModal = (props: any) => {
     const [userCodeState, setUserCodeState] = useState("");
 
     const unlockDeviceWithCodeMutation = useMutation(unlockDeviceWithCodeApiCall, {
-        onSuccess: () => {
+        onSuccess: (data: any) => {
             //Hanlder DEvice Error
-            const { id } = props.deviceInfo || {};
-            props.showSnackbarCallback("success", "Device unlocked successfully.", true, id);
+            props.showSnackbarCallback("success", "Device unlocked successfully.", true, data?.passcode, props.deviceInfo);
         },
         onError: () => {
-            const { id } = props.deviceInfo || {};
-            props.showSnackbarCallback("error", "Error while unlocking device.", false, id);
+            props.showSnackbarCallback("error", "Error while unlocking device.", false, undefined, props.deviceInfo);
         }
     });
     async function unlockDeviceWithCodeApiCall(code: any) {

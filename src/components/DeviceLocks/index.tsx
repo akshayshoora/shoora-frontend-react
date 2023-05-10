@@ -62,6 +62,11 @@ export default function DeviceLocks() {
         showModal: false,
         deviceInfo: undefined
     });
+    const [showCopyAlertState, setShowCopyAlertState] = React.useState({
+        showAlert: false,
+        vehicle: undefined,
+        unlockCode: undefined
+    })
     const [passwordModalState, setPasswordModalState] = React.useState({
         showModal: false,
         deviceInfo: undefined
@@ -272,14 +277,14 @@ export default function DeviceLocks() {
         }
     }, [deviceLocksListState]);
 
-    const showEnterCodeSnackbarCallback = React.useCallback((type: any, message: string, closeModal: boolean, selectedDeviceId: string) => {
+    const showEnterCodeSnackbarCallback = React.useCallback((type: any, message: string, closeModal: boolean, unlockCode: any, deviceInfo: any) => {
         setSnackbar({
             open: true,
             variant: type,
             message,
         });
         if (closeModal) {
-            closeEnterCodeModalHndlr();
+            const { id: selectedDeviceId, vehicle }: any = deviceInfo || {};
             if (selectedDeviceId) {
                 const updatedDeviceLocksListState = [...deviceLocksListState],
                     indexOfDevice = deviceLocksListState.findIndex((item: any) => item.id == selectedDeviceId);
@@ -295,6 +300,12 @@ export default function DeviceLocks() {
                     }, 2000);
                 }
             }
+            closeEnterCodeModalHndlr();
+            setShowCopyAlertState({
+                showAlert: true,
+                vehicle,
+                unlockCode: unlockCode
+            });
         }
     }, [deviceLocksListState]);
 
@@ -372,7 +383,7 @@ export default function DeviceLocks() {
             <Box style={{ display: "flex", justifyContent: "space-between" }}>
                 <Heading>Lock Device</Heading>
                 <Box style={{ display: "flex", alignItems: "center" }}>
-                    <Box style={{ marginRight: isAdd ? 12 : 0 }}>
+                    <Box>
                         <SearchBox
                             onChangeFunc={handleSearchInput}
                             placeholder="Search by Device"
@@ -388,6 +399,11 @@ export default function DeviceLocks() {
                     </Button> */}
                 </Box>
             </Box>
+            {showCopyAlertState.showAlert && <Box style={{ marginTop: 12 }}>
+                <Alert severity="success" onClose={() => { }}>
+                    Use code to {showCopyAlertState?.unlockCode} to unlock this device Vehicle {showCopyAlertState?.vehicle}.
+                </Alert>
+            </Box>}
             <Box className={classes.root}>
                 <Table className={classes.table}>
                     <TableHeader
