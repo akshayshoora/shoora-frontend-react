@@ -222,7 +222,7 @@ export default function DeviceUnlockHistory() {
 
                                             </TableCell>
                                             <TableCell>
-                                                <Span>{info?.vehicle}</Span>
+                                                <Span>{info?.unlocked_by}</Span>
                                             </TableCell>
                                         </TableRow>
                                     );
