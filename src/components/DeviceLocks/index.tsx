@@ -449,7 +449,7 @@ export default function DeviceLocks() {
 
                                         </TableCell>
                                         <TableCell>
-                                            {(info?.lock_status === "Unlocked") ? <Button
+                                            {(info?.lock_status === "locked") ? <Button
                                                 size="small"
                                                 variant="outlined"
                                                 color="primary"
