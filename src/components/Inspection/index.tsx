@@ -7,7 +7,7 @@ import * as React from "react";
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
-import TripFilterModal from "./InspectionFilters";
+import InspectionFilterModal from "./InspectionFilters";
 import Trip from "components/Trip";
 import FilterListIcon from '@mui/icons-material/FilterList';
 import {  monitor } from "constants/RouteMiddlePath";
@@ -71,7 +71,7 @@ export default function Inspection() {
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<string>("drivers");
     const [openDelete, setOpenDelete] = React.useState<boolean>(false);
-    const [tripFilterModalState, setTripFilterModalState] = React.useState(false);
+    const [inspectionFilterModalState, setinspectionFilterModalState] = React.useState(false);
     const { user } = useAppContext();
 
     const isAdd = actionAccess(AppPaths.DRIVERS, Actions.ADD);
@@ -135,13 +135,13 @@ export default function Inspection() {
         navigate(`/${AppPaths.TYRE}/${SubPaths.EDIT}/${id}`);
     }
     function applyFilterHndlr() {
-        setTripFilterModalState(!tripFilterModalState);
+        setinspectionFilterModalState(!inspectionFilterModalState);
       }
       function closeFilterModalHndlr(event: any, reason: any) {
         if (reason === "backdropClick") {
           return;
         }
-        setTripFilterModalState(false);
+        setinspectionFilterModalState(false);
       }
       const handleCloseTrip = () => setOpenTrip(false);
 
@@ -320,9 +320,9 @@ export default function Inspection() {
                     handleDelete={handleDelete}
                 />
             )}
-            {tripFilterModalState && (
-        <TripFilterModal
-          isOpenFilterModal={tripFilterModalState}
+            {inspectionFilterModalState && (
+        <InspectionFilterModal
+          isOpenFilterModal={inspectionFilterModalState}
           closeFilterModalHndlr={closeFilterModalHndlr}
           applyingFilterProgress={isInspectionLoading}
           appliedFilterDetails={tripFilterRef.current}

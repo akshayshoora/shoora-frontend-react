@@ -40,7 +40,7 @@ const tripStatus = [
     }
 ]
 
-interface ITripFilterModal {
+interface IInspectionFilterModal {
     isOpenFilterModal: any;
     closeFilterModalHndlr: any;
     applyingFilterProgress: any;
@@ -48,8 +48,8 @@ interface ITripFilterModal {
     applyFilterCallback: any;
 }
 
-const TripFilterModal = (props: ITripFilterModal) => {
-    const [tripFilterModalState, setTripFilterModalState] = useState({
+const InspectionFilterModal = (props: IInspectionFilterModal) => {
+    const [inspectionFilterModalState, setinspectionFilterModalState] = useState({
         vehicle_id: "",
         vehicle_details: null,
         driver_id: "",
@@ -60,7 +60,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
     useEffect(() => {
         const { isOpenFilterModal, appliedFilterDetails } = props;
         if (isOpenFilterModal && appliedFilterDetails) {
-            setTripFilterModalState(appliedFilterDetails);
+            setinspectionFilterModalState(appliedFilterDetails);
         }
     }, [props.isOpenFilterModal, props.appliedFilterDetails]);
 
@@ -92,13 +92,13 @@ const TripFilterModal = (props: ITripFilterModal) => {
 
     function onChangeHndlr(event: React.ChangeEvent<HTMLInputElement>) {
         const { name, value } = event.target;
-        setTripFilterModalState(prevState => ({ ...prevState, [name]: value }));
+        setinspectionFilterModalState(prevState => ({ ...prevState, [name]: value }));
     }
 
     function onSelectVehicleHndlr(event: any, selectedValue: any) {
         const { id: vehicle_id } = selectedValue || {};
         if (vehicle_id) {
-            setTripFilterModalState(prevState => ({
+            setinspectionFilterModalState(prevState => ({
                 ...prevState, vehicle_id,
                 vehicle_details: selectedValue
             }));
@@ -108,7 +108,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
     function onSelectDriverHandler(event: any, selectedValue: any) {
         const { id: driver_id } = selectedValue || {};
         if (driver_id) {
-            setTripFilterModalState(prevState => ({
+            setinspectionFilterModalState(prevState => ({
                 ...prevState, driver_id,
                 driver_details: selectedValue
             }));
@@ -116,7 +116,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
     }
 
     function resetFilterHndlr() {
-        setTripFilterModalState((prevState: any) => ({
+        setinspectionFilterModalState((prevState: any) => ({
             ...prevState,
             vehicle_id: "",
             vehicle_details: null,
@@ -128,7 +128,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
         props.applyFilterCallback(null);
     }
     function applyFilterHndlr() {
-        props.applyFilterCallback(tripFilterModalState);
+        props.applyFilterCallback(inspectionFilterModalState);
     }
 
     return (
@@ -218,7 +218,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 id="vehicle_id"
                                 options={vehicleList?.results || []}
                                 loading={vehicleListLoading}
-                                value={tripFilterModalState.vehicle_details}
+                                value={inspectionFilterModalState.vehicle_details}
                                 onChange={onSelectVehicleHndlr}
                                 getOptionLabel={(option:any) => option?.vin}
                                 placeholder="Select"
@@ -239,7 +239,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 id="driver_id"
                                 options={driverList?.results || []}
                                 loading={driverListLoading}
-                                value={tripFilterModalState.driver_details}
+                                value={inspectionFilterModalState.driver_details}
                                 onChange={onSelectDriverHandler}
                                 getOptionLabel={(option:any) => option?.name}
                                 fullWidth={true}
@@ -267,7 +267,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={tripFilterModalState.since}
+                                value={inspectionFilterModalState.since}
                                 onChange={onChangeHndlr}
                             />
                         </Grid>
@@ -287,7 +287,7 @@ const TripFilterModal = (props: ITripFilterModal) => {
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
-                                value={tripFilterModalState.until}
+                                value={inspectionFilterModalState.until}
                                 onChange={onChangeHndlr}
                             />
                         </Grid>
@@ -314,5 +314,5 @@ const TripFilterModal = (props: ITripFilterModal) => {
     )
 }
 
-export default TripFilterModal;
+export default InspectionFilterModal;
 
