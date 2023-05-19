@@ -48,4 +48,14 @@ export default makeStyles({
     boxShadow: "0 0.75rem 1.5rem rgb(18 38 63 / 3%)",
     minHeight: "calc(100vh - 345px)",
   },
-});
+  formerror: {
+    color : "red",
+    marginBottom : "0.5rem", 
+    fontSize: "14px",
+    marginTop: "4px",
+    },
+    errorinput: {
+      border :"1px solid red"
+    }
+  });
+
