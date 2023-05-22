@@ -25,6 +25,7 @@ const style = {
     bgcolor: "background.paper",
     border: "1px solid #000",
     boxShadow: 24,
+    borderRadius: "8px"
 };
 
 interface IVehicleModal {
