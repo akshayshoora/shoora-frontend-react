@@ -83,7 +83,7 @@ export function TripModal(props: ITripModalProps) {
         lng: Number(trip.end_longitude),
       },
       map,
-      title: "Hello World!",
+      title: "",
     });
     return marker;
   };
