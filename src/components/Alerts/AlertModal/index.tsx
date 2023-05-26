@@ -68,7 +68,7 @@ export function AlertModal(props: IAlertModalProps) {
     let marker = new maps.Marker({
       position: { lat: Number(alert.latitude), lng: Number(alert.longitude) },
       map,
-      title: "Hello World!",
+      title: "",
     });
     return marker;
   };
