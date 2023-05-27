@@ -297,7 +297,7 @@ export default function Users() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(userList?.count / rowsPerPage)}
+          totalPages={isNaN(userList?.count) ? 0 :Math.ceil(userList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

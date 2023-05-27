@@ -237,6 +237,7 @@ export default function LiveView() {
                               {Array.isArray(visibleVehicleState) && visibleVehicleState.map(
                                 (item: any, index: number) => (
                                   <TableRow key={`device-${item.id}`}>
+                                    <td>
                                     <div
                                       className={
                                         item["video"] !== "online"
@@ -275,6 +276,7 @@ export default function LiveView() {
                                         </svg>
                                       </span>
                                     </div>
+                                    </td>
                                   </TableRow>
                                 )
                               )}
