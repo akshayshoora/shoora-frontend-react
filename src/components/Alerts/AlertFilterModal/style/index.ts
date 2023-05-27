@@ -76,8 +76,6 @@ export default makeStyles({
     backgroundColor: "#261F5A",
     alignContent: "center",
     color: "white",
-    borderTopLeftRadius: "8px",
-    borderTopRightRadius: "8px",
     padding: "10px 15px",
     "& i": {
       cursor: "pointer",
