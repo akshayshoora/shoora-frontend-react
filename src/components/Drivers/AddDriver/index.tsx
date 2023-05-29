@@ -359,9 +359,8 @@ export default function AddDriver() {
                   id="name"
                   {...register('name',{required : true})}
                   className={errors.name ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px",width:300,backgroundColor:"inherit"}}
+                  style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
                   />
-
                        {errors.name && <p className={classes.formerror}>Driver Name Is Required</p>}
               </Grid>
               <Grid item xs={6}>
@@ -371,7 +370,7 @@ export default function AddDriver() {
                   id="Phone Number"
                   {...register('phone_number',{required : true, pattern: phoneRegex})}  
                   className={errors.phone_number ? classes.errorinput : ''}                 
-                  style={{padding:"9px",fontSize:"16px",width:300 ,backgroundColor:"inherit"}}
+                  style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
                   />
                   {errors.phone_number?.type === 'required' && (
           <p className={classes.formerror}>Phone Number Is Required</p>
@@ -391,7 +390,7 @@ export default function AddDriver() {
                 <Select
                   {...register('vehicle_id',{required:true})}
                   className={errors.vehicle_id ? classes.errorinput : ''} 
-                  style={{padding:"2px",fontSize:"14px",width:320,backgroundColor:"inherit" }}
+                  style={{padding:"3px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
                   displayEmpty
                   size="small"
                 >
@@ -422,9 +421,7 @@ export default function AddDriver() {
                   id="name"
                   {...register('passport_number',{required : true})} 
                   className={errors.passport_number ? classes.errorinput : ''} 
-                  style={{padding:"9px",fontSize:"16px",width:300,backgroundColor:"inherit" }}
-                 
-                 
+                  style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
                   />
 
                        {errors.passport_number && <p className={classes.formerror}>Passport Number Is Required</p>}
@@ -447,7 +444,7 @@ export default function AddDriver() {
               type="date"
               {...register('passport_validity',{required:true})}
               className={errors.passport_validity ? classes.errorinput : ''} 
-              style={{padding:"9px",fontSize:"16px",width:300,backgroundColor:"inherit" }}
+              style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.8"}}
               />
             {errors.passport_validity && <p className={classes.formerror}> Passport Validity Is Required</p>}
           </Grid>
@@ -458,7 +455,7 @@ export default function AddDriver() {
                   id="Driving License Number"
                   {...register('driving_license_number',{required : true})}
                   className={errors.driving_license_number ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px", width:300,backgroundColor:"inherit" }}
+                  style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
                   />
 
                        {errors.driving_license_number && <p className={classes.formerror}>Driving License Is Required</p>}
@@ -476,7 +473,7 @@ export default function AddDriver() {
               //sx={{ width: "100%" }}
               {...register('driving_license_validity',{required:true})}
               className={errors.driving_license_validity ? classes.errorinput : ''} 
-              style={{padding:"9px",fontSize:"16px",width:300,backgroundColor:"inherit" }}
+              style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.8"}}
               
             /> 
             {errors.driving_license_validity && <p className={classes.formerror}> Driving License Validity Is Required</p>}
@@ -494,7 +491,7 @@ export default function AddDriver() {
               type="date"
               {...register('dob',{required:true})}
               className={errors.dob ? classes.errorinput : ''} 
-              style={{padding:"9px",fontSize:"16px",width:300,backgroundColor:"inherit" }}
+              style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.8"}}
               
             />
             {errors.dob && <p className={classes.formerror}>Date Of Birth Is Required</p> }

@@ -30,7 +30,6 @@ import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { useAppContext } from "ContextAPIs/appContext";
 import SelectField from "components/commonComponent/SelectField";
 import { auth } from "constants/RouteMiddlePath";
-import {useForm} from "react-hook-form";
 
 class NewUserType {
   "name": string = "";
@@ -45,8 +44,6 @@ class NewUserType {
 }
 
 export default function AddUser() {
-  const { register,handleSubmit, formState:{errors} } = useForm<NewUserType>();
-  const phoneRegex = /^[0-9]{10}$/;
   const [users, setUser] = useState<NewUserType>(new NewUserType());
   const { user } = useAppContext();
   const { data: roleList, isLoading: loadingRoleInfo } = useQuery(
@@ -128,10 +125,6 @@ export default function AddUser() {
   ) {
     setUser({ ...users, [key]: value });
   }
-  function handleBlur(event: React.FocusEvent<HTMLInputElement>) {
-
-
-  }
 
   function addUser(user: NewUserType) {
     return client.post(`${auth}/users/`, {
@@ -157,7 +150,7 @@ export default function AddUser() {
   const { mutate: mutateUpdateUser, isLoading: updatingUser } =
     updateUserMutation;
 
-  function onSubmit() {
+  function handleSubmit() {
     users.roles = users.role_ids;
     if (userId) {
       mutateUpdateUser(users);
@@ -185,7 +178,7 @@ export default function AddUser() {
   }
 
   const { name, email } = users;
-  //const isSaveButtonDisabled = !name || !email;
+  const isSaveButtonDisabled = !name || !email;
 
   const loadingMessage = isAddingUser
     ? "Adding User..."
@@ -236,82 +229,73 @@ export default function AddUser() {
         <Box className={classes.formContainer}>
           <Grid container spacing={3}>
             <Grid item xs={3}>
-            <Grid item xs={6} style={{ marginBottom: 24 }}>
-              <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Username * </label>
-                  <input type="Username"
-                  placeholder="Enter Username"
-                  id="Username"
-                  {...register('name',{required : true})}
-                  className={errors.name ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px",width:240,backgroundColor:"inherit"}}
-                  />
-
-                       {errors.name && <p className={classes.formerror}>Username Is Required</p>}
-              </Grid>
+              <TextInput
+                label="User Name"
+                placeholder="Enter User name"
+                style={{ marginBottom: 24 }}
+                value={users.name}
+                isRequired={true}
+                onChange={(value) => handleFormUser("name", value)}
+              />
             </Grid>
-            <Grid item xs={3}>
-            <Grid item xs={6} style={{ marginBottom: 24 }}>
-              <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Email * </label>
-                  <input type="Email"
+            {userId ? (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Email"
                   placeholder="Enter Email"
-                  id="Email"
-                  {...register('email',{required : true})}
-                  className={errors.email ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px",width:240,backgroundColor:"inherit"}}
-                  />
-
-                       {errors.email && <p className={classes.formerror}>Email Is Required</p>}
+                  style={{ marginBottom: 24 }}
+                  value={users.email}
+                  isRequired={false}
+                  disabled
+                  onChange={(value) => {}}
+                />
               </Grid>
-            </Grid>
-            <Grid item xs={3}>
-            <Grid item xs={6} style={{ marginBottom: 24 }}>
-              <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Contact Code * </label>
-                  <input type="Contact Code"
-                  placeholder="Enter Contact Code"
-                  id="Contact Code"
-                  {...register('contact_code',{required : true})}
-                  className={errors.contact_code ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px",width:240,backgroundColor:"inherit"}}
-                  />
-
-                       {errors.contact_code && <p className={classes.formerror}>Contact Code Is Required</p>}
+            ) : (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Email"
+                  placeholder="Enter Email"
+                  style={{ marginBottom: 24 }}
+                  value={users.email}
+                  isRequired={true}
+                  onChange={(value) => handleFormUser("email", value)}
+                />
               </Grid>
-            </Grid>
-            
+            )}
             <Grid item xs={3}>
-            <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Contact Number * </label>
-                  <input type="Contact Number"
-                  placeholder="Enter Contact Number"
-                  id="Contact Number"
-                  {...register('contact_number',{required : true, pattern: phoneRegex})}  
-                  className={errors.contact_number ? classes.errorinput : ''}                 
-                  style={{padding:"9px",fontSize:"16px",width:240 ,backgroundColor:"inherit"}}
-
-                  />
-                  {errors.contact_number?.type === 'required' && (
-          <p className={classes.formerror}>Contact Number Is Required</p>
-        )}
-        {errors.contact_number?.type === 'pattern' && (
-          <p className={classes.formerror}>Invalid Contact Number </p>
-        )}
+              <TextInput
+                label="Contact"
+                placeholder="Enter contact number"
+                regex={/[^0-9]/g}
+                style={{ marginBottom: 24 }}
+                value={users.contact_number}
+                isRequired={false}
+                onChange={(value) => handleFormUser("contact_number", value)}
+              />
             </Grid>
-            <Grid item xs={3}>
-            <Grid item xs={6} style={{ marginBottom: 24 }}>
-              <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Password * </label>
-                  <input type="password"
+            {!userId && (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Password"
                   placeholder="Enter Password"
-                  id="Password"
-                  {...register('password',{required : true})}
-                  className={errors.password ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px",width:240,backgroundColor:"inherit"}}
-                  />
-
-                       {errors.password && <p className={classes.formerror}>Password Is Required</p>}
+                  style={{ marginBottom: 24 }}
+                  value={users.password}
+                  isRequired={false}
+                  onChange={(value) => handleFormUser("password", value)}
+                />
+              </Grid>
+            )}
+            <Grid item xs={3}>
+              <TextInput
+                label="Contact Code"
+                placeholder="Enter Contact Code"
+                regex={/[^0-9]/g}
+                style={{ marginBottom: 24 }}
+                value={users.contact_code}
+                isRequired={false}
+                onChange={(value) => handleFormUser("contact_code", value)}
+              />
             </Grid>
-            </Grid>
-            
-           
-
             <Grid item xs={3}>
               <Typography
                 fontSize={16}
@@ -320,10 +304,18 @@ export default function AddUser() {
                 Select Roles
               </Typography>
               <Select
-                {...register('role_ids',{required:true})}
-                className={errors.role_ids ? classes.errorinput : ''} 
-                style={{padding:"2px",fontSize:"14px",width:240,backgroundColor:"inherit" }}
-                displayEmpty
+                multiple
+                fullWidth
+                id="demo-simple-select"
+                value={users.role_ids}
+                onChange={(e: any) =>
+                  handleFormUser(
+                    "role_ids",
+                    typeof e.target.value === "string"
+                      ? e.target.value.split(",")
+                      : e.target.value
+                  )
+                }
                 size="small"
               >
                 <MenuItem selected value="" disabled>
@@ -343,23 +335,32 @@ export default function AddUser() {
                   <MenuItem>Nothing to Select</MenuItem>
                 )}
               </Select>
-              {errors.role_ids && <div className={classes.formerror}>Role Is Required</div>}
             </Grid>
 
-            <Grid item xs={3}>
-            <Grid item xs={6} style={{ marginBottom: 24 }}>
-              <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Address * </label>
-                  <input type="address"
-                  placeholder="Enter Address"
-                  id="address"
-                  {...register('address',{required : true})}
-                  className={errors.address ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px",width:240,backgroundColor:"inherit"}}
-                  />
-
-                       {errors.address && <p className={classes.formerror}>Address Is Required</p>}
+            {userId && (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Address"
+                  placeholder="Enter address"
+                  style={{ marginBottom: 24 }}
+                  value={users.address}
+                  isRequired={false}
+                  onChange={(value) => handleFormUser("address", value)}
+                />
               </Grid>
-            </Grid>
+            )}
+            {!userId && (
+              <Grid item xs={3}>
+                <TextInput
+                  label="Address"
+                  placeholder="Enter address"
+                  style={{ marginBottom: 24 }}
+                  value={users.address}
+                  isRequired={false}
+                  onChange={(value) => handleFormUser("address", value)}
+                />
+              </Grid>
+            )}
           </Grid>
         </Box>
       </Box>
@@ -370,9 +371,9 @@ export default function AddUser() {
         </Button>
         <Button
           id="submit"
-          //variant={isSaveButtonDisabled ? "outlined" : "contained"}
-          onClick={handleSubmit(onSubmit)}
-          //disabled={isSaveButtonDisabled}
+          variant={isSaveButtonDisabled ? "outlined" : "contained"}
+          onClick={handleSubmit}
+          disabled={isSaveButtonDisabled}
         >
           Save
         </Button>
