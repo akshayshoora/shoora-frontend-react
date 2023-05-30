@@ -408,7 +408,7 @@ export default function Vehicles() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(vehicleList?.count / rowsPerPage)}
+          totalPages={isNaN(vehicleList?.count) ? 0 :Math.ceil(vehicleList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

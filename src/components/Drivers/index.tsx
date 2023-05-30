@@ -434,7 +434,7 @@ export default function Driver() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(driverList?.count / rowsPerPage)}
+          totalPages={isNaN(driverList?.count) ? 0 : Math.ceil(driverList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

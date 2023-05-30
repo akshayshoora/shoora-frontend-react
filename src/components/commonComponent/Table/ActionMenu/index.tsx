@@ -5,6 +5,8 @@ import Span from "components/commonComponent/Span";
 import COLORS from "../../../../constants/colors";
 import useStyles from "./style";
 import { useState } from "react";
+import { Item } from "@ionic/core/dist/types/components/item/item";
+import { indexOf } from "lodash";
 
 export type MenuType = {
   label: string;
@@ -58,11 +60,12 @@ export default function ActionMenu(props: IActionMenuProps) {
         }}
         open={showActions}
         onClose={handleClose}
-      >
+      >.
         {menu.map(
           (menuItem) =>
             menuItem.access == true && (
               <MenuItem
+              key={menuItem.label}
                 onClick={(event) => {
                   menuItem.onClick(event, props.id);
                   handleClose(event);
