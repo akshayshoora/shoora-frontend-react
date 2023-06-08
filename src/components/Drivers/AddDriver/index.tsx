@@ -13,8 +13,9 @@ import {
   FormHelperText
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useMutation, useQuery } from "react-query";
+import Dropzone, { useDropzone } from 'react-dropzone'
 import axios from "axios";
 import TextInput from "components/commonComponent/TextInput";
 import Avatar from '@mui/material/Avatar';
@@ -31,6 +32,7 @@ import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
 import DriverImage from "../../../assets/driver-img.png";
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface INewDriver {
   name: string | null;
@@ -67,6 +69,50 @@ export default function AddDriver() {
   const [driverImgFileState, setDriverImgFileState] = useState<any>("");
   const driverImgFileRef = useRef<any>(null);
   const [validationState, setValidationState] = useState<any>(null);
+  const [dropzoneFilesState, setDropzoneFilesState] = useState<any>([]);
+
+  const onDrop = useCallback((acceptedFiles: any) => {
+    const modifyUploadedFiles = acceptedFiles.map((file: any) => {
+      return Object.assign(file, {
+        preview: URL.createObjectURL(file),
+        // formattedSize: formatBytes(file.size),
+      })
+    });
+    setDropzoneFilesState([...dropzoneFilesState, ...modifyUploadedFiles]);
+  }, [dropzoneFilesState]);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'image/*': []
+    },
+    onDrop
+  });
+
+  function removeFile(fileIndex: any) {
+    const updateFiles = [...dropzoneFilesState];
+    updateFiles.forEach((file: any) => URL.revokeObjectURL(file.preview));
+    const fileInfo = updateFiles[fileIndex];
+    updateFiles.splice(fileIndex, 1);
+    updateFiles.forEach((file: any) => Object.assign(file, {
+      preview: URL.createObjectURL(file),
+    }));
+    setDropzoneFilesState(updateFiles)
+  }
+
+  function formatBytes(bytes: any, decimals = 2) {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+  useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks, will run on unmount
+    return () => dropzoneFilesState.forEach((file: any) => URL.revokeObjectURL(file.preview));
+  }, []);
+
 
   async function getVehicle() {
     let getApiUrl = `${transport}/vehicles/?page=1&page_size=200`;
@@ -159,6 +205,17 @@ export default function AddDriver() {
         const { image } = deviceDetails || {};
         setDriverImgFileState(image || "");
         const driverData = setInitialDriverData(deviceDetails);
+        const { verification_images } = deviceDetails;
+        if (Array.isArray(verification_images)) {
+          const updateDropzoneImageState = verification_images.map((item: any) => (
+            {
+              preview: item.image,
+              id: item.id
+            }
+          ))
+          setDropzoneFilesState(updateDropzoneImageState);
+        }
+
         setDriver(prevState => ({
           ...prevState,
           ...driverData
@@ -181,33 +238,48 @@ export default function AddDriver() {
 
   function addDriver(user: INewDriver) {
     let payload = undefined;
-    if (driverImgFileRef.current) {
-      const formData = new FormData();
-      formData.append("image", driverImgFileRef.current);
-      Object.keys(user).forEach((itemKey) => {
-        if (user)
-          formData.append(itemKey, (user as any)[itemKey].toString());
-      });
-      payload = formData;
-    } else {
-      payload = { ...user };
-    }
+    // if (driverImgFileRef.current || ) {
+    const formData = new FormData();
+    formData.append("image", driverImgFileRef.current);
+    // console.log(driverImgFileRef.current);
+    // console.log(dropzoneFilesState);
+    dropzoneFilesState.forEach((item: any, index: any) => {
+      formData.append(`driver_verification_images[${index}]`, item);
+    });
+    // formData.append(`driver_verification_images`, dropzoneFilesState);
+    Object.keys(user).forEach((itemKey) => {
+      if (user)
+        formData.append(itemKey, (user as any)[itemKey].toString());
+    });
+    payload = formData;
+    // } else {
+    //   payload = { ...user };
+    // }
     return client.post(`${transport}/drivers/`, payload);
   }
 
   function updateDriver(user: INewDriver) {
     let payload = undefined;
-    if (driverImgFileRef.current) {
-      const formData = new FormData();
-      formData.append("image", driverImgFileRef.current);
-      Object.keys(user).forEach((itemKey: string) => {
-        if (user)
-          formData.append(itemKey, (user as any)[itemKey].toString());
-      })
-      payload = formData;
-    } else {
-      payload = { ...user };
+    // if (driverImgFileRef.current) {
+    const formData = new FormData();
+    const existingFilesId: any = dropzoneFilesState.filter((item: any) => item.id).map((item: any) => item.id);
+    formData.append("image", driverImgFileRef.current);
+    Object.keys(user).forEach((itemKey: string) => {
+      if (user)
+        formData.append(itemKey, (user as any)[itemKey].toString());
+    })
+    dropzoneFilesState.forEach((item: any, index: any) => {
+      if (!item.id) {
+        formData.append(`driver_verification_images[${index}]`, item);
+      }
+    });
+    if (Array.isArray(existingFilesId) && existingFilesId.length > 0) {
+      formData.append("persisting_image_ids", JSON.stringify(existingFilesId));
     }
+    payload = formData;
+    // } else {
+    //   payload = { ...user };
+    // }
     return client.patch(`/${transport}/drivers/${driverId}/`, payload);
   }
 
@@ -478,7 +550,7 @@ export default function AddDriver() {
               helperText={validationState?.driving_license_validity}
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={4} style={{ marginBottom: 24 }}>
             <Typography
               fontSize={16}
               style={{ fontWeight: 200, marginBottom: 8 }}
@@ -502,17 +574,55 @@ export default function AddDriver() {
               helperText={validationState?.dob}
             />
           </Grid>
-          {/* <Grid item xs={4}>
-            {driverId && <TextInput
-              label="Driver Score"
-              placeholder="Driver Score"
-              style={{ marginBottom: 24 }}
-              value={drivers.driver_score}
-              isRequired={false}
-              disabled={true}
-              onChange={(value) => handleFormDriver("driver_score", value)}
-            />}
-          </Grid> */}
+          <Grid item xs={12}>
+            <Typography
+              fontSize={16}
+              style={{ fontWeight: 200, marginBottom: 10, marginRight: 2 }}
+            >
+              Verify Driver
+            </Typography>
+            {/* <Dropzone onDrop={(acceptedFiles: any) => console.log(acceptedFiles)}>
+              {({ getRootProps, getInputProps }) => (
+                <section className={classes.uploadFileSection}>
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <p>Drag 'n' drop some files here, or click to select files</p>
+                  </div>
+                </section>
+              )}
+            </Dropzone> */}
+            <section className={classes.uploadFileSection}>
+              <div {...getRootProps({ className: classes.dropzone })}>
+                <input {...getInputProps()} />
+                <p>Drag 'n' drop some files here, or click to select files</p>
+              </div>
+              <aside className={classes.filesContainer}>
+                {dropzoneFilesState.map((file: any, index: any) => (
+                  <div className={classes.uploadedFilePreviewContainer}>
+                    <div style={{ display: "flex" }}>
+                      <img
+                        className={classes.verifyFileImg}
+                        src={file.preview}
+                        onLoad={() => { URL.revokeObjectURL(file.preview) }}
+                      />
+                      {/* <div className={classes.uploadFileInfo}>
+                            <div className={classes.uploadfileName}>
+                              {file.name}
+                            </div>
+                            <div className={classes.uploadfileSize}>
+                              {file.formattedSize}
+                            </div>
+                          </div> */}
+                    </div>
+                    <DeleteIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() => removeFile(index)} className={classes.deleteIcon} />
+                  </div>
+                ))}
+
+              </aside>
+            </section>
+          </Grid>
         </Grid>
       </Box>
 

@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   Alert,
   Snackbar,
+  Modal
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
@@ -24,6 +25,7 @@ import { stringCheckForTableCell } from "utils/StringCheck";
 import { useAppContext } from "ContextAPIs/appContext";
 import VerifiedIcon from '@mui/icons-material/Verified';
 import Download from "@mui/icons-material/Download";
+import PersonIcon from '@mui/icons-material/Person';
 import { getDateDisplayFormat } from "../../utils/calenderUtils";
 
 import {
@@ -42,13 +44,15 @@ import { DeleteModal } from "components/commonComponent/DeleteModal";
 import { actionAccess } from "utils/FeatureCheck";
 import { auth, transport } from "constants/RouteMiddlePath";
 import { getDateTime } from "utils/calenderUtils";
+import AssignDriverModal from "./AssignDriver";
 
+type ISnackbarVariant = "success" | "error" | "info";
 export default function Vehicles() {
   const [searchText, setSearchText] = React.useState("");
   const [page, setPage] = React.useState(0);
   const [deleteId, setDeleteId] = React.useState<string>("");
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: vehicleList, isLoading } = useQuery(
+  const { data: vehicleList, isLoading, refetch } = useQuery(
     ["vehicle", page, rowsPerPage, searchText],
     () => getVehicles(page, rowsPerPage, searchText)
   );
@@ -58,6 +62,10 @@ export default function Vehicles() {
     message: string;
   }>({ open: false, variant: "info", message: "" });
 
+  const [assignDriverModalState, setAssignDriverModalState] = React.useState<any>({
+    showModal: false,
+    assignVehicleDetails: undefined
+  })
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<string>("vehicle");
   const [openDelete, setOpenDelete] = React.useState<boolean>(false);
@@ -131,14 +139,30 @@ export default function Vehicles() {
     navigate(`/${AppPaths.VEHICLES}/${SubPaths.EDIT}/${id}`);
   }
 
+  function assignDriverModalHndlr(event: React.MouseEvent<HTMLElement>, id: string) {
+    event.stopPropagation();
+    console.log({ id });
+    const { results } = vehicleList;
+    if (Array.isArray(results)) {
+      const vehicleInfo = results?.find(item => item.id == id);
+      if (vehicleInfo) {
+        setAssignDriverModalState({
+          showModal: true,
+          assignVehicleDetails: vehicleInfo
+        })
+      }
+    }
+
+  }
+
   const actionMenuItems: MenuType[] = [
-    {
+    { label: "Assign Driver", icon: <PersonIcon />, onClick: assignDriverModalHndlr, access: true }
+    , {
       label: "More Info",
       icon: <InfoOutlinedIcon />,
       onClick: openVehicleDetails,
       access: true,
-    },
-    // { label: "Edit", icon: <EditOutlinedIcon />, onClick: editVehicleDetails,access:isEdit },
+    }
     // {
     //   label: "Delete",
     //   icon: <DeleteOutlineOutlinedIcon />,
@@ -170,6 +194,12 @@ export default function Vehicles() {
     {
       id: "verify_vehicle",
       label: "Verify Vehicle",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "assigned_driver",
+      label: "Assigned Driver",
       numeric: false,
       disablePadding: false,
     },
@@ -275,40 +305,84 @@ export default function Vehicles() {
     }
   }
 
+  const closeAssignModalHndlr = React.useCallback((event?: any, reason?: any) => {
+    if (reason === "backdropClick") {
+      return;
+    }
+    setAssignDriverModalState({
+      showModal: false,
+      assignVehicleDetails: ""
+    })
+  }, []);
+
+
+  const showSnackbarCallback = React.useCallback((type: ISnackbarVariant, message: string, closeModal: boolean) => {
+    setSnackbar({
+      open: true,
+      variant: type,
+      message,
+    });
+    if (closeModal) {
+      closeAssignModalHndlr();
+      setPage(0);
+      setTimeout(() => {
+        refetch();
+      }, 0);
+    }
+  }, [rowsPerPage, searchText]);
+
+  function GetDriverList({ drivesList }: any) {
+    if (Array.isArray(drivesList) && drivesList.length > 0) {
+      return (
+        <div className={classes.driverInfoContainer}>
+          {drivesList.map((item, index) => {
+            return (
+              <span className={classes.driverInfo} key={`driver-${index}-${item.id}`}>{item.name}{((index !== (drivesList.length - 1))) ? "," : ""}</span>
+            )
+          })}
+        </div>
+      )
+    } else {
+      return (<span className={classes.driverInfo}>N/A</span>)
+    }
+  }
+
+
   return (
-    <Box style={{ padding: "20px 20px 20px 40px" }}>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
+    <>
+      <Box style={{ padding: "20px 20px 20px 40px" }}>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
           onClose={() => setSnackbar({ ...snackbar, open: false })}
-          severity={snackbar.variant}
-          sx={{ width: "100%" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-      {openDelete && (
-        <DeleteModal
-          open={openDelete}
-          handleClose={handleClose}
-          handleDelete={handleDelete}
-          label="vehicle"
-        />
-      )}
-      <Box style={{ display: "flex", justifyContent: "space-between" }}>
-        <Heading>Vehicles</Heading>
-        <Box style={{ display: "flex", alignItems: "center" }}>
-          <Box style={{ marginRight: isAdd ? 12 : 0 }}>
-            <SearchBox
-              onChangeFunc={handleSearchInput}
-              placeholder="Search Vehicle Name"
-            />
-          </Box>
-          {/* {isAdd ? (
+          <Alert
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+            severity={snackbar.variant}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+        {openDelete && (
+          <DeleteModal
+            open={openDelete}
+            handleClose={handleClose}
+            handleDelete={handleDelete}
+            label="vehicle"
+          />
+        )}
+        <Box style={{ display: "flex", justifyContent: "space-between" }}>
+          <Heading>Vehicles</Heading>
+          <Box style={{ display: "flex", alignItems: "center" }}>
+            <Box style={{ marginRight: isAdd ? 12 : 0 }}>
+              <SearchBox
+                onChangeFunc={handleSearchInput}
+                placeholder="Search Vehicle Name"
+              />
+            </Box>
+            {/* {isAdd ? (
             <Button
               variant="contained"
               style={{ color:COLORS.WHITE }}
@@ -318,103 +392,120 @@ export default function Vehicles() {
               add vehicle
             </Button>
           ) : null}  */}
-          <Button
-            variant="contained"
-            sx={{ ml: 1 }}
-            style={{ background: "#1d6f42", color: COLORS.WHITE }}
-            onClick={downloadBtnHndlr}
-          >
-            <Download />
-          </Button>
+            <Button
+              variant="contained"
+              sx={{ ml: 1 }}
+              style={{ background: "#1d6f42", color: COLORS.WHITE }}
+              onClick={downloadBtnHndlr}
+            >
+              <Download />
+            </Button>
+          </Box>
         </Box>
-      </Box>
-      <Box className={classes.root}>
-        <Table className={classes.table}>
-          <TableHeader
-            headings={headCells}
-            order={order}
-            orderBy={orderBy}
-            onRequestSort={handleRequestSort}
-            shouldShowActionMenu={true}
-          />
-          <TableBody>
-            {(isLoading || inProgressVerifyVehicle) ? (
-              <TableCell colSpan={8}>
-                <LoadingScreen />
-              </TableCell>
-            ) : vehicleList?.results.length ? (
-              vehicleList?.results.map((vehicle: any, index: number) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={0} key={index}>
-                    <TableCell className={classes.tableBodyCell} align="left">
-                      <Box className={classes.columnView}>
-                        <Span>{vehicle.vin}</Span>
-                      </Box>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{vehicle.make}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{vehicle.model}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Span fontType="secondary">{getDateTime(vehicle.last_device_status_timestamp)}</Span>
-                    </TableCell>
-                    <TableCell align="left">
-                      {vehicle.can_verify && <Button
-                        size="small"
-                        variant="outlined"
-                        color="primary"
-                        // variant="contained"
-                        // style={{ background: "#2e7d32" }}
-                        onClick={() => verifyVehicleHndlr(vehicle?.id)}
-                      >
-                        <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
-                        Verify
-                      </Button>}
-                      {
-                        !vehicle?.can_verify && <Button
+        <Box className={classes.root}>
+          <Table className={classes.table}>
+            <TableHeader
+              headings={headCells}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              shouldShowActionMenu={true}
+            />
+            <TableBody>
+              {(isLoading || inProgressVerifyVehicle) ? (
+                <TableCell colSpan={8}>
+                  <LoadingScreen />
+                </TableCell>
+              ) : vehicleList?.results.length ? (
+                vehicleList?.results.map((vehicle: any, index: number) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={0} key={index}>
+                      <TableCell className={classes.tableBodyCell} align="left">
+                        <Box className={classes.columnView}>
+                          <Span>{vehicle.vin}</Span>
+                        </Box>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Span fontType="secondary">{vehicle.make}</Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Span fontType="secondary">{vehicle.model}</Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Span fontType="secondary">{getDateTime(vehicle.last_device_status_timestamp)}</Span>
+                      </TableCell>
+                      <TableCell align="left">
+                        {vehicle.can_verify && <Button
                           size="small"
                           variant="outlined"
-                          color="success"
-                          // style={{ borderColor: "#ed6c02" }}
-                          onClick={() => { }}
+                          color="primary"
+                          // variant="contained"
+                          // style={{ background: "#2e7d32" }}
+                          onClick={() => verifyVehicleHndlr(vehicle?.id)}
                         >
                           <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
-                          Verified
-                        </Button>
-                      }
-                    </TableCell>
-                    <TableCell align="left">
-                      <Box component="span" className={vehicle.status === 'moving' ? classes.successLabel : classes.errorLabel}>{vehicle.status}</Box>
-                      {/* <Span fontType="secondary">{
+                          Verify
+                        </Button>}
+                        {
+                          !vehicle?.can_verify && <Button
+                            size="small"
+                            variant="outlined"
+                            color="success"
+                            // style={{ borderColor: "#ed6c02" }}
+                            onClick={() => { }}
+                          >
+                            <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
+                            Verified
+                          </Button>
+                        }
+                      </TableCell>
+
+                      <TableCell align="left">
+                        <GetDriverList drivesList={vehicle.associated_drivers} />
+                      </TableCell>
+                      <TableCell align="left">
+                        <Box component="span" className={vehicle.status === 'moving' ? classes.successLabel : classes.errorLabel}>{vehicle.status}</Box>
+                        {/* <Span fontType="secondary">{
                         vehicle.status
                       }</Span> */}
-                    </TableCell>
+                      </TableCell>
 
-                    <TableCell align="left">
-                      <ActionMenu menu={actionMenuItems} id={vehicle.id} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            ) : (
-              <TableCell colSpan={8}>
-                <div className={classes.noDataView}>
-                  <Span fontType="secondary">No Data Found</Span>
-                </div>
-              </TableCell>
-            )}
-          </TableBody>
-        </Table>
-        <TableFooter
-          totalPages={isNaN(vehicleList?.count) ? 0 :Math.ceil(vehicleList?.count / rowsPerPage)}
-          currentPage={page + 1}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+                      <TableCell align="left">
+                        <ActionMenu menu={actionMenuItems} id={vehicle.id} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableCell colSpan={8}>
+                  <div className={classes.noDataView}>
+                    <Span fontType="secondary">No Data Found</Span>
+                  </div>
+                </TableCell>
+              )}
+            </TableBody>
+          </Table>
+          <TableFooter
+            totalPages={isNaN(vehicleList?.count) ? 0 : Math.ceil(vehicleList?.count / rowsPerPage)}
+            currentPage={page + 1}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+          />
+        </Box>
+      </Box >
+      <Modal
+        open={assignDriverModalState.showModal}
+        onClose={closeAssignModalHndlr}
+        aria-labelledby="child-modal-title"
+        aria-describedby="child-modal-description"
+      >
+        <AssignDriverModal
+          closeModalHndlr={closeAssignModalHndlr}
+          showSnackbarCallback={showSnackbarCallback}
+          vehicleDetails={assignDriverModalState.assignVehicleDetails}
         />
-      </Box>
-    </Box >
+      </Modal>
+    </>
   );
 }

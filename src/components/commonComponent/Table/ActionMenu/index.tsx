@@ -60,7 +60,7 @@ export default function ActionMenu(props: IActionMenuProps) {
         }}
         open={showActions}
         onClose={handleClose}
-      >.
+      >
         {menu.map(
           (menuItem) =>
             menuItem.access == true && (
