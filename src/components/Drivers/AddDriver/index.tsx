@@ -93,9 +93,14 @@ export default function AddDriver() {
     updateFiles.forEach((file: any) => URL.revokeObjectURL(file.preview));
     const fileInfo = updateFiles[fileIndex];
     updateFiles.splice(fileIndex, 1);
-    updateFiles.forEach((file: any) => Object.assign(file, {
-      preview: URL.createObjectURL(file),
-    }));
+    updateFiles.forEach((file: any) => {
+      if(file.id){
+          return file;
+      }
+      return Object.assign(file, {
+        preview: URL.createObjectURL(file)
+      })
+    });
     setDropzoneFilesState(updateFiles)
   }
 
@@ -269,8 +274,10 @@ export default function AddDriver() {
         formData.append(itemKey, (user as any)[itemKey].toString());
     })
     dropzoneFilesState.forEach((item: any, index: any) => {
+      let imgIndex = 0;
       if (!item.id) {
-        formData.append(`driver_verification_images[${index}]`, item);
+        formData.append(`driver_verification_images[${imgIndex}]`, item);
+        imgIndex++;
       }
     });
     if (Array.isArray(existingFilesId) && existingFilesId.length > 0) {
