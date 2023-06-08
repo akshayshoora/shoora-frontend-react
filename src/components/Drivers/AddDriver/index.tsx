@@ -94,8 +94,8 @@ export default function AddDriver() {
     const fileInfo = updateFiles[fileIndex];
     updateFiles.splice(fileIndex, 1);
     updateFiles.forEach((file: any) => {
-      if(file.id){
-          return file;
+      if (file.id) {
+        return file;
       }
       return Object.assign(file, {
         preview: URL.createObjectURL(file)
@@ -281,7 +281,13 @@ export default function AddDriver() {
       }
     });
     if (Array.isArray(existingFilesId) && existingFilesId.length > 0) {
-      formData.append("persisting_image_ids", JSON.stringify(existingFilesId));
+      existingFilesId.forEach((item: any, index: any) => {
+        let existImageIndex = 0;
+        if (!item.id) {
+          formData.append(`persisting_image_ids[${existImageIndex}]`, item);
+          existImageIndex++;
+        }
+      });
     }
     payload = formData;
     // } else {
