@@ -243,32 +243,28 @@ export default function AddDriver() {
 
   function addDriver(user: INewDriver) {
     let payload = undefined;
-    // if (driverImgFileRef.current || ) {
     const formData = new FormData();
-    formData.append("image", driverImgFileRef.current);
-    // console.log(driverImgFileRef.current);
-    // console.log(dropzoneFilesState);
+    if (driverImgFileRef.current) {
+      formData.append("image", driverImgFileRef.current);
+    }
     dropzoneFilesState.forEach((item: any, index: any) => {
-      formData.append(`driver_verification_images[${index}]`, item);
+      formData.append(`driver_verification_images`, item);
     });
-    // formData.append(`driver_verification_images`, dropzoneFilesState);
     Object.keys(user).forEach((itemKey) => {
       if (user)
         formData.append(itemKey, (user as any)[itemKey].toString());
     });
     payload = formData;
-    // } else {
-    //   payload = { ...user };
-    // }
     return client.post(`${transport}/drivers/`, payload);
   }
 
   function updateDriver(user: INewDriver) {
     let payload = undefined;
-    // if (driverImgFileRef.current) {
     const formData = new FormData();
     const existingFilesId: any = dropzoneFilesState.filter((item: any) => item.id).map((item: any) => item.id);
-    formData.append("image", driverImgFileRef.current);
+    if (driverImgFileRef.current) {
+      formData.append("image", driverImgFileRef.current);
+    }
     Object.keys(user).forEach((itemKey: string) => {
       if (user)
         formData.append(itemKey, (user as any)[itemKey].toString());
@@ -276,13 +272,13 @@ export default function AddDriver() {
     dropzoneFilesState.forEach((item: any, index: any) => {
       let imgIndex = 0;
       if (!item.id) {
-        formData.append(`driver_verification_images[${imgIndex}]`, item);
+        formData.append(`driver_verification_images`, item);
         imgIndex++;
       }
     });
     if (Array.isArray(existingFilesId) && existingFilesId.length > 0) {
+      let existImageIndex = 0;
       existingFilesId.forEach((item: any, index: any) => {
-        let existImageIndex = 0;
         if (!item.id) {
           formData.append(`persisting_image_ids[${existImageIndex}]`, item);
           existImageIndex++;
@@ -290,9 +286,6 @@ export default function AddDriver() {
       });
     }
     payload = formData;
-    // } else {
-    //   payload = { ...user };
-    // }
     return client.patch(`/${transport}/drivers/${driverId}/`, payload);
   }
 
