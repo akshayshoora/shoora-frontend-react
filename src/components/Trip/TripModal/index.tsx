@@ -12,7 +12,7 @@ import Tooltip from '@mui/material/Tooltip';
 import useStyles from "./style";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppPaths, SubPaths } from "../../../constants/commonEnums";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 import client from "serverCommunication/client";
 import LoadingScreen from "components/commonComponent/LoadingScreen";
 import { auth, monitor, transport } from "constants/RouteMiddlePath";
@@ -59,21 +59,23 @@ interface ITripModalProps {
   open: boolean;
   handleClose: () => void;
   id: string;
+  showSnackbarCallback: any
 }
 
 
 const AnyReactComponent: any = ({ text }: any) => <div>{text}</div>;
 
 export function TripModal(props: ITripModalProps) {
-  const { open, handleClose, id } = props;
+  const { open, handleClose, id, showSnackbarCallback } = props;
   const classes = useStyles();
   const navigate = useNavigate();
   const [startLoc, setStartLoc] = useState("");
   const [endLoc, setEndLoc] = useState("");
   const [validPathState, setValidPathState] = useState<any>([]);
+  const [selectedVerifyDriverState, setSelectedVerifyDriverState] = useState<any>(null);
   const [editModeState, setEditModeState] = useState<any>({
     showInput: false,
-    inputValue: ""
+    verifiedDriverId: ""
   });
 
   const { data: driverList, isLoading: isDriverLoading } = useQuery(
@@ -83,13 +85,13 @@ export function TripModal(props: ITripModalProps) {
   );
 
   async function getDrivers() {
-    console.log("Driver api call");
     let getApiUrl = `${transport}/drivers/?page=1&page_size=500`;
     const response = await client.get(getApiUrl);
     return response.data;
   }
 
-  const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () => {
+  const { data: trip, isLoading, refetch } = useQuery(["trip_modal_details", id], () => {
+    console.log("Id is changes", id);
     if (id) {
       return getTripDetails(String(id));
     }
@@ -98,18 +100,6 @@ export function TripModal(props: ITripModalProps) {
   async function getTripDetails(id: string) {
     return (await client.get(`${monitor}/trips/${id}/`)).data;
   }
-
-  const renderMarkers = (map: any, maps: any) => {
-    let marker = new maps.Marker({
-      position: {
-        lat: Number(trip.end_latitude),
-        lng: Number(trip.end_longitude),
-      },
-      map,
-      title: "",
-    });
-    return marker;
-  };
 
   const { data: startlocation } = useQuery(["start_location", trip], () => {
     if (trip?.start_latitude && trip?.start_longitude) {
@@ -121,6 +111,8 @@ export function TripModal(props: ITripModalProps) {
       return latLongToPlace(trip.end_latitude, trip.end_longitude, false)
     }
   });
+
+
   const [count, setCount] = useState(0);
   const { data: tripPath } = useQuery(["trip_path", trip], () => {
     if (trip?.id) {
@@ -131,6 +123,34 @@ export function TripModal(props: ITripModalProps) {
   async function getTripPath(id: string) {
     return (await client.get(`${monitor}/trips/${id}/path/`)).data;
   }
+
+  // Mutation of Verify Driver
+  const verifyDriverMutation = useMutation(verifyDriverApiCall, {
+    onSuccess: (responseData) => {
+      showSnackbarCallback("success", "Driver verified successfully.");
+      setEditModeState((prevState: any) => ({
+        ...prevState,
+        showInput: false,
+      }))
+      refetch();
+    },
+    onError: () => {
+      showSnackbarCallback("error", "Something went wrong.");
+      refetch();
+    }
+  });
+  async function verifyDriverApiCall(driverId: any) {
+    const params = {
+      driverId
+    }
+    const response = await client.get(`${monitor}/trips/download`, { params });
+    return response.data;
+  }
+  const { mutate: mutateVerifyDriver, isLoading: verifyDriverLoading } = verifyDriverMutation;
+
+
+  // Mutation of Verify Driver
+
 
   useEffect(() => {
     const { gps_cordinates } = tripPath || {};
@@ -150,107 +170,47 @@ export function TripModal(props: ITripModalProps) {
     }
   }, [tripPath]);
 
-  const getMapRoute = (map: any, maps: any) => {
-    const { gps_cordinates } = tripPath || {};
-    const pathArray = [];
-    const testPathArray = [];
-    if (Array.isArray(gps_cordinates)) {
-      for (let i = 0; i < gps_cordinates.length; i++) {
-        pathArray.push(new google.maps.LatLng(Number(gps_cordinates[i][0]), Number(gps_cordinates[i][1])))
-        testPathArray.push({
-          lat: Number(gps_cordinates[i][0]),
-          lng: Number(gps_cordinates[i][1])
-        });
-      }
+  function editDriverToVerifyHndlr(event: any) {
+    const { driver } = trip;
+    if (driver && driverList && Array.isArray(driverList?.results)) {
+      const { id } = driver,
+        editDriverInfo = driverList?.results?.find((item: any) => item.id === id);
+      setSelectedVerifyDriverState(editDriverInfo);
     }
-    const directionsService = new (
-      window as any
-    ).google.maps.DirectionsService();
-    var polylineOptionsActual = new google.maps.Polyline({
-      path: pathArray,
-      strokeColor: '#54a0de',
-    });
-    const directionsRenderer = new (
-      window as any
-    ).google.maps.DirectionsRenderer({ polylineOptions: polylineOptionsActual });
-    directionsRenderer.setMap(map);
-    const origin = {
-      lat: Number(trip.start_latitude),
-      lng: Number(trip.start_longitude),
-    };
-    const destination = {
-      lat: Number(trip.end_latitude),
-      lng: Number(trip.end_longitude),
-    };
-    polylineOptionsActual.setMap(map);
-    new google.maps.Marker({
-      position: origin,
-      map,
-      label: { color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'A' }
-    });
-    new google.maps.Marker({
-      position: destination,
-      map,
-      label: { color: '#ffffff', fontWeight: 'bold', fontSize: '14px', text: 'B' }
-    });
-    // directionsService.route({
-    //   origin: origin,
-    //   destination: destination,
-    //   travelMode: (window as any).google.maps.TravelMode.DRIVING,
-    //   // // optimizeWaypoints: true,
-    //   // waypoints: pathArray,
-    // }, (result: any, status: any) => {
-    //   if (status === (window as any).google.maps.DirectionsStatus.OK) {
-    //     directionsRenderer.setDirections(result);
-    //   } else {
-    //     console.error(`error fetching directions ${result}`);
-    //   }
-    // });
-  };
-
-  function verifyDriverHndlr(event: any) {
-    const driverName = event.target.getAttribute("data-name");
-    if (driverName) {
-      setEditModeState({
-        showInput: true,
-        inputValue: driverName
-      })
-    }
-  }
-
-  function onChangeDriverNameHndlr(event: any) {
-    const { name, value } = event.target;
-    setEditModeState((prevState: any) => ({
-      ...prevState,
-      inputValue: value
-    }))
+    setEditModeState({
+      showInput: true
+    })
   }
 
   function cancelVerifyHndlr() {
+    setSelectedVerifyDriverState(null);
     setEditModeState((prevState: any) => ({
       ...prevState,
       showInput: false,
     }))
   }
-  function saveVerifyHndlr() {
-    setEditModeState((prevState: any) => ({
-      ...prevState,
-      showInput: false,
-    }))
+  function afterEditVerifyDriverHndlr() {
+    const { id } = selectedVerifyDriverState;
+    mutateVerifyDriver(id);
+  }
+
+  function withoutEditVerifyDriver(event: any) {
+    event.stopPropagation();
+    const { driver } = trip || {},
+      { id } = driver;
+    if (id) {
+      mutateVerifyDriver(id);
+    }
+
   }
 
   function onSelectVehicleHndlr(event: any, selectedValue: any) {
-    const { id: driver_id, name } = selectedValue || {};
-    console.log({ selectedValue });
-    if (name) {
-      setEditModeState((prevState: any) => ({
-        ...prevState,
-        inputValue: name,
-      }))
-    }
+    setSelectedVerifyDriverState(selectedValue);
   }
 
-  const { results: driverResults } = driverList || {};
+  const { results: driverResults } = driverList || {},
+    { is_verified, driver } = trip || {},
+    { name: isDriverNameExist } = driver || {};
   return (
     <Box>
       <Modal
@@ -355,42 +315,46 @@ export function TripModal(props: ITripModalProps) {
                               {!editModeState.showInput &&
                                 <span
                                   style={{ display: "flex", alignItems: "center" }}
-                                >{editModeState.inputValue || trip?.driver?.name || "-"}
-                                  <Tooltip title="Edit Name">
-                                    <EditOutlinedIcon
-                                      onClick={verifyDriverHndlr}
-                                      data-name={trip?.driver?.name || "-"}
-                                      style={{ fontSize: "16px", cursor: "pointer", marginLeft: "4px" }} />
-                                  </Tooltip>
-                                  <Tooltip title="Verify">
-                                    <CheckCircleIcon
-                                      onClick={saveVerifyHndlr}
-                                      style={{
-                                        fontSize: "16px", cursor: "pointer", marginLeft: "4px",
-                                        color: "#4caf50"
-                                      }} />
-                                  </Tooltip>
+                                >{trip?.driver?.name || "-"}
+                                  {is_verified ?
+                                    <>
+                                      <Tooltip title="Verified">
+                                        <CheckCircleIcon
+                                          style={{
+                                            fontSize: "16px", cursor: "pointer", marginLeft: "4px",
+                                            color: "#4caf50"
+                                          }} />
+                                      </Tooltip>
+                                    </> : <>
+                                      <Tooltip title="Edit Driver">
+                                        <EditOutlinedIcon
+                                          onClick={editDriverToVerifyHndlr}
+                                          style={{ fontSize: "16px", cursor: "pointer", marginLeft: "4px" }} />
+                                      </Tooltip>
+                                      {
+                                        isDriverNameExist &&
+                                        <Tooltip title="Verify">
+                                          <CheckCircleIcon
+                                            onClick={withoutEditVerifyDriver}
+                                            style={{
+                                              fontSize: "16px", cursor: "pointer", marginLeft: "4px",
+                                              color: "#ff9800"
+                                            }} />
+                                        </Tooltip>
+                                      }
+                                    </>}
+
+
                                 </span>
                               }
 
                               {editModeState.showInput && <Box component="div" style={{ width: "100%" }}>
-                                {/* <TextField
-                                  id="emails"
-                                  name="emails"
-                                  type="text"
-                                  sx={{ width: "100%" }}
-                                  size="small"
-                                  InputLabelProps={{
-                                    shrink: true,
-                                  }}
-                                  value={editModeState.inputValue}
-                                  onChange={onChangeDriverNameHndlr}
-                                /> */}
                                 <Autocomplete
                                   size="small"
                                   id="driver_id"
                                   options={driverResults}
                                   loading={isDriverLoading}
+                                  value={selectedVerifyDriverState}
                                   onChange={onSelectVehicleHndlr}
                                   getOptionLabel={(option: any) => option.name}
                                   fullWidth={true}
@@ -403,15 +367,7 @@ export function TripModal(props: ITripModalProps) {
                                     fullWidth
                                     className="test"
                                     name="driver_id"
-                                    InputProps={{
-                                      className: classes.width100
-                                    }}
-                                    inputProps={{
-                                      className: classes.width100
-                                    }}
                                     placeholder={"Search by driver name"} {...params} />}
-
-
                                 />
                                 <div style={{ display: "flex", marginTop: "8px" }}>
                                   <Tooltip title="Verify Name">
@@ -421,15 +377,8 @@ export function TripModal(props: ITripModalProps) {
                                         color: "#4caf50", padding: 0,
                                         borderColor: "#4caf50"
                                       }}
-                                      onClick={saveVerifyHndlr}
+                                      onClick={afterEditVerifyDriverHndlr}
                                     >Verify</Button>
-                                    {/* <SaveIcon
-                                      onClick={verifyDriverHndlr}
-                                      data-name={trip?.driver?.name || "-"}
-                                      style={{
-                                        fontSize: "16px", cursor: "pointer", marginLeft: "4px",
-                                        color: "#4caf50"
-                                      }} /> */}
                                   </Tooltip>
                                   <Tooltip title="Cancel">
                                     <Button variant="outlined"
@@ -440,14 +389,6 @@ export function TripModal(props: ITripModalProps) {
                                       }}
                                       onClick={cancelVerifyHndlr}
                                     >Cancel</Button>
-                                    {/* <CancelIcon
-                                      onClick={verifyDriverHndlr}
-                                      data-name={trip?.driver?.name || "-"}
-                                      style={{
-                                        fontSize: "16px", cursor: "pointer", marginLeft: "4px",
-                                        color: "#d32f2f"
-
-                                      }} /> */}
                                   </Tooltip>
                                 </div>
 
