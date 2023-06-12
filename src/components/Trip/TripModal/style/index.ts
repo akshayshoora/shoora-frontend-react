@@ -13,6 +13,12 @@ export default makeStyles({
       right: "15px",
       cursor: "pointer",
     },
+    ".MuiAutocomplete-input": {
+      width: "100% !important"
+    }
+  },
+  width100: {
+    width: "100% !important"
   },
 
   alertList: {

@@ -8,7 +8,7 @@ import {
   styled,
   Typography,
 } from "@mui/material";
-
+import Tooltip from '@mui/material/Tooltip';
 import useStyles from "./style";
 import { useNavigate, useParams } from "react-router-dom";
 import { AppPaths, SubPaths } from "../../../constants/commonEnums";
@@ -23,6 +23,12 @@ import GoogleMapReact from "google-map-react";
 import { LoadScript, GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 import { latLongToPlace } from "utils/helpers";
 import { useEffect, useState } from "react";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import SaveIcon from '@mui/icons-material/Save';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import TextField from "@mui/material/TextField";
+import Autocomplete from '@mui/material/Autocomplete';
 // import Marker from "components/Map/Marker";
 
 const style = {
@@ -65,6 +71,23 @@ export function TripModal(props: ITripModalProps) {
   const [startLoc, setStartLoc] = useState("");
   const [endLoc, setEndLoc] = useState("");
   const [validPathState, setValidPathState] = useState<any>([]);
+  const [editModeState, setEditModeState] = useState<any>({
+    showInput: false,
+    inputValue: ""
+  });
+
+  const { data: driverList, isLoading: isDriverLoading } = useQuery(
+    ["drivers-verify"],
+    () => getDrivers(),
+    { refetchOnWindowFocus: false }
+  );
+
+  async function getDrivers() {
+    console.log("Driver api call");
+    let getApiUrl = `${transport}/drivers/?page=1&page_size=500`;
+    const response = await client.get(getApiUrl);
+    return response.data;
+  }
 
   const { data: trip, isLoading } = useQuery(["trip_modal_details", id], () => {
     if (id) {
@@ -131,7 +154,6 @@ export function TripModal(props: ITripModalProps) {
     const { gps_cordinates } = tripPath || {};
     const pathArray = [];
     const testPathArray = [];
-    // console.log("I am rendered already");
     if (Array.isArray(gps_cordinates)) {
       for (let i = 0; i < gps_cordinates.length; i++) {
         pathArray.push(new google.maps.LatLng(Number(gps_cordinates[i][0]), Number(gps_cordinates[i][1])))
@@ -186,6 +208,49 @@ export function TripModal(props: ITripModalProps) {
     // });
   };
 
+  function verifyDriverHndlr(event: any) {
+    const driverName = event.target.getAttribute("data-name");
+    if (driverName) {
+      setEditModeState({
+        showInput: true,
+        inputValue: driverName
+      })
+    }
+  }
+
+  function onChangeDriverNameHndlr(event: any) {
+    const { name, value } = event.target;
+    setEditModeState((prevState: any) => ({
+      ...prevState,
+      inputValue: value
+    }))
+  }
+
+  function cancelVerifyHndlr() {
+    setEditModeState((prevState: any) => ({
+      ...prevState,
+      showInput: false,
+    }))
+  }
+  function saveVerifyHndlr() {
+    setEditModeState((prevState: any) => ({
+      ...prevState,
+      showInput: false,
+    }))
+  }
+
+  function onSelectVehicleHndlr(event: any, selectedValue: any) {
+    const { id: driver_id, name } = selectedValue || {};
+    console.log({ selectedValue });
+    if (name) {
+      setEditModeState((prevState: any) => ({
+        ...prevState,
+        inputValue: name,
+      }))
+    }
+  }
+
+  const { results: driverResults } = driverList || {};
   return (
     <Box>
       <Modal
@@ -277,11 +342,118 @@ export function TripModal(props: ITripModalProps) {
                             src="https://ionicframework.com/docs/img/demos/avatar.svg"
                           />
                         </IonAvatar>
-                        <ul className={classes.alertListInfo}>
+                        <ul className={classes.alertListInfo} style={{ width: "100%" }}>
                           <li>
-                            <span>
-                              Driver Name: {trip?.driver?.name || "-"}
-                            </span>
+                            <div style={{
+                              display: "flex",
+                              alignItems: editModeState.showInput ? "flex-start" : "center",
+                              width: "100%"
+                            }}>
+                              <span style={{ whiteSpace: "nowrap", marginRight: "4px" }}>Drive dr Name:</span>
+
+
+                              {!editModeState.showInput &&
+                                <span
+                                  style={{ display: "flex", alignItems: "center" }}
+                                >{editModeState.inputValue || trip?.driver?.name || "-"}
+                                  <Tooltip title="Edit Name">
+                                    <EditOutlinedIcon
+                                      onClick={verifyDriverHndlr}
+                                      data-name={trip?.driver?.name || "-"}
+                                      style={{ fontSize: "16px", cursor: "pointer", marginLeft: "4px" }} />
+                                  </Tooltip>
+                                  <Tooltip title="Verify">
+                                    <CheckCircleIcon
+                                      onClick={saveVerifyHndlr}
+                                      style={{
+                                        fontSize: "16px", cursor: "pointer", marginLeft: "4px",
+                                        color: "#4caf50"
+                                      }} />
+                                  </Tooltip>
+                                </span>
+                              }
+
+                              {editModeState.showInput && <Box component="div" style={{ width: "100%" }}>
+                                {/* <TextField
+                                  id="emails"
+                                  name="emails"
+                                  type="text"
+                                  sx={{ width: "100%" }}
+                                  size="small"
+                                  InputLabelProps={{
+                                    shrink: true,
+                                  }}
+                                  value={editModeState.inputValue}
+                                  onChange={onChangeDriverNameHndlr}
+                                /> */}
+                                <Autocomplete
+                                  size="small"
+                                  id="driver_id"
+                                  options={driverResults}
+                                  loading={isDriverLoading}
+                                  onChange={onSelectVehicleHndlr}
+                                  getOptionLabel={(option: any) => option.name}
+                                  fullWidth={true}
+                                  renderOption={(props: any, option: any) => (
+                                    <Box component="li" {...props} key={option.id}>
+                                      {option.name} - {option.vin}
+                                    </Box>
+                                  )}
+                                  renderInput={(params: any) => <TextField
+                                    fullWidth
+                                    className="test"
+                                    name="driver_id"
+                                    InputProps={{
+                                      className: classes.width100
+                                    }}
+                                    inputProps={{
+                                      className: classes.width100
+                                    }}
+                                    placeholder={"Search by driver name"} {...params} />}
+
+
+                                />
+                                <div style={{ display: "flex", marginTop: "8px" }}>
+                                  <Tooltip title="Verify Name">
+                                    <Button variant="outlined"
+                                      style={{
+                                        fontSize: "12px", cursor: "pointer", marginLeft: "4px",
+                                        color: "#4caf50", padding: 0,
+                                        borderColor: "#4caf50"
+                                      }}
+                                      onClick={saveVerifyHndlr}
+                                    >Verify</Button>
+                                    {/* <SaveIcon
+                                      onClick={verifyDriverHndlr}
+                                      data-name={trip?.driver?.name || "-"}
+                                      style={{
+                                        fontSize: "16px", cursor: "pointer", marginLeft: "4px",
+                                        color: "#4caf50"
+                                      }} /> */}
+                                  </Tooltip>
+                                  <Tooltip title="Cancel">
+                                    <Button variant="outlined"
+                                      style={{
+                                        fontSize: "12px", cursor: "pointer", marginLeft: "4px",
+                                        color: "#d32f2f", padding: 0,
+                                        borderColor: "#d32f2f"
+                                      }}
+                                      onClick={cancelVerifyHndlr}
+                                    >Cancel</Button>
+                                    {/* <CancelIcon
+                                      onClick={verifyDriverHndlr}
+                                      data-name={trip?.driver?.name || "-"}
+                                      style={{
+                                        fontSize: "16px", cursor: "pointer", marginLeft: "4px",
+                                        color: "#d32f2f"
+
+                                      }} /> */}
+                                  </Tooltip>
+                                </div>
+
+                              </Box>}
+                            </div>
+
                           </li>
                           <li>
                             <span>
@@ -335,7 +507,6 @@ export function TripModal(props: ITripModalProps) {
                       mapContainerStyle={{
                         height: "300px"
                       }}
-                      onLoad={() => { console.log("*********MAP LOADED SUCCESSFULLy.***********") }}
                     >
                       {
                         // ...Your map components

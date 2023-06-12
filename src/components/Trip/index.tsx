@@ -48,6 +48,7 @@ import { latLongToPlace, sanitizeURL } from "utils/helpers";
 import { useEffect } from "react";
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CancelIcon from '@mui/icons-material/Cancel';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 //Trip Page
 export default function Trip() {
@@ -200,6 +201,12 @@ export default function Trip() {
     {
       id: "driver",
       label: "Driver",
+      numeric: false,
+      disablePadding: false,
+    },
+    {
+      id: "status",
+      label: "Status",
       numeric: false,
       disablePadding: false,
     },
@@ -385,7 +392,6 @@ export default function Trip() {
   const { vehicle_id: filterVehicleId, vehicle_details } = tripFilterRef.current || {},
     { vin: filterVehicleNumber } = vehicle_details || {};
 
-  console.log({ tripsInfoResp });
   return (
     <Box style={{ padding: "20px 20px 20px 40px" }}>
       {openDelete && (
@@ -532,6 +538,18 @@ export default function Trip() {
                     </TableCell>
                     <TableCell align="left">
                       <Span fontType="secondary">{trip?.driver?.name || "-"}</Span>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Span>
+
+                        {(trip.verification_status === "Verified") && <Box component="div" sx={{ display: "flex" }}>
+                          <VerifiedIcon sx={{ mr: 0.5 }} fontSize="small" />
+                          Verified
+                        </Box>}
+                        {(trip.verification_status !== "Verified") && <Span>
+                          {trip.verification_status || "n/a"}
+                        </Span>}
+                      </Span>
                     </TableCell>
                     <TableCell align="left">
                       {
