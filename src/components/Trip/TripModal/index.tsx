@@ -140,10 +140,10 @@ export function TripModal(props: ITripModalProps) {
     }
   });
   async function verifyDriverApiCall(driverId: any) {
-    const params = {
-      driverId
+    const payload = {
+      driver_id: driverId
     }
-    const response = await client.get(`${monitor}/trips/download`, { params });
+    const response = await client.patch(`${monitor}/trips/${id}/`, payload);
     return response.data;
   }
   const { mutate: mutateVerifyDriver, isLoading: verifyDriverLoading } = verifyDriverMutation;
@@ -309,7 +309,7 @@ export function TripModal(props: ITripModalProps) {
                               alignItems: editModeState.showInput ? "flex-start" : "center",
                               width: "100%"
                             }}>
-                              <span style={{ whiteSpace: "nowrap", marginRight: "4px" }}>Drive dr Name:</span>
+                              <span style={{ whiteSpace: "nowrap", marginRight: "4px" }}>Drive Name:</span>
 
 
                               {!editModeState.showInput &&
