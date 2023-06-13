@@ -95,7 +95,7 @@ export function TripModal(props: ITripModalProps) {
     if (id) {
       return getTripDetails(String(id));
     }
-  });
+  }, { refetchOnWindowFocus: false });
 
   async function getTripDetails(id: string) {
     return (await client.get(`${monitor}/trips/${id}/`)).data;
@@ -118,7 +118,7 @@ export function TripModal(props: ITripModalProps) {
     if (trip?.id) {
       return getTripPath(trip?.id)
     }
-  });
+  }, { refetchOnWindowFocus: false });
 
   async function getTripPath(id: string) {
     return (await client.get(`${monitor}/trips/${id}/path/`)).data;
