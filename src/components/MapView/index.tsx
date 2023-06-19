@@ -171,7 +171,7 @@ export default function MapView() {
             columns={{ xs: 6, sm: 8, md: 12 }}
             style={{ marginTop: 24 }}
           >
-            <Grid xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
+            <Grid  item xs={2} sm={3} md={3} style={{ paddingLeft: 24 }}>
               <Item elevation={1}>
                 <Box className="contentMain">
                   <Box className="searchbar" style={{ padding: "20px 15px" }}>
@@ -249,7 +249,7 @@ export default function MapView() {
                               {Array.isArray(visibleVehicleState) &&
                                 visibleVehicleState.map((item: any) => (
                                   <TableRow key={item.id}>
-                                    <div
+                                    <td
                                       className="loaddata"
                                       style={
                                         deviceId == item.device
@@ -283,13 +283,13 @@ export default function MapView() {
                                                 ? "#D3D3D3"
                                                 : "#3BB3C3"
                                             }
-                                            stroke-width="1.5"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
+                                            strokeWidth="1.5"
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
                                           ></path>
                                         </svg>
                                       </span>
-                                    </div>
+                                    </td>
                                   </TableRow>
                                 ))}
                             </TableBody>
@@ -326,7 +326,7 @@ export default function MapView() {
                 </Box>
               </Item>
             </Grid>
-            <Grid xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
+            <Grid  item xs={2} sm={9} md={9} style={{ paddingLeft: 24 }}>
               <Item elevation={0}>
                 <Box className="livemap">
                   {/* <GoogleMap list={locationList} /> */}

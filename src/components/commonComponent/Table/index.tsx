@@ -57,7 +57,7 @@ export function TableFooter(props: ITableFooterProps) {
   return (
     <Box className={classnames(props.footerContainerClassName || classes.footer)}>
       <Pagination
-        componentName="div"
+       // componentname="div"
         count={totalPages}
         page={currentPage}
         onChange={onPageChange}

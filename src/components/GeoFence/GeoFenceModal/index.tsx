@@ -170,7 +170,6 @@ export function GeoFenceModal(props: IGeofenceProps) {
     reason?: any, details?: any
   ) {
     const { option } = details || {};
-    console.log({ key, value });
     if (key === "vehicle_ids" && option?.value === "all") {
       const vehicleAllVehicles = [];
       if (vehicleList && Array.isArray(vehicleList.results)) {

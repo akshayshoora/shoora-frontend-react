@@ -434,7 +434,7 @@ export default function Alerts() {
             </TableBody>
           </Table>
           <TableFooter
-            totalPages={Math.ceil(alertInfoResp?.count / rowsPerPage)}
+            totalPages={isNaN(alertInfoResp?.count) ? 0 :Math.ceil(alertInfoResp?.count / rowsPerPage)}
             currentPage={page + 1}
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}

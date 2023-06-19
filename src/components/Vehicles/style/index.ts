@@ -148,5 +148,14 @@ export default makeStyles({
     lineHeight: "22px",
     color: "#d32f2f",
     textTransform: "capitalize"
+  },
+  driverInfoContainer: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  driverInfo: {
+    fontSize: "16px",
+    marginRight: "2px",
   }
+
 });

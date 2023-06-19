@@ -68,7 +68,7 @@ export function AlertModal(props: IAlertModalProps) {
     let marker = new maps.Marker({
       position: { lat: Number(alert.latitude), lng: Number(alert.longitude) },
       map,
-      title: "Hello World!",
+      title: "",
     });
     return marker;
   };
@@ -104,7 +104,7 @@ export function AlertModal(props: IAlertModalProps) {
                     <path
                       d="M18 6L6 18M6 6L18 18"
                       stroke="#fff"
-                      stroke-linecap="square"
+                      strokeLinecap="square"
                     />
                   </g>
                   <defs>
@@ -115,9 +115,9 @@ export function AlertModal(props: IAlertModalProps) {
                       width="32"
                       height="32"
                       filterUnits="userSpaceOnUse"
-                      color-interpolation-filters="sRGB"
+                      colorInterpolationFilters="sRGB"
                     >
-                      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                      <feFlood floodOpacity="0.5" result="BackgroundImageFix" />
                       <feColorMatrix
                         in="SourceAlpha"
                         type="matrix"

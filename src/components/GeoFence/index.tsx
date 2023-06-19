@@ -318,7 +318,7 @@ export default function GeoFence() {
           </TableBody>
         </Table>
         <TableFooter
-          totalPages={Math.ceil(geofenceList?.count / rowsPerPage)}
+          totalPages={isNaN(geofenceList?.count) ? 0 :Math.ceil(geofenceList?.count / rowsPerPage)}
           currentPage={page + 1}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

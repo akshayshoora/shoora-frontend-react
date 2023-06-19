@@ -77,6 +77,8 @@ export default makeStyles({
     backgroundColor: "#261F5A",
     alignContent: "center",
     color: "white",
+    borderTopLeftRadius: "8px",
+    borderTopRightRadius: "8px",
     padding: "10px 15px",
     "& i": {
       cursor: "pointer",
@@ -134,6 +136,10 @@ export default makeStyles({
     "& span": {
       fontSize: "18px !important",
     },
+  },
+  roundedbox: {
+    fill: "blue",
+    borderradius: "10px",
   },
   recentReportCard: {
     backgroundColor: "#ffffff",
