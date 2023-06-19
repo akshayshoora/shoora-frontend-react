@@ -40,13 +40,4 @@ export default makeStyles({
     bottom: "0",
     right: "0",
   },
-  formerror: {
-  color : "red",
-  marginBottom : "0.5rem", 
-  fontSize: "14px",
-  marginTop: "4px",
-  },
-  errorinput: {
-    border :"1px solid red"
-  }
 });

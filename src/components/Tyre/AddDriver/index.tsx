@@ -294,7 +294,7 @@ export default function AddDriver() {
             <ArrowBackIcon />
           </IconButton>
           <Typography fontSize={24}>
-            {!driverId ? "Add Tyre Claim" : "Edit Tyre Claim"}
+            {!driverId ? "Tyre Inward" : "Edit Tyre Claim"}
           </Typography>
         </Box>
       </Box>

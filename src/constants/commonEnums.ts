@@ -30,6 +30,7 @@ export enum AppPaths {
 export enum SubPaths {
   ADD = "add",
   EDIT = "edit",
+  CONFIGURATION = "Configuration",
 }
 
 export enum Actions {

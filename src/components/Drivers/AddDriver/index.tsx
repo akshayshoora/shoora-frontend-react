@@ -31,7 +31,6 @@ import CustomRadioGroup from "components/commonComponent/CustomRadioGroup.tsx";
 import DriverImage from "../../../assets/driver-img.png";
 import InsertPhotoIcon from '@mui/icons-material/InsertPhoto';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import { useForm } from "react-hook-form";
 
 interface INewDriver {
   name: string | null;
@@ -61,7 +60,6 @@ function setInitialDriverData(driverData?: any): INewDriver {
 }
 
 export default function AddDriver() {
-  const { register, handleSubmit, formState:{errors} } = useForm<INewDriver>();
   const { data: vehicleList, isLoading: isVehicleLoading } = useQuery(
     ["vehicles"],
     () => getVehicle()
@@ -79,7 +77,6 @@ export default function AddDriver() {
   }
   const [drivers, setDriver] = useState<INewDriver>(setInitialDriverData());
   const { user } = useAppContext();
-  const phoneRegex = /^[0-9]{10}$/;
 
   const navigate = useNavigate();
   const classes = useStyles();
@@ -173,7 +170,6 @@ export default function AddDriver() {
   function backToProperties() {
     navigate(-1);
   }
-  
 
   function handleFormDriver(
     key: keyof INewDriver,
@@ -181,10 +177,6 @@ export default function AddDriver() {
   ) {
     setDriver({ ...drivers, [key]: value });
     setValidationState((prevState: any) => ({ ...prevState, [key]: "" }));
-  }
-  function handleBlur(event: React.FocusEvent<HTMLInputElement>) {
-
-
   }
 
   function addDriver(user: INewDriver) {
@@ -224,7 +216,7 @@ export default function AddDriver() {
   const { mutate: mutateUpdateDriver, isLoading: updatingDriver } =
     updateDeviceMutation;
 
-  function onSubmit() {
+  function handleSubmit() {
     let payload = {};
     if (driverId) {
       mutateUpdateDriver(drivers);
@@ -246,7 +238,7 @@ export default function AddDriver() {
   }
 
   const { name } = drivers;
-  //const isSaveButtonDisabled = !name;
+  const isSaveButtonDisabled = !name;
 
   const loadingMessage = isAddingDriver
     ? "Adding Driver..."
@@ -352,34 +344,28 @@ export default function AddDriver() {
           </Grid>
           <Grid item xs={8}>
             <Grid container columnSpacing={4}>
-              <Grid item xs={6} style={{ marginBottom: 24 }}>
-              <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Driver Name * </label>
-                  <input type="text"
-                  placeholder="Enter Driver Name"
-                  id="name"
-                  {...register('name',{required : true})}
-                  className={errors.name ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
-                  />
-                       {errors.name && <p className={classes.formerror}>Driver Name Is Required</p>}
+              <Grid item xs={6}>
+                <TextInput
+                  label="Driver Name"
+                  placeholder="Enter Driver name"
+                  style={{ marginBottom: 24 }}
+                  value={drivers.name}
+                  isRequired={true}
+                  onChange={(value) => handleFormDriver("name", value)}
+                  errorMessage={validationState?.name}
+                />
               </Grid>
               <Grid item xs={6}>
-              <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Phone Number </label>
-                  <input type="Phone Number"
-                  placeholder="Enter Phone Number"
-                  id="Phone Number"
-                  {...register('phone_number',{required : true, pattern: phoneRegex})}  
-                  className={errors.phone_number ? classes.errorinput : ''}                 
-                  style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
-                  />
-                  {errors.phone_number?.type === 'required' && (
-          <p className={classes.formerror}>Phone Number Is Required</p>
-        )}
-        {errors.phone_number?.type === 'pattern' && (
-          <p className={classes.formerror}>Invalid Phone Number Format</p>
-        )}
-
-         </Grid>
+                <TextInput
+                  label="Phone Number"
+                  placeholder="Enter Phone number"
+                  style={{ marginBottom: 24 }}
+                  value={drivers.phone_number}
+                  isRequired={false}
+                  onChange={(value) => handleFormDriver("phone_number", value)}
+                  errorMessage={validationState?.phone_number}
+                />
+              </Grid>
               <Grid item xs={6} style={{ marginBottom: 24 }}>
                 <Typography
                   fontSize={16}
@@ -388,11 +374,13 @@ export default function AddDriver() {
                   Vehicles
                 </Typography>
                 <Select
-                  {...register('vehicle_id',{required:true})}
-                  className={errors.vehicle_id ? classes.errorinput : ''} 
-                  style={{padding:"3px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
-                  displayEmpty
+                  fullWidth
+                  id="vehicle_id"
+                  value={drivers.vehicle_id}
+                  onChange={(e: any) => handleFormDriver("vehicle_id", e.target.value)}
+                  error={!!validationState?.vehicle_id}
                   size="small"
+                  displayEmpty
                 >
                   <MenuItem value="" disabled>
                     Vehicles
@@ -411,20 +399,18 @@ export default function AddDriver() {
                     <MenuItem>Nothing to Select</MenuItem>
                   )}
                 </Select>
-                {errors.vehicle_id && <div className={classes.formerror}>Vehicle Is Required</div>}
+                {validationState?.vehicle_id && <FormHelperText sx={{ marginLeft: "14px", marginRight: "14px" }} error={true}>{validationState.vehicle_id}</FormHelperText>}
               </Grid>
-            
               <Grid item xs={6}>
-              <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Passport Number </label>
-                  <input  type="text"
+                <TextInput
+                  label="Passport Number"
                   placeholder="Enter Passport Number"
-                  id="name"
-                  {...register('passport_number',{required : true})} 
-                  className={errors.passport_number ? classes.errorinput : ''} 
-                  style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
-                  />
-
-                       {errors.passport_number && <p className={classes.formerror}>Passport Number Is Required</p>}
+                  style={{ marginBottom: 24 }}
+                  value={drivers.passport_number}
+                  isRequired={false}
+                  onChange={(value) => handleFormDriver("passport_number", value)}
+                  errorMessage={validationState?.passport_number}
+                />
               </Grid>
 
             </Grid>
@@ -439,26 +425,35 @@ export default function AddDriver() {
             >
               Passport Validity
             </Typography>
-            <input
+            <TextField
               id="date"
               type="date"
-              {...register('passport_validity',{required:true})}
-              className={errors.passport_validity ? classes.errorinput : ''} 
-              style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.8"}}
-              />
-            {errors.passport_validity && <p className={classes.formerror}> Passport Validity Is Required</p>}
+              sx={{ width: "100%" }}
+              size="small"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={drivers.passport_validity}
+              onChange={(e: any) =>
+                handleFormDriver("passport_validity", e.target.value)
+              }
+              error={!!validationState?.passport_validity}
+              helperText={validationState?.passport_validity}
+            />
           </Grid>
-          <Grid item xs={4} style={{ marginBottom: 24 }}>
-          <label style={{marginBottom:"8px", display: "flex",alignItems: "center"}}> Driving License Number </label>
-                  <input type="text"
-                  placeholder="Enter Driving License Number"
-                  id="Driving License Number"
-                  {...register('driving_license_number',{required : true})}
-                  className={errors.driving_license_number ? classes.errorinput : ''}  
-                  style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.5"}}
-                  />
+          <Grid item xs={4}>
+            <TextInput
+              label="Driving Lincense Number"
+              placeholder="Enter Driving Lincense Number"
+              style={{ marginBottom: 24 }}
+              value={drivers.driving_license_number}
+              isRequired={false}
+              onChange={(value) =>
+                handleFormDriver("driving_license_number", value)
+              }
+              errorMessage={validationState?.driving_license_number}
 
-                       {errors.driving_license_number && <p className={classes.formerror}>Driving License Is Required</p>}
+            />
           </Grid>
           <Grid item xs={4}>
             <Typography
@@ -467,16 +462,21 @@ export default function AddDriver() {
             >
               Driving License Validity
             </Typography>
-            <input
+            <TextField
               id="date"
               type="date"
-              //sx={{ width: "100%" }}
-              {...register('driving_license_validity',{required:true})}
-              className={errors.driving_license_validity ? classes.errorinput : ''} 
-              style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.8"}}
-              
-            /> 
-            {errors.driving_license_validity && <p className={classes.formerror}> Driving License Validity Is Required</p>}
+              sx={{ width: "100%" }}
+              size="small"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={drivers.driving_license_validity}
+              onChange={(e: any) =>
+                handleFormDriver("driving_license_validity", e.target.value)
+              }
+              error={validationState?.driving_license_validity}
+              helperText={validationState?.driving_license_validity}
+            />
           </Grid>
           <Grid item xs={4}>
             <Typography
@@ -485,16 +485,22 @@ export default function AddDriver() {
             >
               Date Of Birth
             </Typography>
-            <input
+            <TextField
               // id="date"
               id="dob"
               type="date"
-              {...register('dob',{required:true})}
-              className={errors.dob ? classes.errorinput : ''} 
-              style={{padding:"9px",fontSize:"16px",width:"80%",backgroundColor:"inherit",borderRadius:"4px",border:"2px solid #888",opacity:"0.8"}}
-              
+              sx={{ width: "100%" }}
+              size="small"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              value={drivers.dob}
+              onChange={(e: any) =>
+                handleFormDriver("dob", e.target.value)
+              }
+              error={!!validationState?.dob}
+              helperText={validationState?.dob}
             />
-            {errors.dob && <p className={classes.formerror}>Date Of Birth Is Required</p> }
           </Grid>
           {/* <Grid item xs={4}>
             {driverId && <TextInput
@@ -516,9 +522,9 @@ export default function AddDriver() {
         </Button>
         <Button
           id="submit"
-          //variant={isSaveButtonDisabled ? "outlined" : "contained"}
-          onClick={handleSubmit(onSubmit)}
-          //disabled={isSaveButtonDisabled}
+          variant={isSaveButtonDisabled ? "outlined" : "contained"}
+          onClick={handleSubmit}
+          disabled={isSaveButtonDisabled}
         >
           Save
         </Button>

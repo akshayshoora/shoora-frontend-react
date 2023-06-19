@@ -25,8 +25,8 @@ export function CheckFeatureAccess(item: any) {
       item.toLowerCase() == "lock-device" ||
       // item.toLowerCase() == "coaching" ||
       // item.toLowerCase() == "job-card" ||
-      // item.toLowerCase() == "tyre" ||
-      // item.toLowerCase() == "tyre-performance" ||
+       item.toLowerCase() == "tyre" ||
+       item.toLowerCase() == "tyre-performance" ||
       // item.toLowerCase() == "maintenance" ||
       item.toLowerCase() == "inspection"
     ) {

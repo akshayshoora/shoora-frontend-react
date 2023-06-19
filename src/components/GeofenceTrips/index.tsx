@@ -69,7 +69,7 @@ function GeofenceTripRow({ tripInfo, handleOpenTrip }: any) {
               onClick={() => setShowReturnState(!showReturnState)}
             >
               {showReturnState ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-            </IconButton>
+            </IconButton> 
           </Tooltip>
         </TableCell>
         <TableCell align="left">
